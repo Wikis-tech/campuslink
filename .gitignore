@@ -15,8 +15,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Node modules (if any)
-node_modules/
+# Config files with secrets
+config.php
+includes/config.php
 
 # Database
 *.sql
