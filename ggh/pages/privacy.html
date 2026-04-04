@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/legal.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body>
+<header class="site-header scrolled" id="siteHeader">
+  <div class="header-inner container">
+    <a href="../index.html" class="logo"><div class="logo-mark"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#0b3d91"/><path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="17" r="2.5" fill="#1ea952"/><path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span class="logo-text" style="color:var(--primary)">Campus<strong>link</strong></span></a>
+    <nav class="main-nav" id="mainNav"><a href="../index.html" class="nav-link">Home</a><a href="browse.html" class="nav-link">Browse</a><a href="login.html" class="nav-link nav-cta">Login</a></nav>
+    <button class="nav-toggle" id="navToggle"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+<section class="page-hero" style="padding-bottom:40px">
+  <div class="container"><div class="breadcrumb"><a href="../index.html">Home</a><i data-lucide="chevron-right"></i><span>Privacy Policy</span></div><h1>Privacy Policy</h1><p>Last updated: March 2025 · Version 1.0</p></div>
+</section>
+<div class="legal-layout container">
+  <aside class="legal-toc">
+    <h4>Contents</h4>
+    <a href="#collection">1. Data We Collect</a>
+    <a href="#use">2. How We Use Data</a>
+    <a href="#sharing">3. Data Sharing</a>
+    <a href="#security">4. Security Measures</a>
+    <a href="#rights">5. Your Rights (NDPR)</a>
+    <a href="#cookies">6. Cookies</a>
+    <a href="#retention">7. Retention</a>
+    <a href="#children">8. Children</a>
+    <a href="#contact">9. Contact</a>
+  </aside>
+  <main class="legal-content">
+    <div class="legal-notice"><i data-lucide="lock"></i><p><strong>Your privacy matters to us.</strong> Campuslink is committed to protecting your personal data in accordance with the Nigeria Data Protection Regulation (NDPR) and international best practices.</p></div>
+
+    <section id="collection">
+      <h2>1. Data We Collect</h2>
+      <p>Campuslink collects the following categories of personal data:</p>
+      <ul>
+        <li><strong>Account Data:</strong> Full name, school email, personal email, phone number, department, and academic level.</li>
+        <li><strong>Vendor Data:</strong> Matric number, business details, uploaded verification documents (student ID, selfie, CAC certificate, government ID, service photos, logo).</li>
+        <li><strong>Usage Data:</strong> Login timestamps, IP addresses, browser/device information (user agent), search queries, page visits, and profile interactions.</li>
+        <li><strong>Transaction Data:</strong> Paystack payment references, subscription plan details, and payment history. We do not store card numbers, CVV codes, or bank account details.</li>
+        <li><strong>Content Data:</strong> Reviews you write, complaints you submit, notifications you receive, and vendors you save.</li>
+      </ul>
+    </section>
+
+    <section id="use">
+      <h2>2. How We Use Your Data</h2>
+      <ul>
+        <li>Account creation, authentication, and secure session management.</li>
+        <li>Vendor identity verification and admin approval processes.</li>
+        <li>Processing and verifying subscription payments via Paystack.</li>
+        <li>Sending transactional emails (account verification, payment confirmation, subscription expiry reminders, complaint updates).</li>
+        <li>Displaying vendor listings and enabling users to find and contact vendors.</li>
+        <li>Moderating reviews and investigating complaint submissions.</li>
+        <li>Security purposes: fraud detection, rate limiting, audit logging, and account protection.</li>
+        <li>Compliance with applicable Nigerian law, including the NDPR.</li>
+      </ul>
+    </section>
+
+    <section id="sharing">
+      <h2>3. Data Sharing</h2>
+      <p>Campuslink does not sell your personal data to any third party. We share data only in the following limited circumstances:</p>
+      <ul>
+        <li><strong>Paystack:</strong> Payment processing only. Subject to Paystack's own Privacy Policy. We share only the minimum necessary data (email, amount, reference).</li>
+        <li><strong>Email Service Provider:</strong> For delivery of transactional emails only. No marketing data is shared.</li>
+        <li><strong>Legal Requirements:</strong> We may disclose data to law enforcement or regulatory bodies when required by Nigerian law or valid legal process.</li>
+        <li><strong>Business Transfer:</strong> In the event of a merger, acquisition, or asset sale, data may be transferred with prior notice to users.</li>
+      </ul>
+    </section>
+
+    <section id="security">
+      <h2>4. Security Measures</h2>
+      <p>We implement industry-standard and best-practice security measures to protect your data:</p>
+      <ul>
+        <li>BCrypt password hashing (cost factor 12) — passwords are never stored in plaintext.</li>
+        <li>HTTPS/TLS encryption for all data in transit.</li>
+        <li>CSRF token protection on all state-changing requests.</li>
+        <li>Strict file upload validation with MIME type sniffing (not just extension checking).</li>
+        <li>PDO prepared statements to prevent SQL injection attacks.</li>
+        <li>Rate limiting on login and registration endpoints.</li>
+        <li>IP and user agent session binding to detect session hijacking.</li>
+        <li>Automatic session expiry after 2 hours of inactivity.</li>
+        <li>Comprehensive audit logging of all login attempts and admin actions.</li>
+      </ul>
+    </section>
+
+    <section id="rights">
+      <h2>5. Your Rights (NDPR)</h2>
+      <p>Under the Nigeria Data Protection Regulation (NDPR), you have the following rights regarding your personal data:</p>
+      <ul>
+        <li><strong>Right of Access:</strong> Request a copy of the personal data we hold about you.</li>
+        <li><strong>Right of Rectification:</strong> Request correction of any inaccurate or incomplete data.</li>
+        <li><strong>Right of Erasure:</strong> Request deletion of your personal data, subject to legal retention requirements.</li>
+        <li><strong>Right to Restrict Processing:</strong> Request that we limit how we use your data in certain circumstances.</li>
+        <li><strong>Right to Data Portability:</strong> Request your data in a structured, machine-readable format.</li>
+        <li><strong>Right to Object:</strong> Object to processing of your data in certain circumstances.</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at <a href="mailto:privacy@campuslink.ng">privacy@campuslink.ng</a>. We will respond within 30 days.</p>
+    </section>
+
+    <section id="cookies">
+      <h2>6. Cookies</h2>
+      <p>Campuslink uses only <strong>essential cookies</strong> strictly necessary for platform operation:</p>
+      <ul>
+        <li><strong>Session Cookie:</strong> Maintains your login session. HttpOnly, Secure, SameSite=Strict. Expires when you close your browser (or after 30 days if you choose "Remember Me").</li>
+        <li><strong>CSRF Token:</strong> Protects against cross-site request forgery. Tied to your session.</li>
+      </ul>
+      <p>We do not use advertising cookies, tracking cookies, analytics cookies, or any third-party cookies on our platform. You cannot opt out of essential cookies as they are required for the platform to function.</p>
+    </section>
+
+    <section id="retention">
+      <h2>7. Data Retention</h2>
+      <p>We retain personal data only as long as necessary for the purpose it was collected:</p>
+      <ul>
+        <li><strong>Active Accounts:</strong> Retained for the duration of account activity.</li>
+        <li><strong>Inactive Accounts:</strong> Accounts inactive for 24+ months are subject to deletion after notice.</li>
+        <li><strong>Vendor Documents:</strong> Retained for 12 months after subscription expiry for compliance purposes.</li>
+        <li><strong>Payment Records:</strong> Retained for 7 years for tax and financial compliance.</li>
+        <li><strong>Login Logs:</strong> Retained for 6 months for security audit purposes.</li>
+        <li><strong>Complaint Records:</strong> Retained for 3 years after resolution.</li>
+      </ul>
+    </section>
+
+    <section id="children">
+      <h2>8. Children's Privacy</h2>
+      <p>Campuslink is not intended for use by individuals under 18 years of age. We do not knowingly collect personal data from minors. If you believe a minor has registered on our platform, please contact us immediately at <a href="mailto:privacy@campuslink.ng">privacy@campuslink.ng</a> and we will promptly delete the account.</p>
+    </section>
+
+    <section id="contact">
+      <h2>9. Contact &amp; DPO</h2>
+      <p>For all privacy-related inquiries, data subject requests, or concerns:</p>
+      <div class="legal-contact">
+        <div><i data-lucide="mail"></i><span>privacy@campuslink.ng</span></div>
+        <div><i data-lucide="shield"></i><span>Data Protection Officer, Campuslink Nigeria</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer class="site-footer" style="margin-top:80px"><div class="footer-glass"><div class="container"><div class="footer-bottom"><p>&copy; 2025 Campuslink. All rights reserved.</p></div></div></div></footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

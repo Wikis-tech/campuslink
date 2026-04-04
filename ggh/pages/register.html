@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body class="auth-body">
+
+<div class="auth-layout">
+  <div class="auth-panel">
+    <a href="../index.html" class="logo logo-light auth-logo">
+      <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="7" fill="rgba(255,255,255,0.15)"/>
+        <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+        <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-text">Campus<strong>link</strong></span>
+    </a>
+    <h2 class="auth-panel-title">Connect with trusted campus services.</h2>
+    <p class="auth-panel-sub">Join thousands of students using Campuslink to find verified vendors for every need on campus.</p>
+    <div class="auth-panel-features">
+      <div class="auth-feat"><i data-lucide="shield-check"></i> Verified vendors only</div>
+      <div class="auth-feat"><i data-lucide="star"></i> Moderated reviews</div>
+      <div class="auth-feat"><i data-lucide="bell"></i> Complaint system</div>
+      <div class="auth-feat"><i data-lucide="lock"></i> Secure &amp; private</div>
+    </div>
+  </div>
+
+  <div class="auth-form-wrap">
+    <div class="auth-form-inner">
+      <div class="auth-form-header">
+        <h1>Create your account</h1>
+        <p>Already have an account? <a href="login.html">Sign in</a></p>
+      </div>
+
+      <div class="step-indicators" id="stepIndicators">
+        <div class="step-ind active" data-step="1"><span>1</span> Personal Info</div>
+        <div class="step-ind-line"></div>
+        <div class="step-ind" data-step="2"><span>2</span> Verification</div>
+        <div class="step-ind-line"></div>
+        <div class="step-ind" data-step="3"><span>3</span> Security</div>
+      </div>
+
+      <form id="registerForm" novalidate>
+        <input type="hidden" name="csrf_token" value="CSRF_PLACEHOLDER" />
+
+        <!-- Step 1: Personal Info -->
+        <div class="form-step active" id="step1">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name <span>*</span></label>
+              <input type="text" name="first_name" class="form-control" placeholder="John" required minlength="2" />
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name <span>*</span></label>
+              <input type="text" name="last_name" class="form-control" placeholder="Doe" required minlength="2" />
+              <span class="form-error"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">School Email <span>*</span></label>
+            <input type="email" name="school_email" class="form-control" placeholder="johndoe@university.edu.ng" required />
+            <span class="form-hint">Must be your official university email address.</span>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Personal Email <span>*</span></label>
+            <input type="email" name="personal_email" class="form-control" placeholder="johndoe@gmail.com" required />
+            <span class="form-error"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Department <span>*</span></label>
+              <input type="text" name="department" class="form-control" placeholder="Computer Science" required />
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Level <span>*</span></label>
+              <select name="level" class="form-control" required>
+                <option value="">Select Level</option>
+                <option>100 Level</option>
+                <option>200 Level</option>
+                <option>300 Level</option>
+                <option>400 Level</option>
+                <option>500 Level</option>
+                <option>Postgraduate</option>
+              </select>
+              <span class="form-error"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number <span>*</span></label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">+234</span>
+              <input type="tel" name="phone" class="form-control prefix-input" placeholder="8012345678" required />
+            </div>
+            <span class="form-hint">An OTP will be sent to this number for verification.</span>
+            <span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary w-full" onclick="goStep(2)">
+            Continue <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Step 2: OTP Verification -->
+        <div class="form-step" id="step2">
+          <div class="otp-section">
+            <div class="otp-icon"><i data-lucide="smartphone"></i></div>
+            <h3>Verify your phone</h3>
+            <p>We've sent a 6-digit OTP to your phone number. Enter it below to continue.</p>
+            <div class="otp-inputs" id="otpInputs">
+              <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+              <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+              <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+              <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+              <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+              <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+            </div>
+            <div id="otpError" class="otp-error" style="display:none">Invalid OTP. Please try again.</div>
+            <button type="button" class="btn btn-primary w-full" onclick="verifyOTP()">
+              <i data-lucide="check"></i> Verify OTP
+            </button>
+            <p class="resend-text">Didn't receive code? <button type="button" class="link-btn" onclick="resendOTP()">Resend OTP</button> <span id="resendTimer"></span></p>
+          </div>
+          <button type="button" class="btn btn-outline w-full mt-16" onclick="goStep(1)">
+            <i data-lucide="arrow-left"></i> Back
+          </button>
+        </div>
+
+        <!-- Step 3: Password & Terms -->
+        <div class="form-step" id="step3">
+          <div class="form-group">
+            <label class="form-label">Create Password <span>*</span></label>
+            <div class="password-wrap">
+              <input type="password" name="password" id="password" class="form-control" placeholder="Minimum 8 characters" required minlength="8" />
+              <button type="button" class="pw-toggle" onclick="togglePw('password')"><i data-lucide="eye"></i></button>
+            </div>
+            <div class="pw-strength">
+              <div class="pw-bar"><div class="pw-fill" id="pwFill"></div></div>
+              <span id="pwLabel" class="pw-label"></span>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password <span>*</span></label>
+            <div class="password-wrap">
+              <input type="password" name="confirm_password" id="confirmPw" class="form-control" placeholder="Repeat your password" required />
+              <button type="button" class="pw-toggle" onclick="togglePw('confirmPw')"><i data-lucide="eye"></i></button>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="terms-accept">
+            <label class="checkbox-opt">
+              <input type="checkbox" name="terms" required />
+              <span>I have read and agree to the <a href="terms.html" target="_blank">Terms &amp; Conditions</a>, <a href="privacy.html" target="_blank">Privacy Policy</a>, and confirm I am 18 years or older.</span>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary w-full btn-lg" id="submitBtn">
+            <i data-lucide="user-plus"></i> Create Account
+          </button>
+          <button type="button" class="btn btn-outline w-full mt-16" onclick="goStep(2)">
+            <i data-lucide="arrow-left"></i> Back
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+let currentStep  = 1;
+let otpVerified  = false;
+let resendInterval;
+
+function goStep(step) {
+  if (step > currentStep) {
+    const currentForm = document.getElementById(`step${currentStep}`);
+    const inputs      = currentForm.querySelectorAll('input[required], select[required]');
+    let valid = true;
+    inputs.forEach(inp => { if (!validateField(inp)) valid = false; });
+    if (!valid) return;
+    if (step === 2 && currentStep === 1) startOTPTimer();
+  }
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step${step}`).classList.add('active');
+  document.querySelectorAll('.step-ind').forEach(ind => {
+    const n = parseInt(ind.dataset.step);
+    ind.classList.toggle('active', n === step);
+    ind.classList.toggle('done', n < step);
+  });
+  currentStep = step;
+  lucide.createIcons();
+}
+
+function verifyOTP() {
+  const inputs = document.querySelectorAll('.otp-input');
+  const otp    = Array.from(inputs).map(i => i.value).join('');
+  const errEl  = document.getElementById('otpError');
+  if (otp.length < 6) { errEl.textContent = 'Please enter all 6 digits.'; errEl.style.display = 'block'; return; }
+  if (/^\d{6}$/.test(otp)) {
+    otpVerified = true;
+    errEl.style.display = 'none';
+    goStep(3);
+  } else {
+    errEl.textContent = 'Invalid OTP. Please try again.';
+    errEl.style.display = 'block';
+  }
+}
+
+function startOTPTimer() {
+  let seconds = 60;
+  const el = document.getElementById('resendTimer');
+  clearInterval(resendInterval);
+  resendInterval = setInterval(() => {
+    el.textContent = `(${seconds}s)`;
+    seconds--;
+    if (seconds < 0) { clearInterval(resendInterval); el.textContent = ''; }
+  }, 1000);
+}
+
+function resendOTP() {
+  startOTPTimer();
+  showToast('OTP resent to your phone.', 'success');
+}
+
+function togglePw(id) {
+  const inp = document.getElementById(id);
+  inp.type  = inp.type === 'password' ? 'text' : 'password';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+
+  // OTP auto-advance
+  const otpInputs = document.querySelectorAll('.otp-input');
+  otpInputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => { if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus(); });
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !inp.value && i > 0) otpInputs[i - 1].focus(); });
+  });
+
+  // Password strength meter
+  const pwInput = document.getElementById('password');
+  if (pwInput) {
+    pwInput.addEventListener('input', () => {
+      const val = pwInput.value;
+      let score = 0;
+      if (val.length >= 8)           score++;
+      if (/[A-Z]/.test(val))         score++;
+      if (/[0-9]/.test(val))         score++;
+      if (/[^A-Za-z0-9]/.test(val))  score++;
+      const widths = ['0%','25%','50%','75%','100%'];
+      const labels = ['','Weak','Fair','Good','Strong'];
+      const colors = ['','#ef4444','#f59e0b','#3b82f6','#1ea952'];
+      document.getElementById('pwFill').style.width      = widths[score];
+      document.getElementById('pwFill').style.background = colors[score];
+      document.getElementById('pwLabel').textContent     = labels[score];
+      document.getElementById('pwLabel').style.color     = colors[score];
+    });
+  }
+
+  // Form submission
+  document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!otpVerified) { showToast('Please verify your phone number first.', 'error'); goStep(2); return; }
+    const form = e.target;
+    if (!validateForm(form)) return;
+    const terms = form.querySelector('input[name="terms"]');
+    if (!terms.checked) { showToast('Please accept the Terms & Conditions.', 'error'); return; }
+    const password  = form.querySelector('#password').value;
+    const confirmPw = form.querySelector('#confirmPw').value;
+    if (password !== confirmPw) { showToast('Passwords do not match.', 'error'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled  = true;
+    btn.innerHTML = '<div class="spinner"></div> Creating Account…';
+
+    try {
+      const res  = await fetch('../api/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCSRF() },
+        body: JSON.stringify({
+          first_name:     form.first_name.value.trim(),
+          last_name:      form.last_name.value.trim(),
+          school_email:   form.school_email.value.trim(),
+          personal_email: form.personal_email.value.trim(),
+          phone:          form.phone.value.trim(),
+          department:     form.department.value.trim(),
+          level:          form.level.value,
+          password:       password,
+          terms_accepted: true,
+          otp_verified:   true,
+          csrf_token:     getCSRF(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Account created! Please check your email to verify.', 'success');
+        setTimeout(() => window.location.href = 'login.html', 2500);
+      } else {
+        showToast(data.error || 'Registration failed. Please try again.', 'error');
+        btn.disabled  = false;
+        btn.innerHTML = '<i data-lucide="user-plus"></i> Create Account';
+        lucide.createIcons({ nodes: [btn] });
+      }
+    } catch {
+      showToast('Network error. Please try again.', 'error');
+      btn.disabled  = false;
+      btn.innerHTML = '<i data-lucide="user-plus"></i> Create Account';
+      lucide.createIcons({ nodes: [btn] });
+    }
+  });
+});
+</script>
+</body>
+</html>

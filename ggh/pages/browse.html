@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Vendors — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/browse.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body>
+
+<header class="site-header scrolled" id="siteHeader">
+  <div class="header-inner container">
+    <a href="../index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#0b3d91"/>
+          <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+          <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text" style="color:var(--primary)">Campus<strong>link</strong></span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="browse.html" class="nav-link active">Browse Services</a>
+      <a href="categories.html" class="nav-link">Categories</a>
+      <a href="how-it-works.html" class="nav-link">How It Works</a>
+      <a href="vendor-register.html" class="nav-link nav-cta-outline">Register as Vendor</a>
+      <a href="login.html" class="nav-link nav-cta">Login</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a>
+      <i data-lucide="chevron-right"></i>
+      <span>Browse Vendors</span>
+    </div>
+    <h1>Browse Campus Vendors</h1>
+    <p>Find and connect with verified service providers on your campus.</p>
+  </div>
+</section>
+
+<section class="browse-layout container">
+  <aside class="browse-sidebar" id="filterSidebar">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="btn btn-sm btn-outline" onclick="clearFilters()">Clear All</button>
+    </div>
+
+    <div class="filter-group">
+      <h4>Category</h4>
+      <div class="filter-options" id="catFilters">
+        <label class="filter-opt"><input type="radio" name="cat" value="" checked /> All Categories</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="beauty" /> Beauty & Grooming</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="tech" /> Tech & Gadgets</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="academic" /> Academic Support</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="food" /> Food & Catering</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="fashion" /> Fashion & Tailoring</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="printing" /> Printing</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="repairs" /> Repairs</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="photography" /> Photography</label>
+        <label class="filter-opt"><input type="radio" name="cat" value="tutoring" /> Tutoring</label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h4>Vendor Type</h4>
+      <label class="filter-opt"><input type="checkbox" name="type" value="student" /> Student Vendor</label>
+      <label class="filter-opt"><input type="checkbox" name="type" value="community" /> Community Vendor</label>
+    </div>
+
+    <div class="filter-group">
+      <h4>Plan</h4>
+      <label class="filter-opt"><input type="checkbox" name="plan" value="featured" /> <span class="badge badge-featured">Featured</span></label>
+      <label class="filter-opt"><input type="checkbox" name="plan" value="premium" /> Premium</label>
+      <label class="filter-opt"><input type="checkbox" name="plan" value="basic" /> Basic</label>
+    </div>
+
+    <div class="filter-group">
+      <h4>Minimum Rating</h4>
+      <div class="rating-filter" id="ratingFilter">
+        <button class="rating-btn active" data-rating="0">Any</button>
+        <button class="rating-btn" data-rating="4">4★+</button>
+        <button class="rating-btn" data-rating="4.5">4.5★+</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="browse-main">
+    <div class="browse-toolbar">
+      <div class="browse-search">
+        <i data-lucide="search"></i>
+        <input type="text" id="browseSearch" placeholder="Search vendors or services…" />
+      </div>
+      <div class="browse-sort">
+        <label>Sort by:</label>
+        <select id="sortSelect">
+          <option value="featured">Featured First</option>
+          <option value="rating">Highest Rated</option>
+          <option value="reviews">Most Reviewed</option>
+          <option value="newest">Newest</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <button class="btn btn-sm btn-outline filter-toggle-btn" id="filterToggleBtn">
+        <i data-lucide="sliders-horizontal"></i> Filters
+      </button>
+    </div>
+
+    <div class="browse-results-meta" id="resultsMeta">
+      Showing <strong id="resultsCount">0</strong> vendors
+    </div>
+
+    <div class="vendors-grid" id="browseVendorsGrid"></div>
+
+    <div class="empty-state" id="emptyState" style="display:none">
+      <i data-lucide="search-x"></i>
+      <h3>No vendors found</h3>
+      <p>Try adjusting your search or filters to find what you're looking for.</p>
+      <button class="btn btn-primary" onclick="clearFilters()">Clear Filters</button>
+    </div>
+
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+      <button class="btn btn-outline" id="loadMoreBtn" onclick="loadMore()">
+        <i data-lucide="loader-2"></i> Load More Vendors
+      </button>
+    </div>
+  </main>
+</section>
+
+<footer class="site-footer" style="margin-top:80px">
+  <div class="footer-glass">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 Campuslink. All rights reserved. Campuslink is a directory service and does not provide, endorse, or guarantee any vendor services.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+const ALL_VENDORS = [
+  { id:1,  name:'Glam Studio NG',      category:'beauty',      catLabel:'Beauty & Grooming',      rating:4.9, reviews:84,  desc:'Professional hairstyling, braiding, and makeup services. Campus pickup available.',                             location:'Block C, Female Hostel',      price:'₦2,000 – ₦15,000',  phone:'+2348012345678', whatsapp:'+2348012345678', verified:true,  featured:true,  plan:'featured', type:'student',   img:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&auto=format&fit=crop&q=60' },
+  { id:2,  name:'TechFix Campus',      category:'tech',        catLabel:'Tech & Gadgets',          rating:4.7, reviews:56,  desc:'Laptop, phone, and device repairs. Fast turnaround. Student-run, always on campus.',                           location:'Engineering Block, Room 12',  price:'₦1,500 – ₦25,000',  phone:'+2348023456789', whatsapp:'+2348023456789', verified:true,  featured:false, plan:'premium',  type:'student',   img:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=100&auto=format&fit=crop&q=60' },
+  { id:3,  name:"Scholar's Hub",       category:'academic',    catLabel:'Academic Support',        rating:4.8, reviews:102, desc:'Assignment help, past questions, research writing, and thesis editing services.',                             location:'Library Annex, Table 4',      price:'₦500 – ₦10,000',    phone:'+2348034567890', whatsapp:'+2348034567890', verified:true,  featured:true,  plan:'featured', type:'student',   img:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=60' },
+  { id:4,  name:'Flavours Kitchen',    category:'food',        catLabel:'Food & Catering',         rating:4.6, reviews:73,  desc:'Home-cooked Nigerian meals delivered to your hostel. Order by 12PM for dinner.',                              location:'Catering Block',              price:'₦800 – ₦3,500',     phone:'+2348045678901', whatsapp:'+2348045678901', verified:true,  featured:false, plan:'premium',  type:'community', img:'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=100&auto=format&fit=crop&q=60' },
+  { id:5,  name:'StitchCraft Tailors', category:'fashion',     catLabel:'Fashion & Tailoring',     rating:4.5, reviews:38,  desc:'Custom-fit clothing, repairs, and alterations. Native wear specialists on campus.',                           location:'Main Gate Plaza',             price:'₦3,000 – ₦20,000',  phone:'+2348056789012', whatsapp:'+2348056789012', verified:true,  featured:false, plan:'basic',    type:'community', img:'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=100&auto=format&fit=crop&q=60' },
+  { id:6,  name:'PrintZone Campus',    category:'printing',    catLabel:'Printing & Stationery',   rating:4.7, reviews:91,  desc:'Fast printing, binding, lamination, and ID card printing. Open 7am–9pm daily.',                              location:'Student Union Building',      price:'₦20 – ₦5,000',      phone:'+2348067890123', whatsapp:'+2348067890123', verified:true,  featured:true,  plan:'featured', type:'community', img:'https://images.unsplash.com/photo-1562564055-71e051d33c19?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=100&auto=format&fit=crop&q=60' },
+  { id:7,  name:'LensArt Photos',      category:'photography', catLabel:'Photography',             rating:4.6, reviews:29,  desc:'Passport photos, graduation shoots, event coverage, and portrait sessions on campus.',                        location:'Commerce Faculty Area',       price:'₦1,000 – ₦30,000',  phone:'+2348078901234', whatsapp:'+2348078901234', verified:true,  featured:false, plan:'premium',  type:'student',   img:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=100&auto=format&fit=crop&q=60' },
+  { id:8,  name:'MathTutor Pro',       category:'tutoring',    catLabel:'Tutoring',                rating:5.0, reviews:44,  desc:'Expert mathematics and science tutoring for 100L–400L students. Group sessions available.',                   location:'Science Block',               price:'₦1,500 – ₦5,000/hr', phone:'+2348089012345', whatsapp:'+2348089012345', verified:true,  featured:false, plan:'basic',    type:'student',   img:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1494790108755-2616b612b1db?w=100&auto=format&fit=crop&q=60' },
+  { id:9,  name:'QuickFix Repairs',    category:'repairs',     catLabel:'Repairs & Maintenance',   rating:4.4, reviews:21,  desc:'Generator, fan, iron, and small appliance repairs. Fast, affordable, campus-based service.',                  location:'Boys Hostel Block A',         price:'₦500 – ₦8,000',     phone:'+2348090123456', whatsapp:'+2348090123456', verified:true,  featured:false, plan:'basic',    type:'student',   img:'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=100&auto=format&fit=crop&q=60' },
+  { id:10, name:'FreshLaundry Hub',    category:'laundry',     catLabel:'Laundry Services',        rating:4.3, reviews:17,  desc:'Wash, dry, and fold laundry services. Pickup and delivery to your hostel room available.',                    location:'Female Hostel Block D',       price:'₦300 – ₦2,000/kg',  phone:'+2348001234567', whatsapp:'+2348001234567', verified:true,  featured:false, plan:'basic',    type:'student',   img:'https://images.unsplash.com/photo-1545173168-9f1947eebb7f?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1545173168-9f1947eebb7f?w=100&auto=format&fit=crop&q=60' },
+  { id:11, name:'CampusStyle Fashion', category:'fashion',     catLabel:'Fashion & Tailoring',     rating:4.8, reviews:33,  desc:'Ready-to-wear and custom outfits. Ankara, suits, gowns, and corporate wear. Student-friendly pricing.',       location:'Commerce Block, Shop 3',      price:'₦5,000 – ₦35,000',  phone:'+2348002345678', whatsapp:'+2348002345678', verified:true,  featured:false, plan:'premium',  type:'community', img:'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=100&auto=format&fit=crop&q=60' },
+  { id:12, name:'Byte Academy',        category:'academic',    catLabel:'Academic Support',        rating:4.9, reviews:58,  desc:'Coding bootcamps, web development classes, and programming assignment help. Beginner to advanced.',            location:'ICT Building, Lab 2',         price:'₦2,000 – ₦15,000',  phone:'+2348003456789', whatsapp:'+2348003456789', verified:true,  featured:true,  plan:'featured', type:'student',   img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&auto=format&fit=crop&q=60',  logo:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=100&auto=format&fit=crop&q=60' },
+];
+
+let visibleCount    = 6;
+let currentFiltered = [...ALL_VENDORS];
+
+document.addEventListener('DOMContentLoaded', () => {
+  readURLParams();
+  applyFilters();
+  initBrowseFilters();
+  lucide.createIcons();
+});
+
+function readURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  const cat    = params.get('cat');
+  const q      = params.get('q');
+  if (cat) {
+    const radio = document.querySelector(`input[name="cat"][value="${cat}"]`);
+    if (radio) radio.checked = true;
+  }
+  if (q) {
+    const input = document.getElementById('browseSearch');
+    if (input) input.value = q;
+  }
+}
+
+function initBrowseFilters() {
+  document.querySelectorAll('input[name="cat"], input[name="type"], input[name="plan"]').forEach(el => {
+    el.addEventListener('change', applyFilters);
+  });
+  document.getElementById('browseSearch')?.addEventListener('input', debounce(applyFilters, 300));
+  document.getElementById('sortSelect')?.addEventListener('change', applyFilters);
+  document.querySelectorAll('.rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+  document.getElementById('filterToggleBtn')?.addEventListener('click', () => {
+    document.getElementById('filterSidebar')?.classList.toggle('open');
+  });
+}
+
+function applyFilters() {
+  const cat       = document.querySelector('input[name="cat"]:checked')?.value || '';
+  const types     = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(e => e.value);
+  const plans     = Array.from(document.querySelectorAll('input[name="plan"]:checked')).map(e => e.value);
+  const minRating = parseFloat(document.querySelector('.rating-btn.active')?.dataset.rating || 0);
+  const query     = document.getElementById('browseSearch')?.value?.toLowerCase().trim() || '';
+  const sort      = document.getElementById('sortSelect')?.value || 'featured';
+
+  currentFiltered = ALL_VENDORS.filter(v => {
+    if (cat && v.category !== cat) return false;
+    if (types.length && !types.includes(v.type)) return false;
+    if (plans.length && !plans.includes(v.plan)) return false;
+    if (v.rating < minRating) return false;
+    if (query && !v.name.toLowerCase().includes(query) && !v.desc.toLowerCase().includes(query) && !v.catLabel.toLowerCase().includes(query)) return false;
+    return true;
+  });
+
+  currentFiltered.sort((a, b) => {
+    if (sort === 'featured') return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+    if (sort === 'rating')   return b.rating - a.rating;
+    if (sort === 'reviews')  return b.reviews - a.reviews;
+    if (sort === 'name')     return a.name.localeCompare(b.name);
+    return 0;
+  });
+
+  visibleCount = 6;
+  renderVendors();
+}
+
+function renderVendors() {
+  const grid         = document.getElementById('browseVendorsGrid');
+  const empty        = document.getElementById('emptyState');
+  const meta         = document.getElementById('resultsCount');
+  const loadMoreWrap = document.getElementById('loadMoreWrap');
+  if (!grid) return;
+
+  const visible = currentFiltered.slice(0, visibleCount);
+
+  if (!currentFiltered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'flex';
+    loadMoreWrap.style.display = 'none';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = visible.map(v => renderVendorCard(v)).join('');
+    loadMoreWrap.style.display = currentFiltered.length > visibleCount ? 'flex' : 'none';
+  }
+
+  if (meta) meta.textContent = currentFiltered.length;
+  lucide.createIcons();
+  initRevealAnimations();
+}
+
+function renderVendorCard(v) {
+  const stars = '★'.repeat(Math.floor(v.rating));
+  return `
+    <div class="vendor-card reveal">
+      <div class="vendor-card-img">
+        <img src="${v.img}" alt="${v.name}" loading="lazy" />
+        ${v.verified ? `<div class="vendor-badge"><i data-lucide="shield-check"></i> Verified</div>` : ''}
+        ${v.featured ? `<div class="plan-badge-featured">Featured</div>` : ''}
+        <div class="vendor-logo"><img src="${v.logo}" alt="${v.name} logo" loading="lazy" /></div>
+      </div>
+      <div class="vendor-card-body">
+        <div class="vendor-card-header">
+          <div>
+            <div class="vendor-name">${v.name}</div>
+            <span class="vendor-cat">${v.catLabel}</span>
+          </div>
+          <div class="vendor-rating">
+            <span class="stars">${stars}</span>
+            <span class="rating-val">${v.rating}</span>
+          </div>
+        </div>
+        <p class="vendor-desc">${v.desc}</p>
+        <div class="vendor-meta">
+          <div class="vendor-meta-item"><i data-lucide="map-pin"></i> ${v.location}</div>
+          <div class="vendor-meta-item"><i data-lucide="tag"></i> ${v.price}</div>
+          <div class="vendor-meta-item"><i data-lucide="message-square"></i> ${v.reviews} reviews</div>
+        </div>
+        <div class="vendor-actions">
+          <a href="tel:${v.phone}" class="btn btn-sm btn-call"><i data-lucide="phone"></i> Call</a>
+          <a href="https://wa.me/${v.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener" class="btn btn-sm btn-whatsapp"><i data-lucide="message-circle"></i> WhatsApp</a>
+          <a href="vendor-profile.html?id=${v.id}" class="btn btn-sm btn-outline">Profile</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function loadMore() {
+  visibleCount += 6;
+  renderVendors();
+}
+
+function clearFilters() {
+  document.querySelectorAll('input[name="cat"]')[0].checked = true;
+  document.querySelectorAll('input[name="type"]').forEach(e => e.checked = false);
+  document.querySelectorAll('input[name="plan"]').forEach(e => e.checked = false);
+  document.querySelectorAll('.rating-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  const search = document.getElementById('browseSearch');
+  if (search) search.value = '';
+  applyFilters();
+}
+
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+}
+
+window.loadMore     = loadMore;
+window.clearFilters = clearFilters;
+</script>
+</body>
+</html>

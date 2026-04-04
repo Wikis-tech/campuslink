@@ -1,0 +1,27 @@
+# XAMPP and local development
+*.log
+logs/
+cache/
+uploads/
+vendor_libs/
+*.tmp
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node modules (if any)
+node_modules/
+
+# Database
+*.sql
+schema.sql
+
+# Config files with secrets
+config.php
+includes/config.php

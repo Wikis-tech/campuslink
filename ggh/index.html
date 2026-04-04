@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Campuslink — Find trusted campus services instantly. Connect with verified vendors within your university community." />
+  <meta name="theme-color" content="#0b3d91" />
+  <title>Campuslink — Campus Service Directory</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="header-inner container">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#0b3d91"/>
+          <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+          <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">Campus<strong>link</strong></span>
+    </a>
+
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="pages/browse.html" class="nav-link">Browse Services</a>
+      <div class="nav-dropdown">
+        <a href="pages/categories.html" class="nav-link dropdown-trigger">
+          Categories <i data-lucide="chevron-down" class="nav-icon"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="pages/browse.html?cat=beauty">Beauty & Grooming</a>
+          <a href="pages/browse.html?cat=tech">Tech & Gadgets</a>
+          <a href="pages/browse.html?cat=academic">Academic Support</a>
+          <a href="pages/browse.html?cat=food">Food & Catering</a>
+          <a href="pages/browse.html?cat=fashion">Fashion & Tailoring</a>
+          <a href="pages/browse.html?cat=printing">Printing & Stationery</a>
+          <a href="pages/browse.html?cat=repairs">Repairs & Maintenance</a>
+          <a href="pages/browse.html?cat=photography">Photography</a>
+        </div>
+      </div>
+      <a href="pages/how-it-works.html" class="nav-link">How It Works</a>
+      <a href="pages/vendor-register.html" class="nav-link nav-cta-outline">Register as Vendor</a>
+      <a href="pages/login.html" class="nav-link nav-cta">Login</a>
+    </nav>
+
+    <div class="header-school-logo">
+      <img src="assets/images/school-logo-placeholder.webp" alt="University Logo" width="38" height="38" onerror="this.style.display='none'" />
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <i data-lucide="menu"></i>
+    </button>
+  </div>
+</header>
+
+<section class="hero" id="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  <div class="container hero-content">
+    <div class="hero-badge animate-fade-up">
+      <i data-lucide="shield-check"></i>
+      <span>Verified Campus Vendors Only</span>
+    </div>
+    <h1 class="hero-headline animate-slide-up">
+      Find trusted campus<br/>services <em>instantly.</em>
+    </h1>
+    <p class="hero-sub animate-fade-up delay-2">
+      Campuslink connects students and campus community members with verified, reviewed service providers within your university — safely, transparently, and at no cost to browse.
+    </p>
+
+    <div class="hero-search animate-fade-up delay-3">
+      <div class="search-wrap">
+        <div class="search-category">
+          <i data-lucide="layout-grid"></i>
+          <select id="searchCat" aria-label="Select category">
+            <option value="">All Categories</option>
+            <option value="beauty">Beauty & Grooming</option>
+            <option value="tech">Tech & Gadgets</option>
+            <option value="academic">Academic Support</option>
+            <option value="food">Food & Catering</option>
+            <option value="fashion">Fashion & Tailoring</option>
+            <option value="printing">Printing</option>
+            <option value="repairs">Repairs</option>
+            <option value="photography">Photography</option>
+            <option value="tutoring">Tutoring</option>
+          </select>
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-input-wrap">
+          <i data-lucide="search"></i>
+          <input type="text" id="searchInput" placeholder="Search vendors or services…" aria-label="Search vendors" />
+        </div>
+        <button class="search-btn" onclick="doSearch()">
+          <i data-lucide="search"></i>
+          <span>Search</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-actions animate-fade-up delay-4">
+      <a href="pages/browse.html" class="btn btn-white">
+        <i data-lucide="compass"></i> Browse Services
+      </a>
+      <a href="pages/vendor-register.html" class="btn btn-outline-white">
+        <i data-lucide="store"></i> Register as Vendor
+      </a>
+    </div>
+
+    <div class="hero-trust animate-fade-up delay-5">
+      <div class="trust-pill"><i data-lucide="check-circle"></i> Admin Verified</div>
+      <div class="trust-pill"><i data-lucide="lock"></i> Secure Payments</div>
+      <div class="trust-pill"><i data-lucide="star"></i> Moderated Reviews</div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<section class="stats-strip">
+  <div class="container stats-grid">
+    <div class="stat-item" data-count="340" data-suffix="+">
+      <i data-lucide="store"></i>
+      <div class="stat-val" id="stat-vendors">0</div>
+      <div class="stat-label">Verified Vendors</div>
+    </div>
+    <div class="stat-item" data-count="5200" data-suffix="+">
+      <i data-lucide="users"></i>
+      <div class="stat-val" id="stat-users">0</div>
+      <div class="stat-label">Registered Users</div>
+    </div>
+    <div class="stat-item" data-count="12" data-suffix="">
+      <i data-lucide="layout-grid"></i>
+      <div class="stat-val" id="stat-cats">0</div>
+      <div class="stat-label">Service Categories</div>
+    </div>
+    <div class="stat-item" data-count="4.8" data-suffix=" ★" data-decimal="true">
+      <i data-lucide="star"></i>
+      <div class="stat-val" id="stat-rating">0</div>
+      <div class="stat-label">Average Rating</div>
+    </div>
+  </div>
+</section>
+
+<section class="section categories-section" id="categories">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">Explore</p>
+      <h2 class="section-title">Browse by Category</h2>
+      <p class="section-desc">Discover service providers across every need on campus.</p>
+    </div>
+    <div class="categories-grid" id="categoriesGrid"></div>
+  </div>
+</section>
+
+<section class="section vendors-section" id="featured">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">Handpicked</p>
+      <h2 class="section-title">Featured Vendors</h2>
+      <p class="section-desc">Top-rated, verified service providers trusted by your peers.</p>
+    </div>
+    <div class="vendors-grid" id="vendorsGrid"></div>
+    <div class="section-cta">
+      <a href="pages/browse.html" class="btn btn-primary">
+        <i data-lucide="compass"></i> View All Vendors
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section how-section" id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">Simple Process</p>
+      <h2 class="section-title">How Campuslink Works</h2>
+      <p class="section-desc">A seamless flow from discovery to service — entirely your way.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step-card reveal">
+        <div class="step-number">01</div>
+        <div class="step-icon"><i data-lucide="search"></i></div>
+        <h3>Browse Vendors</h3>
+        <p>Search by name, category, or price range to find the right campus service provider for your need.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">02</div>
+        <div class="step-icon"><i data-lucide="phone-call"></i></div>
+        <h3>Contact Directly</h3>
+        <p>Reach vendors instantly via phone call or WhatsApp. All communication happens externally.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">03</div>
+        <div class="step-icon"><i data-lucide="handshake"></i></div>
+        <h3>Complete Offline</h3>
+        <p>Negotiate and complete your transaction directly with the vendor outside the platform.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">04</div>
+        <div class="step-icon"><i data-lucide="star"></i></div>
+        <h3>Leave a Review</h3>
+        <p>Share your experience to help fellow students make informed decisions about vendors.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">05</div>
+        <div class="step-icon"><i data-lucide="flag"></i></div>
+        <h3>Report Issues</h3>
+        <p>Encountered a problem? Submit a complaint with evidence and our admin team investigates.</p>
+      </div>
+    </div>
+    <div class="disclaimer-box">
+      <i data-lucide="info"></i>
+      <p><strong>Important:</strong> Campuslink operates solely as a digital directory. We do not provide services, participate in transactions, or facilitate internal messaging. All business interactions occur directly between users and vendors.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section trust-section" id="trust">
+  <div class="container">
+    <div class="trust-layout">
+      <div class="trust-text reveal">
+        <p class="section-eyebrow">Your Safety First</p>
+        <h2 class="section-title">Built on Trust &amp; Transparency</h2>
+        <p class="section-desc">Every vendor on Campuslink goes through a rigorous verification process before being listed.</p>
+        <div class="trust-features">
+          <div class="trust-feat">
+            <div class="feat-icon"><i data-lucide="shield-check"></i></div>
+            <div>
+              <h4>Admin Verification</h4>
+              <p>Every vendor is reviewed and approved by our admin team before activation.</p>
+            </div>
+          </div>
+          <div class="trust-feat">
+            <div class="feat-icon"><i data-lucide="lock"></i></div>
+            <div>
+              <h4>Secured Subscriptions</h4>
+              <p>All vendor subscription payments are processed via Paystack with strict server-side verification.</p>
+            </div>
+          </div>
+          <div class="trust-feat">
+            <div class="feat-icon"><i data-lucide="message-square-warning"></i></div>
+            <div>
+              <h4>Moderated Reviews</h4>
+              <p>All reviews are screened by admins before publication.</p>
+            </div>
+          </div>
+          <div class="trust-feat">
+            <div class="feat-icon"><i data-lucide="gavel"></i></div>
+            <div>
+              <h4>Complaint Resolution</h4>
+              <p>Three verified complaints trigger a suspension review. We investigate every reported issue.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-visual reveal delay-2">
+        <div class="trust-card-stack">
+          <div class="tcard tcard-main">
+            <div class="tcard-icon"><i data-lucide="shield-check"></i></div>
+            <div class="tcard-content">
+              <strong>Vendor Verified</strong>
+              <span>ID, student card &amp; business documents confirmed</span>
+            </div>
+          </div>
+          <div class="tcard tcard-review">
+            <div class="tcard-stars">★★★★★</div>
+            <p>"Excellent service! Very professional and affordable."</p>
+            <span class="tcard-user">— Verified Student Review</span>
+          </div>
+          <div class="tcard tcard-badge">
+            <i data-lucide="award"></i>
+            <strong>Featured</strong>
+            <span>Premium Plan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section vendor-cta-section" id="vendor-cta">
+  <div class="container">
+    <div class="vendor-cta-card reveal">
+      <div class="vcta-bg-shape"></div>
+      <div class="vcta-content">
+        <p class="section-eyebrow light">For Service Providers</p>
+        <h2>Grow Your Business on Campus</h2>
+        <p>Join hundreds of verified vendors reaching thousands of students every semester.</p>
+        <div class="vcta-plans">
+          <div class="plan-pill">
+            <strong>Basic</strong>
+            <span>₦2,000/semester</span>
+          </div>
+          <div class="plan-pill plan-popular">
+            <strong>Premium</strong>
+            <span>₦5,000/semester</span>
+            <div class="plan-badge">Popular</div>
+          </div>
+          <div class="plan-pill">
+            <strong>Featured</strong>
+            <span>₦10,000/semester</span>
+          </div>
+        </div>
+        <div class="vcta-actions">
+          <a href="pages/vendor-register.html" class="btn btn-white">
+            <i data-lucide="store"></i> Register as Vendor
+          </a>
+          <a href="pages/pricing.html" class="btn btn-outline-white">
+            <i data-lucide="tag"></i> View All Plans
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-glass">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo logo-light">
+            <div class="logo-mark">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect width="28" height="28" rx="7" fill="rgba(255,255,255,0.15)"/>
+                <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+                <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="logo-text">Campus<strong>link</strong></span>
+          </a>
+          <p class="footer-tagline">Connecting students with trusted campus service providers — safely, transparently, for free.</p>
+          <div class="footer-socials">
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+            <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="pages/browse.html">Browse Vendors</a>
+          <a href="pages/categories.html">Categories</a>
+          <a href="pages/how-it-works.html">How It Works</a>
+          <a href="pages/pricing.html">Vendor Plans</a>
+          <a href="pages/vendor-register.html">Register as Vendor</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="pages/register.html">Create Account</a>
+          <a href="pages/login.html">Login</a>
+          <a href="user/dashboard.html">User Dashboard</a>
+          <a href="vendor/dashboard.html">Vendor Dashboard</a>
+          <a href="pages/complaint.html">Submit Complaint</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="pages/terms.html">Terms &amp; Conditions</a>
+          <a href="pages/privacy.html">Privacy Policy</a>
+          <a href="pages/refund.html">Refund Policy</a>
+          <a href="pages/suspension.html">Suspension Policy</a>
+          <a href="pages/complaint-resolution.html">Complaint Resolution</a>
+          <a href="pages/data-retention.html">Data Retention</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="pages/about.html">About Campuslink</a>
+          <a href="pages/contact.html">Contact Us</a>
+          <a href="pages/faq.html">FAQ</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Campuslink. All rights reserved. Campuslink is a directory service and does not provide, endorse, or guarantee any vendor services.</p>
+        <p class="footer-disclaimer">Campuslink operates under Nigerian law. All disputes subject to local jurisdiction.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendor Dashboard — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body class="dash-body">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="dash-sidebar" id="dashSidebar">
+  <div class="dash-sidebar-header">
+    <a href="../index.html" class="logo">
+      <div class="logo-mark"><svg width="24" height="24" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#0b3d91"/><path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="17" r="2.5" fill="#1ea952"/><path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <span class="logo-text" style="font-size:1rem;color:var(--primary)">Campus<strong>link</strong></span>
+    </a>
+  </div>
+  <div class="dash-vendor-mini">
+    <div class="dash-avatar" style="background:linear-gradient(135deg,#0b3d91,#1e5bb8)">GS</div>
+    <div>
+      <div class="dash-vname">Glam Studio NG</div>
+      <div class="dash-vplan"><span class="badge badge-featured" style="font-size:0.68rem"><i data-lucide="award"></i> Featured</span></div>
+    </div>
+  </div>
+  <nav class="dash-nav">
+    <a href="#" class="dash-nav-link active" data-tab="overview">      <i data-lucide="layout-dashboard"></i> Overview</a>
+    <a href="#" class="dash-nav-link"        data-tab="profile">       <i data-lucide="user"></i>              Edit Profile</a>
+    <a href="#" class="dash-nav-link"        data-tab="reviews">       <i data-lucide="star"></i>              Reviews <span id="reviewCount" class="notif-count" style="display:none"></span></a>
+    <a href="#" class="dash-nav-link"        data-tab="complaints">    <i data-lucide="flag"></i>              Complaints</a>
+    <a href="#" class="dash-nav-link"        data-tab="subscription">  <i data-lucide="credit-card"></i>       Subscription</a>
+    <a href="#" class="dash-nav-link"        data-tab="notifications"> <i data-lucide="bell"></i>              Notifications <span class="notif-count">3</span></a>
+    <div class="dash-nav-divider"></div>
+    <a href="../pages/vendor-profile.html" class="dash-nav-link" target="_blank"><i data-lucide="eye"></i> View My Listing</a>
+    <a href="../pages/login.html" class="dash-nav-link text-danger"><i data-lucide="log-out"></i> Logout</a>
+  </nav>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="dash-main">
+  <header class="dash-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+    <div class="dash-topbar-title" id="topbarTitle">Overview</div>
+    <div class="dash-topbar-actions">
+      <button class="icon-btn" title="Notifications" onclick="switchTab('notifications')">
+        <i data-lucide="bell"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <div class="dash-user-pill">
+        <div class="dash-avatar sm" style="background:linear-gradient(135deg,#0b3d91,#1e5bb8)">GS</div>
+        <span>Glam Studio</span>
+        <i data-lucide="chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-content">
+
+    <!-- ===== OVERVIEW TAB ===== -->
+    <div class="tab-panel active" id="tab-overview">
+      <div class="alert alert-warning">
+        <i data-lucide="clock"></i>
+        <div>
+          <strong>Subscription expires in 14 days</strong>
+          <p>Your Featured plan expires on April 11, 2025. Renew before then to avoid the 2-day grace period and listing deactivation.</p>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="switchTab('subscription')">Renew Now</button>
+      </div>
+
+      <div class="dash-stats">
+        <div class="dash-stat-card">
+          <div class="stat-icon" style="background:rgba(11,61,145,0.1)"><i data-lucide="eye" style="color:var(--primary)"></i></div>
+          <div class="stat-body"><div class="stat-num">1,284</div><div class="stat-lbl">Profile Views</div></div>
+          <div class="stat-trend up"><i data-lucide="trending-up"></i> +12%</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="stat-icon" style="background:rgba(37,211,102,0.1)"><i data-lucide="phone-call" style="color:var(--whatsapp)"></i></div>
+          <div class="stat-body"><div class="stat-num">87</div><div class="stat-lbl">Contact Taps</div></div>
+          <div class="stat-trend up"><i data-lucide="trending-up"></i> +8%</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="stat-icon" style="background:rgba(245,158,11,0.1)"><i data-lucide="star" style="color:var(--amber)"></i></div>
+          <div class="stat-body"><div class="stat-num">4.9</div><div class="stat-lbl">Average Rating</div></div>
+          <div class="stat-trend up"><i data-lucide="award"></i> Excellent</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="stat-icon" style="background:rgba(30,169,82,0.1)"><i data-lucide="message-square" style="color:var(--accent)"></i></div>
+          <div class="stat-body"><div class="stat-num">84</div><div class="stat-lbl">Total Reviews</div></div>
+          <div class="stat-trend neutral"><i data-lucide="minus"></i> Stable</div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <h3>Recent Activity</h3>
+          <button class="btn btn-sm btn-outline" onclick="switchTab('reviews')">View All Reviews</button>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="act-icon reviews"><i data-lucide="star"></i></div>
+            <div class="act-body">
+              <strong>New review from Amaka Johnson</strong>
+              <p>"Really great service, came to deliver on time. The braiding was excellent and very affordable!"</p>
+              <span class="act-time"><i data-lucide="clock"></i> 2 hours ago · ★★★★★</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon views"><i data-lucide="eye"></i></div>
+            <div class="act-body">
+              <strong>12 new profile views today</strong>
+              <p>Your listing appeared in search results for "beauty campus" and "hair braiding"</p>
+              <span class="act-time"><i data-lucide="clock"></i> Today</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon notify"><i data-lucide="bell"></i></div>
+            <div class="act-body">
+              <strong>Subscription renewal reminder</strong>
+              <p>Your Featured plan expires in 14 days. Renew early to avoid service interruption.</p>
+              <span class="act-time"><i data-lucide="clock"></i> Yesterday</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon reviews"><i data-lucide="star"></i></div>
+            <div class="act-body">
+              <strong>New review from Fatima Kwari</strong>
+              <p>"Best makeup artist on campus! Did my graduation shoot face and it was absolutely flawless."</p>
+              <span class="act-time"><i data-lucide="clock"></i> 3 days ago · ★★★★★</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SUBSCRIPTION TAB ===== -->
+    <div class="tab-panel" id="tab-subscription">
+      <h2 class="dash-page-title">Subscription Management</h2>
+      <div class="sub-status-card">
+        <div class="sub-plan-info">
+          <div class="sub-plan-badge"><i data-lucide="award"></i> Featured Plan</div>
+          <div class="sub-details">
+            <div class="sub-detail"><span>Status</span><strong class="text-accent"><i data-lucide="check-circle"></i> Active</strong></div>
+            <div class="sub-detail"><span>Start Date</span><strong>March 1, 2025</strong></div>
+            <div class="sub-detail"><span>Expiry Date</span><strong>April 11, 2025</strong></div>
+            <div class="sub-detail"><span>Days Remaining</span><strong class="text-amber">14 days</strong></div>
+          </div>
+        </div>
+        <div class="sub-progress">
+          <div class="sub-prog-label"><span>Subscription Period Used</span><span>86%</span></div>
+          <div class="sub-prog-bar"><div class="sub-prog-fill" style="width:86%;background:var(--amber)"></div></div>
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        <i data-lucide="alert-triangle"></i>
+        <div>
+          <strong>Renew before April 11, 2025</strong>
+          <p>After expiry, you have a 2-day grace period (until April 13). After that, your listing will be automatically deactivated until renewed.</p>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-header"><h3>Renew or Change Plan</h3></div>
+        <div class="sub-plan-options">
+          <div class="sub-plan-opt current">
+            <div class="spo-tag">Current Plan</div>
+            <div class="spo-name">Featured</div>
+            <div class="spo-price">₦10,000 <small>/semester</small></div>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:16px">Includes homepage showcase, featured badge, top search position, and priority support.</p>
+            <button class="btn btn-primary w-full" onclick="renewPlan('featured_student')"><i data-lucide="refresh-cw"></i> Renew Featured Plan</button>
+          </div>
+          <div class="sub-plan-opt">
+            <div class="spo-name">Premium</div>
+            <div class="spo-price">₦5,000 <small>/semester</small></div>
+            <p class="spo-note"><i data-lucide="info" style="width:12px;height:12px;display:inline"></i> Downgrade takes effect after current plan expires on April 11.</p>
+            <button class="btn btn-outline w-full" onclick="requestDowngrade('premium_student')"><i data-lucide="arrow-down"></i> Downgrade to Premium</button>
+          </div>
+          <div class="sub-plan-opt">
+            <div class="spo-name">Basic</div>
+            <div class="spo-price">₦2,000 <small>/semester</small></div>
+            <p class="spo-note"><i data-lucide="info" style="width:12px;height:12px;display:inline"></i> Downgrade takes effect after current plan expires on April 11.</p>
+            <button class="btn btn-outline w-full" onclick="requestDowngrade('basic_student')"><i data-lucide="arrow-down"></i> Downgrade to Basic</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <h3>Payment History</h3>
+          <button class="btn btn-sm btn-outline" onclick="exportPayments()"><i data-lucide="download"></i> Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Reference</th><th>Plan</th><th>Amount</th><th>Payment Date</th><th>Status</th><th>Receipt</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>CL_1709000001_abc12</code></td>
+                <td>Featured (Student)</td>
+                <td>₦10,000</td>
+                <td>Mar 1, 2025</td>
+                <td><span class="badge badge-verified">Successful</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="downloadReceipt('CL_1709000001_abc12')"><i data-lucide="download"></i></button></td>
+              </tr>
+              <tr>
+                <td><code>CL_1693000001_def34</code></td>
+                <td>Premium (Student)</td>
+                <td>₦5,000</td>
+                <td>Sep 1, 2024</td>
+                <td><span class="badge badge-verified">Successful</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="downloadReceipt('CL_1693000001_def34')"><i data-lucide="download"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REVIEWS TAB ===== -->
+    <div class="tab-panel" id="tab-reviews">
+      <h2 class="dash-page-title">Reviews &amp; Ratings</h2>
+      <div class="reviews-summary">
+        <div class="reviews-avg">
+          <div class="avg-num">4.9</div>
+          <div class="avg-stars">★★★★★</div>
+          <div class="avg-total">Based on 84 reviews</div>
+        </div>
+        <div class="reviews-breakdown">
+          <div class="rb-row"><span>5 ★</span><div class="rb-bar"><div class="rb-fill" style="width:88%"></div></div><span>74</span></div>
+          <div class="rb-row"><span>4 ★</span><div class="rb-bar"><div class="rb-fill" style="width:10%;background:var(--accent)"></div></div><span>8</span></div>
+          <div class="rb-row"><span>3 ★</span><div class="rb-bar"><div class="rb-fill" style="width:2%;background:var(--amber)"></div></div><span>2</span></div>
+          <div class="rb-row"><span>2 ★</span><div class="rb-bar"><div class="rb-fill" style="width:0%"></div></div><span>0</span></div>
+          <div class="rb-row"><span>1 ★</span><div class="rb-bar"><div class="rb-fill" style="width:0%"></div></div><span>0</span></div>
+        </div>
+      </div>
+
+      <div class="reviews-list">
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-avatar">AJ</div>
+            <div>
+              <strong>Amaka Johnson</strong>
+              <div class="review-meta">
+                <span class="stars" style="font-size:0.85rem">★★★★★</span>
+                <span>·</span>
+                <span class="act-time"><i data-lucide="clock"></i> 2 hours ago</span>
+                <span>·</span>
+                <span class="badge badge-verified" style="font-size:0.68rem">Approved</span>
+              </div>
+            </div>
+          </div>
+          <p class="review-text">"Really great service, came to deliver on time. The braiding was excellent and very affordable. Will definitely come back and recommend to my roommates!"</p>
+          <div class="review-reply-wrap">
+            <button class="btn btn-sm btn-outline" onclick="showReplyBox('reply-box-1','reply-btn-1')">
+              <i data-lucide="reply"></i> Reply to Review
+            </button>
+          </div>
+          <div class="reply-box" id="reply-box-1" style="display:none;margin-top:12px">
+            <textarea class="form-control" rows="3" placeholder="Write a professional, friendly reply to this review…"></textarea>
+            <div class="flex gap-8 mt-8">
+              <button class="btn btn-sm btn-primary" onclick="submitReply(1)"><i data-lucide="send"></i> Send Reply</button>
+              <button class="btn btn-sm btn-outline" onclick="cancelReply('reply-box-1')">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-avatar" style="background:#9333ea">FK</div>
+            <div>
+              <strong>Fatima Kwari</strong>
+              <div class="review-meta">
+                <span class="stars" style="font-size:0.85rem">★★★★★</span>
+                <span>·</span>
+                <span class="act-time"><i data-lucide="clock"></i> 3 days ago</span>
+                <span>·</span>
+                <span class="badge badge-verified" style="font-size:0.68rem">Approved</span>
+              </div>
+            </div>
+          </div>
+          <p class="review-text">"Best makeup artist on campus, period. She did my face for my graduation shoot and it was absolutely flawless. Very professional."</p>
+          <div class="review-vendor-reply">
+            <div class="reply-label"><i data-lucide="corner-down-right"></i> Your Reply</div>
+            <p>Thank you so much Fatima! It was such a pleasure working with you for such a special occasion. Congratulations on your graduation!</p>
+          </div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-avatar" style="background:#e74c3c">CI</div>
+            <div>
+              <strong>Chidi Ikenna</strong>
+              <div class="review-meta">
+                <span class="stars" style="font-size:0.85rem">★★★★☆</span>
+                <span>·</span>
+                <span class="act-time"><i data-lucide="clock"></i> 5 days ago</span>
+                <span>·</span>
+                <span class="badge badge-verified" style="font-size:0.68rem">Approved</span>
+              </div>
+            </div>
+          </div>
+          <p class="review-text">"Good service but had to wait longer than expected. Quality was still good though. Would still recommend but please improve on timing."</p>
+          <div class="review-reply-wrap">
+            <button class="btn btn-sm btn-outline" onclick="showReplyBox('reply-box-3','reply-btn-3')">
+              <i data-lucide="reply"></i> Reply to Review
+            </button>
+          </div>
+          <div class="reply-box" id="reply-box-3" style="display:none;margin-top:12px">
+            <textarea class="form-control" rows="3" placeholder="Acknowledge the feedback and explain how you'll improve…"></textarea>
+            <div class="flex gap-8 mt-8">
+              <button class="btn btn-sm btn-primary" onclick="submitReply(3)"><i data-lucide="send"></i> Send Reply</button>
+              <button class="btn btn-sm btn-outline" onclick="cancelReply('reply-box-3')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== COMPLAINTS TAB ===== -->
+    <div class="tab-panel" id="tab-complaints">
+      <h2 class="dash-page-title">Complaints</h2>
+      <div class="alert alert-info">
+        <i data-lucide="shield-check"></i>
+        <div>
+          <strong>Your profile is complaint-free</strong>
+          <p>You have no active complaints against your vendor account. Maintain your excellent service to keep it that way. Note: Three verified complaints trigger a suspension review.</p>
+        </div>
+      </div>
+      <div class="empty-state" style="display:flex;padding:40px 0">
+        <i data-lucide="shield-check"></i>
+        <h3>No complaints</h3>
+        <p>Your vendor profile is in good standing. Keep delivering great service!</p>
+      </div>
+    </div>
+
+    <!-- ===== NOTIFICATIONS TAB ===== -->
+    <div class="tab-panel" id="tab-notifications">
+      <h2 class="dash-page-title">Notifications</h2>
+      <div class="notif-list">
+        <div class="notif-item unread">
+          <div class="notif-icon warn"><i data-lucide="clock"></i></div>
+          <div class="notif-body">
+            <strong>Subscription expiring in 14 days</strong>
+            <p>Your Featured plan expires on April 11, 2025. Renew now to avoid interruption to your listing and potential loss of customers.</p>
+            <span class="act-time"><i data-lucide="clock"></i> 2 hours ago</span>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon review"><i data-lucide="star"></i></div>
+          <div class="notif-body">
+            <strong>New 5-star review approved</strong>
+            <p>Amaka Johnson left a 5-star review on your profile. It has been approved and is now public. Consider replying to build customer engagement.</p>
+            <span class="act-time"><i data-lucide="clock"></i> 2 hours ago</span>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon success"><i data-lucide="check-circle"></i></div>
+          <div class="notif-body">
+            <strong>Vendor profile approved</strong>
+            <p>Your vendor profile "Glam Studio NG" has been reviewed and approved by our admin team. Your listing is now live and visible to all students!</p>
+            <span class="act-time"><i data-lucide="clock"></i> March 1, 2025</span>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon success"><i data-lucide="credit-card"></i></div>
+          <div class="notif-body">
+            <strong>Payment confirmed — Featured Plan</strong>
+            <p>Your Featured plan payment of ₦10,000 has been confirmed via Paystack (Ref: CL_1709000001_abc12). Subscription is active until April 11, 2025.</p>
+            <span class="act-time"><i data-lucide="clock"></i> March 1, 2025</span>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon review"><i data-lucide="star"></i></div>
+          <div class="notif-body">
+            <strong>New review received</strong>
+            <p>Fatima Kwari submitted a review for your profile. It is currently under admin moderation and will be published once approved.</p>
+            <span class="act-time"><i data-lucide="clock"></i> March 3, 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROFILE TAB ===== -->
+    <div class="tab-panel" id="tab-profile">
+      <h2 class="dash-page-title">Edit Profile</h2>
+      <form class="profile-form" id="profileForm">
+        <div class="profile-photo-section">
+          <div class="profile-logo-preview" id="logoPreview">GS</div>
+          <div>
+            <h4>Business Logo</h4>
+            <p>Upload a clear, professional logo or photo. JPG or PNG only, maximum 2MB.</p>
+            <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('logoFileInput').click()">
+              <i data-lucide="upload"></i> Change Logo
+            </button>
+            <input type="file" id="logoFileInput" accept=".jpg,.jpeg,.png" style="display:none" onchange="previewLogoUpload(this)" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Business Name <span>*</span></label>
+          <input type="text" name="business_name" class="form-control" value="Glam Studio NG" required />
+          <span class="form-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Service Category</label>
+          <select name="category" class="form-control">
+            <option selected>Beauty & Grooming</option>
+            <option>Tech & Gadgets</option><option>Academic Support</option><option>Food & Catering</option>
+            <option>Fashion & Tailoring</option><option>Printing & Stationery</option><option>Repairs & Maintenance</option>
+            <option>Photography</option><option>Tutoring</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business Description <span>*</span></label>
+          <textarea name="description" class="form-control" rows="5" required>Professional hairstyling, braiding, and makeup services. Campus pickup available. Serving 100L–500L students on campus since 2024. Affordable prices and excellent results guaranteed.</textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Phone Number <span>*</span></label>
+            <input type="tel" name="phone" class="form-control" value="+2348012345678" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp Number <span>*</span></label>
+            <input type="tel" name="whatsapp" class="form-control" value="+2348012345678" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Price Range <span>*</span></label>
+            <input type="text" name="price_range" class="form-control" value="₦2,000 – ₦15,000" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Operating Location <span>*</span></label>
+            <input type="text" name="location" class="form-control" value="Block C, Female Hostel" required />
+          </div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <button type="button" class="btn btn-primary" onclick="saveProfile()"><i data-lucide="save"></i> Save Changes</button>
+          <button type="button" class="btn btn-outline" onclick="showToast('Changes discarded.','info')"><i data-lucide="x"></i> Discard</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<script src="../assets/js/main.js"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  document.querySelectorAll('.dash-nav-link[data-tab]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab(link.dataset.tab);
+    });
+  });
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.dash-nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+  const link  = document.querySelector(`.dash-nav-link[data-tab="${tab}"]`);
+  const panel = document.getElementById(`tab-${tab}`);
+
+  if (link)  link.classList.add('active');
+  if (panel) panel.classList.add('active');
+
+  const titles = {
+    overview:      'Overview',
+    profile:       'Edit Profile',
+    reviews:       'Reviews & Ratings',
+    complaints:    'Complaints',
+    subscription:  'Subscription Management',
+    notifications: 'Notifications',
+  };
+  document.getElementById('topbarTitle').textContent = titles[tab] || 'Dashboard';
+
+  if (window.innerWidth < 900) {
+    document.getElementById('dashSidebar')?.classList.remove('open');
+    document.getElementById('sidebarOverlay')?.classList.remove('show');
+  }
+  lucide.createIcons();
+}
+
+function toggleSidebar() {
+  document.getElementById('dashSidebar')?.classList.toggle('open');
+  document.getElementById('sidebarOverlay')?.classList.toggle('show');
+}
+
+function renewPlan(plan) {
+  const prices = { basic_student:2000, premium_student:5000, featured_student:10000 };
+  const amount = (prices[plan] || 10000) * 100;
+  const handler = PaystackPop.setup({
+    key:      'pk_test_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY',
+    email:    'glamstudio@example.com',
+    amount:   amount,
+    currency: 'NGN',
+    ref:      'CL_RENEW_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+    metadata: { plan: plan, action: 'renewal', vendor_type: 'student' },
+    callback: (response) => {
+      showToast('Payment confirmed! Subscription renewed.', 'success');
+    },
+    onClose: () => { showToast('Renewal cancelled.', 'warning'); },
+  });
+  handler.openIframe();
+}
+
+function requestDowngrade(plan) {
+  const labels = { basic_student:'Basic', premium_student:'Premium' };
+  showToast(`Downgrade to ${labels[plan] || plan} submitted. Takes effect when your current plan expires on April 11, 2025.`, 'success');
+}
+
+function downloadReceipt(ref) {
+  showToast(`Generating receipt for ${ref}…`, 'info');
+  // In production: window.location.href = `../api/receipt.php?ref=${ref}`;
+}
+
+function exportPayments() {
+  showToast('Exporting payment history as CSV…', 'info');
+}
+
+function showReplyBox(boxId) {
+  document.getElementById(boxId).style.display = 'block';
+  lucide.createIcons();
+}
+
+function cancelReply(boxId) {
+  document.getElementById(boxId).style.display = 'none';
+}
+
+function submitReply(reviewId) {
+  const box     = document.getElementById(`reply-box-${reviewId}`);
+  const textarea = box?.querySelector('textarea');
+  const text     = textarea?.value?.trim();
+  if (!text || text.length < 5) { showToast('Please write a reply before sending.', 'error'); return; }
+  showToast('Reply submitted and pending admin approval before publication.', 'success');
+  box.style.display = 'none';
+  if (textarea) textarea.value = '';
+}
+
+function saveProfile() {
+  const form = document.getElementById('profileForm');
+  if (!validateForm(form)) { showToast('Please fill in all required fields.', 'error'); return; }
+  showToast('Profile changes saved successfully!', 'success');
+}
+
+function previewLogoUpload(input) {
+  if (!input.files[0]) return;
+  const file    = input.files[0];
+  const allowed = ['image/jpeg','image/png'];
+  const maxSize = 2 * 1024 * 1024;
+  if (!allowed.includes(file.type)) { showToast('Invalid file type. Use JPG or PNG.', 'error'); input.value = ''; return; }
+  if (file.size > maxSize)          { showToast('Logo file must be under 2MB.', 'error'); input.value = ''; return; }
+  const preview = document.getElementById('logoPreview');
+  const reader  = new FileReader();
+  reader.onload = (e) => {
+    preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:18px" alt="Logo Preview" />`;
+  };
+  reader.readAsDataURL(file);
+  showToast('Logo ready to save. Click "Save Changes" to apply.', 'success');
+}
+</script>
+</body>
+</html>

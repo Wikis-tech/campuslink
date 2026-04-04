@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glam Studio NG — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/profile.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body>
+
+<header class="site-header scrolled" id="siteHeader">
+  <div class="header-inner container">
+    <a href="../index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#0b3d91"/>
+          <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+          <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text" style="color:var(--primary)">Campus<strong>link</strong></span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="browse.html"   class="nav-link">Browse Services</a>
+      <a href="login.html"    class="nav-link nav-cta">Login</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+
+<div class="profile-banner">
+  <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&auto=format&fit=crop&q=70" alt="Glam Studio NG banner" />
+  <div class="profile-banner-overlay"></div>
+</div>
+
+<div class="profile-layout container">
+
+  <!-- ===== LEFT SIDEBAR ===== -->
+  <aside class="profile-sidebar">
+    <div class="profile-card">
+      <div class="profile-logo-wrap">
+        <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&auto=format&fit=crop&q=80" alt="Glam Studio NG logo" class="profile-logo" />
+        <div class="profile-verified-ring" title="Verified Vendor"></div>
+      </div>
+
+      <h1 class="profile-name">Glam Studio NG</h1>
+
+      <div class="profile-badges">
+        <span class="badge badge-verified"><i data-lucide="shield-check"></i> Verified</span>
+        <span class="badge badge-featured"><i data-lucide="award"></i> Featured</span>
+        <span class="badge" style="background:rgba(11,61,145,0.08);color:var(--primary)">
+          <i data-lucide="graduation-cap"></i> Student Vendor
+        </span>
+      </div>
+
+      <div class="profile-rating-row">
+        <span class="stars" style="font-size:1.1rem">★★★★★</span>
+        <strong>4.9</strong>
+        <span class="text-muted">(84 reviews)</span>
+      </div>
+
+      <div class="profile-category-pill">Beauty &amp; Grooming</div>
+
+      <div class="profile-contact-actions">
+        <a href="tel:+2348012345678" class="btn btn-primary w-full">
+          <i data-lucide="phone"></i> Call Vendor
+        </a>
+        <a href="https://wa.me/2348012345678" target="_blank" rel="noopener" class="btn btn-whatsapp w-full">
+          <i data-lucide="message-circle"></i> WhatsApp
+        </a>
+      </div>
+
+      <div class="contact-disclaimer">
+        <i data-lucide="info"></i>
+        <p>All communication and transactions happen directly between you and the vendor. Campuslink does not participate in any service delivery or payment.</p>
+      </div>
+
+      <div class="profile-meta-list">
+        <div class="pm-item"><i data-lucide="map-pin"></i><span>Block C, Female Hostel</span></div>
+        <div class="pm-item"><i data-lucide="tag"></i><span>₦2,000 – ₦15,000</span></div>
+        <div class="pm-item"><i data-lucide="clock"></i><span>Mon–Sat, 8am – 8pm</span></div>
+        <div class="pm-item"><i data-lucide="briefcase"></i><span>2 years experience</span></div>
+        <div class="pm-item"><i data-lucide="calendar"></i><span>Member since Jan 2024</span></div>
+      </div>
+
+      <button class="btn btn-outline w-full" id="saveBtn" onclick="toggleSave()">
+        <i data-lucide="bookmark"></i> Save Vendor
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="profile-main">
+
+    <!-- About -->
+    <div class="profile-section">
+      <h2 class="ps-title">About this Vendor</h2>
+      <p>Glam Studio NG is a student-run beauty service operating on campus since early 2024. We specialize in <strong>professional hairstyling, braiding, makeup application, and grooming services</strong> for female students on campus.</p>
+      <p style="margin-top:12px">We offer campus pickup and deliver directly to your hostel room. Our prices are student-friendly and we accept payment after service is rendered. Book via WhatsApp or phone call — no advance deposit required for first-time customers.</p>
+    </div>
+
+    <!-- Services -->
+    <div class="profile-section">
+      <h2 class="ps-title">Services Offered</h2>
+      <div class="services-grid">
+        <div class="service-chip"><i data-lucide="scissors"></i> Hair Braiding</div>
+        <div class="service-chip"><i data-lucide="sparkles"></i> Makeup Application</div>
+        <div class="service-chip"><i data-lucide="star"></i> Hairdo &amp; Styling</div>
+        <div class="service-chip"><i data-lucide="heart"></i> Nail Art</div>
+        <div class="service-chip"><i data-lucide="droplet"></i> Hair Treatment</div>
+        <div class="service-chip"><i data-lucide="zap"></i> Gele Tying</div>
+        <div class="service-chip"><i data-lucide="sun"></i> Facial Treatment</div>
+        <div class="service-chip"><i data-lucide="smile"></i> Eyebrow Shaping</div>
+      </div>
+    </div>
+
+    <!-- Photo Gallery -->
+    <div class="profile-section">
+      <h2 class="ps-title">Photo Gallery</h2>
+      <div class="photo-gallery">
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=60" alt="Service photo 1" loading="lazy" />
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=400&auto=format&fit=crop&q=60" alt="Service photo 2" loading="lazy" />
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&auto=format&fit=crop&q=60" alt="Service photo 3" loading="lazy" />
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1560869713-da86a9ec0744?w=400&auto=format&fit=crop&q=60" alt="Service photo 4" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="profile-section">
+      <div class="ps-header-row">
+        <h2 class="ps-title">
+          Customer Reviews <span class="text-muted" style="font-size:1rem;font-weight:400">(84)</span>
+        </h2>
+        <button class="btn btn-primary btn-sm" onclick="openModal('reviewModal')">
+          <i data-lucide="star"></i> Write a Review
+        </button>
+      </div>
+
+      <div class="reviews-filter-row">
+        <button class="rfil active" onclick="filterReviews(this,'all')">All (84)</button>
+        <button class="rfil" onclick="filterReviews(this,'5')">5 ★ (74)</button>
+        <button class="rfil" onclick="filterReviews(this,'4')">4 ★ (8)</button>
+        <button class="rfil" onclick="filterReviews(this,'3')">3 ★ (2)</button>
+      </div>
+
+      <div class="review-cards" id="reviewCards">
+        <div class="review-card">
+          <div class="rc-header">
+            <div class="rc-avatar">AJ</div>
+            <div style="flex:1">
+              <strong>Amaka Johnson</strong>
+              <div style="font-size:0.76rem;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:8px">
+                <span class="badge badge-verified" style="font-size:0.68rem">Verified</span>
+                2 hours ago
+              </div>
+            </div>
+            <div class="stars" style="font-size:0.9rem">★★★★★</div>
+          </div>
+          <p class="rc-text">"Really great service, came to deliver on time. The braiding was excellent and very affordable. Will definitely come back and recommend to my roommates!"</p>
+          <div class="rc-actions">
+            <button class="link-btn" style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:4px" onclick="reportReview(1)">
+              <i data-lucide="flag" style="width:12px;height:12px;display:inline"></i> Report
+            </button>
+          </div>
+          <div class="rc-vendor-reply">
+            <div class="reply-label"><i data-lucide="corner-down-right"></i> Vendor Reply</div>
+            <p>Thank you so much Amaka! We really appreciate the kind words. Looking forward to serving you again!</p>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="rc-header">
+            <div class="rc-avatar" style="background:#9333ea">FK</div>
+            <div style="flex:1">
+              <strong>Fatima Kwari</strong>
+              <div style="font-size:0.76rem;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:8px">
+                <span class="badge badge-verified" style="font-size:0.68rem">Verified</span>
+                3 days ago
+              </div>
+            </div>
+            <div class="stars" style="font-size:0.9rem">★★★★★</div>
+          </div>
+          <p class="rc-text">"Best makeup artist on campus, period. She did my face for my graduation shoot and it was absolutely flawless. Very professional and took her time to understand the look I wanted."</p>
+          <div class="rc-actions">
+            <button class="link-btn" style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:4px" onclick="reportReview(2)">
+              <i data-lucide="flag" style="width:12px;height:12px;display:inline"></i> Report
+            </button>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="rc-header">
+            <div class="rc-avatar" style="background:#e74c3c">CI</div>
+            <div style="flex:1">
+              <strong>Chidi Ikenna</strong>
+              <div style="font-size:0.76rem;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:8px">
+                <span class="badge badge-verified" style="font-size:0.68rem">Verified</span>
+                5 days ago
+              </div>
+            </div>
+            <div class="stars" style="font-size:0.9rem">★★★★☆</div>
+          </div>
+          <p class="rc-text">"Good service but had to wait a bit longer than the agreed time. Quality was still good and she was very apologetic about the delay. Would still recommend."</p>
+          <div class="rc-actions">
+            <button class="link-btn" style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:4px" onclick="reportReview(3)">
+              <i data-lucide="flag" style="width:12px;height:12px;display:inline"></i> Report
+            </button>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="rc-header">
+            <div class="rc-avatar" style="background:#0891b2">OA</div>
+            <div style="flex:1">
+              <strong>Omotunde Adeyemi</strong>
+              <div style="font-size:0.76rem;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:8px">
+                <span class="badge badge-verified" style="font-size:0.68rem">Verified</span>
+                1 week ago
+              </div>
+            </div>
+            <div class="stars" style="font-size:0.9rem">★★★★★</div>
+          </div>
+          <p class="rc-text">"I had my nails done for my convocation and they were perfect! Very detailed work and she had a lot of design options. Super affordable compared to salons off campus."</p>
+          <div class="rc-actions">
+            <button class="link-btn" style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:4px" onclick="reportReview(4)">
+              <i data-lucide="flag" style="width:12px;height:12px;display:inline"></i> Report
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-outline w-full" style="margin-top:16px" onclick="showToast('Loading more reviews…','info')">
+        <i data-lucide="chevron-down"></i> Load More Reviews
+      </button>
+    </div>
+
+    <!-- Complaint CTA -->
+    <div class="profile-section complaint-cta">
+      <i data-lucide="flag"></i>
+      <div>
+        <strong>Had a bad experience?</strong>
+        <p>Submit a formal complaint with evidence. Our admin team investigates every complaint within 48 hours and takes appropriate action.</p>
+      </div>
+      <a href="complaint.html?vendor=1" class="btn btn-sm btn-outline" style="color:var(--danger);border-color:var(--danger)">
+        Submit Complaint
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== REVIEW MODAL ===== -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Write a Review</h3>
+      <button class="modal-close" onclick="closeModal('reviewModal')"><i data-lucide="x"></i></button>
+    </div>
+
+    <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:20px">
+      You can only submit one review per vendor. Reviews are moderated before publication. You may edit or delete your review before it is approved.
+    </p>
+
+    <div class="star-picker">
+      <p style="font-size:0.875rem;margin-bottom:12px;color:var(--text-muted);font-weight:600">Your Rating:</p>
+      <div class="star-row">
+        <button class="star-btn" data-val="1" onclick="setRating(1)">★</button>
+        <button class="star-btn" data-val="2" onclick="setRating(2)">★</button>
+        <button class="star-btn" data-val="3" onclick="setRating(3)">★</button>
+        <button class="star-btn" data-val="4" onclick="setRating(4)">★</button>
+        <button class="star-btn" data-val="5" onclick="setRating(5)">★</button>
+      </div>
+      <p class="star-label" id="starLabel">Tap a star to rate</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Your Review <span>*</span></label>
+      <textarea class="form-control" id="reviewText" rows="5" placeholder="Share your honest experience with this vendor. Minimum 20 characters. Be specific and constructive."></textarea>
+      <span class="form-hint" id="reviewCharCount">0 / 20 characters minimum</span>
+    </div>
+
+    <button class="btn btn-primary w-full" onclick="submitReview()">
+      <i data-lucide="send"></i> Submit Review
+    </button>
+  </div>
+</div>
+
+<footer class="site-footer" style="margin-top:80px">
+  <div class="footer-glass"><div class="container"><div class="footer-bottom"><p>&copy; 2025 Campuslink. All rights reserved. Campuslink is a directory service only.</p></div></div></div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+let selectedRating = 0;
+let isSaved        = false;
+
+// ===== STAR RATING =====
+function setRating(val) {
+  selectedRating = val;
+  const labels   = ['','Poor','Fair','Good','Very Good','Excellent'];
+  document.getElementById('starLabel').textContent = `${labels[val]} (${val}/5)`;
+  document.querySelectorAll('.star-btn').forEach((b, i) => b.classList.toggle('active', i < val));
+}
+
+// ===== REVIEW SUBMIT =====
+function submitReview() {
+  if (!selectedRating) { showToast('Please select a star rating before submitting.', 'error'); return; }
+  const text = document.getElementById('reviewText').value.trim();
+  if (text.length < 20) { showToast('Please write at least 20 characters in your review.', 'error'); return; }
+  showToast('Review submitted! It will appear on the profile after admin approval.', 'success');
+  closeModal('reviewModal');
+  selectedRating = 0;
+  document.getElementById('starLabel').textContent = 'Tap a star to rate';
+  document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('reviewText').value = '';
+}
+
+// ===== SAVE VENDOR =====
+function toggleSave() {
+  isSaved = !isSaved;
+  const btn = document.getElementById('saveBtn');
+  if (isSaved) {
+    btn.innerHTML = '<i data-lucide="bookmark-check"></i> Saved';
+    btn.classList.remove('btn-outline');
+    btn.classList.add('btn-accent');
+  } else {
+    btn.innerHTML = '<i data-lucide="bookmark"></i> Save Vendor';
+    btn.classList.add('btn-outline');
+    btn.classList.remove('btn-accent');
+  }
+  lucide.createIcons({ nodes: [btn] });
+  showToast(isSaved ? 'Vendor saved to your list.' : 'Vendor removed from your saved list.', isSaved ? 'success' : 'info');
+}
+
+// ===== REVIEW FILTER =====
+function filterReviews(btn, val) {
+  document.querySelectorAll('.rfil').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  showToast(`Showing ${val === 'all' ? 'all' : val + ' star'} reviews.`, 'info');
+}
+
+// ===== REPORT REVIEW =====
+function reportReview(id) {
+  showToast('Review reported. Our team will review it shortly. Thank you.', 'info');
+}
+
+// ===== CHAR COUNTER =====
+document.getElementById('reviewText')?.addEventListener('input', function () {
+  const count = this.value.length;
+  const el    = document.getElementById('reviewCharCount');
+  if (el) {
+    el.textContent = `${count} / 20 characters minimum`;
+    el.style.color  = count >= 20 ? 'var(--accent)' : 'var(--text-muted)';
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); });
+</script>
+</body>
+</html>

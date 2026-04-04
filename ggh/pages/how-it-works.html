@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Works — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+  <style>
+    .faq-list { display:flex; flex-direction:column; gap:0; }
+    .faq-item { border-bottom:1px solid var(--divider); }
+    .faq-q { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; background:none; border:none; padding:18px 0; font-family:var(--font-head); font-size:0.95rem; font-weight:600; color:var(--text); cursor:pointer; text-align:left; transition:color var(--transition); }
+    .faq-q:hover { color:var(--primary); }
+    .faq-q svg { width:18px; height:18px; flex-shrink:0; transition:transform var(--transition); }
+    .faq-q.open svg { transform:rotate(180deg); }
+    .faq-a { display:none; padding-bottom:18px; }
+    .faq-a.open { display:block; }
+    .faq-a p { font-size:0.9rem; color:var(--text-muted); line-height:1.75; }
+  </style>
+</head>
+<body>
+
+<header class="site-header scrolled" id="siteHeader">
+  <div class="header-inner container">
+    <a href="../index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#0b3d91"/>
+          <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+          <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text" style="color:var(--primary)">Campus<strong>link</strong></span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="../index.html"         class="nav-link">Home</a>
+      <a href="browse.html"           class="nav-link">Browse Services</a>
+      <a href="how-it-works.html"     class="nav-link active">How It Works</a>
+      <a href="vendor-register.html"  class="nav-link nav-cta-outline">Register as Vendor</a>
+      <a href="login.html"            class="nav-link nav-cta">Login</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a>
+      <i data-lucide="chevron-right"></i>
+      <span>How It Works</span>
+    </div>
+    <h1>How Campuslink Works</h1>
+    <p>A simple, safe, and transparent process for finding and connecting with campus service providers.</p>
+  </div>
+</section>
+
+<!-- For Students -->
+<section class="section" style="background:white">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">For Students &amp; Users</p>
+      <h2 class="section-title">Finding a Vendor in 5 Steps</h2>
+      <p class="section-desc">From discovery to service completion — entirely on your terms.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step-card reveal">
+        <div class="step-number">01</div>
+        <div class="step-icon"><i data-lucide="user-plus"></i></div>
+        <h3>Create Free Account</h3>
+        <p>Register with your school email, verify your phone via OTP, and complete your student profile in minutes. Browsing is always free.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">02</div>
+        <div class="step-icon"><i data-lucide="search"></i></div>
+        <h3>Search &amp; Filter</h3>
+        <p>Browse by category, search by name or service, filter by rating and plan type to find the perfect verified vendor for your need.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">03</div>
+        <div class="step-icon"><i data-lucide="phone-call"></i></div>
+        <h3>Contact Directly</h3>
+        <p>Use the Call or WhatsApp buttons to reach the vendor externally. Agree on terms, price, and delivery timeline — all outside the platform.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">04</div>
+        <div class="step-icon"><i data-lucide="handshake"></i></div>
+        <h3>Transact Offline</h3>
+        <p>Complete your service and payment directly with the vendor. Campuslink is not involved in this step in any way.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">05</div>
+        <div class="step-icon"><i data-lucide="star"></i></div>
+        <h3>Leave a Review</h3>
+        <p>Rate your experience (1–5 stars) and write a review to help other students make better decisions. Reviews are moderated before publication.</p>
+      </div>
+    </div>
+    <div class="disclaimer-box">
+      <i data-lucide="alert-circle"></i>
+      <p><strong>Important Disclaimer:</strong> Campuslink is a digital directory service only. We do not process payments between users and vendors, provide services directly, handle disputes about service delivery, or operate any internal messaging system. All business communication and transactions must occur directly and externally between users and vendors.</p>
+    </div>
+  </div>
+</section>
+
+<!-- For Vendors -->
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">For Service Providers</p>
+      <h2 class="section-title">Getting Your Business Listed</h2>
+      <p class="section-desc">A straightforward 5-step process to get your business in front of thousands of students.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step-card reveal">
+        <div class="step-number">01</div>
+        <div class="step-icon"><i data-lucide="user-check"></i></div>
+        <h3>Choose Vendor Type</h3>
+        <p>Select Student Vendor (enrolled student) or Community Vendor (established business). Different verification requirements apply to each.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">02</div>
+        <div class="step-icon"><i data-lucide="file-text"></i></div>
+        <h3>Fill Your Profile</h3>
+        <p>Enter your personal details, business name, service category, description, price range, and operating location for your listing.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">03</div>
+        <div class="step-icon"><i data-lucide="upload-cloud"></i></div>
+        <h3>Upload Documents</h3>
+        <p>Upload your student ID/CAC certificate, government ID, selfie with ID, and active service photos for identity verification.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">04</div>
+        <div class="step-icon"><i data-lucide="credit-card"></i></div>
+        <h3>Pay &amp; Subscribe</h3>
+        <p>Choose Basic, Premium, or Featured plan. Pay securely via Paystack. Server-side verification confirms every payment before activation.</p>
+      </div>
+      <div class="step-connector"><i data-lucide="arrow-right"></i></div>
+      <div class="step-card reveal">
+        <div class="step-number">05</div>
+        <div class="step-icon"><i data-lucide="shield-check"></i></div>
+        <h3>Admin Approval</h3>
+        <p>Our admin team reviews your application within 24–48 hours. Once approved, your listing goes live and becomes visible to all students.</p>
+      </div>
+    </div>
+    <div class="section-cta">
+      <a href="vendor-register.html" class="btn btn-primary btn-lg"><i data-lucide="store"></i> Register as Vendor</a>
+      <a href="pricing.html"         class="btn btn-outline btn-lg"><i data-lucide="tag"></i> View Plans &amp; Pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- Platform Rules -->
+<section class="section" style="background:white">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">Platform Rules</p>
+      <h2 class="section-title">What Campuslink Does &amp; Doesn't Do</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;margin:0 auto">
+      <div style="background:rgba(30,169,82,0.05);border:1px solid rgba(30,169,82,0.15);border-radius:var(--radius-lg);padding:28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><i data-lucide="check-circle" style="width:22px;height:22px;color:var(--accent)"></i><h3 style="font-size:1rem;color:var(--accent)">We DO</h3></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px">
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="check" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>Verify and approve vendor identity documents</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="check" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>Display verified vendor listings with ratings</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="check" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>Moderate and publish student reviews</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="check" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>Investigate and act on vendor complaints</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="check" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>Process vendor subscription payments securely</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="check" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>Suspend or ban vendors who violate our policies</li>
+        </ul>
+      </div>
+      <div style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.12);border-radius:var(--radius-lg);padding:28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><i data-lucide="x-circle" style="width:22px;height:22px;color:var(--danger)"></i><h3 style="font-size:1rem;color:var(--danger)">We DON'T</h3></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px">
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px;color:var(--danger);flex-shrink:0;margin-top:2px"></i>Provide or deliver any services to users</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px;color:var(--danger);flex-shrink:0;margin-top:2px"></i>Process payments between users and vendors</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px;color:var(--danger);flex-shrink:0;margin-top:2px"></i>Operate internal messaging or chat</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px;color:var(--danger);flex-shrink:0;margin-top:2px"></i>Guarantee vendor service quality or delivery</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px;color:var(--danger);flex-shrink:0;margin-top:2px"></i>Act as an agent, employer, or partner of any vendor</li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.875rem;color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px;color:var(--danger);flex-shrink:0;margin-top:2px"></i>Mediate or resolve service delivery disputes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="background:var(--bg)">
+  <div class="container" style="max-width:720px">
+    <div class="section-header">
+      <p class="section-eyebrow">FAQ</p>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Is Campuslink free for students to use? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>Yes. Browsing, searching, and contacting vendors is completely free for students and users. Only vendors pay a subscription fee to have their business listed on the platform.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Does Campuslink handle payments between users and vendors? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>No. Campuslink is a directory service only. All service payments are made directly between you and the vendor, entirely outside the platform. We only process vendor subscription fees for listing access.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">How do I know a vendor is genuine and trustworthy? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>All vendors go through manual identity verification by our admin team before listing. Verified vendors display the green Verified badge. You can also read approved student reviews and ratings before making contact.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">What happens if a vendor delivers bad or no service? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>Leave an honest review on their profile and submit a formal complaint through our system with evidence (screenshots, receipts, etc.). Our admin team investigates every complaint. Three verified complaints trigger a suspension review of the vendor.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Can I message vendors through Campuslink? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>No. Campuslink intentionally has no internal messaging system. All communication must happen externally via phone call or WhatsApp using the contact buttons on each vendor's profile page.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">How long does vendor approval take? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>Vendor applications are typically reviewed within 24–48 hours of payment confirmation. You will receive an email notification upon approval or rejection, along with a reason if rejected.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Can a vendor be removed from the platform? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>Yes. Vendors can be warned, suspended, or permanently banned for policy violations, three or more verified complaints, submission of false documents, or any conduct deemed harmful to the campus community. Listings are also automatically deactivated when subscriptions expire after the grace period.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">What is the vendor subscription grace period? <i data-lucide="chevron-down"></i></button>
+        <div class="faq-a"><p>When a vendor's subscription expires, their listing receives a 2-day grace period marked as "Expiring Soon." If the subscription is not renewed within this period, the listing is automatically deactivated until renewal.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-glass">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 Campuslink. All rights reserved. Campuslink is a directory service and does not provide, endorse, or guarantee any vendor services.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+function toggleFAQ(btn) {
+  const item   = btn.parentElement;
+  const answer = item.querySelector('.faq-a');
+  const isOpen = btn.classList.contains('open');
+  document.querySelectorAll('.faq-q.open').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    btn.classList.add('open');
+    answer.classList.add('open');
+  }
+}
+</script>
+</body>
+</html>

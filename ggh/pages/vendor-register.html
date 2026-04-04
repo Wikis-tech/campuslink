@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendor Registration — Campuslink</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <link rel="stylesheet" href="../assets/css/vendor-register.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+</head>
+<body>
+
+<header class="site-header scrolled" id="siteHeader">
+  <div class="header-inner container">
+    <a href="../index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#0b3d91"/>
+          <path d="M7 14C7 10.134 10.134 7 14 7C17.866 7 21 10.134 21 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="17" r="2.5" fill="#1ea952"/>
+          <path d="M11 21h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text" style="color:var(--primary)">Campus<strong>link</strong></span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="browse.html"   class="nav-link">Browse Services</a>
+      <a href="how-it-works.html" class="nav-link">How It Works</a>
+      <a href="vendor-register.html" class="nav-link active nav-cta-outline">Register as Vendor</a>
+      <a href="login.html"    class="nav-link nav-cta">Login</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+
+<div class="vr-wrap">
+  <div class="container">
+
+    <!-- Vendor Type Selector -->
+    <div class="vtype-select" id="vtypeSelect">
+      <div class="section-header" style="margin-top:80px">
+        <p class="section-eyebrow">Join Campuslink</p>
+        <h1 class="section-title" style="font-size:2rem">Register as a Vendor</h1>
+        <p class="section-desc">Choose your vendor type to get started. All vendors are manually verified by our admin team before activation.</p>
+      </div>
+      <div class="vtype-cards">
+        <div class="vtype-card" onclick="selectVendorType('student')">
+          <div class="vtype-icon"><i data-lucide="graduation-cap"></i></div>
+          <h3>Student Vendor</h3>
+          <p>Currently enrolled students offering services to fellow campus community members.</p>
+          <ul class="vtype-features">
+            <li><i data-lucide="check"></i> Student ID verification required</li>
+            <li><i data-lucide="check"></i> Basic plan from ₦2,000/semester</li>
+            <li><i data-lucide="check"></i> Campus-based services</li>
+            <li><i data-lucide="check"></i> Activation after admin approval</li>
+          </ul>
+          <div class="vtype-btn">Get Started <i data-lucide="arrow-right"></i></div>
+        </div>
+        <div class="vtype-card" onclick="selectVendorType('community')">
+          <div class="vtype-icon"><i data-lucide="building-2"></i></div>
+          <h3>Community Vendor</h3>
+          <p>Established businesses and professionals serving the campus community.</p>
+          <ul class="vtype-features">
+            <li><i data-lucide="check"></i> CAC certificate &amp; government ID required</li>
+            <li><i data-lucide="check"></i> Basic plan from ₦4,000/semester</li>
+            <li><i data-lucide="check"></i> Broader service area</li>
+            <li><i data-lucide="check"></i> Activation after admin approval</li>
+          </ul>
+          <div class="vtype-btn">Get Started <i data-lucide="arrow-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== STUDENT VENDOR FORM ====== -->
+    <div class="vr-form-wrap" id="studentForm" style="display:none">
+      <div class="vr-form-header">
+        <button class="back-btn" onclick="backToTypeSelect()"><i data-lucide="arrow-left"></i> Back</button>
+        <div>
+          <h2>Student Vendor Registration</h2>
+          <p>Fill in your details to create your verified vendor profile.</p>
+        </div>
+      </div>
+
+      <div class="vr-progress" id="vrProgress">
+        <div class="vr-prog-step active" data-step="1">Personal</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="2">Business</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="3">Documents</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="4">Plan</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="5">Payment</div>
+      </div>
+
+      <form id="studentVendorForm" novalidate>
+        <input type="hidden" name="csrf_token" value="CSRF_PLACEHOLDER" />
+        <input type="hidden" name="vendor_type" value="student" />
+
+        <!-- Step 1: Personal -->
+        <div class="vr-step active" id="vr-step1">
+          <div class="vr-step-title"><div class="step-num">1</div><h3>Personal Information</h3></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name <span>*</span></label><input type="text" name="first_name" class="form-control" placeholder="John" required minlength="2" /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Last Name <span>*</span></label><input type="text" name="last_name" class="form-control" placeholder="Doe" required minlength="2" /><span class="form-error"></span></div>
+          </div>
+          <div class="form-group"><label class="form-label">Matric Number <span>*</span></label><input type="text" name="matric" class="form-control" placeholder="e.g. CSC/2020/001" required /><span class="form-error"></span></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">School Email <span>*</span></label><input type="email" name="school_email" class="form-control" placeholder="you@university.edu.ng" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Personal Email <span>*</span></label><input type="email" name="personal_email" class="form-control" placeholder="you@gmail.com" required /><span class="form-error"></span></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Phone Number <span>*</span></label><input type="tel" name="phone" class="form-control" placeholder="+2348012345678" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">WhatsApp Number <span>*</span></label><input type="tel" name="whatsapp" class="form-control" placeholder="+2348012345678" required /><span class="form-error"></span></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Department <span>*</span></label><input type="text" name="department" class="form-control" placeholder="Computer Science" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Level <span>*</span></label>
+              <select name="level" class="form-control" required>
+                <option value="">Select Level</option>
+                <option>100L</option><option>200L</option><option>300L</option><option>400L</option><option>500L</option><option>Postgraduate</option>
+              </select><span class="form-error"></span>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Create Password <span>*</span></label>
+            <div class="password-wrap">
+              <input type="password" name="password" id="vrPassword" class="form-control" placeholder="Minimum 8 characters" required minlength="8" />
+              <button type="button" class="pw-toggle" onclick="togglePw('vrPassword')"><i data-lucide="eye"></i></button>
+            </div><span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="vrNextStep(2)">Continue <i data-lucide="arrow-right"></i></button>
+        </div>
+
+        <!-- Step 2: Business -->
+        <div class="vr-step" id="vr-step2">
+          <div class="vr-step-title"><div class="step-num">2</div><h3>Business Information</h3></div>
+          <div class="form-group"><label class="form-label">Business Name <span>*</span></label><input type="text" name="business_name" class="form-control" placeholder="e.g. TechFix Campus" required /><span class="form-error"></span></div>
+          <div class="form-group"><label class="form-label">Service Category <span>*</span></label>
+            <select name="category" class="form-control" required>
+              <option value="">Select Category</option>
+              <option>Beauty & Grooming</option><option>Tech & Gadgets</option><option>Academic Support</option>
+              <option>Food & Catering</option><option>Fashion & Tailoring</option><option>Printing & Stationery</option>
+              <option>Repairs & Maintenance</option><option>Photography</option><option>Tutoring</option>
+              <option>Laundry Services</option><option>Transport & Logistics</option><option>Events & Décor</option>
+            </select><span class="form-error"></span>
+          </div>
+          <div class="form-group"><label class="form-label">Business Description <span>*</span></label><textarea name="description" class="form-control" rows="4" placeholder="Describe your services, specialties, and what sets you apart from others…" required minlength="50"></textarea><span class="form-hint">Minimum 50 characters.</span><span class="form-error"></span></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Price Range <span>*</span></label><input type="text" name="price_range" class="form-control" placeholder="e.g. ₦500 – ₦5,000" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Years of Experience</label>
+              <select name="experience" class="form-control">
+                <option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>5+ years</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Operating Location <span>*</span></label><input type="text" name="location" class="form-control" placeholder="e.g. Engineering Block, Room 12 / Female Hostel Block C" required /><span class="form-error"></span></div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="vrGoStep(1)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" onclick="vrNextStep(3)">Continue <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Documents -->
+        <div class="vr-step" id="vr-step3">
+          <div class="vr-step-title"><div class="step-num">3</div><h3>Documents &amp; Verification</h3></div>
+          <p class="step-desc">Upload clear, recent documents for identity and business verification. All files must be JPG, PNG, or PDF and under 5MB each.</p>
+          <div class="upload-grid">
+            <div class="upload-field" id="upload-studentid">
+              <label class="form-label">Student ID Card <span>*</span></label>
+              <div class="upload-area" onclick="triggerUpload('studentid')"><i data-lucide="upload-cloud"></i><span>Click to upload</span><small>JPG, PNG, PDF — max 5MB</small></div>
+              <input type="file" id="file-studentid" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="previewUpload(this,'upload-studentid')" />
+            </div>
+            <div class="upload-field" id="upload-selfie">
+              <label class="form-label">Selfie Holding ID <span>*</span></label>
+              <div class="upload-area" onclick="triggerUpload('selfie')"><i data-lucide="camera"></i><span>Click to upload</span><small>JPG, PNG — max 5MB</small></div>
+              <input type="file" id="file-selfie" accept=".jpg,.jpeg,.png" style="display:none" onchange="previewUpload(this,'upload-selfie')" />
+            </div>
+            <div class="upload-field" id="upload-service">
+              <label class="form-label">Active Service Photo <span>*</span></label>
+              <div class="upload-area" onclick="triggerUpload('service')"><i data-lucide="image"></i><span>Click to upload</span><small>JPG, PNG — max 5MB</small></div>
+              <input type="file" id="file-service" accept=".jpg,.jpeg,.png" style="display:none" onchange="previewUpload(this,'upload-service')" />
+            </div>
+            <div class="upload-field" id="upload-logo">
+              <label class="form-label">Business Logo <span style="font-weight:400;color:var(--text-muted)">(Optional)</span></label>
+              <div class="upload-area" onclick="triggerUpload('logo')"><i data-lucide="image"></i><span>Click to upload</span><small>JPG, PNG — max 2MB</small></div>
+              <input type="file" id="file-logo" accept=".jpg,.jpeg,.png" style="display:none" onchange="previewUpload(this,'upload-logo')" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="vrGoStep(2)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" onclick="vrNextStep(4)">Continue <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 4: Plan Selection -->
+        <div class="vr-step" id="vr-step4">
+          <div class="vr-step-title"><div class="step-num">4</div><h3>Select Your Plan</h3></div>
+          <p class="step-desc">Your subscription becomes active immediately after confirmed payment. All plans are per semester (approximately 6 months).</p>
+          <div class="plan-cards">
+            <label class="plan-card">
+              <input type="radio" name="plan" value="basic_student" required />
+              <div class="plan-card-inner">
+                <div class="plan-tag">Basic</div>
+                <div class="plan-price">₦2,000 <small>/semester</small></div>
+                <ul class="plan-feats">
+                  <li><i data-lucide="check"></i> Listed in directory</li>
+                  <li><i data-lucide="check"></i> Call &amp; WhatsApp buttons</li>
+                  <li><i data-lucide="check"></i> Basic vendor profile</li>
+                  <li><i data-lucide="check"></i> Review responses</li>
+                  <li><i data-lucide="x"></i> Featured placement</li>
+                  <li><i data-lucide="x"></i> Priority ranking</li>
+                </ul>
+              </div>
+            </label>
+            <label class="plan-card popular">
+              <input type="radio" name="plan" value="premium_student" required />
+              <div class="popular-tag">Popular</div>
+              <div class="plan-card-inner">
+                <div class="plan-tag">Premium</div>
+                <div class="plan-price">₦5,000 <small>/semester</small></div>
+                <ul class="plan-feats">
+                  <li><i data-lucide="check"></i> Everything in Basic</li>
+                  <li><i data-lucide="check"></i> Enhanced profile page</li>
+                  <li><i data-lucide="check"></i> Priority search ranking</li>
+                  <li><i data-lucide="check"></i> Analytics dashboard</li>
+                  <li><i data-lucide="check"></i> Photo gallery (up to 6)</li>
+                  <li><i data-lucide="x"></i> Featured placement</li>
+                </ul>
+              </div>
+            </label>
+            <label class="plan-card">
+              <input type="radio" name="plan" value="featured_student" required />
+              <div class="plan-card-inner">
+                <div class="plan-tag">Featured</div>
+                <div class="plan-price">₦10,000 <small>/semester</small></div>
+                <ul class="plan-feats">
+                  <li><i data-lucide="check"></i> Everything in Premium</li>
+                  <li><i data-lucide="check"></i> Featured badge &amp; placement</li>
+                  <li><i data-lucide="check"></i> Homepage showcase</li>
+                  <li><i data-lucide="check"></i> Top search position</li>
+                  <li><i data-lucide="check"></i> Priority admin support</li>
+                  <li><i data-lucide="check"></i> Extended analytics</li>
+                </ul>
+              </div>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="vrGoStep(3)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" onclick="vrNextStep(5)">Proceed to Payment <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 5: Payment -->
+        <div class="vr-step" id="vr-step5">
+          <div class="vr-step-title"><div class="step-num">5</div><h3>Review &amp; Payment</h3></div>
+          <div class="payment-summary" id="paymentSummary">
+            <div class="ps-row"><span>Vendor Type</span><strong>Student Vendor</strong></div>
+            <div class="ps-row"><span>Selected Plan</span><strong id="ps-plan">—</strong></div>
+            <div class="ps-row"><span>Amount</span><strong id="ps-amount">—</strong></div>
+            <div class="ps-row"><span>Duration</span><strong>1 Semester (~6 months)</strong></div>
+            <div class="ps-divider"></div>
+            <div class="ps-row total"><span>Total Due</span><strong id="ps-total">—</strong></div>
+          </div>
+          <div class="paystack-info">
+            <i data-lucide="lock"></i>
+            <p>Payment is processed securely via <strong>Paystack</strong>. Your listing is submitted for admin review immediately after payment. Activation occurs upon admin approval within 24–48 hours. Campuslink verifies all payments server-side before activating subscriptions.</p>
+          </div>
+          <div class="terms-accept">
+            <label class="checkbox-opt">
+              <input type="checkbox" name="vendor_terms" required />
+              <span>I agree to the <a href="terms.html" target="_blank">Terms &amp; Conditions</a>, <a href="refund.html" target="_blank">Refund Policy</a>, and <a href="privacy.html" target="_blank">Privacy Policy</a>. I confirm that all uploaded documents are authentic and accurate. I understand that submission of false information will result in permanent suspension and potential legal action.</span>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="vrGoStep(4)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-accent btn-lg" id="payBtn" onclick="initPaystack()">
+              <i data-lucide="credit-card"></i> Pay &amp; Submit Application
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ====== COMMUNITY VENDOR FORM ====== -->
+    <div class="vr-form-wrap" id="communityForm" style="display:none">
+      <div class="vr-form-header">
+        <button class="back-btn" onclick="backToTypeSelect()"><i data-lucide="arrow-left"></i> Back</button>
+        <div><h2>Community Vendor Registration</h2><p>Register your business to reach thousands of students on campus.</p></div>
+      </div>
+      <div class="community-note">
+        <i data-lucide="info"></i>
+        <p>Community vendors require a valid CAC registration certificate and government-issued ID. Your application will be reviewed by our admin team within 24–48 hours of payment. For assistance, contact <a href="mailto:vendors@campuslink.ng" style="color:var(--primary)">vendors@campuslink.ng</a>.</p>
+      </div>
+
+      <div class="vr-progress">
+        <div class="vr-prog-step active" data-step="1">Personal</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="2">Business</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="3">Documents</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="4">Plan</div>
+        <div class="vr-prog-line"></div>
+        <div class="vr-prog-step" data-step="5">Payment</div>
+      </div>
+
+      <form id="communityVendorForm" novalidate>
+        <input type="hidden" name="csrf_token"  value="CSRF_PLACEHOLDER" />
+        <input type="hidden" name="vendor_type" value="community" />
+
+        <!-- Step 1 Community -->
+        <div class="vr-step active" id="cv-step1">
+          <div class="vr-step-title"><div class="step-num">1</div><h3>Personal Information</h3></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name <span>*</span></label><input type="text" name="first_name" class="form-control" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Last Name <span>*</span></label><input type="text" name="last_name" class="form-control" required /><span class="form-error"></span></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Email Address <span>*</span></label><input type="email" name="email" class="form-control" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Phone Number <span>*</span></label><input type="tel" name="phone" class="form-control" required /><span class="form-error"></span></div>
+          </div>
+          <div class="form-group"><label class="form-label">WhatsApp Number <span>*</span></label><input type="tel" name="whatsapp" class="form-control" required /><span class="form-error"></span></div>
+          <div class="form-group"><label class="form-label">Create Password <span>*</span></label>
+            <div class="password-wrap">
+              <input type="password" name="password" id="cvPassword" class="form-control" placeholder="Minimum 8 characters" required minlength="8" />
+              <button type="button" class="pw-toggle" onclick="togglePw('cvPassword')"><i data-lucide="eye"></i></button>
+            </div><span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="cvNextStep(2)">Continue <i data-lucide="arrow-right"></i></button>
+        </div>
+
+        <!-- Step 2 Community -->
+        <div class="vr-step" id="cv-step2">
+          <div class="vr-step-title"><div class="step-num">2</div><h3>Business Information</h3></div>
+          <div class="form-group"><label class="form-label">Business Name <span>*</span></label><input type="text" name="business_name" class="form-control" required /><span class="form-error"></span></div>
+          <div class="form-group"><label class="form-label">Service Category <span>*</span></label>
+            <select name="category" class="form-control" required>
+              <option value="">Select Category</option>
+              <option>Beauty & Grooming</option><option>Tech & Gadgets</option><option>Academic Support</option>
+              <option>Food & Catering</option><option>Fashion & Tailoring</option><option>Printing & Stationery</option>
+              <option>Repairs & Maintenance</option><option>Photography</option><option>Tutoring</option>
+              <option>Laundry Services</option><option>Transport & Logistics</option><option>Events & Décor</option>
+            </select><span class="form-error"></span>
+          </div>
+          <div class="form-group"><label class="form-label">Business Description <span>*</span></label><textarea name="description" class="form-control" rows="4" placeholder="Describe your business, services, and what makes you stand out…" required minlength="50"></textarea><span class="form-error"></span></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Price Range <span>*</span></label><input type="text" name="price_range" class="form-control" placeholder="e.g. ₦1,000 – ₦50,000" required /><span class="form-error"></span></div>
+            <div class="form-group"><label class="form-label">Years in Operation <span>*</span></label>
+              <select name="years_operation" class="form-control" required>
+                <option value="">Select</option><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>5–10 years</option><option>10+ years</option>
+              </select><span class="form-error"></span>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Business Address <span>*</span></label><input type="text" name="address" class="form-control" placeholder="Full address of your business" required /><span class="form-error"></span></div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="cvGoStep(1)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" onclick="cvNextStep(3)">Continue <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 3 Community -->
+        <div class="vr-step" id="cv-step3">
+          <div class="vr-step-title"><div class="step-num">3</div><h3>Documents &amp; Verification</h3></div>
+          <p class="step-desc">Upload the required documents for community vendor verification. Ensure all documents are clear and current.</p>
+          <div class="upload-grid">
+            <div class="upload-field" id="cv-upload-cac">
+              <label class="form-label">CAC Certificate <span>*</span></label>
+              <div class="upload-area" onclick="triggerCVUpload('cac')"><i data-lucide="file-text"></i><span>Click to upload</span><small>JPG, PNG, PDF — max 5MB</small></div>
+              <input type="file" id="cvfile-cac" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="previewCVUpload(this,'cv-upload-cac')" />
+            </div>
+            <div class="upload-field" id="cv-upload-govtid">
+              <label class="form-label">Government-Issued ID <span>*</span></label>
+              <div class="upload-area" onclick="triggerCVUpload('govtid')"><i data-lucide="credit-card"></i><span>Click to upload</span><small>JPG, PNG, PDF — max 5MB</small></div>
+              <input type="file" id="cvfile-govtid" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="previewCVUpload(this,'cv-upload-govtid')" />
+            </div>
+            <div class="upload-field" id="cv-upload-service">
+              <label class="form-label">Active Service Photo <span>*</span></label>
+              <div class="upload-area" onclick="triggerCVUpload('service')"><i data-lucide="image"></i><span>Click to upload</span><small>JPG, PNG — max 5MB</small></div>
+              <input type="file" id="cvfile-service" accept=".jpg,.jpeg,.png" style="display:none" onchange="previewCVUpload(this,'cv-upload-service')" />
+            </div>
+            <div class="upload-field" id="cv-upload-logo">
+              <label class="form-label">Business Logo <span style="font-weight:400;color:var(--text-muted)">(Optional)</span></label>
+              <div class="upload-area" onclick="triggerCVUpload('logo')"><i data-lucide="image"></i><span>Click to upload</span><small>JPG, PNG — max 2MB</small></div>
+              <input type="file" id="cvfile-logo" accept=".jpg,.jpeg,.png" style="display:none" onchange="previewCVUpload(this,'cv-upload-logo')" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="cvGoStep(2)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" onclick="cvNextStep(4)">Continue <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 4 Community -->
+        <div class="vr-step" id="cv-step4">
+          <div class="vr-step-title"><div class="step-num">4</div><h3>Select Your Plan</h3></div>
+          <p class="step-desc">Community vendor plans are slightly higher to reflect broader reach and advanced verification. Plans are per semester.</p>
+          <div class="plan-cards">
+            <label class="plan-card">
+              <input type="radio" name="cv_plan" value="basic_community" required />
+              <div class="plan-card-inner">
+                <div class="plan-tag">Basic</div>
+                <div class="plan-price">₦4,000 <small>/semester</small></div>
+                <ul class="plan-feats">
+                  <li><i data-lucide="check"></i> Listed in directory</li>
+                  <li><i data-lucide="check"></i> Call &amp; WhatsApp buttons</li>
+                  <li><i data-lucide="check"></i> Basic vendor profile</li>
+                  <li><i data-lucide="x"></i> Featured placement</li>
+                  <li><i data-lucide="x"></i> Priority ranking</li>
+                </ul>
+              </div>
+            </label>
+            <label class="plan-card popular">
+              <input type="radio" name="cv_plan" value="premium_community" required />
+              <div class="popular-tag">Popular</div>
+              <div class="plan-card-inner">
+                <div class="plan-tag">Premium</div>
+                <div class="plan-price">₦7,000 <small>/semester</small></div>
+                <ul class="plan-feats">
+                  <li><i data-lucide="check"></i> Everything in Basic</li>
+                  <li><i data-lucide="check"></i> Enhanced profile page</li>
+                  <li><i data-lucide="check"></i> Priority search ranking</li>
+                  <li><i data-lucide="check"></i> Analytics dashboard</li>
+                  <li><i data-lucide="x"></i> Featured placement</li>
+                </ul>
+              </div>
+            </label>
+            <label class="plan-card">
+              <input type="radio" name="cv_plan" value="featured_community" required />
+              <div class="plan-card-inner">
+                <div class="plan-tag">Featured</div>
+                <div class="plan-price">₦12,000 <small>/semester</small></div>
+                <ul class="plan-feats">
+                  <li><i data-lucide="check"></i> Everything in Premium</li>
+                  <li><i data-lucide="check"></i> Featured badge &amp; placement</li>
+                  <li><i data-lucide="check"></i> Homepage showcase</li>
+                  <li><i data-lucide="check"></i> Top search position</li>
+                  <li><i data-lucide="check"></i> Priority admin support</li>
+                </ul>
+              </div>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="cvGoStep(3)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" onclick="cvNextStep(5)">Proceed to Payment <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 5 Community -->
+        <div class="vr-step" id="cv-step5">
+          <div class="vr-step-title"><div class="step-num">5</div><h3>Review &amp; Payment</h3></div>
+          <div class="payment-summary" id="cvPaymentSummary">
+            <div class="ps-row"><span>Vendor Type</span><strong>Community Vendor</strong></div>
+            <div class="ps-row"><span>Selected Plan</span><strong id="cv-ps-plan">—</strong></div>
+            <div class="ps-row"><span>Amount</span><strong id="cv-ps-amount">—</strong></div>
+            <div class="ps-row"><span>Duration</span><strong>1 Semester (~6 months)</strong></div>
+            <div class="ps-divider"></div>
+            <div class="ps-row total"><span>Total Due</span><strong id="cv-ps-total">—</strong></div>
+          </div>
+          <div class="paystack-info">
+            <i data-lucide="lock"></i>
+            <p>Payment is processed securely via <strong>Paystack</strong>. Your application is submitted for admin review immediately after payment confirmation. Activation occurs within 24–48 hours.</p>
+          </div>
+          <div class="terms-accept">
+            <label class="checkbox-opt">
+              <input type="checkbox" name="cv_vendor_terms" required />
+              <span>I agree to the <a href="terms.html" target="_blank">Vendor Terms</a>, <a href="refund.html" target="_blank">Refund Policy</a>, and <a href="privacy.html" target="_blank">Privacy Policy</a>. I confirm all uploaded documents are authentic. I understand that falsified information results in permanent suspension.</span>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="cvGoStep(4)"><i data-lucide="arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-accent btn-lg" id="cvPayBtn" onclick="initCVPaystack()">
+              <i data-lucide="credit-card"></i> Pay &amp; Submit Application
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer" style="margin-top:80px">
+  <div class="footer-glass"><div class="container"><div class="footer-bottom"><p>&copy; 2025 Campuslink. All rights reserved.</p></div></div></div>
+</footer>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+// ===== PLAN PRICING =====
+const PLAN_PRICES = {
+  basic_student:2000, premium_student:5000, featured_student:10000,
+  basic_community:4000, premium_community:7000, featured_community:12000
+};
+const PLAN_LABELS = {
+  basic_student:'Basic (Student)', premium_student:'Premium (Student)', featured_student:'Featured (Student)',
+  basic_community:'Basic (Community)', premium_community:'Premium (Community)', featured_community:'Featured (Community)'
+};
+
+// ===== TYPE SELECT =====
+function selectVendorType(type) {
+  document.getElementById('vtypeSelect').style.display = 'none';
+  document.getElementById(type + 'Form').style.display  = 'block';
+  window.scrollTo(0, 0);
+  lucide.createIcons();
+}
+
+function backToTypeSelect() {
+  document.getElementById('vtypeSelect').style.display    = 'block';
+  document.getElementById('studentForm').style.display    = 'none';
+  document.getElementById('communityForm').style.display  = 'none';
+  window.scrollTo(0, 0);
+}
+// ===== STUDENT VENDOR STEPS =====
+let vrCurrentStep = 1;
+
+function vrGoStep(step) {
+  document.querySelectorAll('#studentVendorForm .vr-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`vr-step${step}`)?.classList.add('active');
+  document.querySelectorAll('#vrProgress .vr-prog-step').forEach(p => {
+    const n = parseInt(p.dataset.step);
+    p.classList.toggle('active', n === step);
+    p.classList.toggle('done',   n < step);
+  });
+  vrCurrentStep = step;
+  if (step === 5) updatePaymentSummary();
+  window.scrollTo(0, 80);
+  lucide.createIcons();
+}
+
+function vrNextStep(step) {
+  const currentEl = document.getElementById(`vr-step${vrCurrentStep}`);
+  const inputs    = currentEl.querySelectorAll('input[required], select[required], textarea[required]');
+  let valid = true;
+  inputs.forEach(inp => { if (!validateField(inp)) valid = false; });
+  if (!valid) return;
+  vrGoStep(step);
+}
+
+function updatePaymentSummary() {
+  const selected = document.querySelector('input[name="plan"]:checked');
+  if (!selected) return;
+  const plan   = selected.value;
+  const price  = PLAN_PRICES[plan] || 0;
+  document.getElementById('ps-plan').textContent   = PLAN_LABELS[plan] || plan;
+  document.getElementById('ps-amount').textContent = `₦${price.toLocaleString()}`;
+  document.getElementById('ps-total').textContent  = `₦${price.toLocaleString()}`;
+}
+
+document.querySelectorAll('input[name="plan"]').forEach(r => r.addEventListener('change', updatePaymentSummary));
+
+// ===== COMMUNITY VENDOR STEPS =====
+let cvCurrentStep = 1;
+
+function cvGoStep(step) {
+  document.querySelectorAll('#communityVendorForm .vr-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`cv-step${step}`)?.classList.add('active');
+  document.querySelectorAll('#communityForm .vr-prog-step').forEach(p => {
+    const n = parseInt(p.dataset.step);
+    p.classList.toggle('active', n === step);
+    p.classList.toggle('done',   n < step);
+  });
+  cvCurrentStep = step;
+  if (step === 5) updateCVPaymentSummary();
+  window.scrollTo(0, 80);
+  lucide.createIcons();
+}
+
+function cvNextStep(step) {
+  const currentEl = document.getElementById(`cv-step${cvCurrentStep}`);
+  const inputs    = currentEl.querySelectorAll('input[required], select[required], textarea[required]');
+  let valid = true;
+  inputs.forEach(inp => { if (!validateField(inp)) valid = false; });
+  if (!valid) return;
+  cvGoStep(step);
+}
+
+function updateCVPaymentSummary() {
+  const selected = document.querySelector('input[name="cv_plan"]:checked');
+  if (!selected) return;
+  const plan  = selected.value;
+  const price = PLAN_PRICES[plan] || 0;
+  document.getElementById('cv-ps-plan').textContent   = PLAN_LABELS[plan] || plan;
+  document.getElementById('cv-ps-amount').textContent = `₦${price.toLocaleString()}`;
+  document.getElementById('cv-ps-total').textContent  = `₦${price.toLocaleString()}`;
+}
+
+document.querySelectorAll('input[name="cv_plan"]').forEach(r => r.addEventListener('change', updateCVPaymentSummary));
+
+// ===== PAYSTACK — STUDENT =====
+function initPaystack() {
+  const terms    = document.querySelector('input[name="vendor_terms"]');
+  const selected = document.querySelector('input[name="plan"]:checked');
+  if (!terms?.checked)  { showToast('Please accept the vendor terms to continue.', 'error'); return; }
+  if (!selected)        { showToast('Please select a plan.', 'error'); return; }
+
+  const amount = PLAN_PRICES[selected.value] * 100;
+  const email  = document.querySelector('#studentVendorForm input[name="personal_email"]')?.value || 'vendor@example.com';
+
+  const handler = PaystackPop.setup({
+    key:      'pk_test_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY',
+    email:    email,
+    amount:   amount,
+    currency: 'NGN',
+    ref:      'CL_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+    metadata: { plan: selected.value, vendor_type: 'student' },
+    callback: (response) => { verifyPayment(response.reference, 'payBtn'); },
+    onClose:  () => { showToast('Payment cancelled. Your progress is saved.', 'warning'); },
+  });
+  handler.openIframe();
+}
+
+// ===== PAYSTACK — COMMUNITY =====
+function initCVPaystack() {
+  const terms    = document.querySelector('input[name="cv_vendor_terms"]');
+  const selected = document.querySelector('input[name="cv_plan"]:checked');
+  if (!terms?.checked) { showToast('Please accept the vendor terms to continue.', 'error'); return; }
+  if (!selected)       { showToast('Please select a plan.', 'error'); return; }
+
+  const amount = PLAN_PRICES[selected.value] * 100;
+  const email  = document.querySelector('#communityVendorForm input[name="email"]')?.value || 'vendor@example.com';
+
+  const handler = PaystackPop.setup({
+    key:      'pk_test_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY',
+    email:    email,
+    amount:   amount,
+    currency: 'NGN',
+    ref:      'CL_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+    metadata: { plan: selected.value, vendor_type: 'community' },
+    callback: (response) => { verifyPayment(response.reference, 'cvPayBtn'); },
+    onClose:  () => { showToast('Payment cancelled. Your progress is saved.', 'warning'); },
+  });
+  handler.openIframe();
+}
+
+// ===== SERVER-SIDE VERIFY =====
+async function verifyPayment(reference, btnId) {
+  const btn     = document.getElementById(btnId);
+  btn.disabled  = true;
+  btn.innerHTML = '<div class="spinner"></div> Verifying Payment…';
+
+  try {
+    const res  = await fetch('../api/verify-payment.php', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCSRF() },
+      body:    JSON.stringify({ reference }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Payment confirmed! Your application is under admin review.', 'success');
+      setTimeout(() => window.location.href = '../vendor/dashboard.html', 2500);
+    } else {
+      showToast(data.error || 'Payment verification failed. Please contact support.', 'error');
+      btn.disabled  = false;
+      btn.innerHTML = '<i data-lucide="credit-card"></i> Pay &amp; Submit Application';
+      lucide.createIcons({ nodes: [btn] });
+    }
+  } catch {
+    showToast('Network error. Please contact support with your payment reference: ' + reference, 'error');
+    btn.disabled  = false;
+    btn.innerHTML = '<i data-lucide="credit-card"></i> Pay &amp; Submit Application';
+    lucide.createIcons({ nodes: [btn] });
+  }
+}
+
+// ===== UPLOAD HANDLERS — STUDENT =====
+function triggerUpload(id) { document.getElementById('file-' + id)?.click(); }
+
+function previewUpload(input, wrapId) {
+  if (!input.files[0]) return;
+  const file     = input.files[0];
+  const maxSizes = { 'upload-studentid':5, 'upload-selfie':5, 'upload-service':5, 'upload-logo':2 };
+  const max      = (maxSizes[wrapId] || 5) * 1024 * 1024;
+  const allowed  = ['image/jpeg','image/png','application/pdf'];
+  if (!allowed.includes(file.type)) { showToast('Invalid file type. Please upload JPG, PNG, or PDF.', 'error'); input.value = ''; return; }
+  if (file.size > max)              { showToast(`File too large. Max ${maxSizes[wrapId] || 5}MB allowed.`, 'error');   input.value = ''; return; }
+  const area = document.querySelector(`#${wrapId} .upload-area`);
+  if (area) {
+    area.classList.add('uploaded');
+    area.innerHTML = `<i data-lucide="check-circle"></i><span>${file.name.length > 28 ? file.name.substring(0, 25) + '…' : file.name}</span><small>${(file.size / 1024 / 1024).toFixed(2)}MB</small>`;
+    lucide.createIcons({ nodes: [area] });
+  }
+  showToast('File uploaded successfully.', 'success');
+}
+
+// ===== UPLOAD HANDLERS — COMMUNITY =====
+function triggerCVUpload(id) { document.getElementById('cvfile-' + id)?.click(); }
+
+function previewCVUpload(input, wrapId) {
+  if (!input.files[0]) return;
+  const file    = input.files[0];
+  const maxSizes = { 'cv-upload-cac':5, 'cv-upload-govtid':5, 'cv-upload-service':5, 'cv-upload-logo':2 };
+  const max     = (maxSizes[wrapId] || 5) * 1024 * 1024;
+  const allowed = ['image/jpeg','image/png','application/pdf'];
+  if (!allowed.includes(file.type)) { showToast('Invalid file type. Please upload JPG, PNG, or PDF.', 'error'); input.value = ''; return; }
+  if (file.size > max)              { showToast(`File too large. Max ${maxSizes[wrapId] || 5}MB allowed.`, 'error');   input.value = ''; return; }
+  const area = document.querySelector(`#${wrapId} .upload-area`);
+  if (area) {
+    area.classList.add('uploaded');
+    area.innerHTML = `<i data-lucide="check-circle"></i><span>${file.name.length > 28 ? file.name.substring(0, 25) + '…' : file.name}</span><small>${(file.size / 1024 / 1024).toFixed(2)}MB</small>`;
+    lucide.createIcons({ nodes: [area] });
+  }
+  showToast('File uploaded successfully.', 'success');
+}
+
+function togglePw(id) {
+  const inp = document.getElementById(id);
+  if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); });
+</script>
+</body>
+</html>

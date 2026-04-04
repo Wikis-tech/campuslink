@@ -1,0 +1,20 @@
+.legal-layout { display: grid; grid-template-columns: 220px 1fr; gap: 48px; padding: 48px 20px 80px; align-items: start; }
+.legal-toc { position: sticky; top: calc(var(--header-h) + 20px); background: white; border-radius: var(--radius-lg); border: 1px solid var(--divider); padding: 20px; box-shadow: var(--shadow-card); }
+.legal-toc h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 14px; font-family: var(--font-head); }
+.legal-toc a { display: block; padding: 6px 0 6px 10px; font-size: 0.82rem; color: var(--text-muted); transition: color var(--transition); border-left: 2px solid transparent; }
+.legal-toc a:hover { color: var(--primary); border-color: var(--primary); }
+.legal-content section { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--divider); }
+.legal-content section:last-child { border-bottom: none; }
+.legal-content h2 { font-size: 1.2rem; margin-bottom: 16px; color: var(--primary); padding-top: 8px; }
+.legal-content p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+.legal-content ul { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.legal-content ul li { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; }
+.legal-content a { color: var(--primary); font-weight: 600; }
+.legal-notice { display: flex; align-items: flex-start; gap: 14px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); border-radius: var(--radius); padding: 18px; margin-bottom: 32px; }
+.legal-notice svg { width: 20px; height: 20px; color: var(--amber); flex-shrink: 0; margin-top: 2px; }
+.legal-notice p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+.legal-contact { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.legal-contact div { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-secondary); }
+.legal-contact svg { width: 16px; height: 16px; color: var(--primary); }
+
+@media (max-width: 768px) { .legal-layout { grid-template-columns: 1fr; } .legal-toc { position: static; } }
