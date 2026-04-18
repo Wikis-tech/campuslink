@@ -338,23 +338,13 @@ private function handleCommunityRegistration(): void {
         $this->redirect('vendor/register?type=community');
     }
 
+    $db = DB::getInstance();
+
     // Validate category exists
     if (!$db->exists('categories', 'id = ? AND is_active = 1', [$data['category_id']])) {
         Session::setFlash('error', 'Please select a valid category.');
         $this->redirect('vendor/register?type=community');
     }
-
-    if ($data['password'] !== $data['password_confirmation']) {
-        Session::setFlash('error', 'Passwords do not match.');
-        $this->redirect('vendor/register?type=community');
-    }
-
-    if (strlen($data['password']) < 8) {
-        Session::setFlash('error', 'Password must be at least 8 characters.');
-        $this->redirect('vendor/register?type=community');
-    }
-
-    $db = DB::getInstance();
 
     if ($db->exists('vendors', 'working_email = ?', [$data['working_email']])) {
         Session::setFlash('error', 'This email is already registered as a vendor.');
