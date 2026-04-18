@@ -387,7 +387,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                 <a href="#browse" class="nav-link">Browse Services</a>
                 <a href="#categories" class="nav-link">Categories</a>
                 <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="views/vendor/register.php" class="nav-link nav-cta-outline">Register as Vendor</a>
+                <a href="vendor/register" class="nav-link nav-cta-outline"><i data-lucide="store" class="nav-icon"></i> List Your Business</a>
                 <?php if (Auth::isLoggedIn()): ?>
                     <a href="<?= Auth::isVendor() ? 'vendor/dashboard' : 'user/dashboard' ?>" class="nav-link nav-cta-filled">Dashboard</a>
                 <?php else: ?>
@@ -420,7 +420,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
     <a href="browse" class="mobile-nav-link"><i data-lucide="search" class="nav-icon" aria-hidden="true"></i> Browse Services</a>
     <a href="categories" class="mobile-nav-link"><i data-lucide="folder" class="nav-icon" aria-hidden="true"></i> Categories</a>
     <a href="#how-it-works" class="mobile-nav-link"><i data-lucide="help-circle" class="nav-icon" aria-hidden="true"></i> How It Works</a>
-    <a href="vendor/register" class="mobile-nav-link"><i data-lucide="store" class="nav-icon" aria-hidden="true"></i> Register as Vendor</a>
+    <a href="vendor/register" class="mobile-nav-link"><i data-lucide="store" class="nav-icon" aria-hidden="true"></i> List Your Business</a>
     <?php if (Auth::isLoggedIn()): ?>
         <a href="<?= Auth::isVendor() ? 'vendor/dashboard' : 'user/dashboard' ?>" class="mobile-nav-link mobile-nav-cta">Dashboard</a>
     <?php else: ?>
@@ -482,7 +482,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                 </a>
                 <a href="vendor/register" class="btn btn-outline-white">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Register as Vendor
+                    <i data-lucide="store" class="btn-icon"></i> List Your Business
                 </a>
             </div>
 
@@ -696,7 +696,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                     </div>
                     <h3>Vendors Coming Soon</h3>
                     <p>Be among the first verified vendors on CampusLink.</p>
-                    <a href="vendor/register" class="btn btn-primary">Register as Vendor</a>
+                    <a href="vendor/register" class="btn btn-primary"><i data-lucide="store" class="btn-icon"></i> List Your Business</a>
                 </div>
             <?php endif; ?>
         </div>
