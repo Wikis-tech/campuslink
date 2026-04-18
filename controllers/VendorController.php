@@ -264,6 +264,10 @@ private function handleStudentRegistration(): void {
         Session::setFlash('error', 'Please select a valid category.');
         $this->redirect('vendor/register?type=student');
     }
+
+    // Handle logo upload
+    $logo = '';
+    if (!empty($_FILES['logo']['name'])) {
         try {
             $logo = uploadFile($_FILES['logo'], 'logos', ['image/jpeg','image/png','image/webp'], 2);
         } catch (Exception $e) {
