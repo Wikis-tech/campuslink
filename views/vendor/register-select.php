@@ -67,7 +67,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                     <?php foreach ([
                         'School email required',
                         'Matric number verified',
-                        'From â‚¦2,000/semester',
+                        'From ₦2,000/semester',
                         'Basic, Premium & Featured plans',
                     ] as $f): ?>
                     <div style="font-size:var(--font-size-xs);color:var(--text-secondary);
@@ -117,7 +117,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                     <?php foreach ([
                         'Personal or business email',
                         'NIN or CAC verification',
-                        'From â‚¦4,000/semester',
+                        'From ₦4,000/semester',
                         'Basic, Premium & Featured plans',
                     ] as $f): ?>
                     <div style="font-size:var(--font-size-xs);color:var(--text-secondary);
@@ -165,7 +165,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                 service quality. All transactions are independent.
                 <a href="<?= SITE_URL ?>/vendor-terms" target="_blank"
                    style="color:var(--warning-dark);font-weight:700;">
-                    Read Vendor Terms â†’
+                    Read Vendor Terms and Guidelines
                 </a>
             </div>
         </div>

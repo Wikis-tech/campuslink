@@ -454,7 +454,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
             </p>
 
             <!-- Search Bar -->
-            <div class="hero-search-wrapper fade-in">
+            <div class="hero-search-wrapper fade-in" id="browse">
                 <form class="hero-search-form" action="browse" method="GET" id="heroSearchForm">
                     <div class="search-input-group">
                         <span class="search-icon">
