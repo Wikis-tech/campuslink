@@ -174,7 +174,7 @@ public function login(): void {
         $db = DB::getInstance();
 
     $categories = $db->rows(
-        "SELECT * FROM categories ORDER BY sort_order ASC, name ASC"
+        "SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order ASC, name ASC"
     );
 
     $studentPlans = [
@@ -195,7 +195,7 @@ public function registerCommunity(): void {
     $db = DB::getInstance();
 
     $categories = $db->rows(
-        "SELECT * FROM categories ORDER BY sort_order ASC, name ASC"
+        "SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order ASC, name ASC"
     );
 
     $communityPlans = [
@@ -231,7 +231,7 @@ private function handleStudentRegistration(): void {
     ];
 
     // Basic validation
-    if (!$data['full_name'] || !$data['school_email'] || !$data['business_name'] || !$data['password']) {
+    if (!$data['full_name'] || !$data['school_email'] || !$data['business_name'] || !$data['password'] || !$data['category_id']) {
         Session::setFlash('error', 'Please fill in all required fields.');
         $this->redirect('vendor/register?type=student');
     }
@@ -259,9 +259,11 @@ private function handleStudentRegistration(): void {
     $this->redirect('vendor/register?type=student');
 }
 
-    // Handle logo upload
-    $logo = '';
-    if (!empty($_FILES['logo']['name'])) {
+    // Validate category exists
+    if (!$db->exists('categories', 'id = ? AND is_active = 1', [$data['category_id']])) {
+        Session::setFlash('error', 'Please select a valid category.');
+        $this->redirect('vendor/register?type=student');
+    }
         try {
             $logo = uploadFile($_FILES['logo'], 'logos', ['image/jpeg','image/png','image/webp'], 2);
         } catch (Exception $e) {
@@ -327,8 +329,14 @@ private function handleCommunityRegistration(): void {
         'password_confirmation' => $_POST['password_confirmation'] ?? '',
     ];
 
-    if (!$data['full_name'] || !$data['working_email'] || !$data['business_name'] || !$data['password']) {
+    if (!$data['full_name'] || !$data['working_email'] || !$data['business_name'] || !$data['password'] || !$data['category_id']) {
         Session::setFlash('error', 'Please fill in all required fields.');
+        $this->redirect('vendor/register?type=community');
+    }
+
+    // Validate category exists
+    if (!$db->exists('categories', 'id = ? AND is_active = 1', [$data['category_id']])) {
+        Session::setFlash('error', 'Please select a valid category.');
         $this->redirect('vendor/register?type=community');
     }
 
