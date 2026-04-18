@@ -1,0 +1,88 @@
+# ============================================================
+# CampusLink - Robots.txt
+# ============================================================
+
+User-agent: *
+
+# Allow public pages
+Allow: /
+Allow: /browse
+Allow: /categories
+Allow: /how-it-works
+Allow: /about
+Allow: /contact
+Allow: /pages/
+Allow: /assets/
+
+# Disallow private/admin areas
+Disallow: /admin/
+Disallow: /config/
+Disallow: /core/
+Disallow: /models/
+Disallow: /controllers/
+Disallow: /cron/
+Disallow: /logs/
+Disallow: /database/
+Disallow: /api/
+Disallow: /uploads/id-cards/
+Disallow: /uploads/selfies/
+Disallow: /uploads/gov-ids/
+Disallow: /uploads/cac-certificates/
+Disallow: /uploads/complaint-evidence/
+
+# Disallow user-specific pages
+Disallow: /user/
+Disallow: /vendor/dashboard
+Disallow: /vendor/register
+Disallow: /vendor/payment
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Disallow: /forgot-password
+Disallow: /reset-password
+
+# Disallow query-heavy pages
+Disallow: /*?q=
+Disallow: /*?sort=
+Disallow: /*?page=
+
+# Crawl delay for polite bots
+Crawl-delay: 5
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# ============================================================
+# Specific Bot Rules
+# ============================================================
+
+# Allow Googlebot full access to public content
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /user/
+Disallow: /api/
+Disallow: /logs/
+
+# Allow Bingbot
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /user/
+Disallow: /api/
+
+# Block known scrapers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /

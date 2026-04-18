@@ -1,0 +1,22 @@
+Options -Indexes
+Options -MultiViews
+
+# Turn on URL rewriting
+RewriteEngine On
+
+# Set the base — IMPORTANT for InfinityFree
+# If your site is at the root of the domain use /
+# If it is in a subfolder e.g. /campuslink/ use /campuslink/
+RewriteBase /campuslink/
+
+# Step 1: If the request is for a real existing FILE, serve it directly
+# (this allows CSS, JS, images, uploads to load normally)
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Step 2: If the request is for a real existing DIRECTORY, serve it directly
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Step 3: Everything else goes to index.php
+# QSA = keep query string (?type=student etc)
+# L   = last rule, stop processing
+RewriteRule ^(.*)$ index.php [QSA,L]

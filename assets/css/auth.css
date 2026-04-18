@@ -1,0 +1,577 @@
+/* ============================================================
+   CampusLink - Auth Pages Styles
+   Login, Register, OTP, Forgot Password, Reset Password
+   ============================================================ */
+
+.auth-page {
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--header-height);
+}
+
+.auth-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-10) var(--space-4);
+}
+
+.auth-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-2xl);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--divider);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+}
+
+/* Auth Header Strip */
+.auth-card-header {
+    background: var(--hero-gradient);
+    padding: var(--space-8) var(--space-8) var(--space-6);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+}
+
+.auth-logo {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    margin-bottom: var(--space-2);
+    position: relative;
+    z-index: 2;
+}
+
+.auth-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: var(--space-1);
+    position: relative;
+    z-index: 2;
+}
+
+.auth-subtitle {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.75);
+    position: relative;
+    z-index: 2;
+}
+
+/* Auth Body */
+.auth-card-body {
+    padding: var(--space-8);
+}
+
+/* Auth Form Row (two columns) */
+.auth-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+/* Password Field with Toggle */
+.password-field {
+    position: relative;
+}
+
+.password-field .form-control {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    padding: var(--space-1);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+/* Password strength indicator */
+.password-strength {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--divider);
+    margin-top: var(--space-2);
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease, background 0.3s ease;
+    width: 0%;
+}
+
+.strength-weak   .password-strength-bar { width: 25%; background: var(--danger); }
+.strength-fair   .password-strength-bar { width: 50%; background: var(--warning-amber); }
+.strength-good   .password-strength-bar { width: 75%; background: var(--primary); }
+.strength-strong .password-strength-bar { width: 100%; background: var(--accent-green); }
+
+.password-strength-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+}
+
+/* Terms checkbox */
+.terms-accept-group {
+    background: var(--bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--divider);
+    margin-bottom: var(--space-5);
+}
+
+/* Auth Footer Links */
+.auth-card-footer {
+    padding: var(--space-5) var(--space-8);
+    background: var(--bg);
+    border-top: 1px solid var(--divider);
+    text-align: center;
+}
+
+.auth-footer-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.auth-footer-links a {
+    font-size: var(--font-size-sm);
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.auth-footer-links a:hover {
+    text-decoration: underline;
+}
+
+.auth-footer-links span {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* Social divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+}
+
+.auth-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--divider);
+}
+
+.auth-divider-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Vendor type selector */
+.vendor-type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.vendor-type-option {
+    position: relative;
+}
+
+.vendor-type-option input[type="radio"] {
+    display: none;
+}
+
+.vendor-type-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-4);
+    background: var(--bg);
+    border: 2px solid var(--divider);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: var(--transition-base);
+    text-align: center;
+}
+
+.vendor-type-label:hover {
+    border-color: var(--primary);
+    background: rgba(11, 61, 145, 0.03);
+}
+
+.vendor-type-option input:checked + .vendor-type-label {
+    border-color: var(--primary);
+    background: rgba(11, 61, 145, 0.06);
+    box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1);
+}
+
+.vendor-type-icon {
+    font-size: 2.5rem;
+}
+
+.vendor-type-name {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.vendor-type-desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.vendor-type-price {
+    font-size: var(--font-size-sm);
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+/* Multi-step progress */
+.registration-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: var(--space-8);
+    overflow: hidden;
+}
+
+.reg-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+    position: relative;
+}
+
+.reg-step::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: calc(50% + 16px);
+    right: calc(-50% + 16px);
+    height: 2px;
+    background: var(--divider);
+    z-index: 0;
+}
+
+.reg-step:last-child::after {
+    display: none;
+}
+
+.reg-step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--divider);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    transition: var(--transition-base);
+}
+
+.reg-step.active .reg-step-number {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.15);
+}
+
+.reg-step.completed .reg-step-number {
+    background: var(--accent-green);
+    color: #ffffff;
+}
+
+.reg-step.completed::after {
+    background: var(--accent-green);
+}
+
+.reg-step.active::after {
+    background: linear-gradient(to right, var(--primary), var(--divider));
+}
+
+.reg-step-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.reg-step.active .reg-step-label {
+    color: var(--primary);
+}
+
+.reg-step.completed .reg-step-label {
+    color: var(--accent-green);
+}
+
+/* Form step visibility */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* OTP Input */
+.otp-inputs {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    margin: var(--space-6) 0;
+}
+
+.otp-input {
+    width: 52px;
+    height: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+    outline: none;
+}
+
+.otp-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1);
+}
+
+.otp-input.filled {
+    border-color: var(--accent-green);
+    background: rgba(30, 169, 82, 0.05);
+}
+
+.otp-resend {
+    text-align: center;
+    margin-top: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.otp-resend button {
+    color: var(--primary);
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: var(--transition-fast);
+}
+
+.otp-resend button:hover {
+    text-decoration: underline;
+}
+
+.otp-timer {
+    font-weight: 700;
+    color: var(--warning-dark);
+}
+
+/* Register Wide Card */
+.auth-card.auth-card-wide {
+    max-width: 780px;
+}
+
+/* Plan selection cards (on payment page) */
+.plan-select-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.plan-select-card {
+    position: relative;
+    border: 2px solid var(--divider);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-base);
+    background: var(--card-bg);
+}
+
+.plan-select-card:hover {
+    border-color: var(--primary);
+    background: rgba(11, 61, 145, 0.03);
+}
+
+.plan-select-card.selected {
+    border-color: var(--primary);
+    background: rgba(11, 61, 145, 0.05);
+    box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.15);
+}
+
+.plan-select-card.popular-plan::before {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: #ffffff;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    padding: 2px 12px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.plan-select-name {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-3);
+}
+
+.plan-select-price {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: var(--space-1);
+}
+
+.plan-select-period {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-4);
+}
+
+.plan-select-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    text-align: left;
+}
+
+.plan-select-feature {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.plan-select-feature::before {
+    content: '✓';
+    color: var(--accent-green);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Payment notice */
+.payment-notice {
+    background: #fff8e1;
+    border: 1px solid #fef3c7;
+    border-left: 4px solid var(--warning-amber);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-sm);
+    color: #92400e;
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+}
+
+.payment-notice strong {
+    font-weight: 700;
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+/* ============================================================
+   AUTH RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    .auth-card-body {
+        padding: var(--space-6);
+    }
+
+    .auth-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .vendor-type-selector {
+        grid-template-columns: 1fr;
+    }
+
+    .plan-select-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .otp-inputs {
+        gap: var(--space-2);
+    }
+
+    .otp-input {
+        width: 44px;
+        height: 52px;
+        font-size: 1.3rem;
+    }
+
+    .registration-steps {
+        display: none;
+    }
+
+    .auth-card.auth-card-wide {
+        max-width: 100%;
+    }
+}

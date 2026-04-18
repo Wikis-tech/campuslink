@@ -1,0 +1,294 @@
+/* ============================================================
+   CampusLink - Vendor Profile Extra Styles
+   Photo Gallery, Service Photos, Extended Profile Elements
+   ============================================================ */
+
+/* ============================================================
+   PHOTO GALLERY
+   ============================================================ */
+.service-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+}
+
+.service-photo-thumb {
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition-base);
+    border: 2px solid var(--divider);
+    width: 100%;
+}
+
+.service-photo-thumb:hover {
+    transform: scale(1.03);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Lightbox */
+.photo-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 9000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+    backdrop-filter: blur(4px);
+}
+
+.photo-lightbox.active {
+    display: flex;
+}
+
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    color: #ffffff;
+    font-size: 2rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffffff;
+    font-size: 2rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.lightbox-prev { left: var(--space-5); }
+.lightbox-next { right: var(--space-5); }
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-counter {
+    position: absolute;
+    bottom: var(--space-5);
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-sm);
+    background: rgba(0, 0, 0, 0.5);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+}
+
+/* ============================================================
+   REVIEW SUBMISSION FORM
+   ============================================================ */
+.review-submit-form {
+    background: var(--bg);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    border: 1px solid var(--divider);
+    margin-bottom: var(--space-6);
+}
+
+.review-submit-title {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.review-stars-input {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.review-stars-input input[type="radio"] {
+    display: none;
+}
+
+.review-stars-input label {
+    font-size: 2.2rem;
+    cursor: pointer;
+    color: var(--divider);
+    transition: color 0.15s ease, transform 0.1s ease;
+    line-height: 1;
+}
+
+.review-stars-input label:hover,
+.review-stars-input label:hover ~ label,
+.review-stars-input input:checked ~ label {
+    color: var(--warning-amber);
+}
+
+.review-stars-input label:hover {
+    transform: scale(1.15);
+}
+
+.review-char-counter {
+    display: flex;
+    justify-content: flex-end;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+}
+
+.review-char-counter.warning {
+    color: var(--warning-dark);
+}
+
+.review-char-counter.danger {
+    color: var(--danger);
+}
+
+/* Already reviewed notice */
+.already-reviewed-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    background: rgba(30, 169, 82, 0.06);
+    border: 1px solid rgba(30, 169, 82, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+}
+
+/* ============================================================
+   REPORT MODAL
+   ============================================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 8000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    backdrop-filter: blur(2px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    animation: slideInUp 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--divider);
+}
+
+.modal-title {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+    background: var(--bg);
+    color: var(--danger);
+}
+
+/* ============================================================
+   VENDOR PROFILE RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    .service-photos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4rem;
+    }
+
+    .lightbox-prev { left: var(--space-3); }
+    .lightbox-next { right: var(--space-3); }
+
+    .photo-lightbox {
+        padding: var(--space-4);
+    }
+
+    .modal-card {
+        padding: var(--space-6);
+    }
+
+    .review-stars-input label {
+        font-size: 1.8rem;
+    }
+}
