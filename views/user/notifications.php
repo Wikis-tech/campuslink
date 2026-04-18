@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die();
+﻿<?php defined('CAMPUSLINK') or die();
 $pageTitle = 'Notifications';
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 
 // Lucide SVG paths per notification type
 $notifIcons = [
@@ -55,7 +58,7 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
 </style>
 
 <div class="notif-head">
-    <!-- 🔔 → Bell -->
+    <!-- ðŸ”” â†’ Bell -->
     <h1>
         <?= lucide_icon('<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>', 22, '#1e293b') ?>
         Notifications
@@ -90,7 +93,7 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
 </div>
 <?php else: ?>
 <div class="empty-state">
-    <!-- 🔔 → Bell -->
+    <!-- ðŸ”” â†’ Bell -->
     <div class="ei">
         <?= lucide_icon('<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>', 48, '#94a3b8') ?>
     </div>

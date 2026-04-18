@@ -10,7 +10,8 @@
 .contact-info-card h3{font-size:0.95rem;font-weight:800;color:#1e293b;margin:0 0 1.25rem;}
 .ci-item{display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #e2e8f0;}
 .ci-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.ci-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.ci-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci-icon svg{width:18px;height:18px;}
 .ci-label{font-size:0.7rem;font-weight:700;color:#64748b;margin-bottom:0.15rem;text-transform:uppercase;letter-spacing:0.05em;}
 .ci-value{font-size:0.85rem;color:#1e293b;font-weight:600;}
 .ci-value a{color:#1a56db;text-decoration:none;}
@@ -24,15 +25,21 @@
 .cf-group textarea{resize:vertical;min-height:120px;}
 .cf-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
 @media(max-width:420px){.cf-row{grid-template-columns:1fr;}}
-.cf-btn{width:100%;padding:0.8rem;background:linear-gradient(135deg,#1a56db,#0e9f6e);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;transition:opacity 0.2s,transform 0.15s;margin-top:0.25rem;}
+.cf-btn{width:100%;padding:0.8rem;background:linear-gradient(135deg,#1a56db,#0e9f6e);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;transition:opacity 0.2s,transform 0.15s;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
 .cf-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.cf-btn svg{width:16px;height:16px;}
 .flash-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:0.75rem 1rem;border-radius:10px;font-size:0.83rem;margin-bottom:1rem;font-weight:600;}
 .flash-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:0.75rem 1rem;border-radius:10px;font-size:0.83rem;margin-bottom:1rem;}
-.response-note{margin-top:1rem;padding:0.75rem;background:#fffbeb;border:1px solid #fde68a;border-radius:9px;font-size:0.75rem;color:#92400e;line-height:1.5;}
+.response-note{margin-top:1rem;padding:0.75rem;background:#fffbeb;border:1px solid #fde68a;border-radius:9px;font-size:0.75rem;color:#92400e;line-height:1.5;display:flex;align-items:flex-start;gap:0.4rem;}
+.response-note svg{width:14px;height:14px;flex-shrink:0;margin-top:0.1rem;}
+.quick-link{font-size:0.78rem;text-decoration:none;font-weight:600;display:flex;align-items:center;gap:0.35rem;}
+.quick-link svg{width:14px;height:14px;}
 </style>
 
 <div class="contact-hero">
-    <div style="font-size:2rem;margin-bottom:0.5rem;">📩</div>
+    <div style="display:flex;justify-content:center;margin-bottom:0.5rem;color:#fff;">
+        <i data-lucide="mail" style="width:40px;height:40px;"></i>
+    </div>
     <h1>Contact Us</h1>
     <p>We are here to help. Reach out anytime.</p>
 </div>
@@ -48,7 +55,9 @@
                 <h3>Get In Touch</h3>
 
                 <div class="ci-item">
-                    <div class="ci-icon" style="background:#eff6ff;">📧</div>
+                    <div class="ci-icon" style="background:#eff6ff;color:#1a56db;">
+                        <i data-lucide="mail"></i>
+                    </div>
                     <div>
                         <div class="ci-label">Support Email</div>
                         <div class="ci-value">
@@ -58,7 +67,9 @@
                 </div>
 
                 <div class="ci-item">
-                    <div class="ci-icon" style="background:#f0fdf4;">📞</div>
+                    <div class="ci-icon" style="background:#f0fdf4;color:#0e9f6e;">
+                        <i data-lucide="phone"></i>
+                    </div>
                     <div>
                         <div class="ci-label">Phone</div>
                         <div class="ci-value">
@@ -68,7 +79,9 @@
                 </div>
 
                 <div class="ci-item">
-                    <div class="ci-icon" style="background:#fefce8;">🏫</div>
+                    <div class="ci-icon" style="background:#fefce8;color:#d97706;">
+                        <i data-lucide="landmark"></i>
+                    </div>
                     <div>
                         <div class="ci-label">Institution</div>
                         <div class="ci-value"><?= e(SCHOOL_NAME) ?></div>
@@ -76,7 +89,9 @@
                 </div>
 
                 <div class="ci-item">
-                    <div class="ci-icon" style="background:#f5f3ff;">⏰</div>
+                    <div class="ci-icon" style="background:#f5f3ff;color:#7c3aed;">
+                        <i data-lucide="clock"></i>
+                    </div>
                     <div>
                         <div class="ci-label">Response Time</div>
                         <div class="ci-value">Within 24 hours</div>
@@ -89,16 +104,16 @@
                 <div style="font-size:0.78rem;font-weight:800;color:#374151;margin-bottom:0.5rem;">Quick Links</div>
                 <div style="display:flex;flex-direction:column;gap:0.4rem;">
                     <a href="<?= SITE_URL ?>/complaints/track"
-                       style="font-size:0.78rem;color:#1a56db;text-decoration:none;font-weight:600;">
-                        📋 Track a Complaint →
+                       class="quick-link" style="color:#1a56db;">
+                        <i data-lucide="clipboard"></i> Track a Complaint →
                     </a>
                     <a href="<?= SITE_URL ?>/vendor/register"
-                       style="font-size:0.78rem;color:#0e9f6e;text-decoration:none;font-weight:600;">
-                        🏪 Register as Vendor →
+                       class="quick-link" style="color:#0e9f6e;">
+                        <i data-lucide="shopping-cart"></i> Register as Vendor →
                     </a>
                     <a href="<?= SITE_URL ?>/about"
-                       style="font-size:0.78rem;color:#64748b;text-decoration:none;font-weight:600;">
-                        ℹ️ About CampusLink →
+                       class="quick-link" style="color:#64748b;">
+                        <i data-lucide="info"></i> About CampusLink →
                     </a>
                 </div>
             </div>
@@ -144,14 +159,17 @@
                                   placeholder="Describe your issue or question in detail..."
                                   required><?= e($_SESSION['form_old']['message'] ?? '') ?></textarea>
                     </div>
-                    <button type="submit" class="cf-btn">📨 Send Message</button>
+                    <button type="submit" class="cf-btn">
+                        <i data-lucide="send"></i> Send Message
+                    </button>
                 </form>
 
                 <div class="response-note">
-                    ⚠️ For vendor-related complaints, please use the
+                    <i data-lucide="alert-triangle"></i>
+                    <span>For vendor-related complaints, please use the
                     <a href="<?= SITE_URL ?>/complaints/track"
                        style="color:#92400e;font-weight:700;">complaint tracker</a>
-                    instead of this form. Include your business name and registered email for faster support.
+                    instead of this form. Include your business name and registered email for faster support.</span>
                 </div>
             </div>
         </div>

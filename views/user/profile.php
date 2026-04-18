@@ -1,15 +1,18 @@
-<?php defined('CAMPUSLINK') or die();
+﻿<?php defined('CAMPUSLINK') or die();
 $pageTitle = 'My Profile';
 $nameParts = explode(' ', $user['full_name'], 2);
 $firstName = $nameParts[0] ?? '';
 $lastName  = $nameParts[1] ?? '';
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 <style>
 .profile-grid{display:grid;grid-template-columns:1fr 2fr;gap:1.25rem;}
@@ -53,7 +56,7 @@ justify-content:center;gap:0.45rem;}
 </style>
 
 <div style="margin-bottom:1.25rem;display:flex;align-items:center;gap:0.45rem;">
-    <!-- 👤 → User -->
+    <!-- ðŸ‘¤ â†’ User -->
     <?= lucide_icon('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>', 22, '#1e293b') ?>
     <div>
         <h1 style="font-size:1.1rem;font-weight:900;color:#1e293b;margin:0 0 0.25rem;">
@@ -79,14 +82,14 @@ justify-content:center;gap:0.45rem;}
                     <?= e($user['personal_email'] ?? $user['school_email'] ?? '') ?>
                 </div>
                 <div style="text-align:center;margin-bottom:1rem;">
-                    <!-- ✓ Verified → ShieldCheck -->
+                    <!-- âœ“ Verified â†’ ShieldCheck -->
                     <span class="profile-badge">
                         <?= lucide_icon('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>', 13, '#166534') ?>
                         Verified Student
                     </span>
                 </div>
 
-                <!-- 🎓 → GraduationCap -->
+                <!-- ðŸŽ“ â†’ GraduationCap -->
                 <div class="pf-row">
                     <span class="pf-label" style="display:flex;align-items:center;gap:0.3rem;">
                         <?= lucide_icon('<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>', 13, '#64748b') ?>
@@ -94,7 +97,7 @@ justify-content:center;gap:0.45rem;}
                     </span>
                     <span class="pf-val"><?= e($user['matric_number'] ?? 'Not set') ?></span>
                 </div>
-                <!-- 🏫 → Building -->
+                <!-- ðŸ« â†’ Building -->
                 <div class="pf-row">
                     <span class="pf-label" style="display:flex;align-items:center;gap:0.3rem;">
                         <?= lucide_icon('<rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/>', 13, '#64748b') ?>
@@ -102,7 +105,7 @@ justify-content:center;gap:0.45rem;}
                     </span>
                     <span class="pf-val"><?= e($user['school_email'] ?? '') ?></span>
                 </div>
-                <!-- 📱 → Smartphone -->
+                <!-- ðŸ“± â†’ Smartphone -->
                 <div class="pf-row">
                     <span class="pf-label" style="display:flex;align-items:center;gap:0.3rem;">
                         <?= lucide_icon('<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>', 13, '#64748b') ?>
@@ -110,7 +113,7 @@ justify-content:center;gap:0.45rem;}
                     </span>
                     <span class="pf-val"><?= e($user['phone'] ?? 'Not set') ?></span>
                 </div>
-                <!-- 📅 → Calendar -->
+                <!-- ðŸ“… â†’ Calendar -->
                 <div class="pf-row">
                     <span class="pf-label" style="display:flex;align-items:center;gap:0.3rem;">
                         <?= lucide_icon('<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', 13, '#64748b') ?>
@@ -128,7 +131,7 @@ justify-content:center;gap:0.45rem;}
     <div>
         <div class="profile-card">
             <div class="profile-card-head">
-                <!-- ✏️ → PenLine -->
+                <!-- âœï¸ â†’ PenLine -->
                 <h3>
                     <?= lucide_icon('<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>', 15, 'currentColor') ?>
                     Edit Profile

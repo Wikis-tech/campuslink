@@ -5,8 +5,13 @@
             padding:3rem 1rem;">
     <div style="max-width:520px;width:100%;text-align:center;">
 
-        <div style="font-size:5rem;margin-bottom:1.5rem;animation:fadeIn 0.6s ease;">
-            🎉
+        <div style="margin-bottom:1.5rem;display:flex;justify-content:center;
+                    animation:fadeIn 0.6s ease;">
+            <span style="width:80px;height:80px;border-radius:50%;
+                         background:#f0fdf4;display:flex;align-items:center;
+                         justify-content:center;color:#16a34a;">
+                <i data-lucide="check-circle" style="width:44px;height:44px;"></i>
+            </span>
         </div>
 
         <h1 style="font-size:2rem;font-weight:900;color:var(--text-primary);
@@ -58,12 +63,14 @@
         <div style="display:flex;flex-direction:column;gap:0.75rem;max-width:320px;margin:0 auto;">
             <a href="<?= SITE_URL ?>/vendor/<?= e($vendor['slug'] ?? '') ?>"
                target="_blank"
-               class="btn btn-primary btn-full">
-                👁️ View My Public Profile
+               class="btn btn-primary btn-full"
+               style="display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                <i data-lucide="eye" style="width:16px;height:16px;"></i> View My Public Profile
             </a>
             <a href="<?= SITE_URL ?>/vendor/dashboard"
-               class="btn btn-outline-primary btn-full">
-                🏠 Go to Dashboard
+               class="btn btn-outline-primary btn-full"
+               style="display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                <i data-lucide="home" style="width:16px;height:16px;"></i> Go to Dashboard
             </a>
         </div>
 

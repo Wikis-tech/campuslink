@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die();
+﻿<?php defined('CAMPUSLINK') or die();
 $pageTitle = 'Saved Vendors';
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 <style>
 .sv-page-head{display:flex;align-items:center;justify-content:space-between;
@@ -50,7 +53,7 @@ color:#fff;border-radius:9px;font-weight:700;font-size:0.85rem;text-decoration:n
 </style>
 
 <div class="sv-page-head">
-    <!-- ❤️ → Heart -->
+    <!-- â¤ï¸ â†’ Heart -->
     <h1>
         <?= lucide_icon('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>', 22, '#e11d48', 'fill:#fecdd3;stroke:#e11d48;') ?>
         Saved Vendors
@@ -96,24 +99,24 @@ color:#fff;border-radius:9px;font-weight:700;font-size:0.85rem;text-decoration:n
         </div>
         <?php if (!empty($v['description'])): ?>
         <div class="svc-desc">
-            <?= e(substr($v['description'],0,80)) ?><?= strlen($v['description'])>80?'…':'' ?>
+            <?= e(substr($v['description'],0,80)) ?><?= strlen($v['description'])>80?'â€¦':'' ?>
         </div>
         <?php endif; ?>
         <div class="svc-actions">
             <?php if (!empty($v['whatsapp_number'])): ?>
-            <!-- 💬 → MessageCircle -->
+            <!-- ðŸ’¬ â†’ MessageCircle -->
             <a href="https://wa.me/<?= preg_replace('/[^0-9]/','',$v['whatsapp_number']) ?>"
                target="_blank" class="svc-wa">
                 <?= lucide_icon('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>', 14, '#166534') ?>
                 WhatsApp
             </a>
             <?php endif; ?>
-            <!-- 👁️ → Eye -->
+            <!-- ðŸ‘ï¸ â†’ Eye -->
             <a href="<?= SITE_URL ?>/browse/<?= e($v['slug']??'') ?>" class="svc-view">
                 <?= lucide_icon('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>', 14, '#1a56db') ?>
                 View
             </a>
-            <!-- 🗑️ → Trash2 -->
+            <!-- ðŸ—‘ï¸ â†’ Trash2 -->
             <a href="#" class="svc-unsave"
                onclick="unsave(<?= (int)$v['id'] ?>,this);return false;"
                style="display:flex;align-items:center;justify-content:center;gap:0.35rem;">

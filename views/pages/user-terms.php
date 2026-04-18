@@ -1,24 +1,41 @@
 <?php defined('CAMPUSLINK') or die(); ?>
+
+<script>
+if (!window.lucide) {
+    var s = document.createElement('script');
+    s.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js';
+    s.onload = function(){ lucide.createIcons(); };
+    document.head.appendChild(s);
+}
+</script>
+
 <style>
 .policy-hero{background:linear-gradient(135deg,#0b3d91,#1a56db);padding:2.5rem 1rem;text-align:center;color:#fff;}
-.policy-hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:0 0 0.4rem;}
+.policy-hero .hero-icon{display:flex;justify-content:center;margin-bottom:0.75rem;}
+.policy-hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:0 0 0.4rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
 .policy-hero p{font-size:0.85rem;opacity:0.8;margin:0;}
 .policy-body{max-width:780px;margin:0 auto;padding:2rem 1rem 3rem;}
 .policy-section{margin-bottom:2rem;}
 .policy-section h2{font-size:1rem;font-weight:800;color:#1e293b;margin:0 0 0.6rem;padding-bottom:0.4rem;border-bottom:2px solid #e2e8f0;}
 .policy-section p,.policy-section li{font-size:0.875rem;color:#374151;line-height:1.8;margin:0 0 0.5rem;}
 .policy-section ul{padding-left:1.25rem;margin:0.5rem 0;}
-.policy-meta{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.5rem;font-size:0.78rem;color:#64748b;}
+.policy-meta{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.5rem;font-size:0.78rem;color:#64748b;display:flex;align-items:center;gap:0.5rem;}
 </style>
 
 <div class="policy-hero">
-    <h1>🎓 User Terms & Conditions</h1>
+    <div class="hero-icon">
+        <i data-lucide="graduation-cap" style="width:40px;height:40px;stroke:#fff;stroke-width:1.5;fill:none;"></i>
+    </div>
+    <h1>User Terms &amp; Conditions</h1>
     <p>Terms for students and community members using CampusLink</p>
 </div>
+
 <div class="policy-body">
     <div class="policy-meta">
-        Last updated: <?= TERMS_DATE ?> · Version <?= TERMS_VERSION ?>
+        <i data-lucide="calendar" style="width:13px;height:13px;flex-shrink:0;"></i>
+        Last updated: <?= TERMS_DATE ?> &middot; Version <?= TERMS_VERSION ?>
     </div>
+
     <div class="policy-section">
         <h2>1. Who This Applies To</h2>
         <p>These terms apply to all registered students and community members who use CampusLink to browse, contact, or review vendors at <?= e(SCHOOL_NAME) ?>.</p>
@@ -57,3 +74,9 @@
         <p>Questions? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color:#1a56db;font-weight:700;"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    if (window.lucide) lucide.createIcons();
+});
+</script>

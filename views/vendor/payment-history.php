@@ -13,7 +13,7 @@
 <div class="dash-card">
     <div class="dash-card-body">
         <div class="empty-state">
-            <div class="empty-icon">🧾</div>
+            <div class="empty-icon"><i data-lucide="file-text"></i></div>
             <h3>No payment records yet</h3>
             <p>Your payment history will appear here after your first subscription payment.</p>
             <a href="<?= SITE_URL ?>/vendor/payment" class="btn btn-primary">
@@ -86,7 +86,7 @@
                         <a href="<?= SITE_URL ?>/vendor/payment/receipt/<?= (int)$payment['id'] ?>"
                            class="btn btn-sm btn-outline-primary"
                            target="_blank">
-                            🧾 Receipt
+                            <i data-lucide="file-text" style="width:14px;height:14px;"></i> Receipt
                         </a>
                         <?php endif; ?>
                     </td>

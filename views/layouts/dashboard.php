@@ -59,6 +59,40 @@ function isActiveLink(string $path, string $current): string {
     <?php if (!empty($extraCss)): foreach ($extraCss as $css): ?>
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/<?= e($css) ?>">
     <?php endforeach; endif; ?>
+
+    <style>
+    /* Lucide icon baseline reset for dashboard */
+    .sidebar-nav-icon svg,
+    .dash-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vertical-align: middle;
+        flex-shrink: 0;
+    }
+    .notif-bell-btn svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        vertical-align: middle;
+    }
+    .dropdown-menu a svg,
+    .sidebar-logout-link svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        vertical-align: middle;
+        flex-shrink: 0;
+    }
+    </style>
 </head>
 <body class="dashboard-page">
 
@@ -80,8 +114,8 @@ function isActiveLink(string $path, string $current): string {
                     <!-- Notification Bell -->
                     <div style="position:relative;">
                         <button class="notif-bell-btn nav-link" aria-label="Notifications" aria-expanded="false"
-                                style="background:none;border:none;cursor:pointer;font-size:1.3rem;padding:0.4rem;">
-                            🔔
+                                style="background:none;border:none;cursor:pointer;padding:0.4rem;display:flex;align-items:center;">
+                            <i data-lucide="bell"></i>
                             <?php if ($unreadNotifs > 0): ?>
                             <span class="notif-count-badge" style="
                                 position:absolute;top:-4px;right:-4px;
@@ -111,7 +145,7 @@ function isActiveLink(string $path, string $current): string {
                             <span style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">
                                 <?= e($isVendor ? ($vendorInfo['full_name'] ?? 'Vendor') : ($userInfo['full_name'] ?? 'User')) ?>
                             </span>
-                            <span style="font-size:0.75rem;color:var(--text-muted);">▾</span>
+                            <i data-lucide="chevron-down" style="width:14px;height:14px;color:var(--text-muted);"></i>
                         </button>
                         <div id="user-menu" class="dropdown-menu" style="
                             display:none;position:absolute;top:calc(100% + 0.5rem);right:0;
@@ -122,14 +156,24 @@ function isActiveLink(string $path, string $current): string {
                                 <?= $isVendor ? 'Vendor Account' : 'Student Account' ?>
                             </div>
                             <?php if ($isVendor): ?>
-                            <a href="<?= SITE_URL ?>/vendor/dashboard" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">🏠 Dashboard</a>
-                            <a href="<?= SITE_URL ?>/vendor/profile" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">👤 My Profile</a>
+                            <a href="<?= SITE_URL ?>/vendor/dashboard" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">
+                                <i data-lucide="layout-dashboard"></i> Dashboard
+                            </a>
+                            <a href="<?= SITE_URL ?>/vendor/profile" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">
+                                <i data-lucide="user"></i> My Profile
+                            </a>
                             <?php else: ?>
-                            <a href="<?= SITE_URL ?>/user/dashboard" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">🏠 Dashboard</a>
-                            <a href="<?= SITE_URL ?>/user/profile" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">👤 My Profile</a>
+                            <a href="<?= SITE_URL ?>/user/dashboard" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">
+                                <i data-lucide="layout-dashboard"></i> Dashboard
+                            </a>
+                            <a href="<?= SITE_URL ?>/user/profile" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--text-primary);border-radius:var(--radius-md);">
+                                <i data-lucide="user"></i> My Profile
+                            </a>
                             <?php endif; ?>
                             <div style="border-top:1px solid var(--divider);margin-top:0.5rem;padding-top:0.5rem;">
-                                <a href="<?= SITE_URL ?>/logout" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--danger);border-radius:var(--radius-md);">🚪 Logout</a>
+                                <a href="<?= SITE_URL ?>/logout" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;font-size:0.875rem;color:var(--danger);border-radius:var(--radius-md);">
+                                    <i data-lucide="log-out"></i> Logout
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -154,9 +198,9 @@ function isActiveLink(string $path, string $current): string {
                 <span class="sidebar-user-type">
                     <?php if ($isVendor): ?>
                         <?= ucfirst($vendorInfo['vendor_type'] ?? 'vendor') ?> Vendor
-                        · <?= ucfirst($vendorInfo['plan_type'] ?? 'basic') ?> Plan
+                        &middot; <?= ucfirst($vendorInfo['plan_type'] ?? 'basic') ?> Plan
                     <?php else: ?>
-                        Student · <?= e($userInfo['level'] ?? '') ?>
+                        Student &middot; <?= e($userInfo['level'] ?? '') ?>
                     <?php endif; ?>
                 </span>
             </div>
@@ -167,43 +211,43 @@ function isActiveLink(string $path, string $current): string {
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Main</div>
                     <a href="<?= SITE_URL ?>/vendor/dashboard" class="sidebar-nav-link <?= isActiveLink('/vendor/dashboard', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">🏠</span> Dashboard
+                        <span class="sidebar-nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
                     </a>
                     <a href="<?= SITE_URL ?>/vendor/profile" class="sidebar-nav-link <?= isActiveLink('/vendor/profile', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">👤</span> My Profile
+                        <span class="sidebar-nav-icon"><i data-lucide="user"></i></span> My Profile
                     </a>
                 </div>
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Business</div>
                     <a href="<?= SITE_URL ?>/vendor/reviews" class="sidebar-nav-link <?= isActiveLink('/vendor/reviews', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">⭐</span> Reviews
+                        <span class="sidebar-nav-icon"><i data-lucide="star"></i></span> Reviews
                     </a>
                     <a href="<?= SITE_URL ?>/vendor/complaints" class="sidebar-nav-link <?= isActiveLink('/vendor/complaints', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">📋</span> Complaints
+                        <span class="sidebar-nav-icon"><i data-lucide="file-text"></i></span> Complaints
                     </a>
                 </div>
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Billing</div>
                     <a href="<?= SITE_URL ?>/vendor/subscription" class="sidebar-nav-link <?= isActiveLink('/vendor/subscription', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">💳</span> Subscription
+                        <span class="sidebar-nav-icon"><i data-lucide="credit-card"></i></span> Subscription
                     </a>
                     <a href="<?= SITE_URL ?>/vendor/payment-history" class="sidebar-nav-link <?= isActiveLink('/vendor/payment-history', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">🧾</span> Payment History
+                        <span class="sidebar-nav-icon"><i data-lucide="receipt"></i></span> Payment History
                     </a>
                 </div>
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Other</div>
                     <a href="<?= SITE_URL ?>/vendor/notifications" class="sidebar-nav-link <?= isActiveLink('/vendor/notifications', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">🔔</span> Notifications
+                        <span class="sidebar-nav-icon"><i data-lucide="bell"></i></span> Notifications
                         <?php if ($unreadNotifs > 0): ?>
                         <span class="sidebar-nav-badge"><?= $unreadNotifs ?></span>
                         <?php endif; ?>
                     </a>
                     <a href="<?= SITE_URL ?>/browse" class="sidebar-nav-link">
-                        <span class="sidebar-nav-icon">🔍</span> Browse Directory
+                        <span class="sidebar-nav-icon"><i data-lucide="search"></i></span> Browse Directory
                     </a>
                     <a href="<?= SITE_URL ?>/logout" class="sidebar-nav-link sidebar-logout-link">
-                        <span class="sidebar-nav-icon">🚪</span> Logout
+                        <span class="sidebar-nav-icon"><i data-lucide="log-out"></i></span> Logout
                     </a>
                 </div>
 
@@ -212,40 +256,40 @@ function isActiveLink(string $path, string $current): string {
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Main</div>
                     <a href="<?= SITE_URL ?>/user/dashboard" class="sidebar-nav-link <?= isActiveLink('/user/dashboard', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">🏠</span> Dashboard
+                        <span class="sidebar-nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
                     </a>
                     <a href="<?= SITE_URL ?>/user/profile" class="sidebar-nav-link <?= isActiveLink('/user/profile', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">👤</span> My Profile
+                        <span class="sidebar-nav-icon"><i data-lucide="user"></i></span> My Profile
                     </a>
                 </div>
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Activity</div>
                     <a href="<?= SITE_URL ?>/user/saved-vendors" class="sidebar-nav-link <?= isActiveLink('/user/saved-vendors', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">♥</span> Saved Vendors
+                        <span class="sidebar-nav-icon"><i data-lucide="heart"></i></span> Saved Vendors
                     </a>
                     <a href="<?= SITE_URL ?>/user/my-reviews" class="sidebar-nav-link <?= isActiveLink('/user/my-reviews', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">⭐</span> My Reviews
+                        <span class="sidebar-nav-icon"><i data-lucide="star"></i></span> My Reviews
                     </a>
                     <a href="<?= SITE_URL ?>/user/my-complaints" class="sidebar-nav-link <?= isActiveLink('/user/my-complaints', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">📋</span> My Complaints
+                        <span class="sidebar-nav-icon"><i data-lucide="file-text"></i></span> My Complaints
                     </a>
                 </div>
                 <div class="sidebar-nav-section">
                     <div class="sidebar-nav-label">Other</div>
                     <a href="<?= SITE_URL ?>/user/notifications" class="sidebar-nav-link <?= isActiveLink('/user/notifications', $currentPath) ?>">
-                        <span class="sidebar-nav-icon">🔔</span> Notifications
+                        <span class="sidebar-nav-icon"><i data-lucide="bell"></i></span> Notifications
                         <?php if ($unreadNotifs > 0): ?>
                         <span class="sidebar-nav-badge"><?= $unreadNotifs ?></span>
                         <?php endif; ?>
                     </a>
                     <a href="<?= SITE_URL ?>/browse" class="sidebar-nav-link">
-                        <span class="sidebar-nav-icon">🔍</span> Browse Directory
+                        <span class="sidebar-nav-icon"><i data-lucide="search"></i></span> Browse Directory
                     </a>
                     <a href="<?= SITE_URL ?>/vendor/register" class="sidebar-nav-link" style="color:var(--accent-green);">
-                        <span class="sidebar-nav-icon">🏪</span> Become a Vendor
+                        <span class="sidebar-nav-icon"><i data-lucide="store"></i></span> Become a Vendor
                     </a>
                     <a href="<?= SITE_URL ?>/logout" class="sidebar-nav-link sidebar-logout-link">
-                        <span class="sidebar-nav-icon">🚪</span> Logout
+                        <span class="sidebar-nav-icon"><i data-lucide="log-out"></i></span> Logout
                     </a>
                 </div>
                 <?php endif; ?>
@@ -255,7 +299,9 @@ function isActiveLink(string $path, string $current): string {
         <!-- Main Content -->
         <main class="dashboard-main">
             <!-- Mobile sidebar toggle -->
-            <button class="mobile-sidebar-btn">☰ Menu</button>
+            <button class="mobile-sidebar-btn">
+                <i data-lucide="menu" style="width:16px;height:16px;vertical-align:middle;"></i> Menu
+            </button>
 
             <!-- Flash Messages -->
             <?php require __DIR__ . '/../partials/flash.php'; ?>
@@ -273,6 +319,7 @@ function isActiveLink(string $path, string $current): string {
     <?php if (!empty($extraJs)): foreach ($extraJs as $js): ?>
     <script src="<?= SITE_URL ?>/assets/js/<?= e($js) ?>" defer></script>
     <?php endforeach; endif; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.568.0/dist/lucide.min.js" defer></script>
     <script defer>
         document.addEventListener('DOMContentLoaded', function() {

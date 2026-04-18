@@ -15,7 +15,7 @@
     <div class="dash-card" style="margin-bottom:1.5rem;">
         <div class="dash-card-header">
             <div class="dash-card-title">
-                <span class="dash-card-title-icon">📋</span>
+                <span class="dash-card-title-icon"><i data-lucide="clipboard"></i></span>
                 Select a Plan
             </div>
         </div>
@@ -58,7 +58,7 @@
     <div class="dash-card" style="margin-bottom:1.5rem;">
         <div class="dash-card-header">
             <div class="dash-card-title">
-                <span class="dash-card-title-icon">🧾</span>
+                <span class="dash-card-title-icon"><i data-lucide="file-text"></i></span>
                 Payment Summary
             </div>
         </div>
@@ -93,33 +93,38 @@
             </div>
 
             <!-- Payment Notice -->
-            <div class="payment-notice">
-                <strong>⚠️ Important — Read Before Paying</strong>
-                Payment is processed securely through Paystack.
-                Your subscription activates within minutes of successful payment.
-                <strong>Refunds are only issued in cases of duplicate payment or technical error</strong>
-                — see our <a href="<?= SITE_URL ?>/refund-policy" target="_blank">Refund Policy</a>.
+            <div class="payment-notice" style="display:flex;align-items:flex-start;gap:0.5rem;">
+                <i data-lucide="alert-triangle" style="width:16px;height:16px;flex-shrink:0;margin-top:0.1rem;"></i>
+                <div>
+                    <strong>Important — Read Before Paying</strong>
+                    Payment is processed securely through Paystack.
+                    Your subscription activates within minutes of successful payment.
+                    <strong>Refunds are only issued in cases of duplicate payment or technical error</strong>
+                    — see our <a href="<?= SITE_URL ?>/refund-policy" target="_blank">Refund Policy</a>.
+                </div>
             </div>
 
             <!-- Pay Button -->
             <button class="btn btn-primary btn-full paystack-pay-btn"
-                    style="font-size:1.1rem;padding:1rem;"
+                    style="font-size:1.1rem;padding:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;"
                     data-vendor-id="<?= (int)$vendor['id'] ?>"
                     data-vendor-type="<?= e($vendor['vendor_type']) ?>"
                     data-email="<?= e($vendor['school_email'] ?? $vendor['working_email'] ?? '') ?>"
                     data-paystack-key="<?= e(PAYSTACK_PUBLIC_KEY) ?>">
-                🔒 Pay Securely with Paystack
+                <i data-lucide="lock" style="width:18px;height:18px;"></i> Pay Securely with Paystack
             </button>
 
             <p style="text-align:center;font-size:var(--font-size-xs);
-                      color:var(--text-muted);margin-top:0.75rem;">
-                🔒 Secured by Paystack · Card, Bank Transfer, USSD supported
+                      color:var(--text-muted);margin-top:0.75rem;
+                      display:flex;align-items:center;justify-content:center;gap:0.35rem;">
+                <i data-lucide="shield" style="width:13px;height:13px;"></i>
+                Secured by Paystack · Card, Bank Transfer, USSD supported
             </p>
         </div>
     </div>
 
     <div class="disclaimer-box">
-        <span class="disclaimer-icon">ℹ️</span>
+        <span class="disclaimer-icon"><i data-lucide="info"></i></span>
         <div class="disclaimer-text">
             By completing this payment, you agree to the
             <a href="<?= SITE_URL ?>/vendor-terms" target="_blank">Vendor Terms of Service</a>

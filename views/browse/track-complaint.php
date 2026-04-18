@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die(); ?>
+﻿<?php defined('CAMPUSLINK') or die(); ?>
 
 <?php
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 
 <section style="padding:3rem 0;min-height:70vh;">
@@ -15,7 +18,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <div style="margin-bottom:2rem;">
             <h1 style="font-size:1.75rem;font-weight:900;color:var(--text-primary);
                        margin-bottom:0.5rem;display:flex;align-items:center;gap:0.6rem;">
-                <!-- Search icon replacing 🔍 -->
+                <!-- Search icon replacing ðŸ” -->
                 <?= lucide_icon('<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>', 28, 'var(--primary)') ?>
                 Track Complaint
             </h1>
@@ -50,7 +53,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
             <div class="dash-card-header">
                 <div class="dash-card-title">
                     <span class="dash-card-title-icon">
-                        <!-- ClipboardList icon replacing 📋 -->
+                        <!-- ClipboardList icon replacing ðŸ“‹ -->
                         <?= lucide_icon('<rect x="9" y="2" width="6" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="12" y1="16" x2="16" y2="16"/><line x1="8" y1="11" x2="8.01" y2="11"/><line x1="8" y1="16" x2="8.01" y2="16"/>', 18, 'var(--primary)') ?>
                     </span>
                     Complaint Details
@@ -184,7 +187,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
 
                     <?php if (!empty($complaint['admin_note'])): ?>
                     <div class="alert alert-info">
-                        <!-- Info icon replacing ℹ️ -->
+                        <!-- Info icon replacing â„¹ï¸ -->
                         <span class="alert-icon">
                             <?= lucide_icon('<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>', 18, 'currentColor') ?>
                         </span>
@@ -198,7 +201,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                     <?php if ($complaint['status'] === 'resolved'): ?>
                     <div class="alert alert-success" style="background:#f0fdf4;
                          border-color:#bbf7d0;color:#166534;">
-                        <!-- CheckCircle icon replacing ✅ -->
+                        <!-- CheckCircle icon replacing âœ… -->
                         <span class="alert-icon">
                             <?= lucide_icon('<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>', 18, '#166534') ?>
                         </span>
@@ -221,7 +224,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <div class="dash-card">
             <div class="dash-card-body">
                 <div class="empty-state">
-                    <!-- Search icon replacing 🔍 -->
+                    <!-- Search icon replacing ðŸ” -->
                     <div class="empty-icon">
                         <?= lucide_icon('<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>', 48, 'var(--primary)') ?>
                     </div>
@@ -240,7 +243,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
             <a href="<?= SITE_URL ?>/browse"
                style="font-size:var(--font-size-sm);color:var(--text-muted);
                       display:inline-flex;align-items:center;gap:0.3rem;">
-                <!-- ArrowLeft icon replacing ← -->
+                <!-- ArrowLeft icon replacing â† -->
                 <?= lucide_icon('<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>', 15, 'var(--text-muted)') ?>
                 Back to Directory
             </a>

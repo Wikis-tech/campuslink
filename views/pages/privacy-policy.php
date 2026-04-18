@@ -1,23 +1,32 @@
 <?php defined('CAMPUSLINK') or die(); ?>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
 <style>
 .policy-hero{background:linear-gradient(135deg,#1e1b4b,#4338ca);padding:2.5rem 1rem;text-align:center;color:#fff;}
-.policy-hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:0 0 0.4rem;}
+.policy-hero .hero-icon{display:flex;justify-content:center;margin-bottom:0.75rem;}
+.policy-hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:0 0 0.4rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
 .policy-hero p{font-size:0.85rem;opacity:0.8;margin:0;}
 .policy-body{max-width:780px;margin:0 auto;padding:2rem 1rem 3rem;}
 .policy-section{margin-bottom:2rem;}
 .policy-section h2{font-size:1rem;font-weight:800;color:#1e293b;margin:0 0 0.6rem;padding-bottom:0.4rem;border-bottom:2px solid #e2e8f0;}
 .policy-section p,.policy-section li{font-size:0.875rem;color:#374151;line-height:1.8;margin:0 0 0.5rem;}
 .policy-section ul{padding-left:1.25rem;margin:0.5rem 0;}
-.policy-meta{background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.5rem;font-size:0.78rem;color:#3730a3;}
+.policy-meta{background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.5rem;font-size:0.78rem;color:#3730a3;display:flex;align-items:center;gap:0.5rem;}
 </style>
 
 <div class="policy-hero">
-    <h1>🔒 Privacy Policy</h1>
+    <div class="hero-icon">
+        <i data-lucide="shield" style="width:40px;height:40px;stroke:#fff;stroke-width:1.5;fill:none;"></i>
+    </div>
+    <h1>Privacy Policy</h1>
     <p>How CampusLink collects, uses, and protects your data</p>
 </div>
+
 <div class="policy-body">
     <div class="policy-meta">
-        Last updated: <?= TERMS_DATE ?> · Version <?= PRIVACY_VERSION ?>
+        <i data-lucide="calendar" style="width:13px;height:13px;flex-shrink:0;"></i>
+        Last updated: <?= TERMS_DATE ?> &middot; Version <?= PRIVACY_VERSION ?>
     </div>
     <div class="policy-section">
         <h2>1. Data We Collect</h2>
@@ -69,3 +78,5 @@
         <p>See our <a href="<?= SITE_URL ?>/data-retention" style="color:#4338ca;font-weight:700;">Data Retention Policy</a> for full details on how long we keep your data.</p>
     </div>
 </div>
+
+<script>lucide.createIcons();</script>

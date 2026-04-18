@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die(); ?>
+﻿<?php defined('CAMPUSLINK') or die(); ?>
 
 <?php
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 
 <div class="dashboard-page-header">
@@ -14,7 +17,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <h1 class="dashboard-page-title">Reviews</h1>
         <p class="dashboard-page-subtitle">
             <?= (int)$pagination['total'] ?> review<?= $pagination['total'] != 1 ? 's' : '' ?>
-            · <?= number_format($avgRating, 1) ?> average
+            Â· <?= number_format($avgRating, 1) ?> average
         </p>
     </div>
 </div>
@@ -65,7 +68,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
 <div class="dash-card">
     <div class="dash-card-body">
         <div class="empty-state">
-            <!-- Star icon replacing ⭐ -->
+            <!-- Star icon replacing â­ -->
             <div class="empty-icon">
                 <?= lucide_icon(
                     '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
@@ -99,7 +102,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                             </div>
                             <div class="review-user-level">
                                 <?= e($review['level'] ?? '') ?>
-                                <?= !empty($review['department']) ? ' · ' . e($review['department']) : '' ?>
+                                <?= !empty($review['department']) ? ' Â· ' . e($review['department']) : '' ?>
                             </div>
                         </div>
                     </div>
@@ -138,7 +141,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                     <button class="btn btn-sm btn-outline-primary reply-toggle-btn"
                             data-review-id="<?= (int)$review['id'] ?>"
                             style="display:inline-flex;align-items:center;gap:0.4rem;">
-                        <!-- MessageSquare icon replacing 💬 -->
+                        <!-- MessageSquare icon replacing ðŸ’¬ -->
                         <?= lucide_icon(
                             '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
                             15, 'currentColor'

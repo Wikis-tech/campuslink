@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 /**
  * Reusable Vendor Card Component
- * $vendor   array   — vendor data with avg_rating, review_count
- * $savedIds array   — list of saved vendor IDs for current user
- * $userId   int     — current user ID (0 if not logged in)
+ * $vendor   array   â€” vendor data with avg_rating, review_count
+ * $savedIds array   â€” list of saved vendor IDs for current user
+ * $userId   int     â€” current user ID (0 if not logged in)
  */
 defined('CAMPUSLINK') or die();
 
@@ -13,12 +13,15 @@ $rating     = (float)($vendor['avg_rating'] ?? 0);
 $reviews    = (int)($vendor['review_count'] ?? 0);
 $initials   = strtoupper(substr($vendor['business_name'] ?? 'V', 0, 2));
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 <article class="browse-vendor-card <?= $isFeatured ? 'featured' : '' ?>"
          itemscope itemtype="https://schema.org/LocalBusiness">
@@ -66,7 +69,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
             </div>
         </div>
 
-        <!-- Save Button — ♥/♡ → Heart -->
+        <!-- Save Button â€” â™¥/â™¡ â†’ Heart -->
         <button class="browse-save-btn <?= $isSaved ? 'saved' : '' ?>"
                 data-vendor-id="<?= (int)$vendor['id'] ?>"
                 data-user-id="<?= (int)($userId ?? 0) ?>"
@@ -88,7 +91,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         </p>
         <div class="browse-card-meta">
             <?php if (!empty($vendor['price_range'])): ?>
-            <!-- 💰 → DollarSign -->
+            <!-- ðŸ’° â†’ DollarSign -->
             <span class="browse-card-price"
                   style="display:inline-flex;align-items:center;gap:0.25rem;">
                 <?= lucide_icon('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', 13, 'currentColor') ?>
@@ -96,7 +99,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
             </span>
             <?php endif; ?>
 
-            <!-- 🎓/🏢 → GraduationCap / Building2 -->
+            <!-- ðŸŽ“/ðŸ¢ â†’ GraduationCap / Building2 -->
             <span class="browse-card-type"
                   style="display:inline-flex;align-items:center;gap:0.25rem;">
                 <?php if ($vendor['vendor_type'] === 'student'): ?>
@@ -109,7 +112,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
             </span>
 
             <?php if ($isFeatured): ?>
-            <!-- ⭐ Featured → Star -->
+            <!-- â­ Featured â†’ Star -->
             <span class="badge badge-featured"
                   style="display:inline-flex;align-items:center;gap:0.25rem;">
                 <?= lucide_icon('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', 12, 'currentColor', 'fill:currentColor;') ?>
@@ -122,7 +125,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
     <!-- Card Footer -->
     <div class="browse-card-footer">
         <?php if (!empty($vendor['whatsapp_number'])): ?>
-        <!-- 💬 → MessageCircle -->
+        <!-- ðŸ’¬ â†’ MessageCircle -->
         <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $vendor['whatsapp_number']) ?>"
            target="_blank"
            rel="noopener noreferrer"
@@ -135,7 +138,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <?php endif; ?>
 
         <?php if (!empty($vendor['phone'])): ?>
-        <!-- 📞 → Phone -->
+        <!-- ðŸ“ž â†’ Phone -->
         <a href="tel:<?= e($vendor['phone']) ?>"
            class="btn-call"
            style="display:inline-flex;align-items:center;gap:0.35rem;">
@@ -144,7 +147,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         </a>
         <?php endif; ?>
 
-        <!-- → arrow → ArrowRight -->
+        <!-- â†’ arrow â†’ ArrowRight -->
         <a href="<?= SITE_URL ?>/vendor/<?= e($vendor['slug']) ?>"
            class="btn-profile"
            style="display:inline-flex;align-items:center;gap:0.35rem;"

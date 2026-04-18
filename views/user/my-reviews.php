@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die();
+﻿<?php defined('CAMPUSLINK') or die();
 $pageTitle = 'My Reviews';
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 <style>
 .rev-head{margin-bottom:1.25rem;}
@@ -38,7 +41,7 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
 </style>
 
 <div class="rev-head">
-    <!-- ⭐ → Star -->
+    <!-- â­ â†’ Star -->
     <h1>
         <?= lucide_icon('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', 22, '#f59e0b', 'fill:#fde68a;stroke:#f59e0b;') ?>
         My Reviews
@@ -90,6 +93,6 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
     </div>
     <h3>No reviews yet</h3>
     <p>After using a vendor's service, visit their profile to leave a review.</p>
-    <a href="<?= SITE_URL ?>/browse">Find vendors to review →</a>
+    <a href="<?= SITE_URL ?>/browse">Find vendors to review â†’</a>
 </div>
 <?php endif; ?>

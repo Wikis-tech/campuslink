@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die();
+﻿<?php defined('CAMPUSLINK') or die();
 $pageTitle = 'Dashboard';
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 <style>
 .dash-welcome {
@@ -244,20 +247,20 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
 <!-- Welcome banner -->
 <div class="dash-welcome">
     <div>
-        <!-- 👋 → Hand (wave) -->
+        <!-- ðŸ‘‹ â†’ Hand (wave) -->
         <h1>
             <?= lucide_icon('<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>', 22, '#fff') ?>
             Welcome back, <?= e(explode(' ', $user['full_name'])[0]) ?>!
         </h1>
-        <p><?= e(SCHOOL_NAME) ?> · Student Account</p>
+        <p><?= e(SCHOOL_NAME) ?> Â· Student Account</p>
     </div>
     <div class="dash-welcome-btns">
-        <!-- 🔍 → Search -->
+        <!-- ðŸ” â†’ Search -->
         <a href="<?= SITE_URL ?>/browse" class="dwb dwb-white">
             <?= lucide_icon('<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>', 14, '#1a56db') ?>
             Browse Vendors
         </a>
-        <!-- ✏️ → PenLine -->
+        <!-- âœï¸ â†’ PenLine -->
         <a href="<?= SITE_URL ?>/user/profile" class="dwb dwb-outline">
             <?= lucide_icon('<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>', 14, '#fff') ?>
             Edit Profile
@@ -268,7 +271,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
 <!-- Stats -->
 <div class="stats-grid">
     <div class="stat-card" style="animation-delay:0.05s;">
-        <!-- ❤️ → Heart -->
+        <!-- â¤ï¸ â†’ Heart -->
         <div class="si">
             <?= lucide_icon('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>', 28, '#e11d48', 'fill:#fecdd3;stroke:#e11d48;') ?>
         </div>
@@ -276,7 +279,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <div class="sl">Saved Vendors</div>
     </div>
     <div class="stat-card" style="animation-delay:0.1s;">
-        <!-- ⭐ → Star -->
+        <!-- â­ â†’ Star -->
         <div class="si">
             <?= lucide_icon('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', 28, '#f59e0b', 'fill:#fde68a;stroke:#f59e0b;') ?>
         </div>
@@ -284,7 +287,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <div class="sl">Reviews Given</div>
     </div>
     <div class="stat-card" style="animation-delay:0.15s;">
-        <!-- 🚨 → AlertOctagon -->
+        <!-- ðŸš¨ â†’ AlertOctagon -->
         <div class="si">
             <?= lucide_icon('<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>', 28, '#dc2626', 'fill:#fee2e2;stroke:#dc2626;') ?>
         </div>
@@ -292,7 +295,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <div class="sl">Complaints Filed</div>
     </div>
     <div class="stat-card" style="animation-delay:0.2s;">
-        <!-- 🔔 → Bell -->
+        <!-- ðŸ”” â†’ Bell -->
         <div class="si">
             <?= lucide_icon('<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>', 28, '#1a56db', 'fill:#dbeafe;stroke:#1a56db;') ?>
         </div>
@@ -334,7 +337,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                         </div>
                         <div class="sv-actions">
                             <?php if (!empty($sv['whatsapp_number'])): ?>
-                            <!-- 💬 → MessageCircle -->
+                            <!-- ðŸ’¬ â†’ MessageCircle -->
                             <a href="https://wa.me/<?= preg_replace('/[^0-9]/','',$sv['whatsapp_number']) ?>"
                                target="_blank" class="sv-wa">
                                 <?= lucide_icon('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>', 14, '#166634') ?>
@@ -351,7 +354,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                         <?= lucide_icon('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>', 32, '#e11d48', 'fill:#fecdd3;stroke:#e11d48;') ?>
                     </div>
                     <p>No saved vendors yet</p>
-                    <a href="<?= SITE_URL ?>/browse">Browse vendors →</a>
+                    <a href="<?= SITE_URL ?>/browse">Browse vendors â†’</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -389,7 +392,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                         <div class="rev-date"><?= date('d M Y', strtotime($rev['created_at'])) ?></div>
                         <div class="rev-text">
                             <?= e(substr($rev['comment'] ?? '', 0, 80)) ?>
-                            <?= strlen($rev['comment'] ?? '') > 80 ? '…' : '' ?>
+                            <?= strlen($rev['comment'] ?? '') > 80 ? 'â€¦' : '' ?>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -399,7 +402,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                         <?= lucide_icon('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', 32, '#f59e0b', 'fill:#fde68a;stroke:#f59e0b;') ?>
                     </div>
                     <p>No reviews yet</p>
-                    <a href="<?= SITE_URL ?>/browse">Find a vendor to review →</a>
+                    <a href="<?= SITE_URL ?>/browse">Find a vendor to review â†’</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -411,7 +414,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <div class="dash-card">
             <div class="dash-card-head">
                 <h3>
-                    <!-- ⚡ → Zap -->
+                    <!-- âš¡ â†’ Zap -->
                     <?= lucide_icon('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>', 15, '#f59e0b', 'fill:#fde68a;stroke:#f59e0b;') ?>
                     Quick Actions
                 </h3>
@@ -484,7 +487,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                     </span>
                 </div>
                 <?php endforeach; ?>
-                <!-- ✏️ → PenLine -->
+                <!-- âœï¸ â†’ PenLine -->
                 <a href="<?= SITE_URL ?>/user/profile"
                    style="display:flex;align-items:center;justify-content:center;gap:0.4rem;
                           margin-top:0.85rem;padding:0.55rem;background:#eff6ff;color:#1a56db;

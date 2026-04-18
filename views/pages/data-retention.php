@@ -3,6 +3,8 @@
 .policy-hero{background:linear-gradient(135deg,#134e4a,#0d9488);padding:2.5rem 1rem;text-align:center;color:#fff;}
 .policy-hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:0 0 0.4rem;}
 .policy-hero p{font-size:0.85rem;opacity:0.8;margin:0;}
+.policy-hero-icon{display:flex;justify-content:center;margin-bottom:0.75rem;color:#fff;}
+.policy-hero-icon svg{width:44px;height:44px;}
 .policy-body{max-width:780px;margin:0 auto;padding:2rem 1rem 3rem;}
 .policy-section{margin-bottom:2rem;}
 .policy-section h2{font-size:1rem;font-weight:800;color:#1e293b;margin:0 0 0.6rem;padding-bottom:0.4rem;border-bottom:2px solid #e2e8f0;}
@@ -16,7 +18,10 @@
 </style>
 
 <div class="policy-hero">
-    <h1>🗄️ Data Retention Policy</h1>
+    <div class="policy-hero-icon">
+        <i data-lucide="database" style="width:44px;height:44px;"></i>
+    </div>
+    <h1>Data Retention Policy</h1>
     <p>How long CampusLink keeps your personal data</p>
 </div>
 <div class="policy-body">

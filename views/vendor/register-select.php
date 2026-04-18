@@ -1,13 +1,16 @@
-<?php defined('CAMPUSLINK') or die(); ?>
+﻿<?php defined('CAMPUSLINK') or die(); ?>
 
 <?php
 // Helper to render a lucide-style SVG icon inline
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 40, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 
 <div class="auth-container" style="padding:3rem 1rem;">
@@ -64,7 +67,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                     <?php foreach ([
                         'School email required',
                         'Matric number verified',
-                        'From ₦2,000/semester',
+                        'From â‚¦2,000/semester',
                         'Basic, Premium & Featured plans',
                     ] as $f): ?>
                     <div style="font-size:var(--font-size-xs);color:var(--text-secondary);
@@ -114,7 +117,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                     <?php foreach ([
                         'Personal or business email',
                         'NIN or CAC verification',
-                        'From ₦4,000/semester',
+                        'From â‚¦4,000/semester',
                         'Basic, Premium & Featured plans',
                     ] as $f): ?>
                     <div style="font-size:var(--font-size-xs);color:var(--text-secondary);
@@ -143,13 +146,13 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                 Already registered?
                 <a href="<?= SITE_URL ?>/vendor/login"
                    style="color:var(--primary);font-weight:700;">
-                    Sign in to your vendor account →
+                    Sign in to your vendor account â†’
                 </a>
             </p>
         </div>
 
         <div class="disclaimer-box" style="margin-top:2rem;">
-            <!-- Warning/AlertTriangle icon replacing ⚠️ -->
+            <!-- Warning/AlertTriangle icon replacing âš ï¸ -->
             <span class="disclaimer-icon" style="display:flex;align-items:flex-start;padding-top:2px;">
                 <?= lucide_icon(
                     '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
@@ -162,7 +165,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                 service quality. All transactions are independent.
                 <a href="<?= SITE_URL ?>/vendor-terms" target="_blank"
                    style="color:var(--warning-dark);font-weight:700;">
-                    Read Vendor Terms →
+                    Read Vendor Terms â†’
                 </a>
             </div>
         </div>

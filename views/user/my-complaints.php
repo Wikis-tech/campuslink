@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die();
+﻿<?php defined('CAMPUSLINK') or die();
 $pageTitle = 'My Complaints';
 
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;flex-shrink:0;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 ?>
 <style>
 .comp-head{margin-bottom:1.25rem;}
@@ -39,7 +42,7 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
 </style>
 
 <div class="comp-head">
-    <!-- 🚨 → AlertOctagon -->
+    <!-- ðŸš¨ â†’ AlertOctagon -->
     <h1>
         <?= lucide_icon('<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>', 22, '#1e293b') ?>
         My Complaints
@@ -70,7 +73,7 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
         <?php if (!empty($c['description'])): ?>
         <div class="comp-desc">
             <?= e(substr($c['description'], 0, 200)) ?>
-            <?= strlen($c['description']) > 200 ? '…' : '' ?>
+            <?= strlen($c['description']) > 200 ? 'â€¦' : '' ?>
         </div>
         <?php endif; ?>
         <?php if (!empty($c['ticket_id'])): ?>
@@ -81,7 +84,7 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
 </div>
 <?php else: ?>
 <div class="empty-state">
-    <!-- 🚨 empty state → AlertOctagon -->
+    <!-- ðŸš¨ empty state â†’ AlertOctagon -->
     <div class="ei">
         <?= lucide_icon('<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>', 48, '#94a3b8') ?>
     </div>

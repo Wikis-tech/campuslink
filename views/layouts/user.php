@@ -8,6 +8,7 @@
     <link rel="icon" type="image/webp" href="<?= SITE_URL ?>/assets/images/logo.webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.568.0/dist/lucide.min.js"></script>
     <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -16,6 +17,16 @@
         color: #1e293b;
         min-height: 100vh;
     }
+
+    /* Lucide icon baseline */
+    .nav-icon svg, .ud-logout-btn svg, .ud-menu-btn svg,
+    .ud-notif-btn svg, .ud-browse-btn svg {
+        width: 16px; height: 16px;
+        stroke: currentColor; stroke-width: 2;
+        fill: none; stroke-linecap: round; stroke-linejoin: round;
+        vertical-align: middle; flex-shrink: 0;
+    }
+    .nav-icon { width: 20px; display: flex; align-items: center; justify-content: center; }
 
     /* ── Sidebar ─────────────────────────────────────── */
     .ud-sidebar {
@@ -95,7 +106,6 @@
         font-weight: 600;
         transition: all 0.15s;
         position: relative;
-        border-radius: 0;
     }
     .ud-nav-link:hover {
         background: rgba(255,255,255,0.1);
@@ -114,7 +124,6 @@
         background: #34d399;
         border-radius: 0 2px 2px 0;
     }
-    .ud-nav-link .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
     .ud-nav-badge {
         margin-left: auto;
         background: #dc2626;
@@ -173,9 +182,10 @@
         background: none;
         border: none;
         cursor: pointer;
-        font-size: 1.2rem;
         color: #64748b;
         padding: 0.25rem;
+        align-items: center;
+        justify-content: center;
     }
     .ud-page-title {
         font-size: 1rem;
@@ -196,6 +206,9 @@
         font-weight: 700;
         text-decoration: none;
         transition: opacity 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
     }
     .ud-browse-btn:hover { opacity: 0.88; }
     .ud-notif-btn {
@@ -208,8 +221,8 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        font-size: 1rem;
         text-decoration: none;
+        color: #64748b;
         transition: background 0.15s;
     }
     .ud-notif-btn:hover { background: #e2e8f0; }
@@ -244,21 +257,10 @@
         from { opacity: 0; transform: translateY(-8px); }
         to   { opacity: 1; transform: translateY(0); }
     }
-    .ud-flash-success {
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
-        color: #166534;
-    }
-    .ud-flash-error {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        color: #dc2626;
-    }
-    .ud-flash-warning {
-        background: #fffbeb;
-        border: 1px solid #fde68a;
-        color: #92400e;
-    }
+    .ud-flash svg { width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0; }
+    .ud-flash-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .ud-flash-error   { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+    .ud-flash-warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
 
     /* ── Overlay for mobile ──────────────────────────── */
     .ud-overlay {
@@ -271,24 +273,12 @@
 
     /* ── Mobile ──────────────────────────────────────── */
     @media (max-width: 768px) {
-        .ud-sidebar {
-            transform: translateX(-100%);
-        }
-        .ud-sidebar.open {
-            transform: translateX(0);
-        }
-        .ud-main {
-            margin-left: 0;
-        }
-        .ud-menu-btn {
-            display: flex;
-        }
-        .ud-overlay.open {
-            display: block;
-        }
-        .ud-content {
-            padding: 1rem;
-        }
+        .ud-sidebar { transform: translateX(-100%); }
+        .ud-sidebar.open { transform: translateX(0); }
+        .ud-main { margin-left: 0; }
+        .ud-menu-btn { display: flex; }
+        .ud-overlay.open { display: block; }
+        .ud-content { padding: 1rem; }
     }
     </style>
 </head>
@@ -306,9 +296,7 @@
                 <?= strtoupper(substr(Session::get('user_name', 'U'), 0, 1)) ?>
             </div>
             <div>
-                <div class="ud-user-name">
-                    <?= e(Session::get('user_name', 'Student')) ?>
-                </div>
+                <div class="ud-user-name"><?= e(Session::get('user_name', 'Student')) ?></div>
                 <div class="ud-user-role">Student Account</div>
             </div>
         </div>
@@ -318,29 +306,29 @@
         <div class="ud-nav-section">Main</div>
         <a href="<?= SITE_URL ?>/user/dashboard"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], '/user/dashboard') ? 'active' : '' ?>">
-            <i data-lucide="home" class="nav-icon"></i> Dashboard
+            <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
         </a>
         <a href="<?= SITE_URL ?>/browse"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], '/browse') ? 'active' : '' ?>">
-            <i data-lucide="search" class="nav-icon"></i> Browse Vendors
+            <span class="nav-icon"><i data-lucide="search"></i></span> Browse Vendors
         </a>
 
         <div class="ud-nav-section">My Activity</div>
         <a href="<?= SITE_URL ?>/user/saved-vendors"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], 'saved-vendors') ? 'active' : '' ?>">
-            <i data-lucide="heart" class="nav-icon"></i> Saved Vendors
+            <span class="nav-icon"><i data-lucide="heart"></i></span> Saved Vendors
         </a>
         <a href="<?= SITE_URL ?>/user/my-reviews"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], 'my-reviews') ? 'active' : '' ?>">
-            <i data-lucide="star" class="nav-icon"></i> My Reviews
+            <span class="nav-icon"><i data-lucide="star"></i></span> My Reviews
         </a>
         <a href="<?= SITE_URL ?>/user/my-complaints"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], 'my-complaints') ? 'active' : '' ?>">
-            <i data-lucide="alert-circle" class="nav-icon"></i> My Complaints
+            <span class="nav-icon"><i data-lucide="alert-circle"></i></span> My Complaints
         </a>
         <a href="<?= SITE_URL ?>/user/notifications"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], 'notifications') ? 'active' : '' ?>">
-            <i data-lucide="bell" class="nav-icon"></i> Notifications
+            <span class="nav-icon"><i data-lucide="bell"></i></span> Notifications
             <?php
             $unreadCount = 0;
             if (Auth::isLoggedIn()) {
@@ -353,8 +341,7 @@
                     [(int)Session::get('user_id')]
                 );
             }
-            if ($unreadCount > 0):
-            ?>
+            if ($unreadCount > 0): ?>
             <span class="ud-nav-badge"><?= $unreadCount ?></span>
             <?php endif; ?>
         </a>
@@ -362,7 +349,7 @@
         <div class="ud-nav-section">Account</div>
         <a href="<?= SITE_URL ?>/user/profile"
            class="ud-nav-link <?= str_contains($_SERVER['REQUEST_URI'], 'profile') ? 'active' : '' ?>">
-            <i data-lucide="user" class="nav-icon"></i> My Profile
+            <span class="nav-icon"><i data-lucide="user"></i></span> My Profile
         </a>
     </nav>
 
@@ -382,15 +369,13 @@
             <button class="ud-menu-btn" onclick="openSidebar()">
                 <i data-lucide="menu"></i>
             </button>
-            <div class="ud-page-title">
-                <?= e($pageTitle ?? 'Dashboard') ?>
-            </div>
+            <div class="ud-page-title"><?= e($pageTitle ?? 'Dashboard') ?></div>
         </div>
         <div class="ud-topbar-right">
             <a href="<?= SITE_URL ?>/browse" class="ud-browse-btn">
-                <i data-lucide="search" style="width:16px;height:16px;"></i> Browse
+                <i data-lucide="search"></i> Browse
             </a>
-            <a href="<?= SITE_URL ?>/user/notifications" class="ud-notif-btn">
+            <a href="<?= SITE_URL ?>/user/notifications" class="ud-notif-btn" aria-label="Notifications">
                 <i data-lucide="bell"></i>
                 <?php if ($unreadCount > 0): ?>
                 <span class="ud-notif-dot"></span>
@@ -411,17 +396,17 @@
                 'error'   => 'ud-flash-error',
                 default   => 'ud-flash-warning',
             };
-            $icon = match($type) {
-                'success' => '✅',
-                'error'   => '⚠️',
-                default   => 'ℹ️',
+            $iconName = match($type) {
+                'success' => 'check-circle',
+                'error'   => 'alert-triangle',
+                default   => 'info',
             };
     ?>
     <div class="ud-flash <?= $cls ?>" style="margin:0.75rem 1.5rem 0;">
-        <?= $icon ?> <?= e($message) ?>
+        <i data-lucide="<?= $iconName ?>"></i>
+        <?= e($message) ?>
     </div>
-    <?php endforeach; ?>
-    <?php endforeach; ?>
+    <?php endforeach; endforeach; ?>
 
     <!-- Page content -->
     <main class="ud-content">
@@ -439,14 +424,9 @@ function closeSidebar() {
     document.getElementById('udSidebar').classList.remove('open');
     document.getElementById('udOverlay').classList.remove('open');
 }
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.lucide) lucide.createIcons();
+});
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.568.0/dist/lucide.min.js" defer></script>
-    <script defer>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        });
-    </script>
 </body>
 </html>

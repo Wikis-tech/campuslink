@@ -9,7 +9,7 @@
     </div>
     <a href="<?= SITE_URL ?>/vendor/<?= e($vendor['slug']) ?>"
        class="btn btn-outline-primary" target="_blank">
-        👁️ Preview Public Profile
+        <i data-lucide="eye" style="width:15px;height:15px;"></i> Preview Public Profile
     </a>
 </div>
 
@@ -29,7 +29,7 @@
             <div class="dash-card">
                 <div class="dash-card-header">
                     <div class="dash-card-title">
-                        <span class="dash-card-title-icon">🏪</span>
+                        <span class="dash-card-title-icon"><i data-lucide="shopping-cart"></i></span>
                         Business Information
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                             <?php foreach ($categories as $cat): ?>
                             <option value="<?= (int)$cat['id'] ?>"
                                 <?= $vendor['category_id'] == $cat['id'] ? 'selected' : '' ?>>
-                                <?= e($cat['icon']) ?> <?= e($cat['name']) ?>
+                                <?= e($cat['name']) ?>
                             </option>
                             <?php endforeach; ?>
                         </select>
@@ -163,7 +163,7 @@
             <div class="dash-card">
                 <div class="dash-card-header">
                     <div class="dash-card-title">
-                        <span class="dash-card-title-icon">📞</span>
+                        <span class="dash-card-title-icon"><i data-lucide="phone"></i></span>
                         Contact Information
                     </div>
                 </div>
@@ -204,7 +204,7 @@
             <div class="dash-card">
                 <div class="dash-card-header">
                     <div class="dash-card-title">
-                        <span class="dash-card-title-icon">🖼️</span>
+                        <span class="dash-card-title-icon"><i data-lucide="image"></i></span>
                         Business Logo
                     </div>
                 </div>
@@ -227,7 +227,9 @@
                                name="logo"
                                accept="image/jpeg,image/png,image/webp"
                                data-max-mb="2">
-                        <div class="file-upload-icon">🖼️</div>
+                        <div class="file-upload-icon">
+                            <i data-lucide="image" style="width:32px;height:32px;color:var(--text-muted);"></i>
+                        </div>
                         <div class="file-upload-text">
                             <strong>Click to upload</strong> or drag & drop
                         </div>
@@ -248,8 +250,8 @@
                    class="btn btn-outline-primary" style="flex:1;text-align:center;">
                     Cancel
                 </a>
-                <button type="submit" class="btn btn-primary" style="flex:2;">
-                    💾 Save Changes
+                <button type="submit" class="btn btn-primary" style="flex:2;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                    <i data-lucide="save" style="width:16px;height:16px;"></i> Save Changes
                 </button>
             </div>
 

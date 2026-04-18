@@ -1,12 +1,15 @@
-<?php defined('CAMPUSLINK') or die(); ?>
+﻿<?php defined('CAMPUSLINK') or die(); ?>
 
 <?php
+if (!function_exists('lucide_icon')) {
 function lucide_icon(string $path, int $size = 20, string $color = 'currentColor', string $extra_style = ''): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$size.'" height="'.$size.'"
                  viewBox="0 0 24 24" fill="none" stroke="'.$color.'"
                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                  style="display:inline-block;vertical-align:middle;'.$extra_style.'">'.$path.'</svg>';
 }
+}
+
 
 // Map your category names/slugs to Lucide SVG paths
 // Extend this array to match all your actual category names
@@ -95,7 +98,7 @@ function get_category_icon(array $cat, array $iconMap): string {
 
 <div class="cats-hero">
     <h1 style="display:flex;align-items:center;justify-content:center;gap:0.6rem;">
-        <!-- FolderOpen icon replacing 📂 -->
+        <!-- FolderOpen icon replacing ðŸ“‚ -->
         <?= lucide_icon('<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>', 32, '#fff') ?>
         All Categories
     </h1>
@@ -119,7 +122,7 @@ function get_category_icon(array $cat, array $iconMap): string {
         <?php endforeach; ?>
     <?php else: ?>
     <div class="cats-empty" style="grid-column:1/-1;">
-        <!-- FolderOpen icon replacing 📂 -->
+        <!-- FolderOpen icon replacing ðŸ“‚ -->
         <div style="display:flex;justify-content:center;margin-bottom:1rem;">
             <?= lucide_icon('<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>', 48, '#94a3b8') ?>
         </div>

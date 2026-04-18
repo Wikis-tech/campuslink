@@ -1,10 +1,30 @@
 <?php defined('CAMPUSLINK') or die(); ?>
 
+<script>
+if (!window.lucide) {
+    var s = document.createElement('script');
+    s.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js';
+    s.onload = function(){ lucide.createIcons(); };
+    document.head.appendChild(s);
+}
+</script>
+
+<style>
+.alert{display:flex;align-items:flex-start;gap:0.5rem;}
+.alert-icon svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;margin-top:1px;}
+.otp-header-icon{display:flex;justify-content:center;padding:0.5rem 0;}
+.otp-header-icon svg{width:40px;height:40px;stroke:#93c5fd;stroke-width:1.5;fill:none;}
+.verify-btn{display:flex;align-items:center;justify-content:center;gap:0.45rem;}
+.verify-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;}
+</style>
+
 <div class="auth-container">
     <div class="auth-card">
 
         <div class="auth-card-header">
-            <div class="auth-logo" style="font-size:2.5rem;">📱</div>
+            <div class="auth-logo otp-header-icon">
+                <i data-lucide="smartphone"></i>
+            </div>
             <div class="auth-title">Phone Verification</div>
             <div class="auth-subtitle">Enter the 6-digit code sent to your phone</div>
         </div>
@@ -40,13 +60,13 @@
                 <!-- Attempts warning -->
                 <?php if (!empty($attemptsLeft) && $attemptsLeft < 3): ?>
                 <div class="alert alert-warning" style="margin-bottom:1rem;">
-                    <span class="alert-icon">⚠️</span>
+                    <span class="alert-icon"><i data-lucide="alert-triangle"></i></span>
                     <?= (int)$attemptsLeft ?> attempt(s) remaining. Too many wrong codes will lock you out.
                 </div>
                 <?php endif; ?>
 
-                <button type="submit" class="btn btn-primary btn-full">
-                    ✅ Verify Phone Number
+                <button type="submit" class="btn btn-primary btn-full verify-btn">
+                    <i data-lucide="shield-check"></i> Verify Phone Number
                 </button>
             </form>
 
@@ -59,7 +79,7 @@
             </div>
 
             <div class="alert alert-info" style="margin-top:1.25rem;">
-                <span class="alert-icon">ℹ️</span>
+                <span class="alert-icon"><i data-lucide="info"></i></span>
                 <div style="font-size:var(--font-size-xs);">
                     No SMS? We can also send the code to your
                     <strong>personal email</strong>.
@@ -71,11 +91,17 @@
 
         <div class="auth-card-footer">
             <div class="auth-footer-links">
-                <a href="<?= SITE_URL ?>/login">← Back to Login</a>
-                <span>·</span>
+                <a href="<?= SITE_URL ?>/login">&larr; Back to Login</a>
+                <span>&middot;</span>
                 <a href="<?= SITE_URL ?>/contact">Need Help?</a>
             </div>
         </div>
 
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.lucide) lucide.createIcons();
+});
+</script>
