@@ -4,6 +4,13 @@ defined('CAMPUSLINK') or die('Direct access not permitted.');
 // Parse admin sub-path
 $adminUri  = $_SERVER['REQUEST_URI'] ?? '/admin';
 $adminPath = parse_url($adminUri, PHP_URL_PATH);
+
+// Normalize install directory and admin entrypoint
+$scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+if ($scriptDir !== '' && $scriptDir !== '/' && str_starts_with($adminPath, $scriptDir)) {
+    $adminPath = substr($adminPath, strlen($scriptDir));
+}
+
 $adminPath = strtolower(trim($adminPath, '/'));
 
 // Remove 'admin' prefix to get sub-route

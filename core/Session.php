@@ -98,6 +98,11 @@ class Session
     // ============================================================
     // Remove a session value
     // ============================================================
+    public static function delete(string $key): void
+    {
+        unset($_SESSION[$key]);
+    }
+
     public function remove(string $key): void
     {
         unset($_SESSION[$key]);

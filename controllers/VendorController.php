@@ -16,7 +16,7 @@ require_once __DIR__ . '/../models/ReviewModel.php';
 require_once __DIR__ . '/../models/ComplaintModel.php';
 require_once __DIR__ . '/../models/NotificationModel.php';
 
-class VendorController extends BaseController {
+class VendorController extends Controller {
     private VendorModel       $vendorModel;
     private SubscriptionModel $subModel;
     private PaymentModel      $paymentModel;
@@ -411,24 +411,29 @@ private function handleCommunityRegistration(): void {
         $vendorId    = Auth::vendorId();
         $vendor      = $this->vendorModel->find($vendorId);
         $subInfo     = $this->subModel->getExpiryInfo($vendorId);
+        $subscription = $this->subModel->getActive($vendorId);
         $reviewCount = $this->reviewModel->countApprovedForVendor($vendorId);
         $avgRating   = $this->reviewModel->getAverageRating($vendorId);
-        $complaints  = $this->complaintModel->getForVendor($vendorId);
+        $allComplaints  = $this->complaintModel->getForVendor($vendorId);
+        $openComplaints = count(array_filter($allComplaints, fn($c) => in_array($c['status'], ['submitted', 'under_review', 'open'])));
+        $recentComplaints = array_slice($allComplaints, 0, 3);
         $unreadNotifs = $this->notifModel->countUnread('vendor', $vendorId);
         $recentReviews = $this->reviewModel->getForVendorDashboard($vendorId);
 
         $this->view('vendor/dashboard', [
-            'pageTitle'     => 'Vendor Dashboard - ' . SITE_NAME,
-            'vendor'        => $vendor,
-            'subInfo'       => $subInfo,
-            'reviewCount'   => $reviewCount,
-            'avgRating'     => $avgRating,
-            'complaints'    => array_slice($complaints, 0, 3),
-            'unreadNotifs'  => $unreadNotifs,
-            'recentReviews' => array_slice($recentReviews, 0, 5),
-            'flashSuccess'  => $this->session->getFlash('success'),
-            'flashError'    => $this->session->getFlash('error'),
-            'flashWarning'  => $this->session->getFlash('warning'),
+            'pageTitle'        => 'Vendor Dashboard - ' . SITE_NAME,
+            'vendor'           => $vendor,
+            'subInfo'          => $subInfo,
+            'subscription'     => $subscription,
+            'reviewCount'      => $reviewCount,
+            'avgRating'        => $avgRating,
+            'recentComplaints' => $recentComplaints,
+            'openComplaints'   => $openComplaints,
+            'unreadNotifs'     => $unreadNotifs,
+            'recentReviews'    => $recentReviews,
+            'flashSuccess'     => $this->session->getFlash('success'),
+            'flashError'       => $this->session->getFlash('error'),
+            'flashWarning'     => $this->session->getFlash('warning'),
         ]);
     }
     
