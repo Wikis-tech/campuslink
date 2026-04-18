@@ -1,15 +1,77 @@
 <?php defined('CAMPUSLINK') or die(); ?>
 
-<div class="dashboard-page-header">
-    <div>
-        <h1 class="dashboard-page-title">Edit Profile</h1>
-        <p class="dashboard-page-subtitle">
-            Update your business info — changes are live immediately.
-        </p>
-    </div>
-    <a href="<?= SITE_URL ?>/vendor/<?= e($vendor['slug']) ?>"
-       class="btn btn-outline-primary" target="_blank">
-        <i data-lucide="eye" style="width:15px;height:15px;"></i> Preview Public Profile
+<style>
+    .profile-edit-hero {
+        background: linear-gradient(135deg, #0b3d91 0%, #1e5bb8 50%, #1a4fa8 100%);
+        color: #ffffff;
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(11, 61, 145, 0.12);
+    }
+
+    .profile-edit-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 70%);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .profile-edit-hero > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-edit-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0 0 0.5rem;
+        letter-spacing: -0.01em;
+    }
+
+    .profile-edit-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin: 0 0 1rem;
+    }
+
+    .profile-preview-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease-out;
+    }
+
+    .profile-preview-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="profile-edit-hero">
+    <h1 class="profile-edit-title">Edit Your Profile</h1>
+    <p class="profile-edit-subtitle">Keep your business information accurate and compelling — updates take effect immediately.</p>
+    <a href="<?= SITE_URL ?>/vendor/<?= e($vendor['slug']) ?>" 
+       target="_blank" 
+       class="profile-preview-btn">
+        <i data-lucide="eye" style="width:16px;height:16px;"></i>
+        View Public Profile
     </a>
 </div>
 
@@ -20,39 +82,40 @@
       novalidate>
     <input type="hidden" name="csrf_token" value="<?= CSRF::token() ?>">
 
-    <div class="dashboard-grid-2">
+    <div class="dashboard-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
 
-        <!-- Left Column -->
-        <div style="display:flex;flex-direction:column;gap:1.5rem;">
-
-            <!-- Business Info -->
-            <div class="dash-card">
-                <div class="dash-card-header">
-                    <div class="dash-card-title">
-                        <span class="dash-card-title-icon"><i data-lucide="shopping-cart"></i></span>
+        <!-- Left Column: Business Information -->
+        <div>
+            <div class="dash-card" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%); backdrop-filter: blur(10px); border: 1px solid rgba(11, 61, 145, 0.08); border-radius: 20px; padding: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04); transition: all 0.3s ease;">
+                <div class="dash-card-header" style="margin-bottom: 1.5rem;">
+                    <div class="dash-card-title" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem; font-weight: 700; color: #0b3d91; margin: 0;">
+                        <i data-lucide="briefcase" style="width: 20px; height: 20px; color: #1ea952;"></i>
                         Business Information
                     </div>
                 </div>
                 <div class="dash-card-body">
 
-                    <div class="form-group">
-                        <label class="form-label" for="business_name">
-                            Business Name <span class="required">*</span>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label" for="business_name" style="display: block; font-size: 0.9rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">
+                            Business Name <span class="required" style="color: #ef4444;">*</span>
                         </label>
                         <input type="text"
                                id="business_name"
                                name="business_name"
                                class="form-control"
+                               style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e9ecef; border-radius: 12px; font-size: 0.95rem; transition: all 0.3s ease;"
                                value="<?= e($vendor['business_name']) ?>"
-                               required data-min="3">
+                               required minlength="3">
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="category_id">
-                            Category <span class="required">*</span>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label" for="category_id" style="display: block; font-size: 0.9rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">
+                            Category <span class="required" style="color: #ef4444;">*</span>
                         </label>
                         <select id="category_id" name="category_id"
-                                class="form-control" required>
+                                class="form-control"
+                                style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e9ecef; border-radius: 12px; font-size: 0.95rem; transition: all 0.3s ease;"
+                                required>
                             <option value="">Select category</option>
                             <?php foreach ($categories as $cat): ?>
                             <option value="<?= (int)$cat['id'] ?>"
@@ -63,32 +126,22 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="description">
-                            Business Description <span class="required">*</span>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="description" style="display: block; font-size: 0.9rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">
+                            Business Description <span class="required" style="color: #ef4444;">*</span>
                         </label>
                         <textarea id="description"
                                   name="description"
                                   class="form-control"
-                                  rows="5"
-                                  placeholder="Describe your services, what makes you unique..."
-                                  required
-                                  data-min="50"
-                                  data-max-chars="1000"><?= e($vendor['description']) ?></textarea>
-                        <div class="review-char-counter"
-                             data-counter-for="description"></div>
+                                  style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e9ecef; border-radius: 12px; font-size: 0.95rem; min-height: 120px; resize: vertical; transition: all 0.3s ease;"
+                                  placeholder="Describe your services and what makes you unique..."
+                                  required minlength="10"
+                                  maxlength="1000"><?= e($vendor['description']) ?></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="price_range">Price Range</label>
-                        <input type="text"
-                               id="price_range"
-                               name="price_range"
-                               class="form-control"
-                               value="<?= e($vendor['price_range'] ?? '') ?>"
-                               placeholder="e.g. ₦500 – ₦5,000">
-                        <span class="form-hint">Give students an idea of your pricing</span>
-                    </div>
+                </div>
+            </div>
+        </div>
 
                     <?php if ($vendor['vendor_type'] === 'student'): ?>
                     <div class="auth-form-row">

@@ -424,27 +424,33 @@
                     else                                { $checks[] = ['Add WhatsApp number', false]; }
                     if ($reviewCount > 0)               { $score += 20; $checks[] = ['Has reviews', true]; }
                     else                                { $checks[] = ['Get your first review', false]; }
+                    
+                    $scoreColor = $score >= 80 ? '#1ea952' : '#0b3d91';
                     ?>
 
                     <div style="margin-bottom: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                             <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Profile Score</span>
-                            <span style="font-size: 1rem; font-weight: 800; color: <?= $score >= 80 ? '#1ea952' : '#0b3d91' ?>;">
-                                <?= $score %>%
+                            <span style="font-size: 1rem; font-weight: 800; color: <?= $scoreColor ?>;">
+                                <?= $score ?> %
                             </span>
                         </div>
                         <div style="height: 8px; background: var(--divider); border-radius: 999px; overflow: hidden;">
-                            <div style="height: 100%; width: <?= $score ?>%; background: linear-gradient(90deg, #0b3d91, #1ea952); border-radius: 999px; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
+                            <div style="height: 100%; width: <?= $score ?>%; background: linear-gradient(90deg, #0b3d91, #1ea952); border-radius: 999px; transition: width 0.8s ease;"></div>
                         </div>
                     </div>
 
                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        <?php foreach ($checks as [$label, $done]): ?>
+                        <?php foreach ($checks as $check): $label = $check[0]; $done = $check[1]; ?>
+                            <?php $checkColor = $done ? '#1ea952' : 'var(--text-muted)'; ?>
+                            <?php $labelColor = $done ? 'var(--text-secondary)' : 'var(--text-primary)'; ?>
+                            <?php $labelWeight = $done ? '400' : '600'; ?>
+                            <?php $icon = $done ? 'check-circle-2' : 'circle'; ?>
                         <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem;">
-                            <span style="display: inline-flex; color: <?= $done ? '#1ea952' : 'var(--text-muted)' ?>; transition: all 0.3s ease;">
-                                <i data-lucide="<?= $done ? 'check-circle-2' : 'circle' ?>" style="width:16px;height:16px;"></i>
+                            <span style="display: inline-flex; color: <?= $checkColor ?>; transition: all 0.3s ease;">
+                                <i data-lucide="<?= $icon ?>" style="width:16px;height:16px;"></i>
                             </span>
-                            <span style="color: <?= $done ? 'var(--text-secondary)' : 'var(--text-primary)' ?>; font-weight: <?= $done ? '400' : '600' ?>;">
+                            <span style="color: <?= $labelColor ?>; font-weight: <?= $labelWeight ?>;">
                                 <?= e($label) ?>
                             </span>
                         </div>
@@ -488,7 +494,9 @@
                     <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.9rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="color: var(--text-muted);">Status</span>
-                            <span style="background: <?= $vendor['status'] === 'active' ? 'rgba(30, 169, 82, 0.1)' : 'rgba(245, 158, 11, 0.1)' ?>; color: <?= $vendor['status'] === 'active' ? '#0d5d2a' : '#78350f' ?>; padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">
+                            <?php $statusBg = $vendor['status'] === 'active' ? 'rgba(30, 169, 82, 0.1)' : 'rgba(245, 158, 11, 0.1)'; ?>
+                            <?php $statusColor = $vendor['status'] === 'active' ? '#0d5d2a' : '#78350f'; ?>
+                            <span style="background: <?= $statusBg ?>; color: <?= $statusColor ?>; padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">
                                 <?= ucfirst($vendor['status']) ?>
                             </span>
                         </div>
@@ -560,7 +568,7 @@
     font-weight: 600;
     font-size: 0.95rem;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s ease-out;
     cursor: pointer;
 }
 
@@ -577,7 +585,7 @@
     border: 1px solid rgba(11, 61, 145, 0.1);
     border-radius: 20px;
     padding: 1.75rem;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s ease-out;
     cursor: pointer;
     position: relative;
 }
@@ -619,7 +627,7 @@
     font-weight: 600;
     font-size: 0.9rem;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s ease-out;
     cursor: pointer;
 }
 
@@ -630,7 +638,7 @@
 }
 
 .subscription-hero-card {
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s ease-out;
 }
 
 .subscription-hero-card:hover {
@@ -981,17 +989,22 @@ $bannerIcons = [
                         </span>
                     </div>
                     <div style="height:8px;background:var(--divider);border-radius:var(--radius-full);overflow:hidden;">
-                        <div style="height:100%;width:<?= $score ?>%;background:<?= $score >= 80 ? 'var(--accent-green)' : 'var(--primary)' ?>;border-radius:var(--radius-full);transition:width 0.8s ease;"></div>
+                        <?php $scoreColorBg = $score >= 80 ? 'var(--accent-green)' : 'var(--primary)'; ?>
+                        <div style="height:100%;width:<?= $score ?>%;background:<?= $scoreColorBg ?>;border-radius:var(--radius-full);transition:width 0.8s ease;"></div>
                     </div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <?php foreach ($checks as [$label, $done]): ?>
+                    <?php foreach ($checks as $check): $label = $check[0]; $done = $check[1]; ?>
+                    <?php $checkIconColor = $done ? 'var(--accent-green)' : 'var(--text-muted)'; ?>
+                    <?php $checkIcon = $done ? 'check-circle' : 'circle'; ?>
+                    <?php $checkLabelColor = $done ? 'var(--text-secondary)' : 'var(--text-primary)'; ?>
+                    <?php $checkLabelWeight = $done ? '400' : '600'; ?>
                     <div style="display:flex;align-items:center;gap:0.5rem;font-size:var(--font-size-xs);">
-                        <span style="display:inline-flex;width:14px;height:14px;color:<?= $done ? 'var(--accent-green)' : 'var(--text-muted)' ?>;">
-                            <i data-lucide="<?= $done ? 'check-circle' : 'circle' ?>" style="width:14px;height:14px;"></i>
+                        <span style="display:inline-flex;width:14px;height:14px;color:<?= $checkIconColor ?>;">
+                            <i data-lucide="<?= $checkIcon ?>" style="width:14px;height:14px;"></i>
                         </span>
-                        <span style="color:<?= $done ? 'var(--text-secondary)' : 'var(--text-primary)' ?>;
-                                    font-weight:<?= $done ? '400' : '600' ?>;">
+                        <span style="color:<?= $checkLabelColor ?>;
+                                    font-weight:<?= $checkLabelWeight ?>;">
                             <?= e($label) ?>
                         </span>
                     </div>

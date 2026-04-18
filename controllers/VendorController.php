@@ -411,7 +411,7 @@ private function handleCommunityRegistration(): void {
         $vendorId    = Auth::vendorId();
         $vendor      = $this->vendorModel->find($vendorId);
         $subInfo     = $this->subModel->getExpiryInfo($vendorId);
-        $subscription = $this->subModel->getActive($vendorId);
+        $subscription = $this->subModel->getActiveForVendor($vendorId);
         $reviewCount = $this->reviewModel->countApprovedForVendor($vendorId);
         $avgRating   = $this->reviewModel->getAverageRating($vendorId);
         $allComplaints  = $this->complaintModel->getForVendor($vendorId);
