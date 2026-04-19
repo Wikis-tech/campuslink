@@ -97,6 +97,7 @@ function isActiveLink(string $path, string $current): string {
 <body class="dashboard-page">
 
     <!-- Dashboard Header -->
+    <?php if (!$isVendor): ?>
     <header class="site-header">
         <div class="container">
             <div class="header-inner">
@@ -185,6 +186,7 @@ function isActiveLink(string $path, string $current): string {
             </div>
         </div>
     </header>
+    <?php endif; ?>
 
     <div class="dashboard-layout container" style="max-width:1400px;">
 

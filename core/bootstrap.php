@@ -80,6 +80,8 @@ require_once CORE_PATH . '/Mailer.php';
 
 require_once CORE_PATH . '/helpers.php';
 
+require_once CORE_PATH . '/Sanitizer.php';
+
 // ─────────────────────────────────────────────────────────────────
 
 // 5. LOAD MODELS

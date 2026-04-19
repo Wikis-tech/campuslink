@@ -48,6 +48,9 @@ if ($seg0 !== '') {
     // Load the full bootstrap (DB, helpers, models, session, etc)
     require_once __DIR__ . '/core/bootstrap.php';
 
+    // Load core utility classes
+    require_once __DIR__ . '/core/Sanitizer.php';
+
     // Load all controllers
     require_once __DIR__ . '/controllers/HomeController.php';
     require_once __DIR__ . '/controllers/AuthController.php';

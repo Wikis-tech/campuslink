@@ -1,4 +1,14 @@
-﻿<?php defined('CAMPUSLINK') or die(); ?>
+﻿<?php 
+defined('CAMPUSLINK') or die(); 
+
+// Do not show the main navigation bar on vendor dashboard pages
+if (str_contains($_SERVER['REQUEST_URI'], '/vendor/')) {
+    // Only return if it's a dashboard/protected page, allowing login/register to still have a header if needed
+    if (!str_contains($_SERVER['REQUEST_URI'], '/vendor/login') && !str_contains($_SERVER['REQUEST_URI'], '/vendor/register')) {
+        return;
+    }
+}
+?>
 
 <header class="site-header" id="siteHeader">
     <div class="container">

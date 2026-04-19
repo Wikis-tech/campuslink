@@ -15,6 +15,7 @@ require_once __DIR__ . '/../models/PaymentModel.php';
 require_once __DIR__ . '/../models/ReviewModel.php';
 require_once __DIR__ . '/../models/ComplaintModel.php';
 require_once __DIR__ . '/../models/NotificationModel.php';
+require_once __DIR__ . '/../models/PlanModel.php';
 
 class VendorController extends Controller {
     private VendorModel       $vendorModel;
@@ -23,6 +24,7 @@ class VendorController extends Controller {
     private ReviewModel       $reviewModel;
     private ComplaintModel    $complaintModel;
     private NotificationModel $notifModel;
+    private PlanModel         $planModel;
 
     public function __construct()
     {
@@ -33,6 +35,7 @@ class VendorController extends Controller {
         $this->reviewModel   = new ReviewModel();
         $this->complaintModel = new ComplaintModel();
         $this->notifModel    = new NotificationModel();
+        $this->planModel     = new PlanModel();
     }
 
     public function registerSelect(): void {
@@ -655,11 +658,15 @@ private function handleCommunityRegistration(): void {
             }
         }
 
+        $plans = $this->planModel->getByVendorType($vendor['vendor_type']);
+
         $this->view('vendor/subscription', [
             'pageTitle'    => 'My Subscription - ' . SITE_NAME,
             'vendor'       => $vendor,
+            'subscription' => $subInfo['subscription'] ?? null,
             'subInfo'      => $subInfo,
             'allSubs'      => $allSubs,
+            'plans'        => $plans,
             'csrfField'    => CSRF::field(),
             'flashSuccess' => $this->session->getFlash('success'),
             'flashError'   => $this->session->getFlash('error'),

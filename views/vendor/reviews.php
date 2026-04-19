@@ -16,40 +16,41 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
     <div>
         <h1 class="dashboard-page-title">Reviews</h1>
         <p class="dashboard-page-subtitle">
-            <?= (int)$pagination['total'] ?> review<?= $pagination['total'] != 1 ? 's' : '' ?>
-            Â· <?= number_format($avgRating, 1) ?> average
+            <?= count($reviews ?? []) ?> review<?= count($reviews ?? []) != 1 ? 's' : '' ?>
+            Â· <?= number_format($avgRating ?? 0, 1) ?> average
         </p>
     </div>
 </div>
 
 <!-- Rating Summary -->
-<?php if ($pagination['total'] > 0): ?>
+<?php if (!empty($reviews)): ?>
 <div class="rating-summary" style="margin-bottom:1.5rem;">
     <div class="rating-big-number">
-        <div class="rating-big-value"><?= number_format($avgRating, 1) ?></div>
+        <div class="rating-big-value"><?= number_format($avgRating ?? 0, 1) ?></div>
         <div class="rating-big-stars">
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-            <span style="color:<?= $i <= round($avgRating) ? 'var(--warning-amber)' : 'var(--divider)' ?>;">
+            <?php $avg = $avgRating ?? 0; for ($i = 1; $i <= 5; $i++): ?>
+            <span style="color:<?= $i <= round($avg) ? 'var(--warning-amber)' : 'var(--divider)' ?>;">
                 <?= lucide_icon(
-                    $i <= round($avgRating)
+                    $i <= round($avg)
                         ? '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
                         : '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
                     20,
-                    $i <= round($avgRating) ? 'var(--warning-amber)' : 'var(--divider)',
-                    $i <= round($avgRating) ? 'fill:var(--warning-amber);' : 'fill:var(--divider);'
+                    $i <= round($avg) ? 'var(--warning-amber)' : 'var(--divider)',
+                    $i <= round($avg) ? 'fill:var(--warning-amber);' : 'fill:var(--divider);'
                 ) ?>
             </span>
             <?php endfor; ?>
         </div>
         <div class="rating-big-count">
-            <?= (int)$pagination['total'] ?> review<?= $pagination['total'] != 1 ? 's' : '' ?>
+            <?= count($reviews ?? []) ?> review<?= count($reviews ?? []) != 1 ? 's' : '' ?>
         </div>
     </div>
 
     <div class="rating-bars">
         <?php for ($star = 5; $star >= 1; $star--):
-            $count = $distribution[$star] ?? 0;
-            $pct   = $pagination['total'] > 0 ? round(($count / $pagination['total']) * 100) : 0;
+            $count = $dist[$star] ?? 0;
+            $total = count($reviews ?? []);
+            $pct   = $total > 0 ? round(($count / $total) * 100) : 0;
         ?>
         <div class="rating-bar-row">
             <span class="rating-bar-label"><?= $star ?></span>
@@ -178,5 +179,4 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
     </div>
 </div>
 
-<?php require __DIR__ . '/../partials/pagination.php'; ?>
 <?php endif; ?>

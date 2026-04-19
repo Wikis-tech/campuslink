@@ -1,4 +1,4 @@
-﻿<?php defined('CAMPUSLINK') or die(); ?>
+﻿﻿<?php defined('CAMPUSLINK') or die(); ?>
 
 <div class="dashboard-page-header">
     <div>
@@ -8,7 +8,7 @@
 </div>
 
 <!-- Current Subscription Card -->
-<?php if ($subscription): ?>
+<?php if (isset($subscription) && $subscription): ?>
 <div class="subscription-details-card">
     <div style="position:relative;z-index:2;">
         <div style="font-size:var(--font-size-xs);text-transform:uppercase;letter-spacing:0.08em;
@@ -76,7 +76,7 @@
     <div class="dash-card-body">
 
         <div class="plan-change-grid">
-            <?php foreach ($plans as $plan):
+            <?php foreach (($plans ?? []) as $plan):
                 $isCurrent = $plan['plan_type'] === $vendor['plan_type'];
                 $isUpgrade = planRank($plan['plan_type']) > planRank($vendor['plan_type']);
                 $action    = $isUpgrade ? 'upgrade' : 'downgrade';
