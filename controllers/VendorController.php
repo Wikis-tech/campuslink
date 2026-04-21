@@ -619,6 +619,15 @@ private function handleCommunityRegistration(): void {
             }
 
             $currentPlan = $vendor['plan_type'];
+            $hasActiveSubscription = !empty($subscription);
+
+            // If no active subscription, initiate payment instead of upgrade/downgrade
+            if (!$hasActiveSubscription) {
+                $this->session->set('payment_plan', $newPlan);
+                $this->session->set('payment_vendor_id', $vendorId);
+                $this->redirect('vendor/payment?init=1');
+                return;
+            }
 
             if ($action === 'upgrade') {
                 $planLevels = ['basic' => 1, 'premium' => 2, 'featured' => 3];
@@ -652,7 +661,8 @@ private function handleCommunityRegistration(): void {
 
             // Renew — redirect to payment
             if ($action === 'renew') {
-                $this->session->set('renew_vendor_id', $vendorId);
+                $this->session->set('payment_plan', $currentPlan);
+                $this->session->set('payment_vendor_id', $vendorId);
                 $this->redirect('vendor/payment?renew=1');
                 return;
             }

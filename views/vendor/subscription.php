@@ -117,9 +117,9 @@
              padding:1rem;border:1px solid var(--divider);margin-bottom:1rem;">
         </div>
 
-        <form action="<?= SITE_URL ?>/vendor/subscription" method="POST">
+        <form action="<?= SITE_URL ?>/vendor/subscription" method="POST" id="plan-form">
             <input type="hidden" name="csrf_token" value="<?= CSRF::token() ?>">
-            <input type="hidden" name="action" value="">
+            <input type="hidden" name="action" value="<?= !empty($subscription) ? 'upgrade' : 'subscribe' ?>">
             <input type="hidden" name="plan"   value="">
             <button type="submit"
                     class="btn btn-primary plan-change-confirm-btn"
@@ -179,3 +179,43 @@ function planRank(string $plan): int {
     return match($plan) { 'basic' => 1, 'premium' => 2, 'featured' => 3, default => 0 };
 }
 ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const planCards = document.querySelectorAll('.plan-change-card');
+    const confirmText = document.querySelector('.plan-change-confirm-text');
+    const confirmBtn = document.querySelector('.plan-change-confirm-btn');
+    const planForm = document.getElementById('plan-form');
+    const actionInput = planForm.querySelector('input[name="action"]');
+    const planInput = planForm.querySelector('input[name="plan"]');
+
+    planCards.forEach(card => {
+        if (card.dataset.action) {
+            card.addEventListener('click', function() {
+                // Remove previous selection
+                planCards.forEach(c => c.style.border = '');
+                
+                // Highlight selected
+                this.style.border = '2px solid var(--accent-blue)';
+                
+                const planType = this.dataset.plan;
+                const action = this.dataset.action;
+                const planName = this.querySelector('.plan-name')?.textContent?.trim() || 'plan';
+                
+                // Update form values
+                planInput.value = planType;
+                
+                // Show confirmation
+                confirmText.textContent = `You are selecting the ${planName}. Click below to proceed.`;
+                confirmText.style.display = 'block';
+                
+                // Enable button
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = action === 'upgrade' ? `Upgrade to ${planName} Plan` : 
+                                        action === 'downgrade' ? `Downgrade to ${planName} Plan` :
+                                        `Subscribe to ${planName} Plan`;
+            });
+        }
+    });
+});
+</script>

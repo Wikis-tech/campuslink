@@ -11,8 +11,8 @@ class BrowseController extends BaseController {
     $page       = max(1, (int)($_GET['page'] ?? 1));
     $perPage    = 12;
 
-    // Build WHERE clause
-    $where  = ["v.status = 'active'"];
+    // Build WHERE clause - only show vendors with active subscriptions
+    $where  = ["v.status = 'active' AND s.status = 'active' AND s.expiry_date > NOW()"];
     $params = [];
 
     if ($search) {
@@ -39,7 +39,9 @@ class BrowseController extends BaseController {
 
     // Count total for pagination
     $total = $db->value(
-        "SELECT COUNT(*) FROM vendors v WHERE {$whereStr}",
+        "SELECT COUNT(*) FROM vendors v 
+         INNER JOIN subscriptions s ON s.vendor_id = v.id 
+         WHERE {$whereStr}",
         $params
     );
 
@@ -54,6 +56,7 @@ class BrowseController extends BaseController {
                 COALESCE(AVG(r.rating), 0) AS avg_rating,
                 COUNT(r.id)               AS review_count
            FROM vendors v
+           INNER JOIN subscriptions s ON s.vendor_id = v.id
       LEFT JOIN categories c ON v.category_id = c.id
       LEFT JOIN reviews r    ON r.vendor_id = v.id AND r.status = 'approved'
           WHERE {$whereStr}
@@ -67,6 +70,8 @@ class BrowseController extends BaseController {
         "SELECT c.*, COUNT(v.id) AS vendor_count
            FROM categories c
       LEFT JOIN vendors v ON v.category_id = c.id AND v.status = 'active'
+      LEFT JOIN subscriptions s ON s.vendor_id = v.id AND s.status = 'active' AND s.expiry_date > NOW()
+          WHERE v.id IS NULL OR (s.id IS NOT NULL)
           GROUP BY c.id
           ORDER BY vendor_count DESC"
     );

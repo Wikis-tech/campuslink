@@ -39,17 +39,20 @@ class PaymentController extends Controller
     // ============================================================
     public function index(): void
     {
-        $vendorId   = $this->session->get('pending_vendor_id');
+        $vendorId   = $this->session->get('pending_vendor_id') ?: $this->session->get('payment_vendor_id');
         $vendorType = $this->session->get('pending_vendor_type');
-        $planType   = $this->session->get('pending_plan', 'basic');
+        $planType   = $this->session->get('pending_plan') ?: $this->session->get('payment_plan', 'basic');
         $isRenew    = $this->get('renew', 0);
+        $isInit     = $this->get('init', 0);
 
-        // For renewal, use logged-in vendor
-        if ($isRenew && Auth::isVendorLoggedIn()) {
+        // For new subscription or renewal, use logged-in vendor if no vendor_id in session
+        if (($isRenew || $isInit) && Auth::isVendorLoggedIn() && !$vendorId) {
             $vendorId   = Auth::vendorId();
             $vendor     = $this->vendorModel->find($vendorId);
             $vendorType = $vendor['vendor_type'];
-            $planType   = $vendor['plan_type'];
+            if ($isRenew) {
+                $planType = $vendor['plan_type'];
+            }
         }
 
         if (!$vendorId) {
@@ -78,6 +81,7 @@ class PaymentController extends Controller
             'plans'       => $plans[$vendorType] ?? [],
             'paystackKey' => $this->paystack->getPublicKey(),
             'isRenew'     => $isRenew,
+            'isInit'      => $isInit,
             'csrfField'   => CSRF::field(),
         ]);
     }
@@ -90,12 +94,21 @@ class PaymentController extends Controller
         $this->requirePost();
         $this->validateCSRF();
 
-        $vendorId   = (int)($this->post('vendor_id', 0) ?: $this->session->get('pending_vendor_id', 0));
+        $vendorId   = (int)($this->post('vendor_id', 0) ?: $this->session->get('pending_vendor_id', 0) ?: $this->session->get('payment_vendor_id', 0));
         $vendorType = $this->post('vendor_type', '') ?: $this->session->get('pending_vendor_type', '');
-        $planType   = $this->post('plan_type', '') ?: $this->session->get('pending_plan', '');
+        $planType   = $this->post('plan_type', '') ?: $this->session->get('pending_plan', '') ?: $this->session->get('payment_plan', '');
+
+        // If still no vendor_id, use logged-in vendor
+        if (!$vendorId && Auth::isVendorLoggedIn()) {
+            $vendorId = Auth::vendorId();
+            if (!$vendorType) {
+                $vendor = $this->vendorModel->find($vendorId);
+                $vendorType = $vendor['vendor_type'] ?? '';
+            }
+        }
 
         if (!$vendorId || !$vendorType || !$planType) {
-            $this->jsonError('Missing payment details. Please restart registration.');
+            $this->jsonError('Missing payment details. Please restart registration or return to subscription page.');
             return;
         }
 

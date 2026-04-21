@@ -1,0 +1,27 @@
+INSERT INTO `plans`
+    (`id`, `vendor_type`, `plan_type`, `label`, `amount`, `amount_naira`, `duration_days`, `features`, `is_active`)
+VALUES
+    (1, 'student', 'basic',    'Student Basic',
+     200000, 2000.00, 180,
+     '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":false,"photo_gallery":false,"max_photos":1}',
+     1),
+    (2, 'student', 'premium',  'Student Premium',
+     500000, 5000.00, 180,
+     '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":true,"photo_gallery":true,"max_photos":5}',
+     1),
+    (3, 'student', 'featured', 'Student Featured',
+     1000000, 10000.00, 180,
+     '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":true,"priority_listing":true,"photo_gallery":true,"max_photos":10}',
+     1),
+    (4, 'community', 'basic',    'Community Basic',
+     400000, 4000.00, 180,
+     '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":false,"photo_gallery":false,"max_photos":1}',
+     1),
+    (5, 'community', 'premium',  'Community Premium',
+     700000, 7000.00, 180,
+     '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":true,"photo_gallery":true,"max_photos":5}',
+     1),
+    (6, 'community', 'featured', 'Community Featured',
+     1200000, 12000.00, 180,
+     '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":true,"priority_listing":true,"photo_gallery":true,"max_photos":10}',
+     1);
