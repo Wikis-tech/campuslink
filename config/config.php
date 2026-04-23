@@ -72,11 +72,11 @@ define('DB_PORT',    '3306');
 // ============================================================
 // PAYSTACK
 // ============================================================
-define('PAYSTACK_PUBLIC_KEY',     'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxx');
-define('PAYSTACK_SECRET_KEY',     'sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxx');
+define('PAYSTACK_PUBLIC_KEY',     getenv('PAYSTACK_PUBLIC_KEY') ?: 'pk_test_your_public_key_here');
+define('PAYSTACK_SECRET_KEY',     getenv('PAYSTACK_SECRET_KEY') ?: 'sk_test_your_secret_key_here');
 define('PAYSTACK_BASE_URL',       'https://api.paystack.co');
 define('PAYSTACK_CALLBACK_URL',   SITE_URL . '/vendor/payment/verify');
-define('PAYSTACK_WEBHOOK_SECRET', 'your_webhook_secret_here');
+define('PAYSTACK_WEBHOOK_SECRET', getenv('PAYSTACK_WEBHOOK_SECRET') ?: 'your_webhook_secret_here');
 
 // ============================================================
 // SUBSCRIPTION PLAN AMOUNTS (in Kobo for Paystack)
