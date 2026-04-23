@@ -661,11 +661,13 @@
 </style>
 
 <!-- Scroll Reveal & Icons Script -->
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.568.0/dist/lucide.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.lucide) lucide.createIcons();
+    });
+    // Re-run after any dynamic content injection
+    window.addEventListener('load', function() {
+        if (window.lucide) lucide.createIcons();
+    });
 </script>
-

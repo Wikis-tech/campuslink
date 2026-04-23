@@ -55,6 +55,7 @@ if ($seg0 !== '') {
     require_once __DIR__ . '/controllers/HomeController.php';
     require_once __DIR__ . '/controllers/AuthController.php';
     require_once __DIR__ . '/controllers/VendorController.php';
+    require_once __DIR__ . '/controllers/PaymentController.php';
     require_once __DIR__ . '/controllers/UserController.php';
     require_once __DIR__ . '/controllers/BrowseController.php';
     require_once __DIR__ . '/controllers/ReviewController.php';
@@ -151,13 +152,13 @@ if ($seg0 !== '') {
         }
 
         if ($seg1 === 'payment') {
-            if ($seg2 === 'initiate') { $ctrl->paymentInitiate();          exit; }
-            if ($seg2 === 'verify')   { $ctrl->paymentVerify();            exit; }
-            if ($seg2 === 'success')  { $ctrl->paymentSuccess();           exit; }
-            if ($seg2 === 'failed')   { $ctrl->paymentFailed();            exit; }
-            if ($seg2 === 'history')  { $ctrl->paymentHistory();           exit; }
-            if ($seg2 === 'receipt')  { $ctrl->paymentReceipt((int)$seg3); exit; }
-            $ctrl->payment();
+            $paymentCtrl = new PaymentController();
+            if ($seg2 === 'initiate') { $paymentCtrl->initiate();        exit; }
+            if ($seg2 === 'verify')   { $paymentCtrl->verify();          exit; }
+            if ($seg2 === 'success')  { $paymentCtrl->success();         exit; }
+            if ($seg2 === 'failed')   { $paymentCtrl->failed();          exit; }
+            if ($seg2 === 'history')  { $ctrl->paymentHistory();         exit; }
+            $paymentCtrl->index();
             exit;
         }
 
@@ -337,6 +338,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
     <link rel="icon" type="image/webp" href="assets/images/logo.webp">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/landing.css">
+    <link rel="stylesheet" href="assets/css/landing-animations.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1024,6 +1026,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
 </script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/landing.js"></script>
+<script src="assets/js/landing-animations.js"></script>
 
 </body>
 </html>

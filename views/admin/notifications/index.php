@@ -155,7 +155,7 @@ foreach ($flashes as $type => $messages):
                 </thead>
                 <tbody>
                     <?php foreach ($notifications as $n): ?>
-                    <tr>
+                    <tr data-notif-id="<?= (int)$n['id'] ?>" style="cursor:pointer;">
                         <td>
                             <span class="badge b-<?= e($n['recipient_type']) ?>">
                                 <?= ucfirst(e($n['recipient_type'])) ?>
@@ -307,6 +307,8 @@ foreach ($flashes as $type => $messages):
     </div>
 
 </div>
+
+<?php require __DIR__ . '/../../partials/notification-modal.php'; ?>
 
 <script>
 // Show/hide recipient ID selector based on type

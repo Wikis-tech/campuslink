@@ -66,6 +66,8 @@
 <?php require __DIR__ . '/../partials/pagination.php'; ?>
 <?php endif; ?>
 
+<?php require __DIR__ . '/../partials/notification-modal.php'; ?>
+
 <script>
 document.getElementById('markAllReadBtn')?.addEventListener('click', async () => {
     try {

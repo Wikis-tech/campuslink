@@ -1,0 +1,828 @@
+/* ============================================================
+   CampusLink — Motion & Animation Layer
+   Append this to assets/css/landing.css
+   ============================================================ */
+
+/* ─── CSS Custom Properties ─────────────────────────────── */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --duration-fast: 0.25s;
+  --duration-mid: 0.55s;
+  --duration-slow: 0.85s;
+  --duration-xl: 1.2s;
+}
+
+/* ─── Reduced-motion guard ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   SCROLL-REVEAL BASE STATES
+   JS adds .is-visible to trigger the enter animation
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity var(--duration-slow) var(--ease-out-expo),
+              transform var(--duration-slow) var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children inside a reveal container */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--duration-slow) var(--ease-out-expo),
+              transform var(--duration-slow) var(--ease-out-expo);
+}
+.reveal-stagger.is-visible > *:nth-child(1)  { opacity:1; transform:none; transition-delay:0.05s; }
+.reveal-stagger.is-visible > *:nth-child(2)  { opacity:1; transform:none; transition-delay:0.12s; }
+.reveal-stagger.is-visible > *:nth-child(3)  { opacity:1; transform:none; transition-delay:0.19s; }
+.reveal-stagger.is-visible > *:nth-child(4)  { opacity:1; transform:none; transition-delay:0.26s; }
+.reveal-stagger.is-visible > *:nth-child(5)  { opacity:1; transform:none; transition-delay:0.33s; }
+.reveal-stagger.is-visible > *:nth-child(6)  { opacity:1; transform:none; transition-delay:0.40s; }
+.reveal-stagger.is-visible > *:nth-child(7)  { opacity:1; transform:none; transition-delay:0.47s; }
+.reveal-stagger.is-visible > *:nth-child(8)  { opacity:1; transform:none; transition-delay:0.54s; }
+.reveal-stagger.is-visible > *:nth-child(9)  { opacity:1; transform:none; transition-delay:0.61s; }
+.reveal-stagger.is-visible > *:nth-child(10) { opacity:1; transform:none; transition-delay:0.68s; }
+
+/* Slide-in from left */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-48px);
+  transition: opacity var(--duration-slow) var(--ease-out-expo),
+              transform var(--duration-slow) var(--ease-out-expo);
+}
+.reveal-left.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide-in from right */
+.reveal-right {
+  opacity: 0;
+  transform: translateX(48px);
+  transition: opacity var(--duration-slow) var(--ease-out-expo),
+              transform var(--duration-slow) var(--ease-out-expo);
+}
+.reveal-right.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale-up reveal */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity var(--duration-slow) var(--ease-out-expo),
+              transform var(--duration-slow) var(--ease-out-expo);
+}
+.reveal-scale.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+/* ============================================================
+   HERO SECTION — ENTRANCE SEQUENCE
+   ============================================================ */
+.hero-badge.fade-in,
+.hero-headline.fade-in,
+.hero-subtext.fade-in,
+.hero-search-wrapper.fade-in,
+.hero-cta-group.fade-in,
+.hero-stats.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: heroFadeUp var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+.hero-badge.fade-in    { animation-delay: 0.1s; }
+.hero-headline.fade-in { animation-delay: 0.22s; }
+.hero-subtext.fade-in  { animation-delay: 0.36s; }
+.hero-search-wrapper.fade-in { animation-delay: 0.50s; }
+.hero-cta-group.fade-in      { animation-delay: 0.62s; }
+.hero-stats.fade-in          { animation-delay: 0.76s; }
+
+@keyframes heroFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero headline accent word — gradient shimmer reveal */
+.hero-headline-accent {
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: accentShimmer 3.5s linear infinite;
+}
+@keyframes accentShimmer {
+  0%   { background-position: 0%   center; }
+  50%  { background-position: 100% center; }
+  100% { background-position: 0%   center; }
+}
+
+/* Hero background overlay — subtle slow pan */
+.hero-bg-overlay {
+  animation: heroBgPan 18s ease-in-out infinite alternate;
+}
+@keyframes heroBgPan {
+  0%   { transform: scale(1.04) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1.5%, -1%); }
+}
+
+/* Hero stats counter — pop in */
+.hero-stat-number {
+  display: inline-block;
+  animation: statPop var(--duration-mid) var(--ease-out-back) both;
+  animation-delay: 0.9s;
+}
+@keyframes statPop {
+  0%   { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Hero wave — float up */
+.hero-wave {
+  animation: waveFloat 4s ease-in-out infinite;
+}
+@keyframes waveFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+
+/* ============================================================
+   HEADER — SCROLL-AWARE GLASS EFFECT
+   ============================================================ */
+.site-header {
+  transition: background var(--duration-mid) var(--ease-in-out-quart),
+              box-shadow var(--duration-mid) var(--ease-in-out-quart),
+              backdrop-filter var(--duration-mid),
+              -webkit-backdrop-filter var(--duration-mid);
+}
+.site-header.scrolled {
+  background: rgba(255,255,255,0.82) !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.07);
+}
+
+/* Nav links — underline slide effect */
+.header-nav .nav-link:not(.nav-cta-outline):not(.nav-cta-filled) {
+  position: relative;
+  overflow: hidden;
+}
+.header-nav .nav-link:not(.nav-cta-outline):not(.nav-cta-filled)::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: currentColor;
+  transition: left var(--duration-fast) var(--ease-out-expo),
+              right var(--duration-fast) var(--ease-out-expo);
+}
+.header-nav .nav-link:not(.nav-cta-outline):not(.nav-cta-filled):hover::after {
+  left: 0;
+  right: 0;
+}
+
+/* CTA buttons in header */
+.nav-cta-outline,
+.nav-cta-filled {
+  transition: transform var(--duration-fast) var(--ease-out-back),
+              box-shadow var(--duration-fast) var(--ease-out-expo),
+              background var(--duration-fast),
+              color var(--duration-fast) !important;
+}
+.nav-cta-outline:hover,
+.nav-cta-filled:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+}
+.nav-cta-outline:active,
+.nav-cta-filled:active {
+  transform: translateY(0) scale(0.97);
+}
+
+
+/* ============================================================
+   SEARCH BAR — GLASS + FOCUS LIFT
+   ============================================================ */
+.hero-search-wrapper {
+  transition: transform var(--duration-mid) var(--ease-out-expo),
+              box-shadow var(--duration-mid) var(--ease-out-expo);
+}
+.hero-search-wrapper:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18), 0 0 0 3px rgba(255,255,255,0.35);
+}
+
+.search-input {
+  transition: background var(--duration-fast);
+}
+.search-btn {
+  transition: transform var(--duration-fast) var(--ease-out-back),
+              box-shadow var(--duration-fast),
+              filter var(--duration-fast) !important;
+}
+.search-btn:hover {
+  transform: scale(1.04);
+  filter: brightness(1.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+.search-btn:active {
+  transform: scale(0.97);
+}
+
+
+/* ============================================================
+   CATEGORY CARDS — GLASS HOVER + ICON FLOAT
+   ============================================================ */
+.category-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-mid) var(--ease-out-back),
+              box-shadow var(--duration-mid) var(--ease-out-expo),
+              background var(--duration-mid) !important;
+}
+.category-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 60%);
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+  pointer-events: none;
+  border-radius: inherit;
+}
+.category-card:hover {
+  transform: translateY(-8px) scale(1.025);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.13), 0 4px 12px rgba(0,0,0,0.08);
+}
+.category-card:hover::before {
+  opacity: 1;
+}
+.category-card:active {
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* Icon float animation on hover */
+.category-card:hover .category-icon {
+  transform: translateY(-4px) scale(1.12);
+}
+.category-icon {
+  transition: transform var(--duration-mid) var(--ease-out-back);
+}
+
+
+/* ============================================================
+   VENDOR CARDS — LIFT + GLASS OVERLAY
+   ============================================================ */
+.vendor-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-mid) var(--ease-out-expo),
+              box-shadow var(--duration-mid) var(--ease-out-expo) !important;
+}
+.vendor-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+  pointer-events: none;
+  border-radius: inherit;
+}
+.vendor-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.14), 0 4px 16px rgba(0,0,0,0.07);
+}
+.vendor-card:hover::after {
+  opacity: 1;
+}
+
+/* Logo zoom */
+.vendor-logo-wrap {
+  overflow: hidden;
+  border-radius: 12px;
+}
+.vendor-logo {
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+.vendor-card:hover .vendor-logo {
+  transform: scale(1.07);
+}
+
+/* Vendor action buttons */
+.btn-whatsapp,
+.btn-call,
+.btn-profile {
+  transition: transform var(--duration-fast) var(--ease-out-back),
+              box-shadow var(--duration-fast),
+              filter var(--duration-fast) !important;
+}
+.btn-whatsapp:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 6px 18px rgba(37,211,102,0.3); }
+.btn-call:hover     { transform: translateY(-2px) scale(1.04); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+.btn-profile:hover  { transform: translateY(-2px) scale(1.04); filter: brightness(1.06); }
+.btn-whatsapp:active,
+.btn-call:active,
+.btn-profile:active { transform: scale(0.97); }
+
+/* Arrow icon in btn-profile — slide right on hover */
+.btn-profile i[data-lucide="arrow-right"] {
+  transition: transform var(--duration-fast) var(--ease-out-back);
+}
+.btn-profile:hover i[data-lucide="arrow-right"] {
+  transform: translateX(4px);
+}
+
+
+/* ============================================================
+   TRUST CARDS — ICON PULSE + CARD LIFT
+   ============================================================ */
+.trust-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-mid) var(--ease-out-expo),
+              box-shadow var(--duration-mid) var(--ease-out-expo) !important;
+}
+.trust-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+}
+.trust-icon {
+  transition: transform var(--duration-mid) var(--ease-out-back);
+}
+.trust-card:hover .trust-icon {
+  transform: scale(1.18) rotate(-4deg);
+}
+
+
+/* ============================================================
+   STEPS — SEQUENTIAL ENTRANCE + ARROW PULSE
+   ============================================================ */
+.step-card {
+  transition: transform var(--duration-mid) var(--ease-out-expo),
+              box-shadow var(--duration-mid) var(--ease-out-expo) !important;
+}
+.step-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+}
+.step-icon {
+  transition: transform var(--duration-mid) var(--ease-out-back);
+}
+.step-card:hover .step-icon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+/* Step arrows — breathing pulse */
+.step-arrow {
+  animation: arrowPulse 2s ease-in-out infinite;
+}
+.step-arrow:nth-child(4) { animation-delay: 0.25s; }
+.step-arrow:nth-child(6) { animation-delay: 0.5s; }
+.step-arrow:nth-child(8) { animation-delay: 0.75s; }
+@keyframes arrowPulse {
+  0%, 100% { transform: translateX(0);   opacity: 0.7; }
+  50%       { transform: translateX(5px); opacity: 1;   }
+}
+
+
+/* ============================================================
+   PLAN PREVIEW CARDS — BORDER GLOW ON HOVER
+   ============================================================ */
+.plan-preview-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-mid) var(--ease-out-expo),
+              box-shadow var(--duration-mid) var(--ease-out-expo) !important;
+}
+.plan-preview-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent, rgba(255,255,255,0.1));
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+  pointer-events: none;
+}
+.plan-preview-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 56px rgba(0,0,0,0.15);
+}
+.plan-preview-card:hover::before {
+  opacity: 1;
+}
+
+/* Popular plan item — shimmer pulse */
+.plan-preview-item.popular {
+  position: relative;
+  overflow: hidden;
+}
+.plan-preview-item.popular::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmerSlide 3s ease-in-out infinite;
+}
+@keyframes shimmerSlide {
+  0%   { left: -75%; }
+  60%  { left: 125%; }
+  100% { left: 125%; }
+}
+
+
+/* ============================================================
+   STATS SECTION — COUNTER ANIMATION PREP
+   Numbers are incremented by JS, this adds the visual style
+   ============================================================ */
+.stat-item {
+  transition: transform var(--duration-mid) var(--ease-out-expo) !important;
+}
+.stat-item:hover {
+  transform: translateY(-4px);
+}
+.stat-icon {
+  transition: transform var(--duration-mid) var(--ease-out-back),
+              color var(--duration-fast);
+}
+.stat-item:hover .stat-icon {
+  transform: scale(1.2) rotate(-8deg);
+}
+.stat-number {
+  transition: transform var(--duration-fast) var(--ease-out-back);
+}
+.stat-item:hover .stat-number {
+  transform: scale(1.04);
+}
+
+
+/* ============================================================
+   SECTION LABELS — SLIDE IN FROM LEFT
+   ============================================================ */
+.section-label {
+  position: relative;
+  display: inline-block;
+}
+.section-label::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.6;
+  transition: width var(--duration-mid) var(--ease-out-expo);
+}
+.section-header.is-visible .section-label::before {
+  width: 10px;
+}
+
+
+/* ============================================================
+   BUTTONS — GLOBAL MICRO-INTERACTIONS
+   ============================================================ */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-fast) var(--ease-out-back),
+              box-shadow var(--duration-fast),
+              filter var(--duration-fast) !important;
+}
+/* Ripple layer */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--rx, 50%) var(--ry, 50%), rgba(255,255,255,0.35) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.6s;
+  pointer-events: none;
+}
+.btn:active::after {
+  opacity: 1;
+  transition: opacity 0s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+}
+.btn:active {
+  transform: translateY(0) scale(0.97);
+  filter: brightness(0.98);
+}
+
+
+/* ============================================================
+   FOOTER — LINK HOVER SLIDE
+   ============================================================ */
+.footer-links a {
+  position: relative;
+  display: inline-block;
+  transition: transform var(--duration-fast) var(--ease-out-expo),
+              color var(--duration-fast) !important;
+}
+.footer-links a:hover {
+  transform: translateX(5px);
+}
+
+
+/* ============================================================
+   MOBILE NAV DRAWER — SMOOTH SLIDE IN
+   ============================================================ */
+.mobile-nav {
+  transition: transform var(--duration-mid) var(--ease-out-expo),
+              visibility var(--duration-mid) !important;
+}
+.mobile-nav-overlay {
+  transition: opacity var(--duration-mid) var(--ease-out-expo) !important;
+}
+
+.mobile-nav-link {
+  transition: transform var(--duration-fast) var(--ease-out-back),
+              color var(--duration-fast),
+              background var(--duration-fast) !important;
+}
+.mobile-nav-link:hover {
+  transform: translateX(5px);
+}
+
+
+/* ============================================================
+   BADGE — ENTRANCE PULSE
+   ============================================================ */
+.hero-badge {
+  position: relative;
+}
+.badge-dot {
+  display: inline-block;
+  animation: dotPulse 2.2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.55; transform: scale(0.8); }
+}
+
+
+/* ============================================================
+   VENDOR BADGES — SUBTLE FLOAT
+   ============================================================ */
+.badge-verified,
+.badge-featured {
+  transition: transform var(--duration-fast) var(--ease-out-back),
+              box-shadow var(--duration-fast) !important;
+}
+.vendor-card:hover .badge-verified,
+.vendor-card:hover .badge-featured {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+
+/* ============================================================
+   DISCLAIMER BOX — BORDER ANIMATION
+   ============================================================ */
+.disclaimer-box {
+  position: relative;
+  overflow: hidden;
+}
+.disclaimer-box::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, transparent, currentColor, transparent);
+  background-size: 100% 200%;
+  animation: borderFlow 3s linear infinite;
+}
+@keyframes borderFlow {
+  0%   { background-position: 0% 0%;   }
+  100% { background-position: 0% 200%; }
+}
+
+
+/* ============================================================
+   SECTION HEADER UNDERLINE — REVEAL ANIMATION
+   ============================================================ */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, currentColor, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+.section-header.is-visible .section-title::after {
+  transform: scaleX(1);
+}
+
+
+/* ============================================================
+   PARALLAX IMAGES (hero overlay uses CSS parallax)
+   ============================================================ */
+.parallax-layer {
+  will-change: transform;
+}
+
+
+/* ============================================================
+   SCHOOL LOGO — GENTLE SPIN ON HOVER
+   ============================================================ */
+.header-school-logo img {
+  transition: transform var(--duration-slow) var(--ease-out-expo) !important;
+}
+.header-school-logo img:hover {
+  transform: rotate(8deg) scale(1.08);
+}
+
+
+/* ============================================================
+   CURSOR CUSTOM (desktop only)
+   ============================================================ */
+@media (pointer: fine) {
+  a, button, [role="button"], .category-card, .vendor-card, .trust-card, .step-card {
+    cursor: pointer;
+  }
+}
+
+
+/* ============================================================
+   VENDOR EMPTY STATE — FLOAT ICON
+   ============================================================ */
+.empty-state-icon {
+  animation: emptyFloat 3s ease-in-out infinite;
+}
+@keyframes emptyFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+
+/* ============================================================
+   LOADING BAR — TOP OF PAGE
+   ============================================================ */
+#cl-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #16a34a, #22d3ee, #16a34a);
+  background-size: 200% 100%;
+  z-index: 99999;
+  transition: width 0.4s var(--ease-out-expo);
+  animation: progressShimmer 1.5s linear infinite;
+}
+#cl-progress-bar.done {
+  width: 100% !important;
+  opacity: 0;
+  transition: width 0.3s, opacity 0.5s 0.3s;
+}
+@keyframes progressShimmer {
+  0%   { background-position: 0%   center; }
+  100% { background-position: 200% center; }
+}
+
+
+/* ============================================================
+   SMOOTH CURSOR FOLLOWER (desktop)
+   ============================================================ */
+#cl-cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, opacity 0.2s, background 0.2s;
+  mix-blend-mode: difference;
+}
+#cl-cursor-ring {
+  position: fixed;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99997;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: width 0.35s var(--ease-out-expo),
+              height 0.35s var(--ease-out-expo),
+              opacity 0.2s,
+              border-color 0.2s;
+}
+body:hover #cl-cursor,
+body:hover #cl-cursor-ring { opacity: 1; }
+
+body.cursor-hover #cl-cursor {
+  width: 6px;
+  height: 6px;
+  background: #16a34a;
+}
+body.cursor-hover #cl-cursor-ring {
+  width: 44px;
+  height: 44px;
+  border-color: rgba(22, 163, 74, 0.45);
+}
+
+
+/* ============================================================
+   SECTION TRANSITIONS — SMOOTH BACKGROUND GRADIENTS
+   ============================================================ */
+.categories-section,
+.featured-section,
+.trust-section,
+.how-it-works-section,
+.vendor-cta-section,
+.stats-section {
+  position: relative;
+}
+.categories-section::before,
+.trust-section::before,
+.stats-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-xl);
+}
+.categories-section.is-visible::before,
+.trust-section.is-visible::before,
+.stats-section.is-visible::before {
+  opacity: 1;
+}
+
+
+/* ============================================================
+   VENDOR CTA SECTION — BENEFIT LIST ITEM HOVER
+   ============================================================ */
+.vendor-cta-benefits li {
+  transition: transform var(--duration-fast) var(--ease-out-back) !important;
+}
+.vendor-cta-benefits li:hover {
+  transform: translateX(6px);
+}
+.benefit-icon {
+  transition: transform var(--duration-fast) var(--ease-out-back) !important;
+}
+.vendor-cta-benefits li:hover .benefit-icon {
+  transform: scale(1.3) rotate(-5deg);
+}
+
+
+/* ============================================================
+   STAT COUNTER — FLIP NUMBER EFFECT
+   ============================================================ */
+.counter {
+  display: inline-block;
+  transition: transform var(--duration-fast) var(--ease-out-back);
+}
+.counter.ticking {
+  animation: counterFlip 0.1s steps(1) infinite;
+}
+@keyframes counterFlip {
+  0%   { filter: blur(0px); }
+  50%  { filter: blur(1px); opacity: 0.8; }
+  100% { filter: blur(0px); }
+}

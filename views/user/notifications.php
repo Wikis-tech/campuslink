@@ -103,3 +103,5 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
     </p>
 </div>
 <?php endif; ?>
+
+<?php require __DIR__ . '/../partials/notification-modal.php'; ?>

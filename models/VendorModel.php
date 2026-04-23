@@ -359,18 +359,21 @@ class VendorModel extends Model
     // ============================================================
     // Update profile
     // ============================================================
-    public function updateProfile(int $vendorId, array $data): bool
-    {
-        $allowed = [
-            'business_name', 'description', 'price_range',
-            'operating_location', 'business_address',
-            'years_experience', 'years_operation',
-            'whatsapp_number', 'phone', 'logo',
-        ];
-        $update = array_intersect_key($data, array_flip($allowed));
-        $update['updated_at'] = date('Y-m-d H:i:s');
-        return $this->update($vendorId, $update);
-    }
+   // In models/VendorModel.php — find updateProfile() and replace the $allowed array:
+
+public function updateProfile(int $vendorId, array $data): bool
+{
+    $allowed = [
+        'business_name', 'description', 'price_range',
+        'operating_location', 'business_address',
+        'years_experience', 'years_operation',
+        'whatsapp_number', 'phone', 'logo',
+        'category_id',   // ← ADD THIS
+    ];
+    $update = array_intersect_key($data, array_flip($allowed));
+    $update['updated_at'] = date('Y-m-d H:i:s');
+    return $this->update($vendorId, $update);
+}
 
     // ============================================================
     // Update last login

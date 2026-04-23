@@ -1,0 +1,19 @@
+[2026-04-22 00:23:41] [INIT] Ref: CL-3-873D1DAB5A40-1776813819 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:26:36] [INIT] Ref: CL-3-1F12E62A92BE-1776813993 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:28:40] [INIT] Ref: CL-3-8C4CB52A2E67-1776814118 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:29:33] [INIT] Ref: CL-3-7E2D736793B1-1776814172 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:37:04] [INIT] Ref: CL-3-488F6D528C1D-1776814622 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:37:10] [INIT] Ref: CL-3-CFCB43CFB5E7-1776814629 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:37:14] [INIT] Ref: CL-3-25A5A1593E5D-1776814632 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-22 00:37:19] [INIT] Ref: CL-3-360785160910-1776814637 | Amount: ₦7,000.00 | IP: ::1 | initialized
+[2026-04-23 04:40:22] [CURL_ERROR] Ref: N/A | Amount: ₦0.00 | IP: ::1 | cURL Error: SSL connection timeout | HTTP: 0
+[2026-04-23 04:40:22] [INIT_FAIL] Ref: CL-3-599FBC2C2984-1776915612 | Amount: ₦4,000.00 | IP: ::1 | failed: Failed to initialize transaction
+[2026-04-23 04:41:05] [CURL_ERROR] Ref: N/A | Amount: ₦0.00 | IP: ::1 | cURL Error: Resolving timed out after 10001 milliseconds | HTTP: 0
+[2026-04-23 04:41:05] [INIT_FAIL] Ref: CL-3-E9796AB893F7-1776915654 | Amount: ₦4,000.00 | IP: ::1 | failed: Failed to initialize transaction
+[2026-04-23 04:59:34] [CURL_ERROR] Ref: N/A | Amount: ₦0.00 | IP: ::1 | cURL Error: SSL connection timeout | HTTP: 0
+[2026-04-23 04:59:34] [INIT_FAIL] Ref: CL-3-613B8BCABF6B-1776916764 | Amount: ₦4,000.00 | IP: ::1 | failed: Failed to initialize transaction
+[2026-04-23 05:00:33] [CURL_ERROR] Ref: N/A | Amount: ₦0.00 | IP: ::1 | cURL Error: SSL connection timeout | HTTP: 0
+[2026-04-23 05:00:33] [INIT_FAIL] Ref: CL-3-6CB0550F3DF6-1776916823 | Amount: ₦4,000.00 | IP: ::1 | failed: Failed to initialize transaction
+[2026-04-23 05:05:24] [INIT] Ref: CL-3-4B5826D28D57-1776917123 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-23 05:06:36] [INIT] Ref: CL-3-71DF1F22A38C-1776917195 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-23 05:15:32] [INIT] Ref: CL-3-684252686985-1776917731 | Amount: ₦4,000.00 | IP: ::1 | initialized

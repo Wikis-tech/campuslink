@@ -1,7 +1,6 @@
 <?php
 /**
  * CampusLink - Payment Controller
- * Handles Paystack payment initiation and server-side verification.
  */
 
 defined('CAMPUSLINK') or die('Direct access not permitted.');
@@ -35,17 +34,29 @@ class PaymentController extends Controller
     }
 
     // ============================================================
-    // Payment / Plan selection page
+    // Payment page — FIXED
     // ============================================================
     public function index(): void
     {
+        // ── CSRF refresh ping (called by JS every 10 min) ──
+        if (
+            isset($_GET['csrf_refresh'])
+            && $_GET['csrf_refresh'] === '1'
+            && isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+        ) {
+            header('Content-Type: application/json');
+            echo json_encode(['token' => CSRF::token()]);
+            exit;
+        }
+
         $vendorId   = $this->session->get('pending_vendor_id') ?: $this->session->get('payment_vendor_id');
         $vendorType = $this->session->get('pending_vendor_type');
         $planType   = $this->session->get('pending_plan') ?: $this->session->get('payment_plan', 'basic');
         $isRenew    = $this->get('renew', 0);
         $isInit     = $this->get('init', 0);
 
-        // For new subscription or renewal, use logged-in vendor if no vendor_id in session
+        // Use logged-in vendor if session has no vendor_id
         if (($isRenew || $isInit) && Auth::isVendorLoggedIn() && !$vendorId) {
             $vendorId   = Auth::vendorId();
             $vendor     = $this->vendorModel->find($vendorId);
@@ -66,49 +77,81 @@ class PaymentController extends Controller
             return;
         }
 
-        // Get amount
+        if (empty($vendorType) && isset($vendor['vendor_type'])) {
+            $vendorType = $vendor['vendor_type'];
+        }
+
         $amount = getPlanAmount($vendorType, $planType);
-        $plans  = unserialize(VALID_PLANS);
+
+        require_once __DIR__ . '/../models/PlanModel.php';
+        $planModel = new PlanModel();
+        $plans     = $planModel->getByVendorType($vendorType);
 
         $this->view('vendor/payment', [
-            'pageTitle'   => 'Complete Payment - ' . SITE_NAME,
-            'vendor'      => $vendor,
-            'vendorType'  => $vendorType,
-            'planType'    => $planType,
-            'amount'      => $amount,
-            'amountNaira' => getPlanNaira($vendorType, $planType),
-            'planLabel'   => getPlanLabel($vendorType, $planType),
-            'plans'       => $plans[$vendorType] ?? [],
-            'paystackKey' => $this->paystack->getPublicKey(),
-            'isRenew'     => $isRenew,
-            'isInit'      => $isInit,
-            'csrfField'   => CSRF::field(),
+            'pageTitle'    => 'Complete Payment - ' . SITE_NAME,
+            'vendor'       => $vendor,
+            'vendorType'   => $vendorType,
+            'selectedPlan' => $planType,
+            'planType'     => $planType,
+            'amount'       => $amount,
+            'amountNaira'  => getPlanNaira($vendorType, $planType),
+            'planLabel'    => getPlanLabel($vendorType, $planType),
+            'plans'        => $plans,
+            'paystackKey'  => $this->paystack->getPublicKey(),
+            'isRenew'      => $isRenew,
+            'isInit'       => $isInit,
+            'csrfField'    => CSRF::field(),
         ]);
     }
 
     // ============================================================
-    // Initialize Paystack transaction (AJAX POST)
+    // CSRF token refresh endpoint (standalone GET)
+    // Handles: /vendor/payment/csrf
+    // ============================================================
+    public function csrf(): void
+    {
+        if (
+            !isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+            || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest'
+        ) {
+            http_response_code(403);
+            exit;
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['token' => CSRF::token()]);
+        exit;
+    }
+
+    // ============================================================
+    // Initialize Paystack transaction (AJAX POST) — FIXED
     // ============================================================
     public function initiate(): void
     {
         $this->requirePost();
         $this->validateCSRF();
 
-        $vendorId   = (int)($this->post('vendor_id', 0) ?: $this->session->get('pending_vendor_id', 0) ?: $this->session->get('payment_vendor_id', 0));
-        $vendorType = $this->post('vendor_type', '') ?: $this->session->get('pending_vendor_type', '');
-        $planType   = $this->post('plan_type', '') ?: $this->session->get('pending_plan', '') ?: $this->session->get('payment_plan', '');
+        $vendorId   = (int)($this->post('vendor_id', 0)
+                      ?: $this->session->get('pending_vendor_id', 0)
+                      ?: $this->session->get('payment_vendor_id', 0));
+        $vendorType = $this->post('vendor_type', '')
+                      ?: $this->session->get('pending_vendor_type', '');
+        $planType   = $this->post('plan_type', '')
+                      ?: $this->session->get('pending_plan', '')
+                      ?: $this->session->get('payment_plan', '');
 
-        // If still no vendor_id, use logged-in vendor
+        // Fall back to logged-in vendor
         if (!$vendorId && Auth::isVendorLoggedIn()) {
             $vendorId = Auth::vendorId();
-            if (!$vendorType) {
-                $vendor = $this->vendorModel->find($vendorId);
-                $vendorType = $vendor['vendor_type'] ?? '';
-            }
+        }
+
+        // Resolve vendor type from DB if still missing
+        if ((!$vendorType) && $vendorId) {
+            $v          = $this->vendorModel->find($vendorId);
+            $vendorType = $v['vendor_type'] ?? '';
         }
 
         if (!$vendorId || !$vendorType || !$planType) {
-            $this->jsonError('Missing payment details. Please restart registration or return to subscription page.');
+            $this->jsonError('Missing payment details. Please go back to the subscription page and try again.');
             return;
         }
 
@@ -124,10 +167,9 @@ class PaymentController extends Controller
         }
 
         $amount    = getPlanAmount($vendorType, $planType);
-        $email     = $vendor['school_email'] ?? $vendor['working_email'] ?? $vendor['personal_email'];
+        $email     = $vendor['school_email'] ?? $vendor['working_email'] ?? $vendor['personal_email'] ?? '';
         $reference = Paystack::generateReference($vendorId);
 
-        // Create pending payment record
         $paymentId = $this->paymentModel->createPending([
             'vendor_id'   => $vendorId,
             'vendor_type' => $vendorType,
@@ -137,15 +179,13 @@ class PaymentController extends Controller
         ]);
 
         if (!$paymentId) {
-            $this->jsonError('Could not initialize payment. Please try again.');
+            $this->jsonError('Could not initialize payment record. Please try again.');
             return;
         }
 
-        // Store reference in session for verification
         $this->session->set('payment_reference', $reference);
         $this->session->set('payment_id', (int)$paymentId);
 
-        // Initialize with Paystack
         $result = $this->paystack->initializeTransaction([
             'email'        => $email,
             'amount'       => $amount,
@@ -160,19 +200,25 @@ class PaymentController extends Controller
         ]);
 
         if (!$result['status']) {
-            $this->jsonError($result['message'] ?? 'Payment initialization failed.');
+            $this->jsonError($result['message'] ?? 'Paystack initialization failed. Please try again.');
             return;
         }
 
+        // ── Generate a fresh CSRF token so the next request won't fail ──
+        $freshCsrf = CSRF::token();
+
+        // ── Return everything the JS needs in a flat structure ──
+        // JS reads: data.reference, data.amount, data.new_csrf_token
         $this->jsonSuccess('Payment initialized.', [
-            'authorization_url' => $result['authorization_url'],
             'reference'         => $reference,
+            'amount'            => $amount,
+            'authorization_url' => $result['authorization_url'],
+            'new_csrf_token'    => $freshCsrf,
         ]);
     }
 
     // ============================================================
-    // Verify payment (called after Paystack redirect)
-    // SERVER-SIDE verification only
+    // Verify payment — server-side only
     // ============================================================
     public function verify(): void
     {
@@ -184,13 +230,11 @@ class PaymentController extends Controller
             return;
         }
 
-        // Check if already verified (prevent duplicate)
         if ($this->paymentModel->isAlreadyVerified($reference)) {
             $this->redirectWith('vendor/dashboard', 'success', 'Payment already verified. Your subscription is active.');
             return;
         }
 
-        // Verify with Paystack
         $result = $this->paystack->verifyTransaction($reference);
 
         if (!$result['status']) {
@@ -205,14 +249,12 @@ class PaymentController extends Controller
             return;
         }
 
-        // Get payment record
         $payment = $this->paymentModel->findByReference($reference);
         if (!$payment) {
             $this->redirectWith('vendor/payment/failed', 'error', 'Payment record not found.');
             return;
         }
 
-        // STRICT: Validate amount matches expected plan amount
         $expectedAmount = getPlanAmount($payment['vendor_type'], $payment['plan_type']);
         if ((int)$result['amount'] !== $expectedAmount) {
             Logger::payment('AMOUNT_MISMATCH', $reference, $result['amount'], $payment['vendor_id'],
@@ -221,13 +263,10 @@ class PaymentController extends Controller
             return;
         }
 
-        // Begin transaction
         $this->db->beginTransaction();
         try {
-            // Mark payment success
             $this->paymentModel->markSuccess($payment['id'], $result);
 
-            // Create subscription
             $subId = $this->subModel->createSubscription([
                 'vendor_id'   => $payment['vendor_id'],
                 'plan_type'   => $payment['plan_type'],
@@ -236,7 +275,6 @@ class PaymentController extends Controller
                 'amount'      => $result['amount'],
             ]);
 
-            // Activate vendor
             $this->vendorModel->activate($payment['vendor_id']);
             $this->vendorModel->updatePlan($payment['vendor_id'], $payment['plan_type']);
 
@@ -249,11 +287,9 @@ class PaymentController extends Controller
             return;
         }
 
-        // Get vendor for email
         $vendor = $this->vendorModel->find($payment['vendor_id']);
         $sub    = $this->subModel->find((int)$subId);
 
-        // Send receipt email
         $email = $vendor['school_email'] ?? $vendor['working_email'] ?? '';
         if ($email && $vendor) {
             $this->mailer->sendPaymentReceipt(
@@ -263,15 +299,14 @@ class PaymentController extends Controller
                 $reference,
                 getPlanLabel($payment['vendor_type'], $payment['plan_type']),
                 $result['amount'],
-                $sub['start_date'] ?? date('Y-m-d H:i:s'),
+                $sub['start_date']  ?? date('Y-m-d H:i:s'),
                 $sub['expiry_date'] ?? ''
             );
         }
 
-        // Send in-app notification
         Notification::sendToVendor(
             $payment['vendor_id'],
-            'Payment Confirmed ✅',
+            'Payment Confirmed',
             'Your ' . getPlanLabel($payment['vendor_type'], $payment['plan_type']) .
             ' subscription is now active. Expires: ' . ($sub['expiry_date'] ?? 'N/A'),
             Notification::TYPE_PAYMENT,
@@ -280,12 +315,10 @@ class PaymentController extends Controller
 
         Logger::payment('SUCCESS', $reference, $result['amount'], $payment['vendor_id'], 'Activated');
 
-        // Log vendor into session if not already
         if (!Auth::isVendorLoggedIn()) {
             $this->session->loginVendor($vendor);
         }
 
-        // Clear session payment data
         $this->session->remove('pending_vendor_id');
         $this->session->remove('pending_vendor_type');
         $this->session->remove('pending_plan');
@@ -301,7 +334,7 @@ class PaymentController extends Controller
     public function success(): void
     {
         $this->view('vendor/payment-success', [
-            'pageTitle' => 'Payment Successful - ' . SITE_NAME,
+            'pageTitle'    => 'Payment Successful - ' . SITE_NAME,
             'flashSuccess' => $this->session->getFlash('success'),
         ]);
     }
