@@ -19,3 +19,7 @@
 [2026-03-27 13:41:22] [EMAIL] To: wikistech14@gmail.com | Subject: Verify Your Email Address | Status: sent
 [2026-03-27 13:43:39] [EMAIL] To: wikistech14@gmail.com | Subject: Verify Your Email Address | Status: sent
 [2026-04-02 20:39:27] [EMAIL] To: johnrufai242@gmail.com | Subject: Verify Your Email Address | Status: sent
+[2026-04-24 21:05:07] [CRON_START] IP: 0.0.0.0 | Session: 4l8gh6dp | Starting expiry reminder cron job
+[2026-04-24 21:05:07] [CRON_REMINDERS] IP: 0.0.0.0 | Session: 4l8gh6dp | Expiry reminders sent
+[2026-04-24 21:05:07] [CRON_CHECK] IP: 0.0.0.0 | Session: 4l8gh6dp | Checking for expired subscriptions
+[2026-04-24 21:05:07] [CRON_COMPLETE] IP: 0.0.0.0 | Session: 4l8gh6dp | Expired subscriptions processed. Cron job completed.

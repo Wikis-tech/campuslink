@@ -38,11 +38,17 @@ $pageTitle = $pageTitle ?? 'Account - ' . SITE_NAME;
     <header class="site-header">
         <div class="container">
             <div class="header-inner">
+                <!-- Logo -->
                 <div class="header-logo">
-                    <a href="<?= SITE_URL ?>">
-                        <span class="logo-text-fallback">
-                            <span class="logo-campus">Campus</span><span class="logo-link">Link</span>
-                        </span>
+                    <a href="<?= SITE_URL ?>" aria-label="<?= SITE_NAME ?> Home">
+                        <?php if (file_exists(PUBLIC_PATH . '/assets/img/favicon.png')): ?>
+                            <img src="<?= SITE_URL ?>/assets/img/favicon.png"
+                                 alt="<?= SITE_NAME ?>" height="40">
+                        <?php else: ?>
+                            <span class="logo-text-fallback">
+                                <span class="logo-campus">Campus</span><span class="logo-link">Link</span>
+                            </span>
+                        <?php endif; ?>
                     </a>
                 </div>
                 <nav class="header-nav" style="gap: 0.5rem;">
@@ -50,6 +56,14 @@ $pageTitle = $pageTitle ?? 'Account - ' . SITE_NAME;
                     <a href="<?= SITE_URL ?>/login" class="nav-link">Login</a>
                     <a href="<?= SITE_URL ?>/register" class="nav-cta-filled nav-link">Register Free</a>
                 </nav>
+
+                <!-- School Logo -->
+                <?php if (defined('SCHOOL_LOGO') && SCHOOL_LOGO): ?>
+                <div class="header-school-logo">
+                    <img src="<?= SITE_URL ?>/assets/img/<?= e(SCHOOL_LOGO) ?>"
+                         alt="<?= e(SCHOOL_NAME) ?>" title="<?= e(SCHOOL_NAME) ?>" height="40">
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </header>

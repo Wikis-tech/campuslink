@@ -143,7 +143,7 @@ class VendorModel extends Model
         string $sortBy = 'plan_priority'
     ): array {
         $params     = [];
-        $conditions = ["v.status = 'active'"];
+        $conditions = ["v.status = 'active'", "s.status = 'active'", "s.expiry_date > NOW()"];
 
         if (!empty($categorySlug)) {
             $conditions[] = "c.slug = ?";
@@ -174,6 +174,7 @@ class VendorModel extends Model
                     COALESCE(AVG(r.rating), 0) as avg_rating,
                     COUNT(DISTINCT r.id) as review_count
              FROM vendors v
+             INNER JOIN subscriptions s ON v.id = s.vendor_id
              LEFT JOIN categories c ON v.category_id = c.id
              LEFT JOIN reviews r ON r.vendor_id = v.id AND r.status = 'approved'
              WHERE $where
@@ -192,7 +193,7 @@ class VendorModel extends Model
         string $search = ''
     ): int {
         $params     = [];
-        $conditions = ["v.status = 'active'"];
+        $conditions = ["v.status = 'active'", "s.status = 'active'", "s.expiry_date > NOW()"];
 
         if (!empty($categorySlug)) {
             $conditions[] = "c.slug = ?";
@@ -210,6 +211,7 @@ class VendorModel extends Model
 
         return (int)$this->db->fetchColumn(
             "SELECT COUNT(DISTINCT v.id) FROM vendors v
+             INNER JOIN subscriptions s ON v.id = s.vendor_id
              LEFT JOIN categories c ON v.category_id = c.id
              WHERE $where",
             $params
@@ -229,6 +231,52 @@ class VendorModel extends Model
              AND DATE(s.expiry_date) = DATE(DATE_ADD(NOW(), INTERVAL ? DAY))",
             [$daysAhead]
         );
+    }
+
+    // ============================================================
+    // Send expiry reminders to vendors
+    // ============================================================
+    public function sendExpiryReminders(int $daysAhead = 10): void
+    {
+        $expiringVendors = $this->getExpiringSoon($daysAhead);
+
+        foreach ($expiringVendors as $vendor) {
+            // Check if reminder was already sent recently (within last 7 days)
+            $lastReminder = $this->db->fetchColumn(
+                "SELECT created_at FROM notifications
+                 WHERE vendor_id = ? AND type = 'expiry_reminder'
+                 AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)
+                 ORDER BY created_at DESC LIMIT 1",
+                [$vendor['id']]
+            );
+
+            if ($lastReminder) {
+                continue; // Skip if reminder was sent recently
+            }
+
+            // Send notification
+            Notification::sendToVendor(
+                $vendor['id'],
+                'Subscription Expiring Soon',
+                "Your subscription will expire on {$vendor['expiry_date']}. " .
+                "Please renew your plan to continue appearing in browse and category listings.",
+                Notification::TYPE_EXPIRY_REMINDER,
+                'vendor/subscription'
+            );
+
+            // Send email if available
+            $email = $vendor['school_email'] ?? $vendor['working_email'] ?? '';
+            if ($email) {
+                require_once __DIR__ . '/../core/Mailer.php';
+                $mailer = new Mailer();
+                $mailer->sendExpiryReminder(
+                    $email,
+                    $vendor['full_name'],
+                    $vendor['business_name'],
+                    $vendor['expiry_date']
+                );
+            }
+        }
     }
 
     // ============================================================
@@ -286,6 +334,17 @@ class VendorModel extends Model
     }
 
     // ============================================================
+    // Deactivate vendor (subscription expired)
+    // ============================================================
+    public function deactivate(int $vendorId): bool
+    {
+        return $this->update($vendorId, [
+            'status'      => 'inactive',
+            'updated_at'  => date('Y-m-d H:i:s'),
+        ]);
+    }
+
+    // ============================================================
     // Reject vendor registration
     // ============================================================
     public function reject(int $vendorId, string $reason): bool
@@ -319,17 +378,6 @@ class VendorModel extends Model
             'status'     => 'banned',
             'ban_reason' => $reason,
             'banned_at'  => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-    }
-
-    // ============================================================
-    // Deactivate vendor (subscription expired)
-    // ============================================================
-    public function deactivate(int $vendorId): bool
-    {
-        return $this->update($vendorId, [
-            'status'     => 'inactive',
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
     }

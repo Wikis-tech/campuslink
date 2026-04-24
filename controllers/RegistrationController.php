@@ -161,38 +161,35 @@ class RegistrationController extends Controller
                 return;
             }
 
-            // Create vendor
-            $vendorId = $this->vendorModel->createStudentVendor($data);
+            // Store registration data in session instead of creating vendor
+            $this->session->set('pending_registration', [
+                'vendor_type'     => 'student',
+                'full_name'       => $data['full_name'],
+                'business_name'   => $data['business_name'],
+                'school_email'    => $data['school_email'],
+                'working_email'   => $data['working_email'],
+                'personal_email'  => $data['personal_email'],
+                'phone'           => $data['phone'],
+                'whatsapp_number' => $data['whatsapp_number'],
+                'school_address'  => $data['school_address'],
+                'business_address' => $data['business_address'],
+                'category_id'     => $data['category_id'],
+                'description'     => $data['description'],
+                'price_range'     => $data['price_range'],
+                'years_operation' => $data['years_operation'],
+                'plan_type'       => $data['plan_type'],
+                'password'        => password_hash($data['password'], PASSWORD_DEFAULT),
+                'terms_accepted'  => $data['terms_accepted'],
+                'age_confirmed'   => $data['age_confirmed'],
+                'uploaded_files'  => $data['uploaded_files'] ?? [],
+            ]);
 
-            if (!$vendorId) {
-                $this->redirectWith('vendor/register?type=student', 'error', 'Registration failed. Please try again.');
-                return;
-            }
-
-            // Record terms
-            $this->termsModel->recordAll((int)$vendorId, 'vendor', $ip);
-
-            // Send emails
-            $this->mailer->sendVendorRegistrationReceived(
-                $data['personal_email'],
-                $data['full_name'],
-                $data['business_name']
-            );
-
-            // Notify admin
-            Notification::sendToAdmin(
-                'New Vendor Registration',
-                "Student vendor '{$data['business_name']}' by {$data['full_name']} is pending review.",
-                Notification::TYPE_APPROVAL,
-                'admin/vendors/pending'
-            );
-
-            // Store for payment
-            $this->session->set('pending_vendor_id', (int)$vendorId);
+            // Store payment info
             $this->session->set('pending_vendor_type', 'student');
             $this->session->set('pending_plan', $data['plan_type']);
-            $this->session->set('pending_phone', $data['phone']);
+            $this->session->set('pending_email', $data['school_email'] ?? $data['working_email'] ?? $data['personal_email']);
 
+            // Redirect to payment page
             $this->redirect('vendor/payment');
             return;
         }
@@ -294,36 +291,32 @@ class RegistrationController extends Controller
                 return;
             }
 
-            // Create vendor
-            $vendorId = $this->vendorModel->createCommunityVendor($data);
+            // Store registration data in session instead of creating vendor
+            $this->session->set('pending_registration', [
+                'vendor_type'     => 'community',
+                'full_name'       => $data['full_name'],
+                'business_name'   => $data['business_name'],
+                'working_email'   => $data['working_email'],
+                'phone'           => $data['phone'],
+                'whatsapp_number' => $data['whatsapp_number'],
+                'business_address' => $data['business_address'],
+                'category_id'     => $data['category_id'],
+                'description'     => $data['description'],
+                'price_range'     => $data['price_range'],
+                'years_operation' => $data['years_operation'],
+                'plan_type'       => $data['plan_type'],
+                'password'        => password_hash($data['password'], PASSWORD_DEFAULT),
+                'terms_accepted'  => $data['terms_accepted'],
+                'age_confirmed'   => $data['age_confirmed'],
+                'uploaded_files'  => $data['uploaded_files'] ?? [],
+            ]);
 
-            if (!$vendorId) {
-                $this->redirectWith('vendor/register?type=community', 'error', 'Registration failed. Please try again.');
-                return;
-            }
-
-            // Record terms
-            $this->termsModel->recordAll((int)$vendorId, 'vendor', $ip);
-
-            // Notify
-            $this->mailer->sendVendorRegistrationReceived(
-                $data['working_email'],
-                $data['full_name'],
-                $data['business_name']
-            );
-
-            Notification::sendToAdmin(
-                'New Community Vendor',
-                "Community vendor '{$data['business_name']}' by {$data['full_name']} needs review.",
-                Notification::TYPE_APPROVAL,
-                'admin/vendors/pending'
-            );
-
-            $this->session->set('pending_vendor_id', (int)$vendorId);
+            // Store payment info
             $this->session->set('pending_vendor_type', 'community');
             $this->session->set('pending_plan', $data['plan_type']);
-            $this->session->set('pending_phone', $data['phone']);
+            $this->session->set('pending_email', $data['working_email']);
 
+            // Redirect to payment page
             $this->redirect('vendor/payment');
             return;
         }

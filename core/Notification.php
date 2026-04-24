@@ -7,6 +7,16 @@ defined('CAMPUSLINK') or die('Direct access not permitted.');
 
 class Notification
 {
+    // Notification types
+    const TYPE_INFO = 'info';
+    const TYPE_SUCCESS = 'success';
+    const TYPE_WARNING = 'warning';
+    const TYPE_ERROR = 'error';
+    const TYPE_PAYMENT = 'payment';
+    const TYPE_EXPIRY_REMINDER = 'expiry_reminder';
+    const TYPE_EXPIRY = 'expiry';
+    const TYPE_APPROVAL = 'approval';
+
     private static ?Database $db = null;
 
     private static function db(): Database
@@ -158,18 +168,4 @@ class Notification
             return false;
         }
     }
-
-    // ============================================================
-    // Notification type constants
-    // ============================================================
-    const TYPE_INFO     = 'info';
-    const TYPE_SUCCESS  = 'success';
-    const TYPE_WARNING  = 'warning';
-    const TYPE_ERROR    = 'error';
-    const TYPE_PAYMENT  = 'payment';
-    const TYPE_REVIEW   = 'review';
-    const TYPE_COMPLAINT= 'complaint';
-    const TYPE_APPROVAL = 'approval';
-    const TYPE_REMINDER = 'reminder';
-    const TYPE_SYSTEM   = 'system';
 }

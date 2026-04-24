@@ -123,6 +123,35 @@ class PaymentController extends Controller
     }
 
     // ============================================================
+    // Create vendor from pending registration data
+    // ============================================================
+    private function createVendorFromPendingRegistration(array $data): int|false
+    {
+        // Create vendor account
+        if ($data['vendor_type'] === 'student') {
+            $vendorId = $this->vendorModel->createStudentVendor($data);
+        } elseif ($data['vendor_type'] === 'community') {
+            $vendorId = $this->vendorModel->createCommunityVendor($data);
+        } else {
+            return false;
+        }
+
+        if (!$vendorId) {
+            return false;
+        }
+
+        // Record terms acceptance
+        require_once __DIR__ . '/../models/TermsAcceptanceModel.php';
+        $termsModel = new TermsAcceptanceModel();
+        $termsModel->recordAll((int)$vendorId, 'vendor', getClientIP());
+
+        // Clear pending registration data
+        $this->session->remove('pending_registration');
+
+        return (int)$vendorId;
+    }
+
+    // ============================================================
     // Initialize Paystack transaction (AJAX POST) — FIXED
     // ============================================================
     public function initiate(): void
@@ -138,6 +167,19 @@ class PaymentController extends Controller
         $planType   = $this->post('plan_type', '')
                       ?: $this->session->get('pending_plan', '')
                       ?: $this->session->get('payment_plan', '');
+
+        // Check if we have pending registration data (new vendor)
+        $pendingRegistration = $this->session->get('pending_registration');
+        if ($pendingRegistration && !$vendorId) {
+            // Create vendor from pending registration data
+            $vendorId = $this->createVendorFromPendingRegistration($pendingRegistration);
+            if (!$vendorId) {
+                $this->jsonError('Could not create vendor account. Please try again.');
+                return;
+            }
+            $vendorType = $pendingRegistration['vendor_type'];
+            $planType   = $pendingRegistration['plan_type'];
+        }
 
         // Fall back to logged-in vendor
         if (!$vendorId && Auth::isVendorLoggedIn()) {
@@ -275,7 +317,11 @@ class PaymentController extends Controller
                 'amount'      => $result['amount'],
             ]);
 
-            $this->vendorModel->activate($payment['vendor_id']);
+            // Only activate if vendor is approved (for new vendors, they need admin approval)
+            $vendor = $this->vendorModel->find($payment['vendor_id']);
+            if ($vendor && $vendor['status'] === 'approved') {
+                $this->vendorModel->activate($payment['vendor_id']);
+            }
             $this->vendorModel->updatePlan($payment['vendor_id'], $payment['plan_type']);
 
             $this->db->commit();
@@ -304,14 +350,26 @@ class PaymentController extends Controller
             );
         }
 
-        Notification::sendToVendor(
-            $payment['vendor_id'],
-            'Payment Confirmed',
-            'Your ' . getPlanLabel($payment['vendor_type'], $payment['plan_type']) .
-            ' subscription is now active. Expires: ' . ($sub['expiry_date'] ?? 'N/A'),
-            Notification::TYPE_PAYMENT,
-            'vendor/subscription'
-        );
+        // Send appropriate notification based on vendor status
+        if ($vendor['status'] === 'approved') {
+            Notification::sendToVendor(
+                $payment['vendor_id'],
+                'Payment Confirmed',
+                'Your ' . getPlanLabel($payment['vendor_type'], $payment['plan_type']) .
+                ' subscription is now active. Expires: ' . ($sub['expiry_date'] ?? 'N/A'),
+                Notification::TYPE_PAYMENT,
+                'vendor/subscription'
+            );
+        } else {
+            Notification::sendToVendor(
+                $payment['vendor_id'],
+                'Payment Confirmed - Pending Approval',
+                'Your payment for ' . getPlanLabel($payment['vendor_type'], $payment['plan_type']) .
+                ' has been received. Your account is pending admin approval. You will be notified once approved.',
+                Notification::TYPE_PAYMENT,
+                'vendor/subscription'
+            );
+        }
 
         Logger::payment('SUCCESS', $reference, $result['amount'], $payment['vendor_id'], 'Activated');
 

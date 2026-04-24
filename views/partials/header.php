@@ -17,8 +17,8 @@ if (str_contains($_SERVER['REQUEST_URI'], '/vendor/')) {
             <!-- Logo -->
             <div class="header-logo">
                 <a href="<?= SITE_URL ?>" aria-label="<?= SITE_NAME ?> Home">
-                    <?php if (file_exists(PUBLIC_PATH . '/assets/img/logo.png')): ?>
-                        <img src="<?= SITE_URL ?>/assets/img/logo.png"
+                    <?php if (file_exists(PUBLIC_PATH . '/assets/img/favicon.png')): ?>
+                        <img src="<?= SITE_URL ?>/assets/img/favicon.png"
                              alt="<?= SITE_NAME ?>" height="40">
                     <?php else: ?>
                         <span class="logo-text-fallback">

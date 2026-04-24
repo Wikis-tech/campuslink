@@ -47,8 +47,6 @@ class VendorController extends Controller {
     // ============================================================
     // Register Select
     // ============================================================
-    // ============================================================
->>>>>>> aada171 (notifications, subscriptions,fixes)
     public function registerSelect(): void {
         $db = DB::getInstance();
 

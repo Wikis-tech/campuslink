@@ -351,6 +351,67 @@ public function __construct()
     }
 
     // ============================================================
+    // TEMPLATE: Expiry reminder (10 days before)
+    // ============================================================
+    public function sendExpiryReminder(
+        string $email,
+        string $name,
+        string $businessName,
+        string $expiryDate
+    ): bool {
+        $renewUrl = SITE_URL . '/vendor/subscription';
+
+        $html = "
+        <p>Hi <strong>" . e($name) . "</strong>,</p>
+        <p>This is a reminder that your CampusLink subscription for <strong>" . e($businessName) . "</strong> 
+           will expire on <strong>" . e($expiryDate) . "</strong>.</p>
+        <div style='background:#fff8e1;border-left:4px solid #f59e0b;padding:16px;margin:20px 0;border-radius:4px;'>
+            <strong>Expiry Date:</strong> " . e($expiryDate) . "<br>
+            <strong>Days Remaining:</strong> 10
+        </div>
+        <p>Renew your subscription now to keep your listing active and visible to students.</p>
+        <p style='margin: 30px 0;'>
+            <a href='" . e($renewUrl) . "'
+               style='background:#f59e0b;color:#fff;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;'>
+                Renew My Subscription
+            </a>
+        </p>
+        <p><small>If you do not renew, your listing will be hidden from browse and category pages after expiry.</small></p>
+        ";
+
+        return $this->send($email, $name, '⚠️ Subscription Expiring Soon - 10 Days Left', $html);
+    }
+
+    // ============================================================
+    // TEMPLATE: Subscription expired notification
+    // ============================================================
+    public function sendExpiryNotification(
+        string $email,
+        string $name,
+        string $businessName,
+        string $expiryDate
+    ): bool {
+        $renewUrl = SITE_URL . '/vendor/subscription';
+
+        $html = "
+        <p>Hi <strong>" . e($name) . "</strong>,</p>
+        <p>Your CampusLink subscription for <strong>" . e($businessName) . "</strong> has 
+           <strong>expired</strong> as of " . e($expiryDate) . ".</p>
+        <p>Your listing has been <strong>deactivated</strong> and is no longer visible to students 
+           on CampusLink browse and category pages.</p>
+        <p style='margin: 30px 0;'>
+            <a href='" . e($renewUrl) . "'
+               style='background:#0b3d91;color:#fff;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;'>
+                Renew Subscription Now
+            </a>
+        </p>
+        <p>Renew today to reactivate your listing and get back in front of campus customers.</p>
+        ";
+
+        return $this->send($email, $name, '⛔ Your Subscription Has Expired', $html);
+    }
+
+    // ============================================================
     // TEMPLATE: Payment success receipt
     // ============================================================
     public function sendPaymentReceipt(

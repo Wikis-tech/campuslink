@@ -17,3 +17,8 @@
 [2026-04-23 05:05:24] [INIT] Ref: CL-3-4B5826D28D57-1776917123 | Amount: ₦4,000.00 | IP: ::1 | initialized
 [2026-04-23 05:06:36] [INIT] Ref: CL-3-71DF1F22A38C-1776917195 | Amount: ₦4,000.00 | IP: ::1 | initialized
 [2026-04-23 05:15:32] [INIT] Ref: CL-3-684252686985-1776917731 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-23 10:38:08] [INIT_FAIL] Ref: CL-2-AA758D428F98-1776937085 | Amount: ₦7,000.00 | IP: ::1 | failed: Invalid key
+[2026-04-23 10:40:44] [INIT_FAIL] Ref: CL-2-BE55B35B886D-1776937242 | Amount: ₦7,000.00 | IP: ::1 | failed: Invalid key
+[2026-04-24 03:38:22] [INIT_FAIL] Ref: CL-3-37D0339E4663-1776998300 | Amount: ₦4,000.00 | IP: ::1 | failed: Invalid key
+[2026-04-24 03:46:54] [INIT] Ref: CL-3-94B29326E880-1776998812 | Amount: ₦4,000.00 | IP: ::1 | initialized
+[2026-04-24 21:22:08] [INIT] Ref: CL-4-B5E644565EEC-1777062126 | Amount: ₦2,000.00 | IP: ::1 | initialized

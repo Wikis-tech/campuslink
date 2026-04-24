@@ -3,6 +3,36 @@
  * CampusLink - Main Application Configuration
  */
 defined('CAMPUSLINK') or die('Direct access not permitted.');
+
+// Load environment variables from .env if present
+if (!function_exists('loadEnvFile')) {
+    function loadEnvFile(string $path): void
+    {
+        if (!file_exists($path) || !is_readable($path)) {
+            return;
+        }
+
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || str_starts_with($line, '#')) {
+                continue;
+            }
+
+            [$name, $value] = array_map('trim', explode('=', $line, 2) + ['', '']);
+            if ($name === '') {
+                continue;
+            }
+
+            $value = trim($value, " \t\n\r\0\x0B\"'");
+            putenv("$name=$value");
+            $_ENV[$name]    = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
+loadEnvFile(__DIR__ . '/../.env');
+
 if (defined('VALID_PLANS')) { return; }
 
 // ============================================================
@@ -57,7 +87,7 @@ define('SCHOOL_DOMAIN',       'my.uat.ed.ng');
 define('SCHOOL_EMAIL_DOMAIN', 'student.uat.edu.ng');
 define('SCHOOL_EMAIL',        'registrar@uat.edu.ng');
 define('SCHOOL_WEBSITE',      'www.uat.edu.ng');
-define('SCHOOL_LOGO',         'uploads/school-logo/school-logo.webp');
+define('SCHOOL_LOGO',         'school-logo.png');
 
 // ============================================================
 // DATABASE
