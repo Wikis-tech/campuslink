@@ -99,11 +99,10 @@ const PaystackHandler = {
                 return;
             }
 
-            // Launch Paystack popup
+            // Launch Paystack popup using authorization_url from server
+            // This preserves all server-side configuration including channels
             this.openPopup({
-                key:       paystackKey,
-                email:     btn.dataset.email || data.email,
-                amount:    data.amount,
+                authUrl:   data.authorization_url,
                 reference: data.reference,
                 onSuccess: (response) => this.handleSuccess(response),
                 onClose:   ()         => this.handleClose(),
@@ -120,37 +119,38 @@ const PaystackHandler = {
     // ============================================================
     // OPEN PAYSTACK POPUP
     // ============================================================
-    openPopup({ key, email, amount, reference, onSuccess, onClose }) {
-        if (typeof PaystackPop === 'undefined') {
-            CampusLink.toast('Payment system not loaded. Please refresh and try again.', 'error');
+    openPopup({ authUrl, reference, onSuccess, onClose }) {
+        if (!authUrl) {
+            CampusLink.toast('Payment initialization failed. Please try again.', 'error');
             return;
         }
 
-        const handler = PaystackPop.setup({
-            key,
-            email,
-            amount,
-            ref:          reference,
-            currency:     'NGN',
-            metadata: {
-                custom_fields: [
-                    {
-                        display_name:  'Platform',
-                        variable_name: 'platform',
-                        value:         'CampusLink',
-                    },
-                ],
-            },
-            onClose: () => {
+        // Open authorization_url in a popup window
+        // Paystack handles channels and all config from server-side initialization
+        const width = 600;
+        const height = 700;
+        const left = (screen.width - width) / 2;
+        const top = (screen.height - height) / 2;
+
+        const popup = window.open(
+            authUrl,
+            'Paystack',
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+        );
+
+        if (!popup) {
+            CampusLink.toast('Popup blocked. Please enable popups for this site.', 'error');
+            return;
+        }
+
+        // Check if popup is closed
+        const pollClose = setInterval(() => {
+            if (popup.closed) {
+                clearInterval(pollClose);
                 onClose();
                 CampusLink.toast('Payment window closed. Your payment was not completed.', 'warning');
-            },
-            callback: response => {
-                onSuccess(response);
-            },
-        });
-
-        handler.openIframe();
+            }
+        }, 500);
     },
 
     // ============================================================

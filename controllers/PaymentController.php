@@ -229,11 +229,12 @@ class PaymentController extends Controller
         $this->session->set('payment_id', (int)$paymentId);
 
         $result = $this->paystack->initializeTransaction([
-            'email'        => $email,
-            'amount'       => $amount,
-            'reference'    => $reference,
-            'callback_url' => PAYSTACK_CALLBACK_URL,
-            'metadata'     => [
+            'email'           => $email,
+            'amount'          => $amount,
+            'reference'       => $reference,
+            'callback_url'    => PAYSTACK_CALLBACK_URL,
+            'channels'        => ['card', 'bank', 'ussd', 'qr', 'mobile_money'],
+            'metadata'        => [
                 'vendor_id'   => $vendorId,
                 'vendor_type' => $vendorType,
                 'plan'        => $planType,
