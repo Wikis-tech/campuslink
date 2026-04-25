@@ -102,18 +102,26 @@ class VendorModel extends Model
     // ============================================================
     public function findBySlug(string $slug): ?array
     {
-        return $this->db->fetchOne(
+        $vendor = $this->db->fetchOne(
             "SELECT v.*, c.name as category_name,
                     COALESCE(AVG(r.rating), 0) as avg_rating,
                     COUNT(DISTINCT r.id) as review_count
              FROM vendors v
              LEFT JOIN categories c ON v.category_id = c.id
              LEFT JOIN reviews r ON r.vendor_id = v.id AND r.status = 'approved'
-             WHERE v.slug = ? AND v.status = 'active'
+             WHERE v.slug = ?
              GROUP BY v.id
              LIMIT 1",
             [$slug]
         );
+
+        // Allow viewing own profile even if not active (for pending approval)
+        if ($vendor && Auth::isVendorLoggedIn() && Auth::vendorId() === $vendor['id']) {
+            return $vendor;
+        }
+
+        // For public viewing, must be active
+        return ($vendor && $vendor['status'] === 'active') ? $vendor : null;
     }
 
     // ============================================================

@@ -111,7 +111,7 @@ define('PAYSTACK_WEBHOOK_SECRET', getenv('PAYSTACK_WEBHOOK_SECRET') ?: 'your_web
 // ============================================================
 // SUBSCRIPTION PLAN AMOUNTS (in Kobo for Paystack)
 // ============================================================
-define('STUDENT_BASIC_AMOUNT',      5000);
+define('STUDENT_BASIC_AMOUNT',      10000);
 define('STUDENT_PREMIUM_AMOUNT',    500000);
 define('STUDENT_FEATURED_AMOUNT',  1000000);
 define('COMMUNITY_BASIC_AMOUNT',    400000);
@@ -120,7 +120,7 @@ define('COMMUNITY_FEATURED_AMOUNT',1200000);
 
 define('VALID_PLANS', serialize([
     'student' => [
-        'basic'    => ['amount' => 5000,  'label' => 'Student Basic',    'naira' => 50],
+        'basic'    => ['amount' => 10000,  'label' => 'Student Basic',    'naira' => 100],
         'premium'  => ['amount' => 500000,  'label' => 'Student Premium',  'naira' => 5000],
         'featured' => ['amount' => 1000000, 'label' => 'Student Featured', 'naira' => 10000],
     ],

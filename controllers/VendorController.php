@@ -113,6 +113,19 @@ class VendorController extends Controller {
             }
 
             Session::regenerate();
+
+            // Clear any existing user/admin sessions first
+            Session::delete('user_logged_in');
+            Session::delete('user_id');
+            Session::delete('user_name');
+            Session::delete('user_email');
+            Session::delete('user_role');
+            Session::delete('admin_logged_in');
+            Session::delete('admin_id');
+            Session::delete('admin_name');
+            Session::delete('admin_email');
+            Session::delete('admin_role');
+
             Session::set('vendor_logged_in', true);
             Session::set('vendor_id',       (int)$vendor['id']);
             Session::set('vendor_name',     $vendor['full_name']);
@@ -133,6 +146,7 @@ class VendorController extends Controller {
     // Logout
     // ============================================================
     public function logout(): void {
+        // Clear all vendor session variables
         Session::delete('vendor_logged_in');
         Session::delete('vendor_id');
         Session::delete('vendor_name');
@@ -141,6 +155,20 @@ class VendorController extends Controller {
         Session::delete('vendor_type');
         Session::delete('vendor_plan');
         Session::delete('vendor_status');
+
+        // Also clear any user session variables that might be lingering
+        Session::delete('user_logged_in');
+        Session::delete('user_id');
+        Session::delete('user_name');
+        Session::delete('user_email');
+        Session::delete('user_role');
+
+        // Clear admin session variables too
+        Session::delete('admin_logged_in');
+        Session::delete('admin_id');
+        Session::delete('admin_name');
+        Session::delete('admin_email');
+        Session::delete('admin_role');
 
         Session::setFlash('success', 'You have been logged out successfully.');
         $this->redirect('vendor/login');
@@ -392,6 +420,11 @@ class VendorController extends Controller {
         $vendor           = $this->vendorModel->find($vendorId);
         $subInfo          = $this->subModel->getExpiryInfo($vendorId);
         $subscription     = $this->subModel->getActiveForVendor($vendorId);
+        
+        // Add days_left to subscription for dashboard display
+        if ($subscription) {
+            $subscription['days_left'] = $subInfo['days_remaining'];
+        }
         $reviewCount      = $this->reviewModel->countApprovedForVendor($vendorId);
         $avgRating        = $this->reviewModel->getAverageRating($vendorId);
         $allComplaints    = $this->complaintModel->getForVendor($vendorId);

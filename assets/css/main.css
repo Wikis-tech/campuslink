@@ -344,24 +344,44 @@ p {
 
 /* Mobile Nav Drawer */
 .mobile-nav {
-    position: fixed;
-    top: 0;
-    right: -320px;
-    width: 300px;
-    height: 100vh;
-    background: var(--card-bg);
-    z-index: 1200;
-    padding: var(--space-8) var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-    transition: right 0.3s ease;
-    overflow-y: auto;
+    position: fixed !important;
+    top: 0 !important;
+    right: -320px !important;
+    width: 300px !important;
+    height: 100vh !important;
+    background: var(--card-bg) !important;
+    z-index: 1200 !important;
+    padding: var(--space-8) var(--space-6) !important;
+    display: none !important;
+    flex-direction: column !important;
+    gap: var(--space-2) !important;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15) !important;
+    transition: right 0.3s ease !important;
+    overflow-y: auto !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+/* Ensure mobile nav is hidden on desktop */
+@media (min-width: 769px) {
+    .mobile-nav,
+    .mobile-nav.active {
+        display: none !important;
+        right: -320px !important;
+    }
+    .mobile-nav-overlay,
+    .mobile-nav-overlay.active {
+        display: none !important;
+        opacity: 0 !important;
+    }
+    .mobile-menu-btn {
+        display: none !important;
+    }
 }
 
 .mobile-nav.active {
-    right: 0;
+    display: flex !important;
+    right: 0 !important;
 }
 
 .mobile-nav-close {

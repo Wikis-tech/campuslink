@@ -54,6 +54,22 @@ class AuthController extends BaseController {
 
             // Login success
             Session::regenerate();
+
+            // Clear any existing vendor/admin sessions first
+            Session::delete('vendor_logged_in');
+            Session::delete('vendor_id');
+            Session::delete('vendor_name');
+            Session::delete('vendor_email');
+            Session::delete('vendor_business');
+            Session::delete('vendor_type');
+            Session::delete('vendor_plan');
+            Session::delete('vendor_status');
+            Session::delete('admin_logged_in');
+            Session::delete('admin_id');
+            Session::delete('admin_name');
+            Session::delete('admin_email');
+            Session::delete('admin_role');
+
             Session::set('user_logged_in', true);
             Session::set('user_id',        (int)$user['id']);
             Session::set('user_name',      $user['full_name']);
@@ -501,11 +517,30 @@ Session::set('pending_user_id', '');
     // LOGOUT
     // ============================================================
     public function logout(): void {
-       Session::set('user_logged_in', false);
-Session::set('user_id', null);
-Session::set('user_name', '');
-Session::set('user_email', '');
-Session::set('user_role', '');
+        // Clear all user session variables
+        Session::delete('user_logged_in');
+        Session::delete('user_id');
+        Session::delete('user_name');
+        Session::delete('user_email');
+        Session::delete('user_role');
+
+        // Also clear any vendor session variables that might be lingering
+        Session::delete('vendor_logged_in');
+        Session::delete('vendor_id');
+        Session::delete('vendor_name');
+        Session::delete('vendor_email');
+        Session::delete('vendor_business');
+        Session::delete('vendor_type');
+        Session::delete('vendor_plan');
+        Session::delete('vendor_status');
+
+        // Clear admin session variables too
+        Session::delete('admin_logged_in');
+        Session::delete('admin_id');
+        Session::delete('admin_name');
+        Session::delete('admin_email');
+        Session::delete('admin_role');
+
         Session::setFlash('success', 'You have been logged out successfully.');
         $this->redirect('login');
     }

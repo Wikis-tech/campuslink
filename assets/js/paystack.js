@@ -99,10 +99,11 @@ const PaystackHandler = {
                 return;
             }
 
-            // Launch Paystack popup using authorization_url from server
-            // This preserves all server-side configuration including channels
+            // Launch inline Paystack popup with the initialized reference
             this.openPopup({
-                authUrl:   data.authorization_url,
+                key:       paystackKey,
+                email:     btn.dataset.email || data.email,
+                amount:    data.amount,
                 reference: data.reference,
                 onSuccess: (response) => this.handleSuccess(response),
                 onClose:   ()         => this.handleClose(),
@@ -119,38 +120,38 @@ const PaystackHandler = {
     // ============================================================
     // OPEN PAYSTACK POPUP
     // ============================================================
-    openPopup({ authUrl, reference, onSuccess, onClose }) {
-        if (!authUrl) {
+    openPopup({ key, email, amount, reference, onSuccess, onClose }) {
+        if (!key || !email || !amount || !reference) {
             CampusLink.toast('Payment initialization failed. Please try again.', 'error');
             return;
         }
 
-        // Open authorization_url in a popup window
-        // Paystack handles channels and all config from server-side initialization
-        const width = 600;
-        const height = 700;
-        const left = (screen.width - width) / 2;
-        const top = (screen.height - height) / 2;
-
-        const popup = window.open(
-            authUrl,
-            'Paystack',
-            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
-        );
-
-        if (!popup) {
-            CampusLink.toast('Popup blocked. Please enable popups for this site.', 'error');
-            return;
-        }
-
-        // Check if popup is closed
-        const pollClose = setInterval(() => {
-            if (popup.closed) {
-                clearInterval(pollClose);
+        const handler = PaystackPop.setup({
+            key,
+            email,
+            amount,
+            ref:       reference,
+            currency:  'NGN',
+            channels:  ['card', 'bank', 'ussd', 'qr', 'mobile_money'],
+            metadata: {
+                custom_fields: [
+                    {
+                        display_name:  'Platform',
+                        variable_name: 'platform',
+                        value:         'CampusLink',
+                    },
+                ],
+            },
+            onClose: () => {
                 onClose();
                 CampusLink.toast('Payment window closed. Your payment was not completed.', 'warning');
-            }
-        }, 500);
+            },
+            callback: response => {
+                onSuccess(response);
+            },
+        });
+
+        handler.openIframe();
     },
 
     // ============================================================

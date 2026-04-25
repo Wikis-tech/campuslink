@@ -104,6 +104,7 @@ class BrowseController extends BaseController {
     public function vendorProfile(string $slug): void {
         $db = DB::getInstance();
 
+        // First try to find active vendor
         $vendor = $db->row(
     "SELECT v.*,
             c.name AS category_name,
@@ -117,7 +118,25 @@ class BrowseController extends BaseController {
       GROUP BY v.id",
     [$slug]
 );
-    $pageTitle = $vendor ? $vendor['business_name'] : 'Vendor Profile';
+
+        // If not found and user is logged in as vendor, check if it's their own profile
+        if (!$vendor && Auth::isVendorLoggedIn()) {
+            $vendor = $db->row(
+    "SELECT v.*,
+            c.name AS category_name,
+            c.icon AS category_icon,
+            COALESCE(AVG(r.rating), 0) AS avg_rating,
+            COUNT(r.id)               AS review_count
+       FROM vendors v
+  LEFT JOIN categories c ON v.category_id = c.id
+  LEFT JOIN reviews r    ON r.vendor_id = v.id AND r.status = 'approved'
+      WHERE v.slug = ? AND v.vendor_id = ?
+      GROUP BY v.id",
+    [$slug, Auth::vendorId()]
+);
+        }
+
+        $pageTitle = $vendor ? $vendor['business_name'] : 'Vendor Profile';
 
         if (!$vendor) {
             $this->notFound();

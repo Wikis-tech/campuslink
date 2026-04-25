@@ -29,3 +29,11 @@
 [2026-04-24 21:56:08] [INIT] Ref: CL-4-99247D6AFD71-1777064164 | Amount: ₦50.00 | IP: ::1 | initialized
 [2026-04-25 06:22:41] [INIT] Ref: CL-4-B673DFA4D7FB-1777094559 | Amount: ₦50.00 | IP: ::1 | initialized
 [2026-04-25 06:24:51] [INIT] Ref: CL-4-29613459F414-1777094689 | Amount: ₦50.00 | IP: ::1 | initialized
+[2026-04-25 06:30:45] [INIT] Ref: CL-4-AD29713226D8-1777095044 | Amount: ₦50.00 | IP: ::1 | initialized
+[2026-04-25 06:43:12] [INIT] Ref: CL-4-49B5A42D7B34-1777095790 | Amount: ₦2,000.00 | IP: ::1 | initialized
+[2026-04-25 16:01:03] [INIT] Ref: CL-4-824BFE1070FF-1777129260 | Amount: ₦100.00 | IP: ::1 | initialized
+[2026-04-25 16:12:45] [INIT] Ref: CL-4-5E33CD7D06F4-1777129964 | Amount: ₦300.00 | IP: ::1 | initialized
+[2026-04-25 16:29:37] [INIT] Ref: CL-4-4B5FB9F71459-1777130972 | Amount: ₦300.00 | IP: ::1 | initialized
+[2026-04-25 16:30:19] [INIT] Ref: CL-4-BA050A516FBB-1777131018 | Amount: ₦100.00 | IP: ::1 | initialized
+[2026-04-25 16:33:09] [VERIFY] Ref: CL-4-BA050A516FBB-1777131018 | Amount: ₦100.00 | IP: ::1 | success | Gateway: Approved
+[2026-04-25 16:33:13] [PAYMENT_SUCCESS] IP: ::1 | Session: jvhsjb8n | Ref: CL-4-BA050A516FBB-1777131018 | Amount: ₦100.00 | VendorID: 4 | Status: Activated

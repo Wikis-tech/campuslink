@@ -136,7 +136,7 @@ CREATE TABLE `vendors` (
     `password`            VARCHAR(255)    NOT NULL,
     `email_verified`      TINYINT(1)      NOT NULL DEFAULT 0,
     `phone_verified`      TINYINT(1)      NOT NULL DEFAULT 0,
-    `terms_acceptedd`     TINYINT(1)      NOT NULL DEFAULT 0,
+    `terms_accepted`     TINYINT(1)      NOT NULL DEFAULT 0,
     `terms_version`       VARCHAR(10)     NOT NULL DEFAULT '1.0',
     `status`              ENUM('pending','approved','active','inactive','rejected','suspended','banned','grace_period') NOT NULL DEFAULT 'pending',
     `matric_number`       VARCHAR(30)     NULL,
