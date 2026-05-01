@@ -74,7 +74,11 @@ border-radius:14px;border:1px solid #e2e8f0;color:#94a3b8;}
         [$iconPath, $iconClass, $iconColor] = $notifIcons[$n['type'] ?? 'default'] ?? $notifIcons['default'];
         $isUnread = !$n['is_read'];
     ?>
-    <div class="notif-card <?= $isUnread ? 'unread' : '' ?>">
+    <div class="notif-card <?= $isUnread ? 'unread' : 'read' ?>"
+         data-notif-id="<?= (int)$n['id'] ?>"
+         data-type="<?= e($n['type'] ?? 'info') ?>"
+         data-time="<?= e($n['created_at']) ?>"
+         style="cursor:pointer;">
         <div class="notif-icon <?= $iconClass ?>">
             <?= lucide_icon($iconPath, 18, $iconColor) ?>
         </div>

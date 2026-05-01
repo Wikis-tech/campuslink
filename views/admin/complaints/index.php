@@ -29,7 +29,7 @@
 <form method="GET" class="admin-filter-bar">
     <input type="hidden" name="status" value="<?= e($status) ?>">
     <input type="text" name="q" placeholder="Search ticket or vendor..."
-           value="<?= e($search) ?>">
+           value="<?= e($search ?? '') ?>">
     <button type="submit" class="btn btn-primary btn-sm">Search</button>
 </form>
 
@@ -55,7 +55,7 @@
                     </td>
                     <td>
                         <div style="font-weight:700;font-size:var(--font-size-sm);">
-                            <?= e($c['business_name']) ?>
+                            <?= e($c['vendor_name'] ?? $c['business_name'] ?? '—') ?>
                         </div>
                     </td>
                     <td style="font-size:0.75rem;">

@@ -211,4 +211,36 @@ class UserController extends BaseController {
             $this->json(['saved' => true]);
         }
     }
+
+    public function deleteAccount(): void {
+        $this->requireUserLogin();
+        $db     = DB::getInstance();
+        $userId = (int)Session::get('user_id');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
+            $confirm = $_POST['confirm_delete'] ?? '';
+
+            if ($confirm !== 'DELETE') {
+                Session::setFlash('error', 'Please type "DELETE" to confirm.');
+                $this->redirect('user/profile');
+            }
+
+            // Delete related data
+            $db->execute("DELETE FROM saved_vendors WHERE user_id = ?", [$userId]);
+            $db->execute("DELETE FROM reviews WHERE user_id = ?", [$userId]);
+            $db->execute("DELETE FROM complaints WHERE user_id = ?", [$userId]);
+            $db->execute("DELETE FROM notifications WHERE recipient_type = 'user' AND recipient_id = ?", [$userId]);
+
+            // Delete user
+            $db->execute("DELETE FROM users WHERE id = ?", [$userId]);
+
+            // Logout
+            Session::destroy();
+            Session::setFlash('success', 'Your account has been deleted.');
+            $this->redirect('/');
+        }
+
+        $this->redirect('user/profile');
+    }
 }

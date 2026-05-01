@@ -43,12 +43,12 @@ class Controller extends BaseController
 
     protected function jsonSuccess(string $message, array $data = []): void
     {
-        $this->json(array_merge(['status' => 'success', 'message' => $message], $data));
+        $this->json(array_merge(['status' => 'success', 'success' => true, 'message' => $message], $data));
     }
 
     protected function jsonError(string $message, int $code = 400, array $data = []): void
     {
-        $this->json(array_merge(['status' => 'error', 'message' => $message], $data), $code);
+        $this->json(array_merge(['status' => 'error', 'success' => false, 'message' => $message], $data), $code);
     }
 
     protected function redirect(string $url, string $message = '', string $type = 'success'): void

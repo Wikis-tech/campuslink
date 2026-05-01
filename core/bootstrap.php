@@ -49,6 +49,24 @@ define('MODELS_PATH',      ROOT_PATH . '/models');
 
 define('ASSETS_PATH',      ROOT_PATH . '/assets');
 
+// ─────────────────────────────────────────────────────────────────
+
+// 3. HTTPS ENFORCEMENT (for production hosting)
+
+// ─────────────────────────────────────────────────────────────────
+
+if (isset($_SERVER['HTTP_HOST']) && !isset($_SERVER['HTTPS']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
+
+    $host = $_SERVER['HTTP_HOST'];
+
+    $uri  = $_SERVER['REQUEST_URI'];
+
+    header("Location: https://$host$uri", true, 301);
+
+    exit;
+
+}
+
 define('UPLOADS_PATH',     ROOT_PATH . '/assets/uploads');
 
 // ─────────────────────────────────────────────────────────────────
@@ -79,6 +97,8 @@ require_once CORE_PATH . '/AdminAuth.php';
 require_once CORE_PATH . '/Mailer.php';
 
 require_once CORE_PATH . '/helpers.php';
+
+require_once CORE_PATH . '/RateLimiter.php';
 
 require_once CORE_PATH . '/Sanitizer.php';
 
@@ -244,11 +264,19 @@ if (!class_exists('BaseController')) {
 
             // If URL starts with http, use as-is
 
-            // Otherwise prepend SITE_URL
+            // Otherwise prepend SITE_URL and remove duplicate base path segments.
 
             if (!str_starts_with($url, 'http')) {
 
-                $url = SITE_URL . '/' . ltrim($url, '/');
+                $path     = ltrim($url, '/');
+                $basePath = parse_url(SITE_URL, PHP_URL_PATH) ?: '';
+                $basePath = ltrim($basePath, '/');
+
+                if ($basePath !== '' && str_starts_with($path, $basePath)) {
+                    $path = ltrim(substr($path, strlen($basePath)), '/');
+                }
+
+                $url = SITE_URL . '/' . ltrim($path, '/');
 
             }
 

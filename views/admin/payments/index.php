@@ -29,15 +29,15 @@
 
 <form method="GET" class="admin-filter-bar">
     <input type="text" name="q" placeholder="Search reference or vendor..."
-           value="<?= e($search) ?>">
+           value="<?= e($search ?? '') ?>">
     <select name="status">
         <option value="">All Statuses</option>
-        <option value="success" <?= $status==='success'?'selected':'' ?>>Success</option>
-        <option value="pending" <?= $status==='pending'?'selected':'' ?>>Pending</option>
-        <option value="failed"  <?= $status==='failed' ?'selected':'' ?>>Failed</option>
+        <option value="success" <?= ($status??'')==='success'?'selected':'' ?>>Success</option>
+        <option value="pending" <?= ($status??'')==='pending'?'selected':'' ?>>Pending</option>
+        <option value="failed"  <?= ($status??'')==='failed' ?'selected':'' ?>>Failed</option>
     </select>
-    <input type="date" name="from" value="<?= e($from) ?>" title="From date">
-    <input type="date" name="to"   value="<?= e($to)   ?>" title="To date">
+    <input type="date" name="from" value="<?= e($from ?? '') ?>" title="From date">
+    <input type="date" name="to"   value="<?= e($to   ?? '') ?>" title="To date">
     <button type="submit" class="btn btn-primary btn-sm">Filter</button>
     <a href="<?= SITE_URL ?>/admin/payments" class="btn btn-outline-primary btn-sm">Reset</a>
 </form>
@@ -58,41 +58,58 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($payments as $p): ?>
+                <?php if (empty($payments)): ?>
                 <tr>
-                    <td style="font-family:monospace;font-size:0.7rem;color:var(--text-muted);"
-                        data-copy="<?= e($p['paystack_reference']) ?>">
-                        <?= e(substr($p['paystack_reference'],0,14)) ?>…
+                    <td colspan="8" style="text-align:center;padding:2rem;
+                        color:var(--text-muted);font-size:var(--font-size-sm);">
+                        No payment records found.
+                    </td>
+                </tr>
+                <?php else: ?>
+                <?php foreach ($payments as $p):
+                    $ref = $p['reference'] ?? '';
+                    $planType   = $p['plan_type'] ?? $p['sub_plan_type'] ?? 'basic';
+                    $vendorType = $p['vendor_type'] ?? 'student';
+                ?>
+                <tr>
+                    <td style="font-family:monospace;font-size:0.7rem;color:var(--text-muted);cursor:pointer;"
+                        title="<?= e($ref) ?>"
+                        onclick="if(navigator.clipboard){navigator.clipboard.writeText('<?= e($ref) ?>');}"
+                        data-copy="<?= e($ref) ?>">
+                        <?= $ref ? e(substr($ref, 0, 14)) . '…' : '<em style="color:var(--text-muted)">—</em>' ?>
                     </td>
                     <td>
                         <div style="font-weight:700;font-size:var(--font-size-sm);">
-                            <?= e($p['business_name']) ?>
+                            <?= e($p['business_name'] ?? '—') ?>
                         </div>
                     </td>
                     <td style="font-size:0.75rem;">
-                        <?= $p['vendor_type']==='student' ? '🎓' : '🏢' ?>
-                        <?= ucfirst($p['vendor_type']) ?>
+                        <?= $vendorType === 'student' ? '🎓' : '🏢' ?>
+                        <?= ucfirst($vendorType) ?>
                     </td>
                     <td>
-                        <span class="badge badge-<?= $p['plan_type']==='featured'?'featured':'active' ?>"
+                        <span class="badge badge-<?= $planType === 'featured' ? 'featured' : 'active' ?>"
                               style="font-size:0.65rem;">
-                            <?= ucfirst($p['plan_type']) ?>
+                            <?= ucfirst($planType) ?>
                         </span>
                     </td>
                     <td class="payment-amount" style="font-weight:800;">
-                        ₦<?= number_format($p['amount']/100, 2) ?>
+                        ₦<?= number_format(($p['amount'] ?? 0) / 100, 2) ?>
                     </td>
                     <td>
-                        <span class="badge <?= $p['status']==='success'?'badge-active':($p['status']==='pending'?'badge-pending':'badge-suspended') ?>"
-                              style="font-size:0.65rem;">
-                            <?= ucfirst($p['status']) ?>
+                        <?php
+                        $st = $p['status'] ?? 'pending';
+                        $stClass = $st === 'success' ? 'badge-active' : ($st === 'pending' ? 'badge-pending' : 'badge-suspended');
+                        ?>
+                        <span class="badge <?= $stClass ?>" style="font-size:0.65rem;">
+                            <?= ucfirst($st) ?>
                         </span>
                     </td>
                     <td style="font-size:0.7rem;color:var(--text-muted);">
                         <?= date('d M Y', strtotime($p['created_at'])) ?>
                     </td>
                     <td style="font-size:0.7rem;color:var(--text-muted);">
-                        <?php if (!empty($p['subscription_start'])): ?>
+                        <?php if (!empty($p['subscription_start']) && !empty($p['subscription_expiry'])): ?>
                         <?= date('d M Y', strtotime($p['subscription_start'])) ?>
                         → <?= date('d M Y', strtotime($p['subscription_expiry'])) ?>
                         <?php else: ?>
@@ -101,6 +118,7 @@
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

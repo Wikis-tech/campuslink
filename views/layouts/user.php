@@ -281,6 +281,9 @@
         .ud-content { padding: 1rem; }
     }
     </style>
+    <?php if (!empty($extraCss)): foreach ($extraCss as $css): ?>
+    <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/<?= e($css) ?>">
+    <?php endforeach; endif; ?>
 </head>
 <body>
 
@@ -428,5 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.lucide) lucide.createIcons();
 });
 </script>
+<?php if (!empty($extraJs)): foreach ($extraJs as $js): ?>
+<script src="<?= SITE_URL ?>/assets/js/<?= e($js) ?>"></script>
+<?php endforeach; endif; ?>
 </body>
 </html>

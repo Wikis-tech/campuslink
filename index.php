@@ -293,9 +293,16 @@ try {
         FROM vendors v
         LEFT JOIN categories c ON v.category_id = c.id
         LEFT JOIN reviews r ON r.vendor_id = v.id AND r.status = 'approved'
-        WHERE v.status = 'active' AND v.plan_type IN ('featured','premium')
+        INNER JOIN subscriptions s ON s.vendor_id = v.id AND s.status = 'active' AND s.expiry_date >= NOW()
+        WHERE v.status = 'active'
         GROUP BY v.id
-        ORDER BY v.plan_type = 'featured' DESC, avg_rating DESC
+        ORDER BY 
+            CASE v.plan_type 
+                WHEN 'featured' THEN 1 
+                WHEN 'premium' THEN 2 
+                ELSE 3 
+            END ASC,
+            avg_rating DESC
         LIMIT 6
     ");
     $featuredVendors = $featuredStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -335,7 +342,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
     <meta property="og:type" content="website">
     <meta property="og:url" content="<?= SITE_URL ?>">
     <title><?= htmlspecialchars($pageTitle) ?></title>
-    <link rel="icon" type="image/webp" href="assets/images/logo.webp">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/landing.css">
     <link rel="stylesheet" href="assets/css/landing-animations.css">
@@ -617,13 +624,17 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                             <span class="badge-featured">
                                 <i data-lucide="star" class="vendor-badge-icon" aria-hidden="true"></i> Featured
                             </span>
+                        <?php elseif ($vendor['plan_type'] === 'premium'): ?>
+                            <span class="badge-premium">
+                                <i data-lucide="star" class="vendor-badge-icon" aria-hidden="true"></i> Premium
+                            </span>
                         <?php endif; ?>
                     </div>
 
                     <!-- Logo -->
                     <div class="vendor-logo-wrap">
                         <?php if (!empty($vendor['logo'])): ?>
-                            <img src="uploads/logos/<?= htmlspecialchars($vendor['logo']) ?>"
+                            <img src="assets/uploads/logos/<?= htmlspecialchars($vendor['logo']) ?>"
                                  alt="<?= htmlspecialchars($vendor['business_name']) ?> logo"
                                  class="vendor-logo" width="80" height="80"
                                  onerror="this.src='assets/images/default/vendor-placeholder.webp'">
@@ -667,6 +678,18 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                                 <?= htmlspecialchars($vendor['price_range']) ?>
                             </div>
                         <?php endif; ?>
+
+                        <?php if ($vendor['plan_type'] === 'premium' || $vendor['plan_type'] === 'featured'): ?>
+                            <div class="vendor-features">
+                                <?php if ($vendor['plan_type'] === 'featured'): ?>
+                                    <span class="feature-badge">Homepage Featured</span>
+                                    <span class="feature-badge">Top Search Results</span>
+                                <?php elseif ($vendor['plan_type'] === 'premium'): ?>
+                                    <span class="feature-badge">Priority Search</span>
+                                    <span class="feature-badge">Premium Badge</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Action Buttons -->
@@ -686,7 +709,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                         </a>
                         <?php endif; ?>
 
-                        <a href="vendor/<?= htmlspecialchars($vendor['slug'] ?? $vendor['id']) ?>" class="btn-profile">
+                        <a href="browse/<?= htmlspecialchars($vendor['slug']) ?>" class="btn-profile">
                             View Profile <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
                         </a>
                     </div>

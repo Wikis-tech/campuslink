@@ -1,4 +1,3 @@
-
 <?php defined('CAMPUSLINK') or die(); ?>
 
 <style>
@@ -151,14 +150,22 @@ foreach ($flashes as $type => $messages):
                         <th>Notification</th>
                         <th>Status</th>
                         <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($notifications as $n): ?>
-                    <tr data-notif-id="<?= (int)$n['id'] ?>" style="cursor:pointer;">
+                    <tr data-notif-id="<?= (int)$n['id'] ?>"
+                        data-type="<?= e($n['type'] ?? 'info') ?>"
+                        data-time="<?= e($n['created_at']) ?>"
+                        data-title="<?= e($n['title'] ?? 'Notification') ?>"
+                        data-message="<?= e($n['message'] ?? '') ?>"
+                        data-link="<?= e($n['link'] ?? '') ?>"
+                        data-is-read="<?= (int)$n['is_read'] ?>"
+                        style="cursor:pointer;">
                         <td>
-                            <span class="badge b-<?= e($n['recipient_type']) ?>">
-                                <?= ucfirst(e($n['recipient_type'])) ?>
+                            <span class="badge b-<?= e($n['recipient_type'] ?? 'admin') ?>">
+                                <?= ucfirst(e($n['recipient_type'] ?? 'admin')) ?>
                             </span>
                             <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.2rem;">
                                 ID #<?= (int)$n['recipient_id'] ?>
@@ -184,6 +191,24 @@ foreach ($flashes as $type => $messages):
                         <td style="white-space:nowrap;color:#94a3b8;font-size:0.75rem;">
                             <?= date('d M Y', strtotime($n['created_at'])) ?>
                             <div><?= date('g:ia', strtotime($n['created_at'])) ?></div>
+                        </td>
+                        <td>
+                            <button onclick="editNotification(<?= (int)$n['id'] ?>)"
+                                    class="btn btn-sm btn-outline-primary"
+                                    style="font-size:0.7rem;padding:0.2rem 0.5rem;margin-right:0.25rem;">
+                                ✏️ Edit
+                            </button>
+                            <form method="POST"
+                                  action="<?= SITE_URL ?>/admin/notifications/delete/<?= (int)$n['id'] ?>"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('Delete this notification?')">
+                                <input type="hidden" name="csrf_token" value="<?= CSRF::token() ?>">
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                        style="font-size:0.7rem;padding:0.2rem 0.5rem;">
+                                    🗑️ Delete
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -338,5 +363,9 @@ function loadRecipients(type) {
         group.style.display = 'none';
         select.innerHTML = '';
     }
+}
+
+function editNotification(id) {
+    window.location.href = '<?= SITE_URL ?>/admin/notifications/edit/' + id;
 }
 </script>

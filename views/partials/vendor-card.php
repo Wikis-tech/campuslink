@@ -148,7 +148,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
         <?php endif; ?>
 
         <!-- â†’ arrow â†’ ArrowRight -->
-        <a href="<?= SITE_URL ?>/vendor/<?= e($vendor['slug']) ?>"
+        <a href="<?= SITE_URL ?>/browse/<?= e($vendor['slug']) ?>"
            class="btn-profile"
            style="display:inline-flex;align-items:center;gap:0.35rem;"
            itemprop="url">

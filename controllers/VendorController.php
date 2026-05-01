@@ -475,23 +475,20 @@ class VendorController extends Controller {
 
             $data = [
                 'business_name'      => $this->post('business_name', ''),
-                // ── FIX 1: Sanitizer::phone() does not exist — use clean() ──
-                'phone'              => Sanitizer::clean($this->post('phone', '')),
-                'whatsapp_number'    => Sanitizer::clean($this->post('whatsapp_number', '')),
+                'phone'              => Sanitizer::phone($this->post('phone', '')),
+                'whatsapp_number'    => Sanitizer::phone($this->post('whatsapp_number', '')),
                 'description'        => Sanitizer::textarea($this->post('description', ''), 1000),
                 'price_range'        => $this->post('price_range', ''),
                 'operating_location' => $this->post('operating_location', ''),
                 'business_address'   => $this->post('business_address', ''),
                 'years_experience'   => (int)$this->post('years_experience', 0),
                 'years_operation'    => (int)$this->post('years_operation', 0),
-                // ── FIX 2: Include category_id from the form ──
                 'category_id'        => (int)$this->post('category_id', 0),
             ];
 
-            // Basic validation (removed 'phone' from Validator rules since
-            // the Validator phone rule is fine — we just fixed the Sanitizer call)
             $validator = Validator::make($data, [
                 'business_name' => 'required|min:3|max:100',
+                'category_id'   => 'required|integer',
                 'description'   => 'required|min:20|max:1000',
                 'phone'         => 'required|phone',
             ]);
@@ -507,7 +504,6 @@ class VendorController extends Controller {
                 return;
             }
 
-            // Handle logo upload
             if (!empty($_FILES['logo']['name'])) {
                 $uploader = new Uploader(UPLOAD_LOGOS);
                 $newLogo  = $uploader->upload($_FILES['logo'], 'logo_' . $vendorId);
@@ -529,9 +525,18 @@ class VendorController extends Controller {
                 $data['logo'] = $newLogo;
             }
 
-            $this->vendorModel->updateProfile($vendorId, $data);
+            $updated = $this->vendorModel->updateProfile($vendorId, $data);
+            if (!$updated) {
+                $this->view('vendor/profile-edit', [
+                    'pageTitle'  => 'Edit Profile - ' . SITE_NAME,
+                    'vendor'     => array_merge($vendor, $data),
+                    'categories' => $categories,
+                    'errors'     => ['general' => 'Unable to save profile changes. Please try again.'],
+                    'csrfField'  => CSRF::field(),
+                ]);
+                return;
+            }
 
-            // ── FIX 3: Notify admin that a vendor updated their profile ──
             Notification::sendToAdmin(
                 'Vendor Profile Updated',
                 "Vendor #{$vendorId} ({$vendor['business_name']}) has updated their profile. Please review for accuracy.",
@@ -814,5 +819,39 @@ class VendorController extends Controller {
         echo '<br><button onclick="window.print()">Print Receipt</button>';
         echo '</body></html>';
         exit;
+    }
+
+    public function deleteAccount(): void {
+        $this->requireVendorLogin();
+        $db       = DB::getInstance();
+        $vendorId = (int)Session::get('vendor_id');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
+            $confirm = $_POST['confirm_delete'] ?? '';
+
+            if ($confirm !== 'DELETE') {
+                Session::setFlash('error', 'Please type "DELETE" to confirm.');
+                $this->redirect('vendor/profile');
+            }
+
+            // Delete related data
+            $db->execute("DELETE FROM subscriptions WHERE vendor_id = ?", [$vendorId]);
+            $db->execute("DELETE FROM payments WHERE vendor_id = ?", [$vendorId]);
+            $db->execute("DELETE FROM reviews WHERE vendor_id = ?", [$vendorId]);
+            $db->execute("DELETE FROM complaints WHERE vendor_id = ?", [$vendorId]);
+            $db->execute("DELETE FROM notifications WHERE recipient_type = 'vendor' AND recipient_id = ?", [$vendorId]);
+            $db->execute("DELETE FROM saved_vendors WHERE vendor_id = ?", [$vendorId]);
+
+            // Delete vendor
+            $db->execute("DELETE FROM vendors WHERE id = ?", [$vendorId]);
+
+            // Logout
+            Session::destroy();
+            Session::setFlash('success', 'Your account has been deleted.');
+            $this->redirect('/');
+        }
+
+        $this->redirect('vendor/profile');
     }
 }

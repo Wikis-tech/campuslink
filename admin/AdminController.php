@@ -367,9 +367,9 @@ class AdminController {
 
         $users = $this->db->rows(
             "SELECT u.*,
-                    (SELECT COUNT(*) FROM reviews r   WHERE r.user_id=u.id)    AS review_count,
-                    (SELECT COUNT(*) FROM complaints c WHERE c.user_id=u.id)   AS complaint_count,
-                    (SELECT COUNT(*) FROM saved_vendors s WHERE s.user_id=u.id) AS saved_count
+                    COALESCE((SELECT COUNT(*) FROM reviews r   WHERE r.user_id=u.id), 0)    AS review_count,
+                    COALESCE((SELECT COUNT(*) FROM complaints c WHERE c.user_id=u.id), 0)   AS complaint_count,
+                    COALESCE((SELECT COUNT(*) FROM saved_vendors s WHERE s.user_id=u.id), 0) AS saved_count
                FROM users u
               WHERE {$whereStr}
               ORDER BY u.created_at DESC

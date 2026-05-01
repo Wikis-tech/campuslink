@@ -94,10 +94,14 @@ class BrowseController extends BaseController {
     }
 
     $layout = Auth::isLoggedIn() ? 'user' : 'main';
+    $extraCss = ['browse.css'];
+    $extraJs  = ['browse.js'];
+
     $this->render('browse/index', compact(
         'vendors', 'categories', 'currentCategory',
         'search', 'categoryId', 'sort', 'pag',
-        'savedIds', 'userId', 'pageTitle'
+        'savedIds', 'userId', 'pageTitle',
+        'extraCss', 'extraJs'
     ), $layout);
 }
 
@@ -201,10 +205,13 @@ class BrowseController extends BaseController {
         }
 
         $layout = Auth::isLoggedIn() ? 'user' : 'main';
+        $extraCss = ['browse.css', 'vendor-profile.css'];
+        $extraJs  = ['browse.js'];
+
         $this->render('browse/vendor-profile', compact(
             'vendor', 'reviews', 'reviewsPag', 'ratingBreakdown',
             'isSaved', 'userId', 'hasReview', 'avgRating', 'reviewTotal',
-            'currentUserReview', 'pageTitle'
+            'currentUserReview', 'pageTitle', 'extraCss', 'extraJs'
         ), $layout);
     }
 

@@ -56,6 +56,12 @@ class ComplaintController extends Controller
             ]);
 
             if ($validator->fails()) {
+                if ($this->isAjax()) {
+                    $errors = $validator->errors();
+                    $firstError = reset($errors);
+                    $this->jsonError(is_array($firstError) ? $firstError[0] : $firstError);
+                    return;
+                }
                 $this->view('browse/complaint-form', [
                     'pageTitle'  => 'Submit Complaint - ' . SITE_NAME,
                     'vendor'     => $vendor,
@@ -80,6 +86,10 @@ class ComplaintController extends Controller
                 [$userId, $data['vendor_id']]
             );
             if ($existingCount >= 3) {
+                if ($this->isAjax()) {
+                    $this->jsonError('You have already submitted 3 complaints against this vendor.');
+                    return;
+                }
                 $this->redirectWith(
                     'user/my-complaints',
                     'error',
@@ -121,6 +131,10 @@ class ComplaintController extends Controller
             $complaintId = $this->complaintModel->submit($data);
 
             if (!$complaintId) {
+                if ($this->isAjax()) {
+                    $this->jsonError('Failed to submit complaint. Please try again.');
+                    return;
+                }
                 $this->redirectWith('user/my-complaints', 'error', 'Failed to submit complaint. Please try again.');
                 return;
             }
@@ -163,6 +177,13 @@ class ComplaintController extends Controller
                     Notification::TYPE_WARNING,
                     'admin/complaints'
                 );
+            }
+
+            if ($this->isAjax()) {
+                $this->jsonSuccess('Complaint submitted successfully. You can track it in your complaints dashboard.', [
+                    'ticket_id' => 'CL-' . str_pad($complaintId, 6, '0', STR_PAD_LEFT),
+                ]);
+                return;
             }
 
             $this->redirectWith('user/my-complaints', 'success', 'Complaint submitted successfully. Ticket ID will appear in your complaints list.');

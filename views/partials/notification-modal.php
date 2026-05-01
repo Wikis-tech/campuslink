@@ -439,27 +439,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     link: notificationItem.querySelector('a')?.href || notificationItem.href
                 };
             } else if (notificationItem.classList.contains('notif-card')) {
-                // User notifications
+                // User notifications — read from data attributes set on the card
                 notificationData = {
-                    id: notificationItem.dataset.notifId || notificationItem.dataset.id,
-                    title: notificationItem.querySelector('.notif-title')?.textContent?.trim(),
-                    message: notificationItem.querySelector('.notif-msg')?.textContent?.trim(),
-                    type: notificationItem.dataset.type || 'info',
-                    created_at: new Date().toISOString(),
-                    is_read: notificationItem.classList.contains('read'),
-                    link: notificationItem.querySelector('a')?.href || '#'
+                    id:         notificationItem.dataset.notifId || notificationItem.dataset.id,
+                    title:      notificationItem.querySelector('.notif-title')?.textContent?.trim() || 'Notification',
+                    message:    notificationItem.querySelector('.notif-msg')?.textContent?.trim()   || '',
+                    type:       notificationItem.dataset.type    || 'info',
+                    created_at: notificationItem.dataset.time    || new Date().toISOString(),
+                    is_read:    notificationItem.classList.contains('read'),
+                    link:       notificationItem.querySelector('a[href]:not([href="#"])')?.href || '#'
                 };
             } else if (notificationItem.tagName === 'TR' && notificationItem.dataset.notifId) {
-                // Admin notifications (table rows)
-                const cells = notificationItem.querySelectorAll('td');
+                // Admin notifications (table rows) — read from data attributes
                 notificationData = {
-                    id: notificationItem.dataset.notifId,
-                    title: cells[1]?.querySelector('.an-title')?.textContent?.trim(),
-                    message: cells[1]?.querySelector('.an-msg')?.textContent?.trim(),
-                    type: 'admin',
-                    created_at: cells[3]?.textContent?.trim() || new Date().toISOString(),
-                    is_read: cells[2]?.querySelector('.badge')?.textContent?.toLowerCase().includes('read'),
-                    link: '#'
+                    id:         notificationItem.dataset.notifId,
+                    title:      notificationItem.dataset.title   || notificationItem.querySelector('.an-title')?.textContent?.trim() || 'Notification',
+                    message:    notificationItem.dataset.message || notificationItem.querySelector('.an-msg')?.textContent?.trim()   || '',
+                    type:       notificationItem.dataset.type    || 'info',
+                    created_at: notificationItem.dataset.time    || new Date().toISOString(),
+                    is_read:    notificationItem.dataset.isRead  === '1',
+                    link:       notificationItem.dataset.link    || '#'
                 };
             }
 

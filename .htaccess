@@ -1,6 +1,20 @@
 Options -Indexes
 Options -MultiViews
 
+# Security: Deny access to sensitive files
+<FilesMatch "\.(env|sql|log|md|txt|gitignore|gitattributes)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "^(\.htaccess|\.htpasswd)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to config and core directories
+RedirectMatch 404 ^/campuslink/(config|core|database|logs|scripts)/.*$
+
 # Turn on URL rewriting
 RewriteEngine On
 

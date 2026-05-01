@@ -418,6 +418,23 @@
     align-self: center;
 }
 
+.vendor-features {
+    display: flex;
+    gap: var(--space-1);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.feature-badge {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--primary);
+    background: rgba(11, 61, 145, 0.08);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(11, 61, 145, 0.15);
+}
+
 .vendor-actions {
     display: flex;
     gap: var(--space-2);

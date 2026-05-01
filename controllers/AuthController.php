@@ -79,7 +79,24 @@ class AuthController extends BaseController {
             Session::setFlash('success',
                 'Welcome back, ' . $user['full_name'] . '!'
             );
-            $this->redirect('user/dashboard');
+
+            $redirectTarget = '';
+            if (!empty($_GET['redirect'])) {
+                $redirectTarget = trim($_GET['redirect']);
+                $parts = parse_url($redirectTarget);
+                if (isset($parts['scheme']) || isset($parts['host'])) {
+                    $redirectTarget = '';
+                } else {
+                    $path     = $parts['path'] ?? '';
+                    $query    = isset($parts['query']) ? '?' . $parts['query'] : '';
+                    $fragment = isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
+                    $redirectTarget = ltrim($path, '/') . $query . $fragment;
+                }
+            }
+
+            $intended = $redirectTarget ?: Session::get('intended_url');
+            Session::delete('intended_url');
+            $this->redirect($intended ?: 'user/dashboard');
         }
 
         $this->render('auth/login');
@@ -214,41 +231,45 @@ class AuthController extends BaseController {
             // Generate verification token
             $token       = bin2hex(random_bytes(32));
             $tokenExpiry = date('Y-m-d H:i:s', time() + EMAIL_VERIFY_EXPIRY);
+            $userId     = 0;
 
             // Insert user
             try {
-               $userId = $db->insert('users', [
-    'full_name'          => $fullName,
-    'school_email'       => $schoolEmail,
-    'personal_email'     => $personalEmail,
-    'phone'              => $phone,
-    'matric_number'      => $matric,
-    'password'           => password_hash(
-        $password,
-        PASSWORD_BCRYPT,
-        ['cost' => BCRYPT_COST]
-    ),
-    'email_verified'     => 0,
-    'status'             => 'inactive',
-    'email_verify_token' => $token,
-    'token_expires_at'   => $tokenExpiry,
-    'terms_accepted'     => 1,
-    'terms_version'      => TERMS_VERSION,
-    'created_at'         => date('Y-m-d H:i:s'),
-    'updated_at'         => date('Y-m-d H:i:s'),
-]);                
-                
-  // Force correct verification state — overrides any trigger or hook
-$db->execute(
-    "UPDATE users
-     SET email_verified     = 0,
-         status             = 'inactive',
-         email_verify_token = ?,
-         token_expires_at   = ?
-     WHERE id = ?",
-    [$token, $tokenExpiry, $userId]
-);
-                
+                $userId = $db->insert('users', [
+                    'full_name'          => $fullName,
+                    'school_email'       => $schoolEmail,
+                    'personal_email'     => $personalEmail,
+                    'phone'              => $phone,
+                    'matric_number'      => $matric,
+                    'password'           => password_hash(
+                        $password,
+                        PASSWORD_BCRYPT,
+                        ['cost' => BCRYPT_COST]
+                    ),
+                    'email_verified'     => 0,
+                    'status'             => 'inactive',
+                    'email_verify_token' => $token,
+                    'token_expires_at'   => $tokenExpiry,
+                    'terms_accepted'     => 1,
+                    'terms_version'      => TERMS_VERSION,
+                    'created_at'         => date('Y-m-d H:i:s'),
+                    'updated_at'         => date('Y-m-d H:i:s'),
+                ]);
+
+                if (!$userId) {
+                    throw new Exception('Could not create user account.');
+                }
+
+                // Force correct verification state — overrides any trigger or hook
+                $db->execute(
+                    "UPDATE users
+                     SET email_verified     = 0,
+                         status             = 'inactive',
+                         email_verify_token = ?,
+                         token_expires_at   = ?
+                     WHERE id = ?",
+                    [$token, $tokenExpiry, $userId]
+                );
             } catch (Exception $e) {
                 Session::setFlash('error',
                     'Registration failed. Error: ' . $e->getMessage()

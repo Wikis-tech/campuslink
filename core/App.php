@@ -39,6 +39,7 @@ class App
         'user/my-reviews'             => ['UserController',         'myReviews'],
         'user/my-complaints'          => ['UserController',         'myComplaints'],
         'user/notifications'          => ['UserController',         'notifications'],
+        'user/delete-account'         => ['UserController',         'deleteAccount'],
 
         // Vendor public
         'vendor/register'             => ['RegistrationController', 'index'],
@@ -62,6 +63,7 @@ class App
         'vendor/subscription'         => ['VendorController',       'subscription'],
         'vendor/payment-history'      => ['VendorController',       'paymentHistory'],
         'vendor/notifications'        => ['VendorController',       'notifications'],
+        'vendor/delete-account'       => ['VendorController',       'deleteAccount'],
 
         // Reviews & Complaints
         'reviews/submit'              => ['ReviewController',       'submit'],

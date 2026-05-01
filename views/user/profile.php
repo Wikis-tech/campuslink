@@ -183,3 +183,16 @@ justify-content:center;gap:0.45rem;}
                         <label>Matric Number</label>
                         <input type="text"
                                value="<?= e($user['matric_number'] ?? '') ?>"
+                               disabled>
+                        <div class="hint">Matric number cannot be changed</div>
+                    </div>
+
+                    <button type="submit" class="save-btn">
+                        <?= lucide_icon('<polyline points="20 1 4 1 4 11 64 11 64 16 4 16 4 20 64 20"/>', 16, '#fff') ?>
+                        Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

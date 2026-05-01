@@ -65,6 +65,8 @@ match(true) {
     $aPage === 'users'                              => $admin->users(),
 
     // Reviews
+    $aPage === 'reviews' && $aPage2 === 'approve'   => $admin->reviewApprove((int)$aPage3),
+    $aPage === 'reviews' && $aPage2 === 'reject'    => $admin->reviewReject((int)$aPage3),
     $aPage === 'reviews'                            => $admin->reviews(),
 
     // Complaints
@@ -80,6 +82,8 @@ match(true) {
     // Notifications
 $aPage === 'notifications' && $aPage2 === 'send'       => $admin->notificationSend(),
 $aPage === 'notifications' && $aPage2 === 'recipients' => $admin->notificationRecipients(),
+$aPage === 'notifications' && $aPage2 === 'delete'     => $admin->notificationDelete((int)$aPage3),
+$aPage === 'notifications' && $aPage2 === 'edit'       => $admin->notificationEdit((int)$aPage3),
 $aPage === 'notifications'                             => $admin->notifications(),
     
     // Settings

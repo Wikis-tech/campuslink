@@ -200,6 +200,7 @@ function initReviewForm() {
 
     // Star rating display
     const starInputs = form.querySelectorAll('.review-stars-input input[type="radio"]');
+    const ratingSelect = form.querySelector('select[name="rating"]');
     const ratingText = form.querySelector('.selected-rating-label');
 
     const ratingLabels = {
@@ -217,6 +218,14 @@ function initReviewForm() {
             }
         });
     });
+
+    if (ratingSelect) {
+        ratingSelect.addEventListener('change', () => {
+            if (ratingText && ratingSelect.value) {
+                ratingText.textContent = ratingLabels[ratingSelect.value] || '';
+            }
+        });
+    }
 
     // Char counter
     const textarea = form.querySelector('textarea[name="review"]');
@@ -237,7 +246,9 @@ function initReviewForm() {
     form.addEventListener('submit', async e => {
         e.preventDefault();
 
-        const rating   = form.querySelector('input[name="rating"]:checked')?.value;
+        const ratingInput = form.querySelector('input[name="rating"]:checked');
+        const ratingSelect = form.querySelector('select[name="rating"]');
+        const rating = ratingInput?.value || ratingSelect?.value;
         const review   = textarea?.value.trim();
         const vendorId = form.querySelector('input[name="vendor_id"]')?.value;
         const submitBtn = form.querySelector('[type="submit"]');
@@ -268,7 +279,7 @@ function initReviewForm() {
                 review,
             });
 
-            if (data.success) {
+            if (data.success || data.status === 'success') {
                 CampusLink.toast(data.message, 'success');
 
                 // Replace form with success message
@@ -340,7 +351,8 @@ function initComplaintModal() {
         submitBtn.disabled = true;
 
         try {
-            const response = await fetch('/complaints/submit', {
+            const siteBase = window.CAMPUSLINK_ROOT || window.__CAMPUSLINK_BASE__ || '';
+            const response = await fetch(siteBase + '/complaints/submit', {
                 method:  'POST',
                 headers: { 'X-Requested-With': 'XMLHttpRequest' },
                 body:    formData,
@@ -348,7 +360,7 @@ function initComplaintModal() {
 
             const data = await response.json();
 
-            if (data.success) {
+            if (data.status === 'success' || data.success) {
                 close();
                 CampusLink.toast('Complaint submitted. Ticket: ' + (data.ticket_id || ''), 'success', 6000);
                 form.reset();

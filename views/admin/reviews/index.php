@@ -48,7 +48,7 @@
                     </div>
                     <div style="font-size:0.7rem;color:var(--text-muted);">
                         Vendor:
-                        <a href="<?= SITE_URL ?>/vendor/<?= e($review['vendor_slug']) ?>"
+                        <a href="<?= SITE_URL ?>/browse/<?= e($review['vendor_slug'] ?? '') ?>"
                            target="_blank"
                            style="color:var(--primary);font-weight:700;">
                             <?= e($review['business_name']) ?>

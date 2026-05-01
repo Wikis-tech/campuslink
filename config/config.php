@@ -162,11 +162,11 @@ define('ALLOWED_DOC_TYPES', serialize([
     'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf',
 ]));
 
-define('UPLOAD_LOGOS',    'uploads/logos/');
-define('UPLOAD_ID_CARDS', 'uploads/id-cards/');
-define('UPLOAD_SELFIES',  'uploads/selfies/');
-define('UPLOAD_SERVICE',  'uploads/service-photos/');
-define('UPLOAD_CAC',      'uploads/cac-certificates/');
+define('UPLOAD_LOGOS',    'assets/uploads/logos/');
+define('UPLOAD_ID_CARDS', 'assets/uploads/id-cards/');
+define('UPLOAD_SELFIES',  'assets/uploads/selfies/');
+define('UPLOAD_SERVICE',  'assets/uploads/service-photos/');
+define('UPLOAD_CAC',      'assets/uploads/cac-certificates/');
 define('UPLOAD_GOV_IDS',  'uploads/gov-ids/');
 define('UPLOAD_EVIDENCE', 'uploads/complaint-evidence/');
 
@@ -294,6 +294,15 @@ function isValidPlan(string $vendorType, string $plan): bool {
 }
 
 function siteUrl(string $path = ''): string {
+    $path = ltrim($path, '/');
+    $basePath = parse_url(SITE_URL, PHP_URL_PATH) ?: '';
+    $basePath = ltrim($basePath, '/');
+
+    if ($basePath !== '' && str_starts_with($path, $basePath)) {
+        $path = substr($path, strlen($basePath));
+        $path = ltrim($path, '/');
+    }
+
     return SITE_URL . '/' . ltrim($path, '/');
 }
 

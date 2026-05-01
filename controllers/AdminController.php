@@ -192,6 +192,125 @@ public function notificationSend(): void {
 
     $this->redirect('admin/notifications');
 }
+
+public function notificationDelete(?int $id): void {
+    $this->verifyCsrf();
+    if (!$id) $this->redirect('admin/notifications');
+
+    $db = DB::getInstance();
+    $db->execute("DELETE FROM notifications WHERE id = ?", [$id]);
+
+    Session::setFlash('success', 'Notification deleted.');
+    $this->redirect('admin/notifications');
+}
+
+public function notificationEdit(?int $id): void {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $this->handleNotificationEdit($id);
+        return;
+    }
+
+    $db = DB::getInstance();
+    $notification = $db->row("SELECT * FROM notifications WHERE id = ?", [$id]);
+    if (!$notification) {
+        Session::setFlash('error', 'Notification not found.');
+        $this->redirect('admin/notifications');
+    }
+
+    $this->renderAdmin('notifications/edit', compact('notification'));
+}
+
+private function handleNotificationEdit(?int $id): void {
+    $this->verifyCsrf();
+    if (!$id) $this->redirect('admin/notifications');
+
+    $db      = DB::getInstance();
+    $type    = clean($_POST['type']    ?? 'info');
+    $title   = clean($_POST['title']   ?? '');
+    $message = clean($_POST['message'] ?? '');
+    $link    = clean($_POST['link']    ?? '');
+
+    if (!$title || !$message) {
+        Session::setFlash('error', 'Please fill in all required fields.');
+        $this->redirect('admin/notifications/edit/' . $id);
+    }
+
+    $db->execute(
+        "UPDATE notifications SET type = ?, title = ?, message = ?, link = ? WHERE id = ?",
+        [$type, $title, $message, $link ?: null, $id]
+    );
+
+    Session::setFlash('success', 'Notification updated.');
+    $this->redirect('admin/notifications');
+}
+
+    public function reviewApprove(?int $id): void {
+        AdminAuth::guard();
+        $this->requirePost();
+        $this->verifyCsrf();
+
+        if (!$id) {
+            $this->redirect('admin/reviews');
+        }
+
+        $review = $this->db->row("SELECT * FROM reviews WHERE id = ?", [$id]);
+        if (!$review) {
+            $this->redirect('admin/reviews', 'Review not found.', 'error');
+        }
+
+        $this->db->execute(
+            "UPDATE reviews SET status='approved', reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            [AdminAuth::id(), $id]
+        );
+
+        $this->updateVendorRating($review['vendor_id']);
+
+        $this->redirect('admin/reviews?status=pending', '✅ Review approved.');
+    }
+
+    public function reviewReject(?int $id): void {
+        AdminAuth::guard();
+        $this->requirePost();
+        $this->verifyCsrf();
+
+        if (!$id) {
+            $this->redirect('admin/reviews');
+        }
+
+        $reason = trim($_POST['reason'] ?? 'Does not meet community guidelines.');
+        $review = $this->db->row("SELECT * FROM reviews WHERE id = ?", [$id]);
+        if (!$review) {
+            $this->redirect('admin/reviews', 'Review not found.', 'error');
+        }
+
+        $this->db->execute(
+            "UPDATE reviews SET status='rejected', rejection_reason=?, reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            [$reason, AdminAuth::id(), $id]
+        );
+
+        (new NotificationModel())->create([
+            'recipient_type' => 'user',
+            'recipient_id'   => $review['user_id'],
+            'type'           => 'warning',
+            'title'          => 'Review Not Approved',
+            'message'        => "Your review was not approved. Reason: {$reason}",
+            'link'           => '/user/my-reviews',
+            'is_read'        => 0,
+            'created_at'     => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->redirect('admin/reviews?status=pending', '❌ Review rejected.');
+    }
+
+    private function updateVendorRating(int $vendorId): void {
+        $this->db->execute(
+            "UPDATE vendors v
+                SET avg_rating   = (SELECT COALESCE(AVG(rating),0) FROM reviews WHERE vendor_id=? AND status='approved'),
+                    review_count = (SELECT COUNT(*) FROM reviews WHERE vendor_id=? AND status='approved')
+              WHERE id = ?",
+            [$vendorId, $vendorId, $vendorId]
+        );
+    }
     
     private function handleLogin(): void {
         $email    = clean($_POST['email']    ?? '');
@@ -410,7 +529,7 @@ public function notificationSend(): void {
         $pag      = paginate($total, $limit);
 
       $reviews = $db->rows(
-    "SELECT r.*, v.business_name, u.full_name AS reviewer_name
+    "SELECT r.*, v.business_name, v.slug AS vendor_slug, u.full_name AS user_name, u.level AS user_level
        FROM reviews r
   LEFT JOIN vendors v ON v.id = r.vendor_id
   LEFT JOIN users   u ON u.id = r.user_id
@@ -427,6 +546,7 @@ public function notificationSend(): void {
     public function complaints(): void {
         $db     = DB::getInstance();
         $status = $_GET['status'] ?? '';
+        $search = clean($_GET['q'] ?? '');
         $page   = max(1, (int)($_GET['page'] ?? 1));
         $limit  = ADMIN_ITEMS_PER_PAGE;
         $offset = ($page - 1) * $limit;
@@ -439,13 +559,21 @@ public function notificationSend(): void {
             $params[] = $status;
         }
 
+        if ($search) {
+            $where[]  = '(v.business_name LIKE ? OR c.ticket_id LIKE ? OR u.full_name LIKE ?)';
+            $s        = "%{$search}%";
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+        }
+
         $whereStr = implode(' AND ', $where);
-        $total    = $db->value("SELECT COUNT(*) FROM complaints c WHERE {$whereStr}", $params);
+        $total    = $db->value("SELECT COUNT(*) FROM complaints c LEFT JOIN vendors v ON v.id = c.vendor_id LEFT JOIN users u ON u.id = c.user_id WHERE {$whereStr}", $params);
         $pag      = paginate($total, $limit);
 
       $complaints = $db->rows(
-    "SELECT c.*, v.business_name AS vendor_name,
-            u.full_name AS user_name
+    "SELECT c.*, v.business_name AS vendor_name, v.slug AS vendor_slug,
+            u.full_name AS user_name, u.level AS user_level
        FROM complaints c
   LEFT JOIN vendors v ON v.id = c.vendor_id
   LEFT JOIN users   u ON u.id = c.user_id
@@ -460,7 +588,7 @@ public function notificationSend(): void {
 );
 
 $this->renderAdmin('complaints/index', compact(
-    'complaints', 'pag', 'status', 'total', 'statusCounts'
+    'complaints', 'pag', 'status', 'total', 'statusCounts', 'search'
 ));
     }
 
@@ -497,7 +625,9 @@ $this->renderAdmin('complaints/index', compact(
     $limit  = ADMIN_ITEMS_PER_PAGE;
     $offset = ($page - 1) * $limit;
     $search = clean($_GET['q'] ?? '');
-$status = clean($_GET['status'] ?? '');
+    $status = clean($_GET['status'] ?? '');
+    $from   = clean($_GET['from'] ?? '');
+    $to     = clean($_GET['to']   ?? '');
 
     $where  = ['1=1'];
     $params = [];
@@ -509,10 +639,20 @@ $status = clean($_GET['status'] ?? '');
         $params[] = $s;
     }
        
-       if ($status) {
-    $where[]  = 'p.status = ?';
-    $params[] = $status;
-}
+    if ($status) {
+        $where[]  = 'p.status = ?';
+        $params[] = $status;
+    }
+
+    if ($from) {
+        $where[]  = 'DATE(p.created_at) >= ?';
+        $params[] = $from;
+    }
+
+    if ($to) {
+        $where[]  = 'DATE(p.created_at) <= ?';
+        $params[] = $to;
+    }
 
     $whereStr = implode(' AND ', $where);
 
@@ -526,18 +666,31 @@ $status = clean($_GET['status'] ?? '');
     $pag = paginate($total, $limit);
 
     $payments = $db->rows(
-        "SELECT p.*, v.business_name
+        "SELECT p.*, v.business_name, v.vendor_type AS vendor_type,
+                s.plan_type AS sub_plan_type,
+                s.start_date AS subscription_start,
+                s.expiry_date AS subscription_expiry
            FROM payments p
       LEFT JOIN vendors v ON v.id = p.vendor_id
+      LEFT JOIN subscriptions s ON s.payment_id = p.id
           WHERE {$whereStr}
           ORDER BY p.created_at DESC
           LIMIT {$limit} OFFSET {$offset}",
         $params
     );
 
+    // Aggregate totals (unfiltered by search/date to show global stats)
+    $totals = $db->row(
+        "SELECT
+            COALESCE(SUM(CASE WHEN status='success' THEN amount ELSE 0 END),0) AS total_success,
+            COALESCE(SUM(CASE WHEN status='pending' THEN amount ELSE 0 END),0) AS total_pending,
+            COUNT(CASE WHEN status='success' THEN 1 END) AS count_success
+         FROM payments"
+    ) ?? [];
+
     $this->renderAdmin('payments/index', compact(
-    'payments', 'pag', 'total', 'search', 'status'
-));
+        'payments', 'pag', 'total', 'search', 'status', 'from', 'to', 'totals'
+    ));
 }
     
     // ── Categories ────────────────────────────────────────────

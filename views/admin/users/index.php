@@ -52,7 +52,7 @@
                         <?= e($u['matric_number']) ?>
                     </td>
                     <td style="font-size:0.75rem;">
-                        <?= e($u['level']) ?> · <?= e(truncate($u['department'],20)) ?>
+                        <?= e($u['level'] ?? '—') ?> · <?= e(truncate($u['department'] ?? '', 20)) ?>
                     </td>
                     <td>
                         <span class="badge badge-<?= $u['status']==='active'?'active':'suspended' ?>"
