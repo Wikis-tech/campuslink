@@ -83,15 +83,15 @@ if (str_contains($_SERVER['REQUEST_URI'], '/vendor/')) {
 
     <div style="border-top:1px solid var(--divider);padding-top:1rem;margin-top:1rem;">
         <?php if ($isLoggedIn ?? false): ?>
-            <a href="<?= SITE_URL ?>/user/dashboard" class="mobile-nav-link">ðŸ‘¤ My Account</a>
-            <a href="<?= SITE_URL ?>/logout"         class="mobile-nav-link" style="color:var(--danger);">ðŸšª Logout</a>
+            <a href="<?= SITE_URL ?>/user/dashboard" class="mobile-nav-link">My Account</a>
+            <a href="<?= SITE_URL ?>/logout"         class="mobile-nav-link" style="color:var(--danger);">Logout</a>
         <?php elseif ($isVendorLoggedIn ?? false): ?>
-            <a href="<?= SITE_URL ?>/vendor/dashboard" class="mobile-nav-link">ðŸª Vendor Panel</a>
-            <a href="<?= SITE_URL ?>/logout"           class="mobile-nav-link" style="color:var(--danger);">ðŸšª Logout</a>
+            <a href="<?= SITE_URL ?>/vendor/dashboard" class="mobile-nav-link">Vendor Panel</a>
+            <a href="<?= SITE_URL ?>/logout"           class="mobile-nav-link" style="color:var(--danger);">Logout</a>
         <?php else: ?>
-            <a href="<?= SITE_URL ?>/login"          class="mobile-nav-link">ðŸ”‘ Login</a>
-            <a href="<?= SITE_URL ?>/register"       class="mobile-nav-link mobile-nav-cta">âœ¨ Join Free</a>
-            <a href="<?= SITE_URL ?>/vendor/register" class="mobile-nav-link" style="color:var(--accent-green);font-weight:700;">ðŸª List Your Business</a>
+            <a href="<?= SITE_URL ?>/login"          class="mobile-nav-link">Login</a>
+            <a href="<?= SITE_URL ?>/register"       class="mobile-nav-link mobile-nav-cta">Join Free</a>
+            <a href="<?= SITE_URL ?>/vendor/register" class="mobile-nav-link" style="color:var(--accent-green);font-weight:700;">List Your Business</a>
         <?php endif; ?>
     </div>
 </nav>

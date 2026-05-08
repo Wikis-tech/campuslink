@@ -54,6 +54,14 @@ class CSRF
     }
 
     // ============================================================
+    // Alias for validate
+    // ============================================================
+    public static function verify(string $token): bool
+    {
+        return self::validate($token);
+    }
+
+    // ============================================================
     // Get current token or generate one (for forms)
     // ============================================================
     public static function token(): string

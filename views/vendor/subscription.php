@@ -327,7 +327,7 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
         $daysLeft  = max(0, (int)($subscription['days_left'] ?? 0));
         $isActive  = $daysLeft > 0;
         $isWarning = $isActive && $daysLeft <= 30;
-        $planAmt   = CampusLink::formatCurrency($subscription['amount']);
+        $planAmt   = formatNaira((int)$subscription['amount'], true);
         $expDate   = date('d M Y', strtotime($subscription['expiry_date']));
         $startDate = !empty($subscription['start_date']) ? date('d M Y', strtotime($subscription['start_date'])) : '—';
     ?>

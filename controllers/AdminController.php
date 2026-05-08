@@ -259,7 +259,7 @@ private function handleNotificationEdit(?int $id): void {
         }
 
         $this->db->execute(
-            "UPDATE reviews SET status='approved', reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE reviews SET status='approved', moderated_at=NOW(), moderated_by=? WHERE id=?",
             [AdminAuth::id(), $id]
         );
 
@@ -284,7 +284,7 @@ private function handleNotificationEdit(?int $id): void {
         }
 
         $this->db->execute(
-            "UPDATE reviews SET status='rejected', rejection_reason=?, reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE reviews SET status='rejected', rejection_reason=?, moderated_at=NOW(), moderated_by=? WHERE id=?",
             [$reason, AdminAuth::id(), $id]
         );
 
@@ -477,18 +477,22 @@ private function handleNotificationEdit(?int $id): void {
         $where  = ['1=1'];
         $params = [];
 
-       if ($search) {
-    $where[]  = '(full_name LIKE ? OR email LIKE ?)';
-    $s        = "%{$search}%";
-    $params   = [$s, $s];
-}
+if ($search) {
+            $where[]  = '(full_name LIKE ? OR school_email LIKE ? OR personal_email LIKE ?)';
+            $s        = "%{$search}%";
+            $params   = [$s, $s, $s];
+        }
 
         $whereStr = implode(' AND ', $where);
         $total    = $db->value("SELECT COUNT(*) FROM users WHERE {$whereStr}", $params);
         $pag      = paginate($total, $limit);
 
         $users = $db->rows(
-            "SELECT * FROM users WHERE {$whereStr}
+            "SELECT u.*,
+                    COALESCE((SELECT COUNT(*) FROM reviews r   WHERE r.user_id=u.id), 0)    AS review_count,
+                    COALESCE((SELECT COUNT(*) FROM complaints c WHERE c.user_id=u.id), 0)   AS complaint_count,
+                    COALESCE((SELECT COUNT(*) FROM saved_vendors s WHERE s.user_id=u.id), 0) AS saved_count
+               FROM users u WHERE {$whereStr}
              ORDER BY created_at DESC
              LIMIT {$limit} OFFSET {$offset}",
             $params

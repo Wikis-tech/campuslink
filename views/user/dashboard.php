@@ -252,7 +252,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
             <?= lucide_icon('<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>', 22, '#fff') ?>
             Welcome back, <?= e(explode(' ', $user['full_name'])[0]) ?>!
         </h1>
-        <p><?= e(SCHOOL_NAME) ?> Â· Student Account</p>
+        <p><?= e(SCHOOL_NAME) ?>Student Account</p>
     </div>
     <div class="dash-welcome-btns">
         <!-- ðŸ” â†’ Search -->
@@ -338,7 +338,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                         <div class="sv-actions">
                             <?php if (!empty($sv['whatsapp_number'])): ?>
                             <!-- ðŸ’¬ â†’ MessageCircle -->
-                            <a href="https://wa.me/<?= preg_replace('/[^0-9]/','',$sv['whatsapp_number']) ?>"
+                            <a href="https://wa.me/<?= formatWhatsAppNumber($sv['whatsapp_number']) ?>"
                                target="_blank" class="sv-wa">
                                 <?= lucide_icon('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>', 14, '#166634') ?>
                             </a>
@@ -354,7 +354,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                         <?= lucide_icon('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>', 32, '#e11d48', 'fill:#fecdd3;stroke:#e11d48;') ?>
                     </div>
                     <p>No saved vendors yet</p>
-                    <a href="<?= SITE_URL ?>/browse">Browse vendors â†’</a>
+                    <a href="<?= SITE_URL ?>/browse">Browse vendors </a>
                 </div>
                 <?php endif; ?>
             </div>

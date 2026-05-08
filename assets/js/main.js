@@ -415,7 +415,7 @@ const CampusLink = {
             const csrf   = this.getCsrf();
 
             try {
-                const data = await this.ajax('/saved-vendors/toggle', 'POST', {
+                const data = await this.ajax('/save-vendor', 'POST', {
                     vendor_id:  vendorId,
                     csrf_token: csrf,
                 });
@@ -424,10 +424,28 @@ const CampusLink = {
                     const saved = data.saved;
                     btn.classList.toggle('saved', saved);
 
-                    if (btn.classList.contains('browse-save-btn')) {
+                    // Handle vendor profile save button (with icon + span text)
+                    if (btn.classList.contains('vendor-profile-save-btn')) {
+                        const svg = btn.querySelector('svg');
+                        const span = btn.querySelector('span');
+                        
+                        if (svg) {
+                            svg.setAttribute('fill', saved ? 'currentColor' : 'none');
+                        }
+                        if (span) {
+                            span.textContent = saved ? 'Saved' : 'Save Vendor';
+                        }
+                        
+                        // Update button colors
+                        btn.style.background = saved ? '#fce7f3' : '#f1f5f9';
+                        btn.style.color = saved ? '#e11d48' : '#64748b';
+                        btn.style.borderColor = saved ? '#fbcfe8' : '#e2e8f0';
+                    } else if (btn.classList.contains('browse-save-btn')) {
+                        // Handle vendor card save button (icon only)
                         btn.innerHTML = saved ? '<i data-feather="heart" class="save-icon filled"></i>' : '<i data-feather="heart" class="save-icon"></i>';
-                        btn.title       = saved ? 'Remove from saved' : 'Save vendor';
+                        btn.title = saved ? 'Remove from saved' : 'Save vendor';
                     } else {
+                        // Handle vendor action buttons (icon + span)
                         const span = btn.querySelector('span') || btn;
                         span.innerHTML = saved ? '<i data-feather="heart" class="save-icon"></i> Saved' : '<i data-feather="heart" class="save-icon"></i> Save';
                     }
@@ -438,8 +456,8 @@ const CampusLink = {
                 } else {
                     this.toast(data.message || 'Could not update saved status.', 'error');
                 }
-            } catch {
-                this.toast('Network error. Please try again.', 'error');
+            } catch (error) {
+                this.toast(error?.message || 'Network error. Please try again.', 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -466,7 +484,16 @@ const CampusLink = {
         const response = await fetch(this.resolveUrl(url), options);
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            let errorMessage = `HTTP ${response.status}`;
+            try {
+                const body = await response.json();
+                if (body && body.message) {
+                    errorMessage = body.message;
+                }
+            } catch (err) {
+                // ignore JSON parse errors
+            }
+            throw new Error(errorMessage);
         }
 
         return response.json();

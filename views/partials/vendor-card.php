@@ -126,7 +126,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
     <div class="browse-card-footer">
         <?php if (!empty($vendor['whatsapp_number'])): ?>
         <!-- ðŸ’¬ â†’ MessageCircle -->
-        <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $vendor['whatsapp_number']) ?>"
+        <a href="https://wa.me/<?= formatWhatsAppNumber($vendor['whatsapp_number']) ?>"
            target="_blank"
            rel="noopener noreferrer"
            class="btn-whatsapp"

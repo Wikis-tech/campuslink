@@ -216,7 +216,7 @@
 
                 <div class="vendor-actions">
                     <?php if (!empty($vendor['whatsapp_number'])): ?>
-                    <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $vendor['whatsapp_number']) ?>"
+                    <a href="https://wa.me/<?= formatWhatsAppNumber($vendor['whatsapp_number']) ?>"
                        target="_blank" rel="noopener noreferrer"
                        class="btn-whatsapp btn-sm"
                        onclick="return confirm('You are leaving CampusLink to contact this vendor. CampusLink is not responsible for outcomes.')">

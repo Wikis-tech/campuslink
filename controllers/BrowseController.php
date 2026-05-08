@@ -58,7 +58,7 @@ class BrowseController extends BaseController {
            FROM vendors v
            INNER JOIN subscriptions s ON s.vendor_id = v.id
       LEFT JOIN categories c ON v.category_id = c.id
-      LEFT JOIN reviews r    ON r.vendor_id = v.id AND r.status = 'approved'
+      LEFT JOIN reviews r    ON r.vendor_id = v.id
           WHERE {$whereStr}
           GROUP BY v.id
           ORDER BY {$orderBy}
@@ -105,7 +105,15 @@ class BrowseController extends BaseController {
     ), $layout);
 }
 
-    public function vendorProfile(string $slug): void {
+    public function vendorProfile(string $slug): void
+{
+    // Require login to view vendor profiles
+    if (!Auth::isLoggedIn() && !Auth::isVendorLoggedIn()) {
+        Session::setFlash('error', 'Please log in to view vendor profiles.');
+        redirect('login?redirect=' . urlencode('browse/' . $slug));
+        exit;
+    }
+    // ... rest of existing code
         $db = DB::getInstance();
 
         // First try to find active vendor
@@ -117,7 +125,7 @@ class BrowseController extends BaseController {
             COUNT(r.id)               AS review_count
        FROM vendors v
   LEFT JOIN categories c ON v.category_id = c.id
-  LEFT JOIN reviews r    ON r.vendor_id = v.id AND r.status = 'approved'
+  LEFT JOIN reviews r    ON r.vendor_id = v.id
       WHERE v.slug = ? AND v.status = 'active'
       GROUP BY v.id",
     [$slug]
@@ -133,7 +141,7 @@ class BrowseController extends BaseController {
             COUNT(r.id)               AS review_count
        FROM vendors v
   LEFT JOIN categories c ON v.category_id = c.id
-  LEFT JOIN reviews r    ON r.vendor_id = v.id AND r.status = 'approved'
+  LEFT JOIN reviews r    ON r.vendor_id = v.id
       WHERE v.slug = ? AND v.vendor_id = ?
       GROUP BY v.id",
     [$slug, Auth::vendorId()]
@@ -149,7 +157,7 @@ class BrowseController extends BaseController {
 
         // Reviews
         $reviewsTotal = $db->value(
-            "SELECT COUNT(*) FROM reviews WHERE vendor_id = ? AND status = 'approved'",
+            "SELECT COUNT(*) FROM reviews WHERE vendor_id = ?",
             [$vendor['id']]
         );
         $reviewsPag = paginate($reviewsTotal, 5);
@@ -159,7 +167,7 @@ class BrowseController extends BaseController {
                     u.department AS user_dept
                FROM reviews r
           LEFT JOIN users u ON r.user_id = u.id
-              WHERE r.vendor_id = ? AND r.status = 'approved'
+              WHERE r.vendor_id = ?
               ORDER BY r.created_at DESC
               LIMIT 5 OFFSET {$reviewsPag['offset']}",
             [$vendor['id']]
@@ -179,7 +187,7 @@ class BrowseController extends BaseController {
         $ratingBreakdown = [];
         for ($i = 5; $i >= 1; $i--) {
             $count = $db->value(
-                "SELECT COUNT(*) FROM reviews WHERE vendor_id = ? AND rating = ? AND status = 'approved'",
+                "SELECT COUNT(*) FROM reviews WHERE vendor_id = ? AND rating = ?",
                 [$vendor['id'], $i]
             );
             $ratingBreakdown[$i] = (int)$count;
@@ -204,14 +212,13 @@ class BrowseController extends BaseController {
             );
         }
 
-        $layout = Auth::isLoggedIn() ? 'user' : 'main';
-        $extraCss = ['browse.css', 'vendor-profile.css'];
-        $extraJs  = ['browse.js'];
+        $pageTitle = 'CampusLink Vendor Profile - ' . ($vendor['business_name'] ?? 'Vendor');
+        $layout = 'vendor-profile';
 
         $this->render('browse/vendor-profile', compact(
             'vendor', 'reviews', 'reviewsPag', 'ratingBreakdown',
             'isSaved', 'userId', 'hasReview', 'avgRating', 'reviewTotal',
-            'currentUserReview', 'pageTitle', 'extraCss', 'extraJs'
+            'currentUserReview', 'pageTitle'
         ), $layout);
     }
 

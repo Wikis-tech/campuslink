@@ -52,10 +52,14 @@ class AuthController extends BaseController {
                 $this->redirect('verify-email');
             }
 
-            // Login success
-            Session::regenerate();
+            // Login success — set session BEFORE regenerate
+            Session::set('user_logged_in', true);
+            Session::set('user_id',        (int)$user['id']);
+            Session::set('user_name',      $user['full_name']);
+            Session::set('user_email',     $user['personal_email']);
+            Session::set('user_role',      'user');
 
-            // Clear any existing vendor/admin sessions first
+            // Clear any existing vendor/admin sessions
             Session::delete('vendor_logged_in');
             Session::delete('vendor_id');
             Session::delete('vendor_name');
@@ -70,11 +74,8 @@ class AuthController extends BaseController {
             Session::delete('admin_email');
             Session::delete('admin_role');
 
-            Session::set('user_logged_in', true);
-            Session::set('user_id',        (int)$user['id']);
-            Session::set('user_name',      $user['full_name']);
-            Session::set('user_email',     $user['personal_email']);
-            Session::set('user_role',      'user');
+            // Regenerate session AFTER setting user data
+            Session::regenerate();
 
             Session::setFlash('success',
                 'Welcome back, ' . $user['full_name'] . '!'
@@ -450,7 +451,7 @@ Session::set('pending_user_id', '');
     // RESET PASSWORD
     // ============================================================
     public function resetPassword(): void {
-        $token = clean($_GET['token'] ?? '');
+        $token = clean($_GET['token'] ?? $_POST['token'] ?? '');
 
         if (empty($token)) {
             Session::setFlash('error', 'Invalid or missing reset link.');

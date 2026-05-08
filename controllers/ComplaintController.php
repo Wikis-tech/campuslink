@@ -29,175 +29,88 @@ class ComplaintController extends Controller
     }
 
     // ============================================================
-    // Submit Complaint
+    // Submit Complaint (API for vendor profile modal)
     // ============================================================
     public function submit(): void
     {
         $this->requireLogin();
+        $this->requirePost();
+        $this->validateCSRF();
 
-        $vendorId = (int)$this->get('vendor_id', 0);
-        $vendor   = $vendorId ? $this->vendorModel->find($vendorId) : null;
+        $userId = Auth::userId();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->validateCSRF();
+        $vendorId = (int)$this->post('vendor_id', 0);
+        $complaintType = $this->post('complaint_type', '');
+        $description = Sanitizer::textarea($this->post('description', ''), MAX_COMPLAINT_LENGTH);
 
-            $userId = Auth::userId();
+        // Validate
+        $validator = Validator::make(
+            ['vendor_id' => $vendorId, 'complaint_type' => $complaintType, 'description' => $description],
+            [
+                'vendor_id' => 'required|numeric',
+                'complaint_type' => 'required|in:poor_service,overcharge,incomplete,fraud,other',
+                'description' => 'required|min:10|max:' . MAX_COMPLAINT_LENGTH,
+            ]
+        );
 
-            $data = [
-                'vendor_id'   => (int)$this->post('vendor_id', 0),
-                'category'    => $this->post('category', ''),
-                'description' => Sanitizer::textarea($this->post('description', ''), MAX_COMPLAINT_LENGTH),
-            ];
-
-            $validator = Validator::make($data, [
-                'vendor_id'   => 'required|numeric',
-                'category'    => 'required|in:' . implode(',', array_keys(ComplaintModel::getCategories())),
-                'description' => 'required|min:30|max:' . MAX_COMPLAINT_LENGTH,
-            ]);
-
-            if ($validator->fails()) {
-                if ($this->isAjax()) {
-                    $errors = $validator->errors();
-                    $firstError = reset($errors);
-                    $this->jsonError(is_array($firstError) ? $firstError[0] : $firstError);
-                    return;
-                }
-                $this->view('browse/complaint-form', [
-                    'pageTitle'  => 'Submit Complaint - ' . SITE_NAME,
-                    'vendor'     => $vendor,
-                    'categories' => ComplaintModel::getCategories(),
-                    'errors'     => $validator->errors(),
-                    'old'        => $data,
-                    'csrfField'  => CSRF::field(),
-                ]);
-                return;
-            }
-
-            // Check vendor exists
-            $complaintVendor = $this->vendorModel->find($data['vendor_id']);
-            if (!$complaintVendor) {
-                $this->jsonError('Vendor not found.');
-                return;
-            }
-
-            // Rate limit: max 3 complaints per user per vendor
-            $existingCount = $this->complaintModel->count(
-                "user_id = ? AND vendor_id = ?",
-                [$userId, $data['vendor_id']]
-            );
-            if ($existingCount >= 3) {
-                if ($this->isAjax()) {
-                    $this->jsonError('You have already submitted 3 complaints against this vendor.');
-                    return;
-                }
-                $this->redirectWith(
-                    'user/my-complaints',
-                    'error',
-                    'You have already submitted 3 complaints against this vendor.'
-                );
-                return;
-            }
-
-            // Handle evidence upload (optional)
-            $data['evidence_file'] = null;
-            if (!empty($_FILES['evidence']['name'])) {
-                $uploader = new Uploader(
-                    UPLOAD_EVIDENCE,
-                    array_merge(
-                        unserialize(ALLOWED_IMAGE_TYPES),
-                        ['application/pdf']
-                    ),
-                    UPLOAD_MAX_SIZE
-                );
-                $result = $uploader->upload($_FILES['evidence'], 'evidence_' . $userId);
-
-                if ($uploader->hasError()) {
-                    $this->view('browse/complaint-form', [
-                        'pageTitle'  => 'Submit Complaint - ' . SITE_NAME,
-                        'vendor'     => $complaintVendor,
-                        'categories' => ComplaintModel::getCategories(),
-                        'errors'     => ['evidence' => $uploader->getError()],
-                        'old'        => $data,
-                        'csrfField'  => CSRF::field(),
-                    ]);
-                    return;
-                }
-
-                $data['evidence_file'] = $result;
-            }
-
-            $data['user_id'] = $userId;
-
-            $complaintId = $this->complaintModel->submit($data);
-
-            if (!$complaintId) {
-                if ($this->isAjax()) {
-                    $this->jsonError('Failed to submit complaint. Please try again.');
-                    return;
-                }
-                $this->redirectWith('user/my-complaints', 'error', 'Failed to submit complaint. Please try again.');
-                return;
-            }
-
-            // Notify vendor
-            $vendorEmail = $complaintVendor['school_email'] ?? $complaintVendor['working_email'] ?? '';
-            if ($vendorEmail) {
-                $this->mailer->sendComplaintNotification(
-                    $vendorEmail,
-                    $complaintVendor['full_name'],
-                    $complaintVendor['business_name'],
-                    ComplaintModel::getCategories()[$data['category']] ?? $data['category'],
-                    SITE_URL . '/vendor/complaints'
-                );
-            }
-
-            // Notify vendor in-app
-            Notification::sendToVendor(
-                $data['vendor_id'],
-                '⚠️ Complaint Filed Against Your Business',
-                'A complaint has been filed under: ' . (ComplaintModel::getCategories()[$data['category']] ?? $data['category']),
-                Notification::TYPE_COMPLAINT,
-                'vendor/complaints'
-            );
-
-            // Notify admin
-            Notification::sendToAdmin(
-                'New Complaint Filed',
-                "A complaint has been filed against vendor '{$complaintVendor['business_name']}'.",
-                Notification::TYPE_COMPLAINT,
-                'admin/complaints'
-            );
-
-            // Check complaint threshold for suspension review
-            $verifiedCount = $this->vendorModel->getVerifiedComplaintCount($data['vendor_id']);
-            if ($verifiedCount >= COMPLAINT_TRIGGER_COUNT) {
-                Notification::sendToAdmin(
-                    '🚨 Suspension Review Triggered',
-                    "Vendor '{$complaintVendor['business_name']}' has reached $verifiedCount verified complaints. Review for suspension.",
-                    Notification::TYPE_WARNING,
-                    'admin/complaints'
-                );
-            }
-
-            if ($this->isAjax()) {
-                $this->jsonSuccess('Complaint submitted successfully. You can track it in your complaints dashboard.', [
-                    'ticket_id' => 'CL-' . str_pad($complaintId, 6, '0', STR_PAD_LEFT),
-                ]);
-                return;
-            }
-
-            $this->redirectWith('user/my-complaints', 'success', 'Complaint submitted successfully. Ticket ID will appear in your complaints list.');
+        if ($validator->fails()) {
+            $this->jsonError($validator->firstErrorMessage());
             return;
         }
 
-        $this->view('browse/complaint-form', [
-            'pageTitle'  => 'Submit a Complaint - ' . SITE_NAME,
-            'vendor'     => $vendor,
-            'categories' => ComplaintModel::getCategories(),
-            'errors'     => [],
-            'old'        => [],
-            'csrfField'  => CSRF::field(),
+        // Check vendor exists
+        $vendor = $this->vendorModel->find($vendorId);
+        if (!$vendor) {
+            $this->jsonError('Vendor not found.');
+            return;
+        }
+
+        // Rate limit: max 3 complaints per user per vendor
+        $existingCount = $this->complaintModel->count(
+            "user_id = ? AND vendor_id = ?",
+            [$userId, $vendorId]
+        );
+        if ($existingCount >= 3) {
+            $this->jsonError('You have already submitted 3 complaints against this vendor.');
+            return;
+        }
+
+        $complaintId = $this->complaintModel->create([
+            'user_id' => $userId,
+            'vendor_id' => $vendorId,
+            'category' => $complaintType,
+            'description' => $description,
+            'status' => 'submitted',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
+
+        if (!$complaintId) {
+            $this->jsonError('Failed to submit complaint. Please try again.');
+            return;
+        }
+
+        // Notify vendor
+        $vendorEmail = $vendor['school_email'] ?? $vendor['working_email'] ?? '';
+        if ($vendorEmail) {
+            $this->mailer->sendComplaintNotification(
+                $vendorEmail,
+                $vendor['full_name'],
+                $vendor['business_name'],
+                $complaintType,
+                SITE_URL . '/vendor/complaints'
+            );
+        }
+
+        Notification::sendToVendor(
+            $vendorId,
+            'New Complaint Received ⚠️',
+            "A new complaint has been filed against {$vendor['business_name']}.",
+            Notification::TYPE_COMPLAINT,
+            'vendor/complaints'
+        );
+
+        $this->jsonSuccess('Complaint submitted successfully. Our team will review it shortly.');
     }
 
     // ============================================================

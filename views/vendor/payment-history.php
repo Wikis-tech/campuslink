@@ -4,7 +4,7 @@
     <div>
         <h1 class="dashboard-page-title">Payment History</h1>
         <p class="dashboard-page-subtitle">
-            All subscription payments for <?= e($vendor['business_name']) ?>
+            All subscription payments for <?= e($vendor['business_name'] ?? 'your account') ?>
         </p>
     </div>
 </div>
@@ -40,50 +40,65 @@
             </thead>
             <tbody>
                 <?php foreach ($payments as $payment): ?>
+                <?php
+                    // Normalize column names — handle both old & new column naming
+                    $ref      = $payment['paystack_reference'] ?? $payment['reference'] ?? $payment['tx_ref'] ?? '';
+                    $paidAt   = $payment['paid_at'] ?? $payment['created_at'] ?? date('Y-m-d H:i:s');
+                    $subStart = $payment['subscription_start'] ?? $payment['start_date'] ?? null;
+                    $subEnd   = $payment['subscription_expiry'] ?? $payment['expiry_date'] ?? $payment['end_date'] ?? null;
+                ?>
                 <tr>
                     <td>
+                        <?php if ($ref): ?>
                         <span style="font-family:monospace;font-size:var(--font-size-xs);
                                      color:var(--text-muted);"
-                              data-copy="<?= e($payment['paystack_reference']) ?>"
+                              data-copy="<?= e($ref) ?>"
                               title="Click to copy">
-                            <?= e(substr($payment['paystack_reference'], 0, 16)) ?>…
+                            <?= e(substr($ref, 0, 16)) ?>…
                         </span>
+                        <?php else: ?>
+                        <span style="color:var(--text-muted);font-size:var(--font-size-xs);">N/A</span>
+                        <?php endif; ?>
                     </td>
                     <td>
-                        <strong><?= ucfirst(e($payment['plan_type'])) ?></strong>
+                        <strong><?= ucfirst(e($payment['plan_type'] ?? '')) ?></strong>
                         <div style="font-size:var(--font-size-xs);color:var(--text-muted);">
-                            <?= ucfirst($payment['vendor_type']) ?>
+                            <?= ucfirst(e($payment['vendor_type'] ?? '')) ?>
                         </div>
                     </td>
                     <td class="payment-amount">
-                        ₦<?= number_format($payment['amount'] / 100, 2) ?>
+                        ₦<?= number_format(($payment['amount'] ?? 0) / 100, 2) ?>
                     </td>
                     <td>
-                        <?= date('d M Y', strtotime($payment['paid_at'] ?? $payment['created_at'])) ?>
+                        <?= date('d M Y', strtotime($paidAt)) ?>
                         <div style="font-size:var(--font-size-xs);color:var(--text-muted);">
-                            <?= date('g:ia', strtotime($payment['paid_at'] ?? $payment['created_at'])) ?>
+                            <?= date('g:ia', strtotime($paidAt)) ?>
                         </div>
                     </td>
                     <td style="font-size:var(--font-size-xs);">
-                        <?= date('d M Y', strtotime($payment['subscription_start'])) ?>
-                        <span style="color:var(--text-muted);">→</span>
-                        <?= date('d M Y', strtotime($payment['subscription_expiry'])) ?>
+                        <?php if ($subStart && strtotime($subStart)): ?>
+                            <?= date('d M Y', strtotime($subStart)) ?>
+                            <span style="color:var(--text-muted);">→</span>
+                            <?= $subEnd && strtotime($subEnd) ? date('d M Y', strtotime($subEnd)) : 'N/A' ?>
+                        <?php else: ?>
+                            <span style="color:var(--text-muted);">—</span>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?php
-                        $statusClass = match($payment['status']) {
+                        $statusClass = match($payment['status'] ?? '') {
                             'success' => 'badge-active',
                             'pending' => 'badge-pending',
                             default   => 'badge-suspended',
                         };
                         ?>
                         <span class="badge <?= $statusClass ?>">
-                            <?= ucfirst($payment['status']) ?>
+                            <?= ucfirst(e($payment['status'] ?? 'unknown')) ?>
                         </span>
                     </td>
                     <td>
-                        <?php if ($payment['status'] === 'success'): ?>
-                        <a href="<?= SITE_URL ?>/vendor/payment/receipt/<?= (int)$payment['id'] ?>"
+                        <?php if (($payment['status'] ?? '') === 'success'): ?>
+                        <a href="<?= SITE_URL ?>/vendor/payment?receipt=<?= (int)$payment['id'] ?>"
                            class="btn btn-sm btn-outline-primary"
                            target="_blank">
                             <i data-lucide="file-text" style="width:14px;height:14px;"></i> Receipt

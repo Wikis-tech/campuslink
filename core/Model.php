@@ -82,6 +82,9 @@ abstract class Model
         try {
             return $this->db->insert($sql, array_values($data));
         } catch (Exception $e) {
+            if (defined('LOG_ERRORS') && LOG_ERRORS) {
+                error_log('Model create failed: ' . $e->getMessage());
+            }
             return false;
         }
     }

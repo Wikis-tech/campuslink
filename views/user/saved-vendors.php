@@ -105,7 +105,7 @@ color:#fff;border-radius:9px;font-weight:700;font-size:0.85rem;text-decoration:n
         <div class="svc-actions">
             <?php if (!empty($v['whatsapp_number'])): ?>
             <!-- ðŸ’¬ â†’ MessageCircle -->
-            <a href="https://wa.me/<?= preg_replace('/[^0-9]/','',$v['whatsapp_number']) ?>"
+            <a href="https://wa.me/<?= formatWhatsAppNumber($v['whatsapp_number']) ?>"
                target="_blank" class="svc-wa">
                 <?= lucide_icon('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>', 14, '#166534') ?>
                 WhatsApp

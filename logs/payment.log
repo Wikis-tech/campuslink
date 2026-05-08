@@ -37,3 +37,8 @@
 [2026-04-25 16:30:19] [INIT] Ref: CL-4-BA050A516FBB-1777131018 | Amount: ₦100.00 | IP: ::1 | initialized
 [2026-04-25 16:33:09] [VERIFY] Ref: CL-4-BA050A516FBB-1777131018 | Amount: ₦100.00 | IP: ::1 | success | Gateway: Approved
 [2026-04-25 16:33:13] [PAYMENT_SUCCESS] IP: ::1 | Session: jvhsjb8n | Ref: CL-4-BA050A516FBB-1777131018 | Amount: ₦100.00 | VendorID: 4 | Status: Activated
+[2026-05-05 20:49:52] [INIT] Ref: CL-5-CF9AA0B7A655-1778010591 | Amount: ₦100.00 | IP: ::1 | initialized
+[2026-05-05 20:52:37] [INIT] Ref: CL-5-FEC7D7963227-1778010754 | Amount: ₦100.00 | IP: ::1 | initialized
+[2026-05-05 20:52:58] [INIT] Ref: CL-5-AF202B13C712-1778010776 | Amount: ₦100.00 | IP: ::1 | initialized
+[2026-05-05 20:54:44] [VERIFY] Ref: CL-5-AF202B13C712-1778010776 | Amount: ₦100.00 | IP: ::1 | success | Gateway: Approved
+[2026-05-05 20:54:50] [PAYMENT_SUCCESS] IP: ::1 | Session: e7gq69uk | Ref: CL-5-AF202B13C712-1778010776 | Amount: ₦100.00 | VendorID: 5 | Status: Activated

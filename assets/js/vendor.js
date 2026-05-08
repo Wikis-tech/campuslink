@@ -49,8 +49,9 @@ function initReviewReplies() {
             btn.disabled = true;
 
             try {
+                const csrfToken = form.querySelector('input[name="csrf_token"]')?.value || CampusLink.getCsrf();
                 const data = await CampusLink.ajax('/vendor/reviews', 'POST', {
-                    csrf_token: CampusLink.getCsrf(),
+                    csrf_token: csrfToken,
                     review_id:  reviewId,
                     reply,
                 });
@@ -61,8 +62,8 @@ function initReviewReplies() {
                 } else {
                     CampusLink.toast(data.message || 'Could not post reply.', 'error');
                 }
-            } catch {
-                CampusLink.toast('Network error. Please try again.', 'error');
+            } catch (error) {
+                CampusLink.toast(error?.message || 'Network error. Please try again.', 'error');
             } finally {
                 btn.classList.remove('btn-loading');
                 btn.disabled = false;

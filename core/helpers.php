@@ -16,6 +16,9 @@ defined('CAMPUSLINK') or die('Direct access not permitted.');
  * echo e($user['name']);
  */
 function e(mixed $value): string {
+    if (is_array($value) || is_object($value)) {
+        return htmlspecialchars(json_encode($value) ?? '', ENT_QUOTES, 'UTF-8');
+    }
     return htmlspecialchars((string)($value ?? ''), ENT_QUOTES, 'UTF-8');
 }
 

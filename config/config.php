@@ -46,7 +46,23 @@ define('APP_DEBUG', true);
 // ============================================================
 define('SITE_NAME',        'CampusLink');
 define('SITE_TAGLINE',     'Find Trusted Campus Services Instantly');
-define('SITE_URL',         'http://localhost/campuslink');
+
+$siteUrl = getenv('SITE_URL') ?: '';
+if ($siteUrl === '' || (!str_starts_with($siteUrl, 'http://') && !str_starts_with($siteUrl, 'https://'))) {
+    $scheme = 'http';
+    if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on')) {
+        $scheme = 'https';
+    }
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $basePath = '';
+    if (isset($_SERVER['SCRIPT_NAME'])) {
+        $basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+    }
+    $siteUrl = $scheme . '://' . $host . ($basePath !== '' ? $basePath : '');
+}
+define('SITE_URL', rtrim($siteUrl, '/'));
 define('SITE_DESCRIPTION', 'CampusLink connects students with verified vendors within the University Of Africa Toru-Orua. Browse campus services, contact vendors directly via phone or WhatsApp.');
 define('SITE_KEYWORDS',    'campus services, university vendors, student services, campus directory, University Of Africa');
 define('SITE_AUTHOR',      'CampusLink');
@@ -60,7 +76,7 @@ define('CONTACT_EMAIL', 'campuslinkd@gmail.com');
 define('ADMIN_EMAIL',   'campuslinkd@gmail.com');
 define('SUPPORT_EMAIL', 'campuslinkd@gmail.com');
 define('CONTACT_PHONE', '+2348137268006');
-define('SITE_PHONE',    '+2349070725772');
+define('SITE_PHONE',    '+2349049096991');
 
 // ============================================================
 // URL / PATH CONSTANTS
@@ -291,6 +307,28 @@ function getPlanLabel(string $vendorType, string $plan): string {
 function isValidPlan(string $vendorType, string $plan): bool {
     $plans = unserialize(VALID_PLANS);
     return isset($plans[$vendorType][$plan]);
+}
+
+function formatWhatsAppNumber(string $raw): string {
+    $digits = preg_replace('/[^0-9]/', '', $raw);
+    
+    // If already in international format (234XXXXXXXXX with 13+ digits), return as is
+    if (str_starts_with($digits, '234') && strlen($digits) >= 13) {
+        return substr($digits, 0, 13);
+    }
+    
+    // Convert Nigerian format (0XXXXXXXXXX) to international (234XXXXXXXXX)
+    if (str_starts_with($digits, '0') && strlen($digits) === 11) {
+        return '234' . substr($digits, 1);
+    }
+    
+    // Handle 10-digit numbers (assume Nigerian area code 9)
+    if (strlen($digits) === 10) {
+        return '234' . $digits;
+    }
+    
+    // Return digits as-is for other formats
+    return $digits;
 }
 
 function siteUrl(string $path = ''): string {

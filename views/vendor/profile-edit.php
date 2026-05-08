@@ -75,6 +75,24 @@
     </a>
 </div>
 
+<?php if (!empty($flashSuccess)): ?>
+<div style="background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid #a7f3d0;">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+        <?= e($flashSuccess) ?>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (!empty($flashError)): ?>
+<div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid #fecaca;">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i>
+        <?= e($flashError) ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <form action="<?= SITE_URL ?>/vendor/profile"
       method="POST"
       enctype="multipart/form-data"
@@ -294,6 +312,59 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <div class="dash-card-title">
+                        <span class="dash-card-title-icon"><i data-lucide="image" style="width:18px;height:18px;"></i></span>
+                        Service Showcase Photos
+                    </div>
+                </div>
+                <div class="dash-card-body">
+                    <?php
+                    $currentServicePhotos = [];
+                    if (!empty($vendor['service_photo'])) {
+                        $decoded = json_decode($vendor['service_photo'], true);
+                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                            $currentServicePhotos = array_values(array_filter($decoded));
+                        } else {
+                            $currentServicePhotos = [$vendor['service_photo']];
+                        }
+                    }
+                    ?>
+                    <p class="form-hint">Upload up to 4 service photos. Leave a slot empty to keep the current image.</p>
+                    <div class="grid" style="display:grid;grid-template-columns:1fr;gap:1rem;">
+                        <?php for ($i = 0; $i < 4; $i++): ?>
+                        <div style="border:1px solid #e5e7eb;border-radius:18px;padding:1rem;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:0.75rem;">
+                                <div style="font-size:0.95rem;font-weight:700;color:#0f172a;">Photo <?= $i + 1 ?></div>
+                                <?php if (!empty($currentServicePhotos[$i])): ?>
+                                <label style="font-size:0.82rem;color:#ef4444;display:flex;align-items:center;gap:0.35rem;">
+                                    <input type="checkbox" name="delete_service_photo[]" value="<?= $i ?>" style="transform:translateY(1px);"> Delete
+                                </label>
+                                <?php endif; ?>
+                            </div>
+                            <?php if (!empty($currentServicePhotos[$i])): ?>
+                            <div style="margin-bottom:0.75rem;">
+                                <img src="<?= SITE_URL ?>/assets/uploads/service-photos/<?= e($currentServicePhotos[$i]) ?>"
+                                     alt="Service photo <?= $i + 1 ?>"
+                                     style="width:100%;height:180px;object-fit:cover;border-radius:14px;">
+                            </div>
+                            <?php endif; ?>
+                            <input type="file"
+                                   name="service_photos[<?= $i ?>]"
+                                   accept="image/jpeg,image/png,image/webp"
+                                   style="width:100%;padding:0.75rem;border:1px solid #cbd5e1;border-radius:12px;font-size:0.95rem;">
+                            <?php if (!empty($errors['service_photos'][$i])): ?>
+                            <div class="form-error" style="color:#b91c1c;font-size:0.85rem;margin-top:0.5rem;">
+                                <?= e($errors['service_photos'][$i]) ?>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
                 </div>
             </div>
 

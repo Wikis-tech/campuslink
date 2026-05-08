@@ -27,7 +27,7 @@ class Session
 
         session_set_cookie_params([
             'lifetime' => SESSION_LIFETIME,
-            'path'     => '/',
+            'path'     => parse_url(SITE_URL, PHP_URL_PATH) ?: '/',
             'domain'   => '',
             'secure'   => $secure,
             'httponly' => $httpOnly,

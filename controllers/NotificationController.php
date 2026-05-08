@@ -44,6 +44,7 @@ class NotificationController extends Controller
     public function markAllRead(): void
     {
         $this->requirePost();
+        $this->validateCSRF();
 
         if (Auth::isLoggedIn()) {
             $this->notifModel->markAllRead('user', Auth::userId());

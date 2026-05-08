@@ -326,20 +326,25 @@ if (!class_exists('BaseController')) {
 
          */
 
-     protected function verifyCsrf(): void
-{
-    $token = $_POST['csrf_token']
-          ?? $_SERVER['HTTP_X_CSRF_TOKEN']
-          ?? '';
+        protected function verifyCsrf(): void
+        {
+            $token = $_POST['csrf_token']
+                  ?? $_SERVER['HTTP_X_CSRF_TOKEN']
+                  ?? '';
 
-    if (!CSRF::validate($token)) {
-
-                Session::setFlash('error', 'Invalid request. Please try again.');
-
-                $this->redirect($_SERVER['HTTP_REFERER'] ?? SITE_URL);
-
+            if (empty($token)) {
+                $raw = file_get_contents('php://input');
+                $body = json_decode($raw, true);
+                if (is_array($body) && isset($body['csrf_token'])) {
+                    $token = $body['csrf_token'];
+                }
             }
 
+            if (!CSRF::validate($token)) {
+                Session::setFlash('error', 'Invalid request. Please try again.');
+                $redirectTo = $_SERVER['HTTP_REFERER'] ?? ($_SERVER['REQUEST_URI'] ?? SITE_URL);
+                $this->redirect($redirectTo);
+            }
         }
 
         /**

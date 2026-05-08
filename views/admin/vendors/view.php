@@ -178,7 +178,7 @@ foreach ($flashes as $type => $messages):
                 <div class="vv-row">
                     <div class="vv-label">WhatsApp</div>
                     <div class="vv-val">
-                        <a href="https://wa.me/<?= preg_replace('/[^0-9]/','',$vendor['whatsapp_number']) ?>"
+                        <a href="https://wa.me/<?= formatWhatsAppNumber($vendor['whatsapp_number']) ?>"
                            target="_blank" style="color:#16a34a;text-decoration:none;">
                             <?= e($vendor['whatsapp_number']) ?>
                         </a>

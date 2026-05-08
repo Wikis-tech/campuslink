@@ -510,6 +510,30 @@
     background: var(--danger-light);
 }
 
+/* Vendor Profile Save Button */
+.browse-save-btn.vendor-profile-save-btn {
+    width: 100%;
+}
+
+.browse-save-btn.vendor-profile-save-btn:hover {
+    border-color: #e11d48 !important;
+    background: #fce7f3 !important;
+    color: #e11d48 !important;
+    transform: none;
+}
+
+.browse-save-btn.vendor-profile-save-btn svg {
+    transition: fill 0.3s ease;
+}
+
+.browse-save-btn.vendor-profile-save-btn:hover svg {
+    fill: currentColor;
+}
+
+.browse-save-btn.vendor-profile-save-btn.saved svg {
+    fill: currentColor;
+}
+
 /* Browse Card Body */
 .browse-card-body {
     padding: var(--space-4) var(--space-5);

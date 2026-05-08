@@ -21,7 +21,7 @@ class ReviewModel extends Model
             'user_id'    => (int)$data['user_id'],
             'rating'     => (int)$data['rating'],
             'review'     => Sanitizer::textarea($data['review'], MAX_REVIEW_LENGTH),
-            'status'     => 'pending',
+            'status'     => 'approved',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
@@ -58,7 +58,7 @@ class ReviewModel extends Model
             "SELECT r.*, u.full_name as user_name, u.level, u.department
              FROM reviews r
              JOIN users u ON u.id = r.user_id
-             WHERE r.vendor_id = ? AND r.status = 'approved'
+             WHERE r.vendor_id = ?
              ORDER BY r.created_at DESC
              LIMIT ? OFFSET ?",
             [$vendorId, $limit, $offset]
@@ -66,12 +66,12 @@ class ReviewModel extends Model
     }
 
     // ============================================================
-    // Count approved reviews for vendor
+    // Count reviews for vendor
     // ============================================================
     public function countApprovedForVendor(int $vendorId): int
     {
         return (int)$this->db->fetchColumn(
-            "SELECT COUNT(*) FROM reviews WHERE vendor_id = ? AND status = 'approved'",
+            "SELECT COUNT(*) FROM reviews WHERE vendor_id = ?",
             [$vendorId]
         );
     }
@@ -83,7 +83,7 @@ class ReviewModel extends Model
     {
         $avg = $this->db->fetchColumn(
             "SELECT ROUND(AVG(rating), 1) FROM reviews 
-             WHERE vendor_id = ? AND status = 'approved'",
+             WHERE vendor_id = ?",
             [$vendorId]
         );
         return (float)($avg ?? 0);
@@ -97,7 +97,7 @@ class ReviewModel extends Model
         $rows = $this->db->fetchAll(
             "SELECT rating, COUNT(*) as count 
              FROM reviews 
-             WHERE vendor_id = ? AND status = 'approved'
+             WHERE vendor_id = ?
              GROUP BY rating ORDER BY rating DESC",
             [$vendorId]
         );
@@ -110,30 +110,27 @@ class ReviewModel extends Model
     }
 
     // ============================================================
-    // Edit review (only if pending or user's own + before moderation)
+    // Edit review (only user's own)
     // ============================================================
     public function editReview(int $reviewId, int $userId, array $data): bool
     {
         $review = $this->find($reviewId);
         if (!$review || (int)$review['user_id'] !== $userId) return false;
-        if ($review['status'] === 'approved') return false;
 
         return $this->update($reviewId, [
             'rating'     => (int)$data['rating'],
             'review'     => Sanitizer::textarea($data['review'], MAX_REVIEW_LENGTH),
-            'status'     => 'pending',
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
     }
 
     // ============================================================
-    // Delete review (only owner before moderation)
+    // Delete review (only owner)
     // ============================================================
     public function deleteByUser(int $reviewId, int $userId): bool
     {
         $review = $this->find($reviewId);
         if (!$review || (int)$review['user_id'] !== $userId) return false;
-        if ($review['status'] === 'approved') return false;
         return $this->delete($reviewId);
     }
 

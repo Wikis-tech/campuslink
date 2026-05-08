@@ -38,6 +38,18 @@ class PaymentController extends Controller
     // ============================================================
     public function index(): void
     {
+        // ── Handle receipt download ──
+        $receiptId = (int)$this->get('receipt', 0);
+        if ($receiptId > 0) {
+            $payment = $this->paymentModel->getWithSubscription($receiptId);
+            if ($payment && $payment['vendor_id'] == Auth::vendorId()) {
+                $this->generateReceipt($payment);
+                return;
+            }
+            $this->redirectWith('vendor/payment-history', 'error', 'Receipt not found or access denied.');
+            return;
+        }
+
         // ── CSRF refresh ping (called by JS every 10 min) ──
         if (
             isset($_GET['csrf_refresh'])
@@ -407,5 +419,39 @@ class PaymentController extends Controller
             'pageTitle'  => 'Payment Failed - ' . SITE_NAME,
             'flashError' => $this->session->getFlash('error'),
         ]);
+    }
+
+    // ============================================================
+    // Generate Receipt
+    // ============================================================
+    private function generateReceipt(array $payment): void
+    {
+        $vendor = $this->vendorModel->find($payment['vendor_id']);
+
+        header('Content-Type: text/html; charset=UTF-8');
+        echo '<!DOCTYPE html><html><head><title>Receipt - ' . SITE_NAME . '</title>';
+        echo '<style>body{font-family:Arial,sans-serif;max-width:600px;margin:40px auto;padding:20px;}
+              .header{background:#0b3d91;color:#fff;padding:20px;border-radius:8px 8px 0 0;text-align:center;}
+              table{width:100%;border-collapse:collapse;margin:20px 0;}
+              td{padding:10px;border-bottom:1px solid #eee;}
+              .label{color:#555;width:40%;}
+              .footer{background:#f8f9fa;padding:16px;text-align:center;font-size:12px;color:#888;}
+              @media print{button{display:none}}</style></head><body>';
+        echo '<div class="header"><h2>' . SITE_NAME . '</h2><p>Payment Receipt</p></div>';
+        echo '<table>';
+        echo '<tr><td class="label">Business</td><td>' . e($vendor['business_name'] ?? '') . '</td></tr>';
+        echo '<tr><td class="label">Plan</td><td>' . e(ucfirst($payment['plan_type'])) . '</td></tr>';
+        echo '<tr><td class="label">Amount</td><td>₦' . number_format($payment['amount'] / 100, 2) . '</td></tr>';
+        echo '<tr><td class="label">Reference</td><td>' . e($payment['reference']) . '</td></tr>';
+        echo '<tr><td class="label">Paid At</td><td>' . e($payment['paid_at'] ?? $payment['created_at']) . '</td></tr>';
+        if (!empty($payment['start_date'])) {
+            echo '<tr><td class="label">Subscription Start</td><td>' . e($payment['start_date']) . '</td></tr>';
+            echo '<tr><td class="label">Subscription Expiry</td><td>' . e($payment['expiry_date']) . '</td></tr>';
+        }
+        echo '</table>';
+        echo '<div class="footer">' . SITE_NAME . ' is a directory platform only. This is your official payment receipt.</div>';
+        echo '<br><button onclick="window.print()">Print Receipt</button>';
+        echo '</body></html>';
+        exit;
     }
 }

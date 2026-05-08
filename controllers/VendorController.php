@@ -525,16 +525,73 @@ class VendorController extends Controller {
                 $data['logo'] = $newLogo;
             }
 
-            $updated = $this->vendorModel->updateProfile($vendorId, $data);
-            if (!$updated) {
-                $this->view('vendor/profile-edit', [
-                    'pageTitle'  => 'Edit Profile - ' . SITE_NAME,
-                    'vendor'     => array_merge($vendor, $data),
-                    'categories' => $categories,
-                    'errors'     => ['general' => 'Unable to save profile changes. Please try again.'],
-                    'csrfField'  => CSRF::field(),
-                ]);
-                return;
+            $servicePhotos = [];
+            if (!empty($vendor['service_photo'])) {
+                $decoded = json_decode($vendor['service_photo'], true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $servicePhotos = array_values(array_filter($decoded));
+                } else {
+                    $servicePhotos = [$vendor['service_photo']];
+                }
+            }
+
+            $deletePhotos = array_map('intval', (array)$this->post('delete_service_photo', []));
+            foreach ($deletePhotos as $deleteIndex) {
+                if (isset($servicePhotos[$deleteIndex])) {
+                    $uploader = new Uploader(UPLOAD_SERVICE);
+                    $uploader->delete($servicePhotos[$deleteIndex]);
+                    unset($servicePhotos[$deleteIndex]);
+                }
+            }
+
+            if (!empty($_FILES['service_photos']['name']) && is_array($_FILES['service_photos']['name'])) {
+                $uploader = new Uploader(UPLOAD_SERVICE);
+                foreach ($_FILES['service_photos']['name'] as $index => $name) {
+                    if (empty($name) || $_FILES['service_photos']['error'][$index] === UPLOAD_ERR_NO_FILE) {
+                        continue;
+                    }
+
+                    $file = [
+                        'name'     => $_FILES['service_photos']['name'][$index],
+                        'type'     => $_FILES['service_photos']['type'][$index],
+                        'tmp_name' => $_FILES['service_photos']['tmp_name'][$index],
+                        'error'    => $_FILES['service_photos']['error'][$index],
+                        'size'     => $_FILES['service_photos']['size'][$index],
+                    ];
+
+                    $result = $uploader->upload($file, 'service_' . $vendorId . '_' . $index);
+                    if ($result === false) {
+                        $errors = ['service_photos' => [$index => $uploader->getError()]];
+                        $this->view('vendor/profile-edit', [
+                            'pageTitle'  => 'Edit Profile - ' . SITE_NAME,
+                            'vendor'     => array_merge($vendor, $data),
+                            'categories' => $categories,
+                            'errors'     => $errors,
+                            'csrfField'  => CSRF::field(),
+                        ]);
+                        return;
+                    }
+
+                    if (isset($servicePhotos[$index]) && !empty($servicePhotos[$index])) {
+                        @unlink(UPLOAD_SERVICE . $servicePhotos[$index]);
+                    }
+
+                    $servicePhotos[$index] = $result;
+                }
+            }
+
+            $servicePhotos = array_values(array_filter($servicePhotos));
+            if (!empty($servicePhotos)) {
+                $data['service_photo'] = json_encode(array_slice($servicePhotos, 0, 4));
+            } else {
+                $data['service_photo'] = null;
+            }
+
+            $this->vendorModel->update($vendorId, $data);
+
+            $updatedVendor = $this->vendorModel->find($vendorId);
+            if ($updatedVendor) {
+                $this->session->loginVendor($updatedVendor);
             }
 
             Notification::sendToAdmin(
@@ -558,44 +615,67 @@ class VendorController extends Controller {
         ]);
     }
 
-    // ============================================================
-    // Reviews & Replies
-    // ============================================================
-    public function reviews(): void
-    {
-        $this->requireVendorLogin();
+   // ============================================================
+// Reviews & Replies
+// ============================================================
+public function reviews(): void
+{
+    $this->requireVendorLogin();
 
-        $vendorId  = Auth::vendorId();
-        $reviews   = $this->reviewModel->getForVendorDashboard($vendorId);
-        $avgRating = $this->reviewModel->getAverageRating($vendorId);
-        $dist      = $this->reviewModel->getRatingDistribution($vendorId);
+    $vendorId  = Auth::vendorId();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->validateCSRF();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $this->validateCSRF();
 
-            $reviewId = (int)$this->post('review_id', 0);
-            $reply    = Sanitizer::textarea($this->post('reply', ''), 500);
+        // Read from JSON body (AJAX) or $_POST (form fallback)
+        $body     = $this->rawPost();
+        $reviewId = (int)($body['review_id'] ?? $_POST['review_id'] ?? 0);
+        $reply    = trim($body['reply'] ?? $_POST['reply'] ?? '');
+        $reply    = Sanitizer::textarea($reply, 500);
 
-            if (empty($reply)) {
-                $this->redirectWith('vendor/reviews', 'error', 'Reply cannot be empty.');
+        if (empty($reply)) {
+            if ($this->isAjax()) {
+                $this->jsonError('Reply cannot be empty.');
                 return;
             }
-
-            $this->reviewModel->addVendorReply($reviewId, $vendorId, $reply);
-            $this->redirectWith('vendor/reviews', 'success', 'Reply posted successfully.');
+            $this->redirectWith('vendor/reviews', 'error', 'Reply cannot be empty.');
             return;
         }
 
-        $this->view('vendor/reviews', [
-            'pageTitle'    => 'My Reviews - ' . SITE_NAME,
-            'reviews'      => $reviews,
-            'avgRating'    => $avgRating,
-            'dist'         => $dist,
-            'csrfField'    => CSRF::field(),
-            'flashSuccess' => $this->session->getFlash('success'),
-            'flashError'   => $this->session->getFlash('error'),
-        ]);
+        if ($reviewId <= 0) {
+            if ($this->isAjax()) {
+                $this->jsonError('Invalid review.');
+                return;
+            }
+            $this->redirectWith('vendor/reviews', 'error', 'Invalid review.');
+            return;
+        }
+
+        $this->reviewModel->addVendorReply($reviewId, $vendorId, $reply);
+
+        if ($this->isAjax()) {
+            $this->jsonSuccess('Reply posted successfully.');
+            return;
+        }
+
+        $this->redirectWith('vendor/reviews', 'success', 'Reply posted successfully.');
+        return;
     }
+
+    $reviews   = $this->reviewModel->getForVendorDashboard($vendorId);
+    $avgRating = $this->reviewModel->getAverageRating($vendorId);
+    $dist      = $this->reviewModel->getRatingDistribution($vendorId);
+
+    $this->view('vendor/reviews', [
+        'pageTitle'    => 'My Reviews - ' . SITE_NAME,
+        'reviews'      => $reviews,
+        'avgRating'    => $avgRating,
+        'dist'         => $dist,
+        'csrfField'    => CSRF::field(),
+        'flashSuccess' => $this->session->getFlash('success'),
+        'flashError'   => $this->session->getFlash('error'),
+    ]);
+}
 
     // ============================================================
     // Complaints
@@ -743,29 +823,31 @@ class VendorController extends Controller {
     }
 
     // ============================================================
-    // Payment History & Receipts
-    // ============================================================
-    public function paymentHistory(): void
-    {
-        $this->requireVendorLogin();
+// Payment History & Receipts
+// ============================================================
+public function paymentHistory(): void
+{
+    $this->requireVendorLogin();
 
-        $vendorId = Auth::vendorId();
-        $payments = $this->paymentModel->getForVendor($vendorId);
+    $vendorId = Auth::vendorId();
+    $vendor   = $this->vendorModel->find($vendorId);
+    $payments = $this->paymentModel->getForVendor($vendorId);
 
-        $receiptId = (int)$this->get('receipt', 0);
-        if ($receiptId > 0) {
-            $payment = $this->paymentModel->getWithSubscription($receiptId);
-            if ($payment && (int)$payment['vendor_id'] === $vendorId) {
-                $this->generateReceipt($payment);
-                return;
-            }
+    $receiptId = (int)$this->get('receipt', 0);
+    if ($receiptId > 0) {
+        $payment = $this->paymentModel->getWithSubscription($receiptId);
+        if ($payment && (int)$payment['vendor_id'] === $vendorId) {
+            $this->generateReceipt($payment);
+            return;
         }
-
-        $this->view('vendor/payment-history', [
-            'pageTitle' => 'Payment History - ' . SITE_NAME,
-            'payments'  => $payments,
-        ]);
     }
+
+    $this->view('vendor/payment-history', [
+        'pageTitle' => 'Payment History - ' . SITE_NAME,
+        'payments'  => $payments,
+        'vendor'    => $vendor,
+    ]);
+}
 
     // ============================================================
     // Notifications

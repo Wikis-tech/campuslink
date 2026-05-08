@@ -10,7 +10,7 @@
                     <span style="color:#93c5fd;">Campus</span><span style="color:#34d399;">Link</span>
                 </div>
                 <p class="footer-tagline">
-                    <?= e(SITE_TAGLINE) ?> â€” connecting students with verified campus service providers.
+                    <?= e(SITE_TAGLINE) ?> Connecting students with verified campus service providers.
                 </p>
                 <div class="footer-disclaimer-small">
                     <strong><i data-lucide="alert-triangle" class="footer-icon" aria-hidden="true"></i> Directory Only:</strong> CampusLink is a listing platform.
@@ -72,7 +72,7 @@
         <div class="footer-bottom">
             <p>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. All rights reserved.</p>
             <span>
-                Affiliated with <?= e(SCHOOL_NAME) ?> Â· Nigeria ðŸ‡³ðŸ‡¬
+                Affiliated with <?= e(SCHOOL_NAME) ?> University Of Africa Toru-Orua
             </span>
             <span>
                 Powered by <strong style="color:rgba(255,255,255,0.65);">CampusLink v1.0</strong>

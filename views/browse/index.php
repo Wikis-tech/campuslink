@@ -639,7 +639,7 @@ $vendorCount = count($vendors);
 
                         <div class="vcard-actions">
                             <?php if (!empty($v['whatsapp_number'])): ?>
-                            <a href="https://wa.me/<?= preg_replace('/[^0-9]/','',$v['whatsapp_number']) ?>?text=Hi%2C+I+found+you+on+CampusLink"
+                            <a href="https://wa.me/<?= formatWhatsAppNumber($v['whatsapp_number']) ?>?text=Hi%2C+I+found+you+on+CampusLink"
                                target="_blank" rel="noopener" class="wa">
                                 <i data-lucide="message-circle"></i> WhatsApp
                             </a>

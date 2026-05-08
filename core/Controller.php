@@ -9,6 +9,7 @@ defined('CAMPUSLINK') or die('Direct access not permitted.');
 class Controller extends BaseController
 {
     protected Session $session;
+    protected ?array $jsonBody = null;
 
     public function __construct()
     {
@@ -65,6 +66,11 @@ class Controller extends BaseController
     protected function requireLogin(string $redirectTo = 'login'): void
     {
         if (!Auth::isLoggedIn()) {
+            // Check if AJAX request
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                $this->jsonError('Please log in to continue.', 401);
+                exit;
+            }
             Session::set('intended_url', currentUrl());
             $this->redirectWith($redirectTo, 'error', 'Please log in to continue.');
         }
@@ -109,12 +115,33 @@ class Controller extends BaseController
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 
+    protected function getJsonBody(): array
+    {
+        if ($this->jsonBody !== null) {
+            return $this->jsonBody;
+        }
+
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+        $this->jsonBody = is_array($data) ? $data : [];
+        return $this->jsonBody;
+    }
+
     protected function post(string $key, mixed $default = null): mixed
     {
-        if (!isset($_POST[$key])) {
-            return $default;
+        if (isset($_POST[$key])) {
+            return Sanitizer::clean($_POST[$key]);
         }
-        return Sanitizer::clean($_POST[$key]);
+
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
+        if (stripos($contentType, 'application/json') !== false) {
+            $data = $this->getJsonBody();
+            if (array_key_exists($key, $data)) {
+                return Sanitizer::clean($data[$key]);
+            }
+        }
+
+        return $default;
     }
 
     protected function get(string $key, mixed $default = null): mixed
@@ -127,14 +154,19 @@ class Controller extends BaseController
 
     protected function rawPost(): array
     {
-        $raw = file_get_contents('php://input');
-        $data = json_decode($raw, true);
-        return is_array($data) ? $data : [];
+        return $this->getJsonBody();
     }
 
     protected function validateCSRF(): void
     {
         $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+
+        if (empty($token)) {
+            $body = $this->getJsonBody();
+            if (isset($body['csrf_token'])) {
+                $token = $body['csrf_token'];
+            }
+        }
 
         if (!CSRF::validate($token)) {
             if ($this->isAjax()) {

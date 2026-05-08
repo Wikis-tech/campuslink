@@ -96,12 +96,12 @@ class ReviewController extends Controller
         Notification::sendToVendor(
             $vendorId,
             'New Review Submitted ⭐',
-            "A new {$rating}-star review has been submitted for {$vendor['business_name']}. Pending admin approval.",
+            "A new {$rating}-star review has been submitted for {$vendor['business_name']}.",
             Notification::TYPE_REVIEW,
             'vendor/reviews'
         );
 
-        $this->jsonSuccess('Review submitted successfully. It will appear after moderation.');
+        $this->jsonSuccess('Review submitted successfully.');
     }
 
     // ============================================================
@@ -137,11 +137,11 @@ class ReviewController extends Controller
         ]);
 
         if (!$result) {
-            $this->jsonError('Could not edit this review. It may already be approved or does not belong to you.');
+            $this->jsonError('Could not edit this review. It may not belong to you.');
             return;
         }
 
-        $this->jsonSuccess('Review updated. It will be re-moderated before appearing.');
+        $this->jsonSuccess('Review updated successfully.');
     }
 
     // ============================================================

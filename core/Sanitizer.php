@@ -113,4 +113,15 @@ class Sanitizer {
         $value = strtolower((string)$value);
         return in_array($value, ['1', 'true', 'yes', 'on'], true);
     }
+
+    /**
+     * Generate a URL-safe slug from a string
+     */
+    public static function slug(mixed $value): string {
+        if ($value === null) return '';
+        $text = strtolower(trim((string)$value));
+        $text = preg_replace('/[^a-z0-9\s-]/', '', $text);
+        $text = preg_replace('/[\s-]+/', '-', $text);
+        return trim($text, '-');
+    }
 }

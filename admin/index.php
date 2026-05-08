@@ -1,6 +1,9 @@
 <?php
 defined('CAMPUSLINK') or die('Direct access not permitted.');
 
+// Load the full bootstrap (DB, helpers, models, session, etc)
+require_once __DIR__ . '/../core/bootstrap.php';
+
 // Parse admin sub-path
 $adminUri  = $_SERVER['REQUEST_URI'] ?? '/admin';
 $adminPath = parse_url($adminUri, PHP_URL_PATH);
@@ -70,7 +73,7 @@ match(true) {
     $aPage === 'reviews'                            => $admin->reviews(),
 
     // Complaints
-    $aPage === 'complaints' && $aPage2 === 'view'   => $admin->complaintView((int)$aPage3),
+    $aPage === 'complaints' && ($aPage2 === 'view' || $aPage2 === 'detail') => $admin->complaintView((int)$aPage3),
     $aPage === 'complaints'                         => $admin->complaints(),
 
     // Payments

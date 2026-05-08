@@ -179,16 +179,38 @@ class UserController extends BaseController {
     }
 
     public function toggleSave(): void {
-        if (!Auth::isLoggedIn()) {
-            $this->json(['error' => 'Not logged in'], 401);
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Method not allowed']);
+            return;
         }
 
-        $db       = DB::getInstance();
-        $userId   = (int)Session::get('user_id');
-        $vendorId = (int)($_POST['vendor_id'] ?? 0);
+        $raw      = file_get_contents('php://input');
+        $body     = json_decode($raw, true) ?: [];
+        $vendorId = (int)($body['vendor_id'] ?? $_POST['vendor_id'] ?? 0);
+        $csrf     = $body['csrf_token'] ?? $_POST['csrf_token'] ?? '';
+
+        if (!CSRF::validate($csrf)) {
+            http_response_code(403);
+            echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Invalid security token.']);
+            return;
+        }
+
+        if (!Auth::isLoggedIn()) {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Not logged in']);
+            return;
+        }
+
+        $db = DB::getInstance();
+        $userId = (int)Session::get('user_id');
 
         if (!$vendorId) {
-            $this->json(['error' => 'Invalid vendor'], 400);
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Invalid vendor']);
+            return;
         }
 
         $exists = (int)$db->value(
@@ -201,14 +223,14 @@ class UserController extends BaseController {
                 "DELETE FROM saved_vendors WHERE user_id = ? AND vendor_id = ?",
                 [$userId, $vendorId]
             );
-            $this->json(['saved' => false]);
+            $this->json(['status' => 'success', 'success' => true, 'saved' => false, 'message' => 'Vendor removed from saved list.']);
         } else {
             $db->insert('saved_vendors', [
                 'user_id'    => $userId,
                 'vendor_id'  => $vendorId,
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
-            $this->json(['saved' => true]);
+            $this->json(['status' => 'success', 'success' => true, 'saved' => true, 'message' => 'Vendor added to saved list.']);
         }
     }
 
