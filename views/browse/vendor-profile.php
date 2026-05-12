@@ -243,14 +243,14 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
                         <!-- Star Rating -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Rating</label>
-                            <div class="flex flex-wrap items-center gap-2 rounded-[16px] border border-slate-200 bg-white p-3 shadow-sm" id="ratingStars" role="radiogroup" aria-label="Star rating">
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <button type="button" aria-label="Rate <?= $i ?> star<?= $i !== 1 ? 's' : '' ?>" aria-pressed="false" class="star-btn inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-3xl text-slate-700 font-semibold transition duration-200 hover:bg-amber-100 hover:text-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200" data-rating="<?= $i ?>">★</button>
+                            <div class="review-stars-input" id="ratingStars" role="radiogroup" aria-label="Star rating">
+                                <?php for ($i = 5; $i >= 1; $i--): ?>
+                                <input type="radio" id="reviewStar<?= $i ?>" name="rating" value="<?= $i ?>">
+                                <label for="reviewStar<?= $i ?>" aria-label="Rate <?= $i ?> star<?= $i !== 1 ? 's' : '' ?>">★</label>
                                 <?php endfor; ?>
                             </div>
                             <p id="ratingValue" class="mt-2 text-sm text-slate-600">No rating selected.</p>
                             <p class="mt-2 text-xs text-slate-500">Click a star to set your rating before submitting your review.</p>
-                            <input type="hidden" name="rating" id="ratingInput" value="0">
                         </div>
 
                         <!-- Review Text -->
@@ -420,58 +420,25 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
 // Review functionality
 document.addEventListener('DOMContentLoaded', function() {
     const starRateContainer = document.querySelector('#ratingStars');
-    const starBtns = starRateContainer ? starRateContainer.querySelectorAll('.star-btn') : [];
-    const ratingInput = document.getElementById('ratingInput');
+    const ratingInputs = starRateContainer ? starRateContainer.querySelectorAll('input[name="rating"]') : [];
     const ratingValueText = document.getElementById('ratingValue');
 
-    const setRating = rating => {
+    const updateRatingValue = rating => {
         const numericRating = Number(rating) || 0;
-        if (ratingInput) {
-            ratingInput.value = numericRating;
-        }
         if (ratingValueText) {
             ratingValueText.textContent = numericRating > 0 ? `${numericRating} of 5 stars selected` : 'No rating selected.';
         }
-        starBtns.forEach((btn, index) => {
-            if (index < numericRating) {
-                btn.classList.add('text-amber-400');
-                btn.classList.remove('text-slate-300');
-                btn.setAttribute('aria-pressed', 'true');
-            } else {
-                btn.classList.remove('text-amber-400');
-                btn.classList.add('text-slate-300');
-                btn.setAttribute('aria-pressed', 'false');
-            }
-        });
     };
 
-    if (starBtns.length && ratingInput) {
-        starBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                setRating(this.dataset.rating);
-            });
-
-            btn.addEventListener('mouseover', function() {
-                const hoverRating = Number(this.dataset.rating) || 0;
-                starBtns.forEach((b, index) => {
-                    if (index < hoverRating) {
-                        b.classList.add('text-amber-400');
-                        b.classList.remove('text-slate-300');
-                    } else {
-                        b.classList.remove('text-amber-400');
-                        b.classList.add('text-slate-300');
-                    }
-                });
+    if (ratingInputs.length) {
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                updateRatingValue(this.value);
             });
         });
 
-        setRating(ratingInput.value || 0);
-    }
-
-    if (starRateContainer) {
-        starRateContainer.addEventListener('mouseleave', function() {
-            setRating(ratingInput?.value || 0);
-        });
+        const checked = Array.from(ratingInputs).find(input => input.checked);
+        updateRatingValue(checked ? checked.value : 0);
     }
 
     const getCsrfToken = form => {
@@ -517,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
         reviewForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const rating = Number(reviewForm.querySelector('input[name="rating"]')?.value || 0);
+            const rating = Number(reviewForm.querySelector('input[name="rating"]:checked')?.value || 0);
             const review = reviewForm.querySelector('textarea[name="review"]')?.value || '';
 
             if (!rating) {

@@ -317,6 +317,48 @@ $canonical = $canonical  ?? SITE_URL . '/' . ltrim($_SERVER['REQUEST_URI'] ?? ''
         display: none;
     }
 }
+
+    /* Vendor profile review star widget */
+    .review-stars-input {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .review-stars-input input[type="radio"] {
+        display: none;
+    }
+
+    .review-stars-input label {
+        font-size: 2.4rem;
+        cursor: pointer;
+        color: #cbd5e1;
+        transition: color 0.15s ease, transform 0.1s ease;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.2rem;
+        height: 3.2rem;
+        border-radius: 50%;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .review-stars-input label:hover,
+    .review-stars-input label:hover ~ label,
+    .review-stars-input input:checked ~ label {
+        color: #f59e0b;
+        transform: scale(1.08);
+        background: #fffbeb;
+        border-color: #fbbf24;
+    }
+
+    .review-stars-input input:checked + label {
+        color: #f59e0b;
+    }
 </style>
 <script>window.CAMPUSLINK_ROOT = '<?= rtrim(SITE_URL, '/') ?>';</script>
 <script src="<?= SITE_URL ?>/assets/js/main.js" defer></script>

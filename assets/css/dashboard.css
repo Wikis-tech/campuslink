@@ -554,17 +554,20 @@
 }
 
 /* Vendor Reply Form */
-.reply-form {
+.reply-form,
+.complaint-response-form {
     margin-top: var(--space-3);
     display: none;
     animation: fadeIn 0.3s ease;
 }
 
-.reply-form.active {
+.reply-form.active,
+.complaint-response-form.active {
     display: block;
 }
 
-.reply-form textarea {
+.reply-form textarea,
+.complaint-response-form textarea {
     min-height: 80px;
     margin-bottom: var(--space-3);
 }

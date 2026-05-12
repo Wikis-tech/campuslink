@@ -96,7 +96,7 @@
                     </button>
                 </div>
 
-                <div class="complaint-response-form reply-form"
+                <div class="complaint-response-form"
                      data-complaint-id="<?= (int)$complaint['id'] ?>"
                      style="margin-top:0.75rem;">
                     <form action="<?= SITE_URL ?>/vendor/complaints"

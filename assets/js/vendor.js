@@ -26,7 +26,7 @@ function initReviewReplies() {
     });
 
     // Submit reply via AJAX
-    document.querySelectorAll('.reply-form').forEach(form => {
+    document.querySelectorAll('.reply-form[data-review-id]').forEach(form => {
         form.addEventListener('submit', async e => {
             e.preventDefault();
 
