@@ -418,7 +418,7 @@ class VendorModel extends Model
     public function updateProfile(int $vendorId, array $data): bool
     {
         $allowed = [
-            'business_name', 'description', 'price_range',
+            'business_name', 'description', 'price_range', 'level',
             'operating_location', 'business_address',
             'years_experience', 'years_operation',
             'whatsapp_number', 'phone', 'logo',

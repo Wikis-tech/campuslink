@@ -493,7 +493,7 @@ class AdminController {
         if (!$compl) $this->redirect('complaints','Not found.','error');
 
         $this->db->execute(
-            "UPDATE complaints SET status='verified', admin_note=?, reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE complaints SET status='verified', admin_note=?, handled_at=NOW(), handled_by=? WHERE id=?",
             [$note, AdminAuth::id(), $id]
         );
 
@@ -536,7 +536,7 @@ class AdminController {
         if (!$compl) $this->redirect('complaints','Not found.','error');
 
         $this->db->execute(
-            "UPDATE complaints SET status='dismissed', admin_note=?, reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE complaints SET status='dismissed', admin_note=?, handled_at=NOW(), handled_by=? WHERE id=?",
             [$note, AdminAuth::id(), $id]
         );
 
@@ -565,7 +565,7 @@ class AdminController {
         if (!$compl) $this->redirect('complaints','Not found.','error');
 
         $this->db->execute(
-            "UPDATE complaints SET status='resolved', admin_note=?, reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE complaints SET status='resolved', admin_note=?, handled_at=NOW(), handled_by=?, resolved_at=NOW() WHERE id=?",
             [$note, AdminAuth::id(), $id]
         );
 
@@ -634,7 +634,7 @@ class AdminController {
         if (!$review) $this->redirect('reviews','Not found.','error');
 
         $this->db->execute(
-            "UPDATE reviews SET status='approved', reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE reviews SET status='approved', moderated_at=NOW(), moderated_by=? WHERE id=?",
             [AdminAuth::id(), $id]
         );
 
@@ -654,7 +654,7 @@ class AdminController {
         if (!$review) $this->redirect('reviews','Not found.','error');
 
         $this->db->execute(
-            "UPDATE reviews SET status='rejected', rejection_reason=?, reviewed_at=NOW(), reviewed_by=? WHERE id=?",
+            "UPDATE reviews SET status='rejected', rejection_reason=?, moderated_at=NOW(), moderated_by=? WHERE id=?",
             [$reason, AdminAuth::id(), $id]
         );
 

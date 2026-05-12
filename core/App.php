@@ -107,6 +107,12 @@ class App
         $route = trim($route, '/');
         $route = str_replace("\0", '', $route);
         $route = preg_replace('/[^a-zA-Z0-9\-_\/]/', '', $route);
+
+        // Normalize accidental duplicate vendor prefix from relative links or bad redirects.
+        if (str_starts_with($route, 'vendor/vendor/')) {
+            $route = preg_replace('#^vendor/vendor/#', 'vendor/', $route, 1);
+        }
+
         return $route;
     }
 
@@ -115,6 +121,37 @@ class App
     // ============================================================
     private function dispatch(string $route): void
     {
+        // ── ACCESS CONTROL: Check if logged-in user/vendor is accessing unauthorized pages ──
+        $isUserLoggedIn   = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+        $isVendorLoggedIn = isset($_SESSION['vendor_logged_in']) && $_SESSION['vendor_logged_in'] === true;
+        $isAdminLoggedIn  = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+
+        // Vendor logged in should NOT access user/* pages
+        if ($isVendorLoggedIn && str_starts_with($route, 'user/')) {
+            http_response_code(403);
+            $this->loadController('PageController', 'error', ['code' => 403]);
+            return;
+        }
+
+        // User logged in should NOT access vendor/* pages (except public vendor registration/login)
+        if ($isUserLoggedIn && str_starts_with($route, 'vendor/')) {
+            $publicVendorRoutes = ['register', 'login'];
+            $routeParts = explode('/', $route);
+            $vendorAction = $routeParts[1] ?? '';
+            if (!in_array($vendorAction, $publicVendorRoutes)) {
+                http_response_code(403);
+                $this->loadController('PageController', 'error', ['code' => 403]);
+                return;
+            }
+        }
+
+        // Any user/vendor should NOT access admin/* pages
+        if (($isUserLoggedIn || $isVendorLoggedIn) && str_starts_with($route, 'admin/')) {
+            http_response_code(403);
+            $this->loadController('PageController', 'error', ['code' => 403]);
+            return;
+        }
+
         // Check defined routes FIRST — before the slug fallback
         if (isset($this->routes[$route])) {
             [$controllerName, $method] = $this->routes[$route];

@@ -600,7 +600,8 @@ $this->renderAdmin('complaints/index', compact(
         $db        = DB::getInstance();
      $complaint = $db->row(
     "SELECT c.*, v.business_name AS vendor_name,
-            u.full_name AS user_name, u.email AS user_email
+            u.full_name AS user_name,
+            COALESCE(u.personal_email, u.school_email) AS user_email
                FROM complaints c
           LEFT JOIN vendors v ON v.id = c.vendor_id
           LEFT JOIN users   u ON u.id = c.user_id

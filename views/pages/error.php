@@ -161,7 +161,7 @@
             404 => ['search-x',       'Page Not Found', "The page you're looking for doesn't exist or has been moved."],
             500 => ['server-crash',   'Server Error',   'Something went wrong on our end. Please try again shortly.'],
         ];
-        $code = $errorCode ?? 404;
+        $code = $errorCode ?? $code ?? 404;
         [$iconName, $title, $message] = $codes[$code] ?? $codes[404];
         ?>
 

@@ -488,18 +488,26 @@ const CampusLink = {
         }
 
         const response = await fetch(this.resolveUrl(url), options);
+        const contentType = response.headers.get('content-type') || '';
 
         if (!response.ok) {
             let errorMessage = `HTTP ${response.status}`;
-            try {
-                const body = await response.json();
-                if (body && body.message) {
-                    errorMessage = body.message;
+            if (contentType.includes('application/json')) {
+                try {
+                    const body = await response.json();
+                    if (body && body.message) {
+                        errorMessage = body.message;
+                    }
+                } catch (err) {
+                    // ignore JSON parse errors
                 }
-            } catch (err) {
-                // ignore JSON parse errors
             }
             throw new Error(errorMessage);
+        }
+
+        if (!contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error('Server returned invalid JSON: ' + text);
         }
 
         return response.json();

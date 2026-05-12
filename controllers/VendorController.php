@@ -478,13 +478,17 @@ class VendorController extends Controller {
                 'phone'              => Sanitizer::phone($this->post('phone', '')),
                 'whatsapp_number'    => Sanitizer::phone($this->post('whatsapp_number', '')),
                 'description'        => Sanitizer::textarea($this->post('description', ''), 1000),
-                'price_range'        => $this->post('price_range', ''),
-                'operating_location' => $this->post('operating_location', ''),
-                'business_address'   => $this->post('business_address', ''),
+                'price_range'        => Sanitizer::clean($this->post('price_range', '')),
+                'operating_location' => Sanitizer::clean($this->post('operating_location', '')),
+                'business_address'   => Sanitizer::clean($this->post('business_address', '')),
                 'years_experience'   => (int)$this->post('years_experience', 0),
                 'years_operation'    => (int)$this->post('years_operation', 0),
                 'category_id'        => (int)$this->post('category_id', 0),
             ];
+
+            if ($vendor['vendor_type'] === 'student') {
+                $data['level'] = Sanitizer::clean($this->post('level', ''));
+            }
 
             $validator = Validator::make($data, [
                 'business_name' => 'required|min:3|max:100',

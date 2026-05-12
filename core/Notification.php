@@ -14,6 +14,7 @@ class Notification
     const TYPE_ERROR = 'error';
     const TYPE_PAYMENT = 'payment';
     const TYPE_COMPLAINT = 'complaint';
+    const TYPE_REVIEW = 'review';
     const TYPE_EXPIRY_REMINDER = 'expiry_reminder';
     const TYPE_EXPIRY = 'expiry';
     const TYPE_APPROVAL = 'approval';
@@ -156,6 +157,8 @@ class Notification
         string $type,
         string $link
     ): bool {
+        $link = self::normalizeLink($link);
+
         try {
             self::db()->execute(
                 "INSERT INTO notifications 
@@ -168,5 +171,26 @@ class Notification
             Logger::log('NOTIFICATION_ERROR', $e->getMessage());
             return false;
         }
+    }
+
+    // ============================================================
+    // Normalize notification URLs to full SITE_URL path
+    // ============================================================
+    private static function normalizeLink(string $link): string
+    {
+        $link = trim($link);
+        if ($link === '') {
+            return '';
+        }
+
+        if (preg_match('#^(https?://|mailto:|tel:)#i', $link)) {
+            return $link;
+        }
+
+        if (str_starts_with($link, '/')) {
+            return rtrim(SITE_URL, '/') . $link;
+        }
+
+        return rtrim(SITE_URL, '/') . '/' . ltrim($link, '/');
     }
 }

@@ -144,6 +144,20 @@
                         </select>
                     </div>
 
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label" for="price_range" style="display: block; font-size: 0.9rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">
+                            Price Range
+                        </label>
+                        <input type="text"
+                               id="price_range"
+                               name="price_range"
+                               class="form-control"
+                               style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e9ecef; border-radius: 12px; font-size: 0.95rem; transition: all 0.3s ease;"
+                               value="<?= e($vendor['price_range'] ?? '') ?>"
+                               placeholder="e.g. ₦3,000 - ₦15,000">
+                        <span class="form-hint">Shown on your public profile so customers know your rates.</span>
+                    </div>
+
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label" for="description" style="display: block; font-size: 0.9rem; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem;">
                             Business Description <span class="required" style="color: #ef4444;">*</span>

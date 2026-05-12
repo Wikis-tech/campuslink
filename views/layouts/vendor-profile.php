@@ -368,42 +368,6 @@ $canonical = $canonical  ?? SITE_URL . '/' . ltrim($_SERVER['REQUEST_URI'] ?? ''
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     if (window.lucide) lucide.createIcons();
-
-    const menuBtn = document.querySelector('.mobile-menu-btn');
-    const mobileNav = document.querySelector('.mobile-nav');
-    const overlay = document.querySelector('.mobile-nav-overlay');
-    const closeBtn = document.querySelector('.mobile-nav-close');
-
-    const openNav = () => {
-        menuBtn?.classList.add('active');
-        menuBtn?.setAttribute('aria-expanded', 'true');
-        mobileNav?.classList.add('active');
-        overlay?.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeNav = () => {
-        menuBtn?.classList.remove('active');
-        menuBtn?.setAttribute('aria-expanded', 'false');
-        mobileNav?.classList.remove('active');
-        overlay?.classList.remove('active');
-        document.body.style.overflow = '';
-    };
-
-    menuBtn?.addEventListener('click', function() {
-        if (mobileNav?.classList.contains('active')) {
-            closeNav();
-        } else {
-            openNav();
-        }
-    });
-    closeBtn?.addEventListener('click', closeNav);
-    overlay?.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && mobileNav?.classList.contains('active')) {
-            closeNav();
-        }
-    });
 });
 </script>
 </body>

@@ -138,10 +138,32 @@ class PageController extends Controller
         ];
 
         http_response_code($code);
+
+        // Extract errorCode for the view
+        $errorCode = $code;
+        $errorMessage = $messages[$code] ?? 'An error occurred.';
+
+        // For vendor/user logged in, use no layout (so error page stands alone without footer)
+        $isVendorLoggedIn = isset($_SESSION['vendor_logged_in']) && $_SESSION['vendor_logged_in'] === true;
+        $isUserLoggedIn = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+
+        if ($isVendorLoggedIn || $isUserLoggedIn) {
+            // Render error page without layout
+            ob_start();
+            $viewFile = VIEWS_PATH . '/pages/error.php';
+            if (file_exists($viewFile)) {
+                require $viewFile;
+            }
+            echo ob_get_clean();
+            exit;
+        }
+
+        // For non-logged-in users, use main layout
         $this->view('pages/error', [
             'pageTitle' => "$code - " . ($messages[$code] ?? 'Error') . ' | ' . SITE_NAME,
             'code'      => $code,
             'message'   => $messages[$code] ?? 'An error occurred.',
+            'errorCode' => $code,
         ]);
     }
 }

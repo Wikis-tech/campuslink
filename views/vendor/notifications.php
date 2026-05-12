@@ -43,8 +43,15 @@
         ];
         foreach ($notifications as $notif):
             $icon = $typeIcons[$notif['type']] ?? 'info';
+            $notifLink = trim($notif['link'] ?? '');
+            if ($notifLink !== '' && !preg_match('#^(https?://|mailto:|tel:)#i', $notifLink)) {
+                $notifLink = rtrim(SITE_URL, '/') . '/' . ltrim($notifLink, '/');
+            }
+            if ($notifLink === '') {
+                $notifLink = '#';
+            }
         ?>
-        <a href="<?= e($notif['link'] ?? '#') ?>"
+        <a href="<?= e($notifLink) ?>"
            class="notification-item <?= $notif['is_read'] ? 'read' : 'unread' ?>"
            data-notif-id="<?= (int)$notif['id'] ?>">
             <span class="notification-dot"></span>

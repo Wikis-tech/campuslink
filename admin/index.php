@@ -46,7 +46,7 @@ if (in_array($aPage, $publicAdminRoutes) && AdminAuth::isLoggedIn()) {
 }
 
 // ── Route admin pages ─────────────────────────────────────
-require_once __DIR__ . '/../controllers/AdminController.php';
+require_once __DIR__ . '/AdminController.php';
 $admin = new AdminController();
 
 match(true) {
@@ -57,40 +57,35 @@ match(true) {
     $aPage === '' || $aPage === 'dashboard'         => $admin->dashboard(),
 
     // Vendors
-    $aPage === 'vendors' && $aPage2 === 'view'      => $admin->vendorView((int)$aPage3),
+    $aPage === 'vendors' && $aPage2 === 'view'      => $admin->vendorDetail((int)$aPage3),
     $aPage === 'vendors' && $aPage2 === 'approve'   => $admin->vendorApprove((int)$aPage3),
     $aPage === 'vendors' && $aPage2 === 'suspend'   => $admin->vendorSuspend((int)$aPage3),
     $aPage === 'vendors' && $aPage2 === 'delete'    => $admin->vendorDelete((int)$aPage3),
-    $aPage === 'vendors'                            => $admin->vendors(),
+    $aPage === 'vendors' && $aPage2 === 'pending'   => $admin->vendorsPending(),
+    $aPage === 'vendors'                            => $admin->vendorsIndex(),
 
     // Users
     $aPage === 'users' && $aPage2 === 'view'        => $admin->userView((int)$aPage3),
-    $aPage === 'users'                              => $admin->users(),
+    $aPage === 'users'                              => $admin->usersIndex(),
 
     // Reviews
     $aPage === 'reviews' && $aPage2 === 'approve'   => $admin->reviewApprove((int)$aPage3),
     $aPage === 'reviews' && $aPage2 === 'reject'    => $admin->reviewReject((int)$aPage3),
-    $aPage === 'reviews'                            => $admin->reviews(),
+    $aPage === 'reviews'                            => $admin->reviewsIndex(),
 
     // Complaints
-    $aPage === 'complaints' && ($aPage2 === 'view' || $aPage2 === 'detail') => $admin->complaintView((int)$aPage3),
-    $aPage === 'complaints'                         => $admin->complaints(),
+    $aPage === 'complaints' && ($aPage2 === 'view' || $aPage2 === 'detail') => $admin->complaintDetail((int)$aPage3),
+    $aPage === 'complaints' && $aPage2 === 'verify'   => $admin->complaintVerify((int)$aPage3),
+    $aPage === 'complaints' && $aPage2 === 'dismiss'  => $admin->complaintDismiss((int)$aPage3),
+    $aPage === 'complaints' && $aPage2 === 'resolve'  => $admin->complaintResolve((int)$aPage3),
+    $aPage === 'complaints'                         => $admin->complaintsIndex(),
 
     // Payments
-    $aPage === 'payments'                           => $admin->payments(),
-
-    // Categories
-    $aPage === 'categories'                         => $admin->categories(),
+    $aPage === 'payments'                           => $admin->paymentsIndex(),
 
     // Notifications
-$aPage === 'notifications' && $aPage2 === 'send'       => $admin->notificationSend(),
-$aPage === 'notifications' && $aPage2 === 'recipients' => $admin->notificationRecipients(),
-$aPage === 'notifications' && $aPage2 === 'delete'     => $admin->notificationDelete((int)$aPage3),
-$aPage === 'notifications' && $aPage2 === 'edit'       => $admin->notificationEdit((int)$aPage3),
-$aPage === 'notifications'                             => $admin->notifications(),
-    
-    // Settings
-    $aPage === 'settings'                           => $admin->settings(),
+    $aPage === 'notifications' && $aPage2 === 'send'       => $admin->notificationSend(),
+    $aPage === 'notifications'                             => $admin->notificationsIndex(),
 
     // Logout
     $aPage === 'logout'                             => $admin->logout(),
