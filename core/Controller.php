@@ -39,7 +39,10 @@ class Controller extends BaseController
 
     protected function json(array $data, int $code = 200): void
     {
-        parent::json($data, $code);
+        header('Content-Type: application/json');
+        http_response_code($code);
+        echo json_encode($data);
+        exit;
     }
 
     protected function jsonSuccess(string $message, array $data = []): void

@@ -146,7 +146,7 @@ function lucide_icon(string $path, int $size = 40, string $color = 'currentColor
                 Already registered?
                 <a href="<?= SITE_URL ?>/vendor/login"
                    style="color:var(--primary);font-weight:700;">
-                    Sign in to your vendor account â†’
+                    Sign in to your vendor account 
                 </a>
             </p>
         </div>

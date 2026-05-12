@@ -38,6 +38,9 @@ $seg1     = $segments[1] ?? '';
 $seg2     = $segments[2] ?? '';
 $seg3     = $segments[3] ?? '';
 
+// Load the full bootstrap early so route enforcement can inspect session state
+require_once __DIR__ . '/core/bootstrap.php';
+
 // ─────────────────────────────────────────────────────────────────────
 // STEP 2: IF THIS IS NOT THE HOME PAGE — ROUTE IT
 // Any path other than "" means we need a controller
@@ -57,6 +60,7 @@ if ($seg0 !== '') {
     require_once __DIR__ . '/controllers/VendorController.php';
     require_once __DIR__ . '/controllers/PaymentController.php';
     require_once __DIR__ . '/controllers/UserController.php';
+    require_once __DIR__ . '/controllers/SavedVendorController.php';
     require_once __DIR__ . '/controllers/BrowseController.php';
     require_once __DIR__ . '/controllers/ReviewController.php';
     require_once __DIR__ . '/controllers/ComplaintController.php';
@@ -238,6 +242,12 @@ if ($seg0 !== '') {
             exit;
         }
         (new HomeController())->notFound();
+        exit;
+    }
+
+    // ── SAVE VENDOR TOGGLE (AJAX) ─────────────────────────────────
+    if ($seg0 === 'save-vendor') {
+        (new SavedVendorController())->toggle();
         exit;
     }
 

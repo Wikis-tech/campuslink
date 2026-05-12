@@ -186,6 +186,26 @@
         padding: 0.25rem;
         align-items: center;
         justify-content: center;
+        width: 34px;
+        height: 34px;
+    }
+    .ud-menu-btn span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        margin: 3px 0;
+        background: currentColor;
+        border-radius: 999px;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .ud-menu-btn.active span:nth-child(1) {
+        transform: translateY(5px) rotate(45deg);
+    }
+    .ud-menu-btn.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .ud-menu-btn.active span:nth-child(3) {
+        transform: translateY(-5px) rotate(-45deg);
     }
     .ud-page-title {
         font-size: 1rem;
@@ -293,7 +313,7 @@
 <!-- Sidebar -->
 <aside class="ud-sidebar" id="udSidebar">
     <div class="ud-sidebar-logo">
-        <a href="<?= SITE_URL ?>">Campus<span>Link</span></a>
+        <a href="<?= SITE_URL ?>/user/dashboard">Campus<span>Link</span></a>
         <div class="ud-user-info">
             <div class="ud-avatar">
                 <?= strtoupper(substr(Session::get('user_name', 'U'), 0, 1)) ?>
@@ -369,8 +389,10 @@
     <!-- Top bar -->
     <header class="ud-topbar">
         <div class="ud-topbar-left">
-            <button class="ud-menu-btn" onclick="openSidebar()">
-                <i data-lucide="menu"></i>
+            <button class="ud-menu-btn" onclick="openSidebar()" aria-label="Open sidebar menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
             <div class="ud-page-title"><?= e($pageTitle ?? 'Dashboard') ?></div>
         </div>

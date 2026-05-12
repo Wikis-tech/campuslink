@@ -12,44 +12,203 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
 
 ?>
 <style>
-.sv-page-head{display:flex;align-items:center;justify-content:space-between;
-flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;}
-.sv-page-head h1{font-size:1.1rem;font-weight:900;color:#1e293b;margin:0;
-                 display:flex;align-items:center;gap:0.4rem;}
-.sv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
-@media(max-width:480px){.sv-grid{grid-template-columns:1fr;}}
-.svc{background:#fff;border:1px solid #e2e8f0;border-radius:14px;
-overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
-.svc:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
-.svc-top{padding:1rem;display:flex;gap:0.85rem;align-items:flex-start;}
-.svc-logo{width:48px;height:48px;border-radius:10px;
-background:linear-gradient(135deg,#1a56db,#0e9f6e);
-display:flex;align-items:center;justify-content:center;
-color:#fff;font-weight:900;font-size:1rem;flex-shrink:0;overflow:hidden;}
-.svc-logo img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
-.svc-name{font-size:0.9rem;font-weight:800;color:#1e293b;margin-bottom:0.15rem;}
-.svc-cat{font-size:0.72rem;color:#64748b;margin-bottom:0.3rem;}
-.svc-stars{display:flex;gap:1px;align-items:center;}
-.svc-stars span{color:#64748b;font-size:0.7rem;margin-left:3px;}
-.svc-desc{padding:0 1rem 0.75rem;font-size:0.78rem;color:#64748b;line-height:1.5;}
-.svc-actions{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #f1f5f9;}
-.svc-actions a{padding:0.6rem;text-align:center;font-size:0.78rem;
-font-weight:700;text-decoration:none;transition:background 0.15s;
-display:flex;align-items:center;justify-content:center;gap:0.3rem;}
-.svc-wa{background:#f0fdf4;color:#166534;border-right:1px solid #f1f5f9;}
-.svc-wa:hover{background:#dcfce7;}
-.svc-view{background:#eff6ff;color:#1a56db;}
-.svc-view:hover{background:#dbeafe;}
-.svc-unsave{grid-column:1/-1;background:#fef2f2;color:#dc2626;
-border-top:1px solid #f1f5f9;font-size:0.75rem;}
-.svc-unsave:hover{background:#fee2e2;}
-.empty-state{text-align:center;padding:4rem 1rem;color:#94a3b8;
-background:#fff;border-radius:14px;border:1px solid #e2e8f0;}
-.empty-state .ei{margin-bottom:1rem;display:flex;justify-content:center;}
-.empty-state h3{color:#475569;font-size:1rem;margin-bottom:0.5rem;}
-.empty-state p{font-size:0.85rem;margin-bottom:1.25rem;}
-.empty-state a{padding:0.65rem 1.5rem;background:linear-gradient(135deg,#1a56db,#0e9f6e);
-color:#fff;border-radius:9px;font-weight:700;font-size:0.85rem;text-decoration:none;}
+.sv-page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+.sv-page-head h1 {
+    font-size: clamp(1rem, 3vw, 1.1rem);
+    font-weight: 900;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.sv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 100vw - 2rem, 240px), 1fr));
+    gap: clamp(0.75rem, 2vw, 1rem);
+}
+@media (max-width: 1024px) {
+    .sv-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+@media (max-width: 768px) {
+    .sv-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.875rem;
+    }
+}
+@media (max-width: 640px) {
+    .sv-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+@media (max-width: 480px) {
+    .sv-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .sv-page-head h1 {
+        font-size: 0.95rem;
+    }
+}
+.svc {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.svc:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+.svc-top {
+    padding: clamp(0.75rem, 2vw, 1rem);
+    display: flex;
+    gap: clamp(0.6rem, 2vw, 0.85rem);
+    align-items: flex-start;
+}
+.svc-logo {
+    width: clamp(44px, 10vw, 52px);
+    height: clamp(44px, 10vw, 52px);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1a56db, #0e9f6e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 900;
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.svc-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.svc-name {
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.15rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.svc-cat {
+    font-size: clamp(0.65rem, 1.5vw, 0.72rem);
+    color: #64748b;
+    margin-bottom: 0.3rem;
+}
+.svc-stars {
+    display: flex;
+    gap: 1px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.svc-stars span {
+    color: #64748b;
+    font-size: clamp(0.65rem, 1.5vw, 0.7rem);
+    margin-left: 3px;
+}
+.svc-desc {
+    padding: 0 clamp(0.75rem, 2vw, 1rem) clamp(0.5rem, 2vw, 0.75rem);
+    font-size: clamp(0.72rem, 1.5vw, 0.78rem);
+    color: #64748b;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.svc-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #f1f5f9;
+}
+.svc-actions a {
+    padding: clamp(0.5rem, 2vw, 0.6rem);
+    text-align: center;
+    font-size: clamp(0.7rem, 1.5vw, 0.78rem);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.2rem, 1vw, 0.3rem);
+    word-break: break-word;
+}
+.svc-wa {
+    background: #f0fdf4;
+    color: #166534;
+    border-right: 1px solid #f1f5f9;
+}
+.svc-wa:hover {
+    background: #dcfce7;
+}
+.svc-view {
+    background: #eff6ff;
+    color: #1a56db;
+}
+.svc-view:hover {
+    background: #dbeafe;
+}
+.svc-unsave {
+    grid-column: 1/-1;
+    background: #fef2f2;
+    color: #dc2626;
+    border-top: 1px solid #f1f5f9;
+    font-size: clamp(0.7rem, 1.5vw, 0.75rem);
+}
+.svc-unsave:hover {
+    background: #fee2e2;
+}
+.empty-state {
+    text-align: center;
+    padding: clamp(2rem, 5vw, 4rem) clamp(0.75rem, 2vw, 1rem);
+    color: #94a3b8;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+}
+.empty-state .ei {
+    margin-bottom: clamp(0.75rem, 2vw, 1rem);
+    display: flex;
+    justify-content: center;
+}
+.empty-state h3 {
+    color: #475569;
+    font-size: clamp(0.95rem, 3vw, 1rem);
+    margin-bottom: clamp(0.4rem, 1vw, 0.5rem);
+}
+.empty-state p {
+    font-size: clamp(0.8rem, 1.5vw, 0.85rem);
+    margin-bottom: clamp(0.85rem, 2vw, 1.25rem);
+}
+.empty-state a {
+    padding: clamp(0.5rem, 1vw, 0.65rem) clamp(1rem, 2vw, 1.5rem);
+    background: linear-gradient(135deg, #1a56db, #0e9f6e);
+    color: #fff;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: clamp(0.8rem, 1.5vw, 0.85rem);
+    text-decoration: none;
+    display: inline-block;
+}
 </style>
 
 <div class="sv-page-head">
@@ -59,11 +218,23 @@ color:#fff;border-radius:9px;font-weight:700;font-size:0.85rem;text-decoration:n
         Saved Vendors
     </h1>
     <a href="<?= SITE_URL ?>/browse"
-       style="padding:0.5rem 1rem;background:#1a56db;color:#fff;
-              border-radius:9px;font-size:0.8rem;font-weight:700;text-decoration:none;
-              display:inline-flex;align-items:center;gap:0.35rem;">
+       style="padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.85rem, 2vw, 1rem);
+              background: #1a56db;
+              color: #fff;
+              border-radius: 9px;
+              font-size: clamp(0.75rem, 1.5vw, 0.8rem);
+              font-weight: 700;
+              text-decoration: none;
+              display: inline-flex;
+              align-items: center;
+              gap: clamp(0.25rem, 1vw, 0.35rem);
+              white-space: nowrap;
+              transition: background 0.2s;
+              flex-shrink: 0;"
+       onmouseover="this.style.background='#1e40af';"
+       onmouseout="this.style.background='#1a56db';">
         <?= lucide_icon('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>', 14, '#fff') ?>
-        Find More
+        <span style="display: inline;">Find More</span>
     </a>
 </div>
 

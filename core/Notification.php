@@ -13,6 +13,7 @@ class Notification
     const TYPE_WARNING = 'warning';
     const TYPE_ERROR = 'error';
     const TYPE_PAYMENT = 'payment';
+    const TYPE_COMPLAINT = 'complaint';
     const TYPE_EXPIRY_REMINDER = 'expiry_reminder';
     const TYPE_EXPIRY = 'expiry';
     const TYPE_APPROVAL = 'approval';

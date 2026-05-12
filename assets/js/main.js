@@ -470,11 +470,17 @@ const CampusLink = {
     async ajax(url, method = 'GET', data = null) {
         const options = {
             method,
+            credentials: 'same-origin',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
             },
         };
+
+        const csrfToken = this.getCsrf();
+        if (csrfToken) {
+            options.headers['X-CSRF-TOKEN'] = csrfToken;
+        }
 
         if (data && method !== 'GET') {
             options.headers['Content-Type'] = 'application/json';

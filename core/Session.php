@@ -27,11 +27,11 @@ class Session
 
         session_set_cookie_params([
             'lifetime' => SESSION_LIFETIME,
-            'path'     => parse_url(SITE_URL, PHP_URL_PATH) ?: '/',
+            'path'     => '/',
             'domain'   => '',
             'secure'   => $secure,
             'httponly' => $httpOnly,
-            'samesite' => $sameSite,
+            'samesite' => 'Lax',
         ]);
 
         ini_set('session.use_strict_mode',    '1');
@@ -50,7 +50,7 @@ class Session
         } elseif (time() - $_SESSION['_created'] > 1800) {
             // Regenerate every 30 min
             $_SESSION['_created'] = time();
-            session_regenerate_id(true);
+            session_regenerate_id(false);
         }
 
         // Check inactivity timeout
@@ -177,7 +177,7 @@ class Session
     public static function regenerate(): void
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
+            session_regenerate_id(false);
             $_SESSION['_created']       = time();
             $_SESSION['_last_activity'] = time();
         }

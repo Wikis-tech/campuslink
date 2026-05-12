@@ -124,6 +124,13 @@
 }
 .ud-logout-btn:hover { color: #f87171; }
 
+@media (max-width: 768px) {
+    .ud-sidebar {
+        transform: translateX(-100%);
+        visibility: hidden;
+    }
+}
+
 /* Lucide icon baseline */
 .nav-icon svg, .ud-logout-btn svg {
     width: 16px; height: 16px;
@@ -137,7 +144,7 @@
 <!-- Sidebar -->
 <aside class="ud-sidebar">
     <div class="ud-sidebar-logo">
-        <a href="<?= SITE_URL ?>">Campus<span>Link</span></a>
+        <a href="<?= SITE_URL ?>/user/dashboard">Campus<span>Link</span></a>
         <div class="ud-user-info">
             <div class="ud-avatar">
                 <?= strtoupper(substr(Session::get('user_name', 'U'), 0, 1)) ?>

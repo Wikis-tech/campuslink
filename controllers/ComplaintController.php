@@ -75,14 +75,11 @@ class ComplaintController extends Controller
             return;
         }
 
-        $complaintId = $this->complaintModel->create([
+        $complaintId = $this->complaintModel->submit([
             'user_id' => $userId,
             'vendor_id' => $vendorId,
             'category' => $complaintType,
             'description' => $description,
-            'status' => 'submitted',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         if (!$complaintId) {
