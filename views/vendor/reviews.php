@@ -151,7 +151,7 @@ function lucide_icon(string $path, int $size = 20, string $color = 'currentColor
                     </button>
                 </div>
 
-                <form class="reply-form" data-review-id="<?= (int)$review['id'] ?>">
+                <form action="<?= SITE_URL ?>/vendor/reviews" method="POST" class="reply-form" data-review-id="<?= (int)$review['id'] ?>">
                     <input type="hidden" name="csrf_token" value="<?= CSRF::token() ?>">
                     <div class="form-group" style="margin-bottom:0.75rem;">
                         <textarea name="reply"

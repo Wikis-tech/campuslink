@@ -330,6 +330,7 @@ function isActiveLink(string $path, string $current): string {
 
     <div class="toast-container" aria-live="polite"></div>
 
+    <script>window.CAMPUSLINK_ROOT = '<?= rtrim(SITE_URL, '/') ?>';</script>
     <script src="<?= SITE_URL ?>/assets/js/main.js" defer></script>
     <script src="<?= SITE_URL ?>/assets/js/vendor.js" defer></script>
     <?php if (!empty($extraJs)): foreach ($extraJs as $js): ?>

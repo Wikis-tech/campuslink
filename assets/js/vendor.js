@@ -50,8 +50,7 @@ function initReviewReplies() {
 
             try {
                 const csrfToken = form.querySelector('input[name="csrf_token"]')?.value || CampusLink.getCsrf();
-                const endpoint = '/vendor/reviews';
-                console.log('Submitting review reply to:', endpoint, 'with data:', { review_id: reviewId, reply });
+                const endpoint = form.action || (window.CAMPUSLINK_ROOT || '') + '/vendor/reviews';
                 const data = await CampusLink.ajax(endpoint, 'POST', {
                     csrf_token: csrfToken,
                     review_id:  reviewId,
