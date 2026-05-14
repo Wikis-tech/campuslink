@@ -259,9 +259,6 @@ function isActiveLink(string $path, string $current): string {
                         <span class="sidebar-nav-badge"><?= $unreadNotifs ?></span>
                         <?php endif; ?>
                     </a>
-                    <a href="<?= SITE_URL ?>/browse" class="sidebar-nav-link">
-                        <span class="sidebar-nav-icon"><i data-lucide="search"></i></span> Browse Directory
-                    </a>
                     <a href="<?= SITE_URL ?>/logout" class="sidebar-nav-link sidebar-logout-link">
                         <span class="sidebar-nav-icon"><i data-lucide="log-out"></i></span> Logout
                     </a>

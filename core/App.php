@@ -133,6 +133,32 @@ class App
             return;
         }
 
+        // Vendor should be logged out if they leave the vendor portal
+        if ($isVendorLoggedIn) {
+            $vendorPortalRoutes = [
+                'vendor/dashboard',
+                'vendor/profile',
+                'vendor/reviews',
+                'vendor/complaints',
+                'vendor/subscription',
+                'vendor/payment-history',
+                'vendor/notifications',
+                'vendor/delete-account',
+                'vendor/payment',
+                'vendor/payment/initiate',
+                'vendor/payment/verify',
+                'vendor/payment/csrf',
+                'vendor/payment/success',
+                'vendor/payment/failed',
+            ];
+
+            if (!in_array($route, $vendorPortalRoutes, true)) {
+                Session::setFlash('warning', 'You have been logged out for security because you navigated away from the vendor portal.');
+                (new Session())->logoutVendor();
+                $isVendorLoggedIn = false;
+            }
+        }
+
         // User logged in should NOT access vendor/* pages (except public vendor registration/login)
         if ($isUserLoggedIn && str_starts_with($route, 'vendor/')) {
             $publicVendorRoutes = ['register', 'login'];

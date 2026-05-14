@@ -658,6 +658,55 @@
         padding: 1.25rem;
     }
 }
+
+@media (max-width: 900px) {
+    .dashboard-hero .container {
+        padding: 2rem 1rem;
+    }
+
+    .dashboard-hero .container > div {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .dashboard-hero .btn-hero-view {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dashboard-hero > div [style*="width: 600px"] {
+        width: 320px !important;
+        height: 320px !important;
+        top: -180px !important;
+        right: -120px !important;
+    }
+
+    .subscription-hero-card > div {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .subscription-hero-card > div > div:last-child {
+        justify-content: flex-start !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-hero .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 2rem !important;
+    }
+
+    .btn-hero-view {
+        font-size: 0.9rem !important;
+        padding: 0.75rem 1rem !important;
+    }
+}
 </style>
 
 <!-- Scroll Reveal & Icons Script -->
