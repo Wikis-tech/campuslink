@@ -1,7 +1,7 @@
 <?php
 defined('CAMPUSLINK') or die('Direct access not permitted.');
 
-class AdminController extends BaseController {
+class AdminController extends Controller {
 
     // ── Login ────────────────────────────────────────────────
     public function login(): void {

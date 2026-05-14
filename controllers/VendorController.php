@@ -197,11 +197,14 @@ class VendorController extends Controller {
             "SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order ASC, name ASC"
         );
 
-        $studentPlans = [
-            ['plan_type' => 'basic',    'amount' => 200000,  'vendor_type' => 'student'],
-            ['plan_type' => 'premium',  'amount' => 500000,  'vendor_type' => 'student'],
-            ['plan_type' => 'featured', 'amount' => 1000000, 'vendor_type' => 'student'],
-        ];
+        $studentPlans = [];
+        foreach (['basic', 'premium', 'featured'] as $planType) {
+            $studentPlans[] = [
+                'plan_type'   => $planType,
+                'amount'      => getPlanAmount('student', $planType),
+                'vendor_type' => 'student',
+            ];
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->handleStudentRegistration();
@@ -221,11 +224,14 @@ class VendorController extends Controller {
             "SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order ASC, name ASC"
         );
 
-        $communityPlans = [
-            ['plan_type' => 'basic',    'amount' => 400000,  'vendor_type' => 'community'],
-            ['plan_type' => 'premium',  'amount' => 700000,  'vendor_type' => 'community'],
-            ['plan_type' => 'featured', 'amount' => 1200000, 'vendor_type' => 'community'],
-        ];
+        $communityPlans = [];
+        foreach (['basic', 'premium', 'featured'] as $planType) {
+            $communityPlans[] = [
+                'plan_type'   => $planType,
+                'amount'      => getPlanAmount('community', $planType),
+                'vendor_type' => 'community',
+            ];
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->handleCommunityRegistration();

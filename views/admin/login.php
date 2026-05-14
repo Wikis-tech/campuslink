@@ -28,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $db    = DB::getInstance();
         $admin = $db->row(
-            "SELECT * FROM admins WHERE email=? AND status='active' LIMIT 1",
+            "SELECT * FROM admin_users WHERE email=? AND is_active=1 LIMIT 1",
             [$email]
         );
 
-        if ($admin && password_verify($password, $admin['password_hash'])) {
+        if ($admin && password_verify($password, $admin['password'])) {
             AdminAuth::clearLoginAttempts($ip);
             AdminAuth::login($admin);
             header('Location: ' . SITE_URL . '/admin/dashboard');

@@ -7,6 +7,25 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ============================================================
+-- CLEAR EXISTING DATA
+-- ============================================================
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM `subscriptions`;
+DELETE FROM `payments`;
+DELETE FROM `vendors`;
+DELETE FROM `plans`;
+DELETE FROM `categories`;
+DELETE FROM `admin_users`;
+DELETE FROM `static_pages`;
+ALTER TABLE `plans` AUTO_INCREMENT = 1;
+ALTER TABLE `categories` AUTO_INCREMENT = 1;
+ALTER TABLE `vendors` AUTO_INCREMENT = 1;
+ALTER TABLE `payments` AUTO_INCREMENT = 1;
+ALTER TABLE `subscriptions` AUTO_INCREMENT = 1;
+ALTER TABLE `admin_users` AUTO_INCREMENT = 1;
+ALTER TABLE `static_pages` AUTO_INCREMENT = 1;
+
+-- ============================================================
 -- CATEGORIES
 -- ============================================================
 INSERT INTO `categories`
@@ -33,30 +52,30 @@ INSERT INTO `plans`
     (`id`, `vendor_type`, `plan_type`, `label`, `amount`, `amount_naira`, `duration_days`, `features`, `is_active`)
 VALUES
     -- Student Plans
-    (1, 'student', 'basic',    'Student Basic',
-     200000, 2000.00, 180,
+    (1, 'student', 'basic',    'Student Free',
+     0, 0.00, 180,
      '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":false,"photo_gallery":false,"max_photos":1}',
      1),
-    (2, 'student', 'premium',  'Student Premium',
-     500000, 5000.00, 180,
+    (2, 'student', 'premium',  'Student Boost',
+     250000, 2500.00, 180,
      '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":true,"photo_gallery":true,"max_photos":5}',
      1),
     (3, 'student', 'featured', 'Student Featured',
-     1000000, 10000.00, 180,
+     500000, 5000.00, 180,
      '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":true,"priority_listing":true,"photo_gallery":true,"max_photos":10}',
      1),
 
     -- Community Plans
     (4, 'community', 'basic',    'Community Basic',
-     400000, 4000.00, 180,
+     300000, 3000.00, 180,
      '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":false,"photo_gallery":false,"max_photos":1}',
      1),
     (5, 'community', 'premium',  'Community Premium',
-     700000, 7000.00, 180,
+     600000, 6000.00, 180,
      '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":false,"priority_listing":true,"photo_gallery":true,"max_photos":5}',
      1),
     (6, 'community', 'featured', 'Community Featured',
-     1200000, 12000.00, 180,
+     1000000, 10000.00, 180,
      '{"listing":true,"verified_badge":true,"whatsapp_button":true,"call_button":true,"reviews":true,"featured":true,"priority_listing":true,"photo_gallery":true,"max_photos":10}',
      1);
 
@@ -73,7 +92,7 @@ VALUES
     (1,
      'CampusLink SuperAdmin',
      'admin@campuslink.com',
-     '$2y$12$YourGeneratedHashHereChangeThis',
+     '$2y$12$JyrYHWHcU2gNT/5SfBs/GuaCHbf4hqYN6U.Uk9EmW90FF7YRd8N5W',
      -- Generate this hash by running: password_hash('Admin@CampusLink2025', PASSWORD_BCRYPT, ['cost'=>12])
      'superadmin',
      1);

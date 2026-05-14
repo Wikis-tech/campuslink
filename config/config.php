@@ -127,23 +127,23 @@ define('PAYSTACK_WEBHOOK_SECRET', getenv('PAYSTACK_WEBHOOK_SECRET') ?: 'your_web
 // ============================================================
 // SUBSCRIPTION PLAN AMOUNTS (in Kobo for Paystack)
 // ============================================================
-define('STUDENT_BASIC_AMOUNT',      200000);
-define('STUDENT_PREMIUM_AMOUNT',    500000);
-define('STUDENT_FEATURED_AMOUNT',  1000000);
-define('COMMUNITY_BASIC_AMOUNT',    400000);
-define('COMMUNITY_PREMIUM_AMOUNT',  700000);
-define('COMMUNITY_FEATURED_AMOUNT',1200000);
+define('STUDENT_BASIC_AMOUNT',      0);
+define('STUDENT_PREMIUM_AMOUNT',    250000);
+define('STUDENT_FEATURED_AMOUNT',   500000);
+define('COMMUNITY_BASIC_AMOUNT',    300000);
+define('COMMUNITY_PREMIUM_AMOUNT',  600000);
+define('COMMUNITY_FEATURED_AMOUNT',1000000);
 
 define('VALID_PLANS', serialize([
     'student' => [
-        'basic'    => ['amount' => 200000,  'label' => 'Student Basic',    'naira' => 2000],
-        'premium'  => ['amount' => 500000,  'label' => 'Student Premium',  'naira' => 5000],
-        'featured' => ['amount' => 1000000, 'label' => 'Student Featured', 'naira' => 10000],
+        'basic'    => ['amount' => 0,       'label' => 'Student Free',    'naira' => 0],
+        'premium'  => ['amount' => 250000,  'label' => 'Student Boost',   'naira' => 2500],
+        'featured' => ['amount' => 500000,  'label' => 'Student Featured','naira' => 5000],
     ],
     'community' => [
-        'basic'    => ['amount' => 400000,  'label' => 'Community Basic',    'naira' => 4000],
-        'premium'  => ['amount' => 700000,  'label' => 'Community Premium',  'naira' => 7000],
-        'featured' => ['amount' => 1200000, 'label' => 'Community Featured', 'naira' => 12000],
+        'basic'    => ['amount' => 300000,  'label' => 'Community Basic',    'naira' => 3000],
+        'premium'  => ['amount' => 600000,  'label' => 'Community Premium',  'naira' => 6000],
+        'featured' => ['amount' => 1000000, 'label' => 'Community Featured', 'naira' => 10000],
     ],
 ]));
 

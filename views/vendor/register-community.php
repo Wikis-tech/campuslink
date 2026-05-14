@@ -284,29 +284,26 @@
                         'basic'    => [
                             'label'    => 'Basic',
                             'star'     => false,
-                            'price'    => 4000,
                             'features' => [
                                 'Directory listing',
                                 'WhatsApp & Call button',
-                                'Student reviews',
-                                'Category search',
+                                'Customer calls and WhatsApp',
+                                'Search visibility',
                             ],
                         ],
                         'premium'  => [
                             'label'    => 'Premium',
                             'star'     => true,
-                            'price'    => 7000,
                             'features' => [
                                 'Everything in Basic',
-                                'Priority in search results',
+                                'Priority search placement',
                                 'Premium badge on profile',
-                                'Featured in category pages',
+                                'Homepage exposure opportunities',
                             ],
                         ],
                         'featured' => [
                             'label'    => 'Featured',
                             'star'     => false,
-                            'price'    => 12000,
                             'features' => [
                                 'Everything in Premium',
                                 'Homepage featured section',
@@ -317,7 +314,8 @@
                     ];
                     foreach ($communityPlans as $plan):
                         $type  = $plan['plan_type'];
-                        $def   = $planDefs[$type] ?? ['label'=>ucfirst($type),'star'=>false,'price'=>$plan['amount']/100,'features'=>[]];
+                        $def   = $planDefs[$type] ?? ['label'=>ucfirst($type),'star'=>false,'features'=>[]];
+                        $price = $plan['amount'] / 100;
                         $first = ($type === 'basic');
                     ?>
                     <div class="plan-card <?= $type === 'premium' ? 'popular' : '' ?> <?= $first ? 'selected' : '' ?>"
@@ -333,7 +331,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="plan-price">
-                            &#8358;<?= number_format($def['price']) ?>
+                            &#8358;<?= number_format($price) ?>
                             <small>per semester (180 days)</small>
                         </div>
                         <ul class="plan-features">

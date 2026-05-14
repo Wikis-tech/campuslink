@@ -15,6 +15,13 @@ class AdminController {
         $this->mailer = new Mailer();
     }
 
+    public function login(): void {
+        if (AdminAuth::isLoggedIn()) {
+            $this->redirect('dashboard');
+        }
+        $this->render('login');
+    }
+
     // ════════════════════════════════════════════════════════════
     // HELPERS
     // ════════════════════════════════════════════════════════════
@@ -83,7 +90,7 @@ class AdminController {
              SELECT 'complaint_filed', ticket_id, created_at
                FROM complaints
               UNION ALL
-             SELECT 'payment_received', paystack_reference, created_at
+             SELECT 'payment_received', reference AS label, created_at
                FROM payments WHERE status='success'
              ORDER BY created_at DESC LIMIT 15"
         );
@@ -723,9 +730,9 @@ class AdminController {
 
         $totals = $this->db->row(
             "SELECT
-                SUM(CASE WHEN status='success' THEN amount ELSE 0 END) AS total_success,
-                SUM(CASE WHEN status='pending' THEN amount ELSE 0 END) AS total_pending,
-                COUNT(CASE WHEN status='success' THEN 1 END)           AS count_success
+                SUM(CASE WHEN p.status='success' THEN p.amount ELSE 0 END) AS total_success,
+                SUM(CASE WHEN p.status='pending' THEN p.amount ELSE 0 END) AS total_pending,
+                COUNT(CASE WHEN p.status='success' THEN 1 END)           AS count_success
                FROM payments p
           LEFT JOIN vendors v ON p.vendor_id=v.id
               WHERE {$whereStr}",
