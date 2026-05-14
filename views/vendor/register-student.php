@@ -230,13 +230,14 @@
                 <div class="plan-cards">
                     <?php
                     $planDefs = [
-                        'basic'    => ['label'=>'Basic',   'icon'=>'package',       'price'=>2000,  'features'=>['Directory listing','WhatsApp & Call button','Student reviews','Category search']],
-                        'premium'  => ['label'=>'Premium', 'icon'=>'star',          'price'=>5000,  'features'=>['Everything in Basic','Priority in search results','Premium badge on profile','Featured in category pages']],
-                        'featured' => ['label'=>'Featured','icon'=>'zap',           'price'=>10000, 'features'=>['Everything in Premium','Homepage featured section','Top of all search results','Featured badge']],
+                        'basic'    => ['label'=>'Basic',   'icon'=>'package', 'features'=>['Directory listing','WhatsApp & Call button','Student reviews','Category search']],
+                        'premium'  => ['label'=>'Premium', 'icon'=>'star',    'features'=>['Everything in Basic','Priority in search results','Premium badge on profile','Featured in category pages']],
+                        'featured' => ['label'=>'Featured','icon'=>'zap',     'features'=>['Everything in Premium','Homepage featured section','Top of all search results','Featured badge']],
                     ];
                     foreach ($studentPlans as $plan):
                         $type    = $plan['plan_type'];
-                        $def     = $planDefs[$type] ?? ['label'=>ucfirst($type),'icon'=>'box','price'=>$plan['amount']/100,'features'=>[]];
+                        $def     = $planDefs[$type] ?? ['label'=>ucfirst($type),'icon'=>'box','features'=>[]];
+                        $price   = $plan['amount'] / 100;
                         $isFirst = ($type === 'basic');
                     ?>
                     <div class="plan-card <?= $type==='premium'?'popular':'' ?> <?= $isFirst?'selected':'' ?>"
@@ -250,7 +251,7 @@
                             <?= e($def['label']) ?>
                         </div>
                         <div class="plan-price">
-                            &#8358;<?= number_format($def['price']) ?>
+                            &#8358;<?= number_format($price) ?>
                             <small>per semester (180 days)</small>
                         </div>
                         <ul class="plan-features">

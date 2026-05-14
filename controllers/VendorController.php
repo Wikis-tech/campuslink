@@ -54,17 +54,30 @@ class VendorController extends Controller {
             "SELECT * FROM categories ORDER BY sort_order ASC, name ASC"
         );
 
-        $studentPlans = [
-            ['plan_type' => 'basic',    'amount' => 200000,  'vendor_type' => 'student'],
-            ['plan_type' => 'premium',  'amount' => 500000,  'vendor_type' => 'student'],
-            ['plan_type' => 'featured', 'amount' => 1000000, 'vendor_type' => 'student'],
-        ];
+        $planDefinitions = unserialize(VALID_PLANS);
+        $studentPlans = [];
+        foreach (['basic', 'premium', 'featured'] as $planType) {
+            if (!isset($planDefinitions['student'][$planType])) {
+                continue;
+            }
+            $studentPlans[] = [
+                'plan_type'  => $planType,
+                'amount'     => $planDefinitions['student'][$planType]['amount'],
+                'vendor_type'=> 'student',
+            ];
+        }
 
-        $communityPlans = [
-            ['plan_type' => 'basic',    'amount' => 400000,  'vendor_type' => 'community'],
-            ['plan_type' => 'premium',  'amount' => 700000,  'vendor_type' => 'community'],
-            ['plan_type' => 'featured', 'amount' => 1200000, 'vendor_type' => 'community'],
-        ];
+        $communityPlans = [];
+        foreach (['basic', 'premium', 'featured'] as $planType) {
+            if (!isset($planDefinitions['community'][$planType])) {
+                continue;
+            }
+            $communityPlans[] = [
+                'plan_type'  => $planType,
+                'amount'     => $planDefinitions['community'][$planType]['amount'],
+                'vendor_type'=> 'community',
+            ];
+        }
 
         $this->render('vendor/register-select', compact(
             'categories', 'studentPlans', 'communityPlans'
