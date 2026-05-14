@@ -42,6 +42,45 @@ $seg3     = $segments[3] ?? '';
 require_once __DIR__ . '/core/bootstrap.php';
 
 // ─────────────────────────────────────────────────────────────────────
+// SECURITY CHECK: Force logout if logged-in user/vendor tries to access non-portal pages
+// ─────────────────────────────────────────────────────────────────────
+$allowedPublicRoutes = [
+    'user',
+    'vendor',
+    'logout',
+];
+
+$isBrowsePage = $seg0 === 'browse' && $seg1 === '';
+
+if ((Auth::isLoggedIn() || Auth::isVendorLoggedIn()) && !in_array($seg0, $allowedPublicRoutes, true) && !$isBrowsePage) {
+    // Logout the appropriate session
+    if (Auth::isLoggedIn()) {
+        Session::delete('user_logged_in');
+        Session::delete('user_id');
+        Session::delete('user_name');
+        Session::delete('user_email');
+        Session::delete('user_role');
+    }
+    if (Auth::isVendorLoggedIn()) {
+        Session::delete('vendor_logged_in');
+        Session::delete('vendor_id');
+        Session::delete('vendor_name');
+        Session::delete('vendor_email');
+        Session::delete('vendor_business');
+        Session::delete('vendor_type');
+        Session::delete('vendor_plan');
+        Session::delete('vendor_status');
+    }
+
+    // Set flash message
+    Session::setFlash('warning', 'You have been logged out for security reasons.');
+
+    // Redirect to current URL
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // STEP 2: IF THIS IS NOT THE HOME PAGE — ROUTE IT
 // Any path other than "" means we need a controller
 // ─────────────────────────────────────────────────────────────────────
