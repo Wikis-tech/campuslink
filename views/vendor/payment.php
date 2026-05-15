@@ -391,13 +391,22 @@ if (!$activePlan && !empty($plans)) { $activePlan = $plans[0]; $selectedPlan = $
                 </div>
 
                 <div class="pay-notice">
-                    <i data-lucide="alert-triangle" class="pay-notice-icon" style="width:15px;height:15px;" aria-hidden="true"></i>
-                    <div>
-                        <strong>Important — Read Before Paying</strong><br>
-                        Payment is processed securely through Paystack. Your subscription activates within minutes of successful payment.
-                        <strong>Refunds are only issued for duplicate payment or technical error</strong>
-                        — see our <a href="<?= SITE_URL ?>/refund-policy" target="_blank">Refund Policy</a>.
-                    </div>
+                    <?php if ((int)($activePlan['amount'] ?? 0) === 0): ?>
+                        <i data-lucide="zap" class="pay-notice-icon" style="width:15px;height:15px;" aria-hidden="true"></i>
+                        <div>
+                            <strong>Free Plan Activated Instantly</strong><br>
+                            Your <?= htmlspecialchars(getPlanLabel($vendorType, $selectedPlan)) ?> account will be created and activated immediately upon submission. 
+                            Start listing your services right away!
+                        </div>
+                    <?php else: ?>
+                        <i data-lucide="alert-triangle" class="pay-notice-icon" style="width:15px;height:15px;" aria-hidden="true"></i>
+                        <div>
+                            <strong>Important — Read Before Paying</strong><br>
+                            Payment is processed securely through Paystack. Your subscription activates within minutes of successful payment.
+                            <strong>Refunds are only issued for duplicate payment or technical error</strong>
+                            — see our <a href="<?= SITE_URL ?>/refund-policy" target="_blank">Refund Policy</a>.
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="pay-cta-wrap">
@@ -406,13 +415,19 @@ if (!$activePlan && !empty($plans)) { $activePlan = $plans[0]; $selectedPlan = $
                             data-vendor-id="<?= (int)($vendor['id'] ?? 0) ?>"
                             data-vendor-type="<?= htmlspecialchars($vendor['vendor_type'] ?? '') ?>"
                             data-email="<?= htmlspecialchars($vendor['school_email'] ?? $vendor['working_email'] ?? '') ?>"
-                            data-paystack-key="<?= htmlspecialchars(PAYSTACK_PUBLIC_KEY) ?>">
-                        <i data-lucide="lock" style="width:18px;height:18px;" aria-hidden="true"></i>
-                        <span class="pay-btn-label">Pay Securely with Paystack</span>
+                            data-paystack-key="<?= htmlspecialchars(PAYSTACK_PUBLIC_KEY) ?>"
+                            data-amount="<?= (int)($activePlan['amount'] ?? 0) ?>">
+                        <i data-lucide="<?= (int)($activePlan['amount'] ?? 0) === 0 ? 'check-circle' : 'lock' ?>" style="width:18px;height:18px;" aria-hidden="true"></i>
+                        <span class="pay-btn-label"><?= (int)($activePlan['amount'] ?? 0) === 0 ? 'Activate Free Plan' : 'Pay Securely with Paystack' ?></span>
                     </button>
                     <div class="pay-secure-note">
-                        <i data-lucide="shield-check" style="width:13px;height:13px;" aria-hidden="true"></i>
-                        Secured by Paystack &middot; Card, Bank Transfer, USSD
+                        <?php if ((int)($activePlan['amount'] ?? 0) === 0): ?>
+                            <i data-lucide="zap" style="width:13px;height:13px;" aria-hidden="true"></i>
+                            Instant activation · No payment required
+                        <?php else: ?>
+                            <i data-lucide="shield-check" style="width:13px;height:13px;" aria-hidden="true"></i>
+                            Secured by Paystack &middot; Card, Bank Transfer, USSD
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -522,7 +537,7 @@ if (!$activePlan && !empty($plans)) { $activePlan = $plans[0]; $selectedPlan = $
     }
 
     async function initiatePayment() {
-        if (!selectedPlan || !selectedAmount) {
+        if (!selectedPlan) {
             toast('Please select a plan before proceeding.', 'error');
             return;
         }
@@ -591,8 +606,15 @@ if (!$activePlan && !empty($plans)) { $activePlan = $plans[0]; $selectedPlan = $
             const reference = data.reference;
             const amount = data.amount || selectedAmount;
 
-            if (!reference || !amount) {
+            if (!reference || amount === null || amount === undefined) {
                 toast('Payment initialization incomplete from server. Please try again.', 'error');
+                return;
+            }
+
+            /* ── SPECIAL CASE: FREE PLAN ── */
+            if (data.is_free_plan === true || amount === 0) {
+                showActivationSuccess();
+                window.location.href = '<?= SITE_URL ?>/vendor/payment/success';
                 return;
             }
 
@@ -615,6 +637,28 @@ if (!$activePlan && !empty($plans)) { $activePlan = $plans[0]; $selectedPlan = $
         } finally {
             setLoading(false);
         }
+    }
+
+    function showActivationSuccess() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position:fixed;inset:0;background:rgba(255,255,255,0.95);z-index:99999;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            gap:1rem;backdrop-filter:blur(6px);
+        `;
+        overlay.innerHTML = `
+            <div style="width:56px;height:56px;background:#10b981;border-radius:50%;
+                        display:flex;align-items:center;justify-content:center;
+                        animation:payCheckPulse .6s ease-out;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <p style="font-size:1.1rem;font-weight:800;color:#1f2937;margin-top:.5rem;">Activating Your Account…</p>
+            <p style="font-size:.85rem;color:#6b7280;text-align:center;max-width:280px;">Your free plan is being activated. You'll be redirected shortly.</p>
+            <style>@keyframes payCheckPulse{0%{transform:scale(0);opacity:0}50%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}</style>
+        `;
+        document.body.appendChild(overlay);
     }
 
     function openPaystackPopup({ key, email, amount, reference }) {
@@ -672,7 +716,13 @@ if (!$activePlan && !empty($plans)) { $activePlan = $plans[0]; $selectedPlan = $
         if (!payCta) return;
         payCta.disabled = on;
         const label = payCta.querySelector('.pay-btn-label');
-        if (label) label.textContent = on ? 'Initializing…' : 'Pay Securely with Paystack';
+        if (label) {
+            if (on) {
+                label.textContent = selectedAmount === 0 ? 'Activating…' : 'Initializing…';
+            } else {
+                label.textContent = selectedAmount === 0 ? 'Activate Free Plan' : 'Pay Securely with Paystack';
+            }
+        }
         if (on)  payCta.classList.add('is-loading');
         else     payCta.classList.remove('is-loading');
     }

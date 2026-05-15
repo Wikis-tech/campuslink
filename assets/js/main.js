@@ -534,11 +534,13 @@ const CampusLink = {
     // UTILITIES
     // ============================================================
     getCsrf() {
-        const meta = document.querySelector('meta[name="csrf-token"]');
-        if (meta) return meta.content;
-
         const input = document.querySelector('input[name="csrf_token"]');
-        return input ? input.value : '';
+        if (input && input.value) {
+            return input.value;
+        }
+
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.content : '';
     },
 
     escapeHtml(str) {

@@ -201,9 +201,12 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
     </div>
 
     <div class="grid gap-10 lg:grid-cols-[2fr_1fr]">
-        <div class="space-y-10">
+        <div class="space-y-12">
             <section class="rounded-[24px] sm:rounded-[32px] border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-                <h2 class="text-xl sm:text-2xl font-semibold text-slate-900">About this service</h2>
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 flex items-center gap-3">
+                    <i data-lucide="info" class="w-6 h-6 text-slate-600"></i>
+                    About this service
+                </h2>
                 <p class="mt-4 leading-relaxed text-slate-700 text-sm sm:text-base">
                     <?= nl2br(e($vendor['description'] ?? 'This vendor has not added a description yet.')) ?>
                 </p>
@@ -212,7 +215,10 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
             <?php if ($showGallery): ?>
             <section class="rounded-[24px] sm:rounded-[32px] border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <h2 class="text-xl sm:text-2xl font-semibold text-slate-900">Service showcase</h2>
+                    <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 flex items-center gap-3">
+                        <i data-lucide="image" class="w-6 h-6 text-slate-600"></i>
+                        Service showcase
+                    </h2>
                 </div>
                 <div class="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                     <?php foreach ($galleryImages as $index => $imageSrc): ?>
@@ -227,7 +233,10 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
             <section id="reviews" class="rounded-[24px] sm:rounded-[32px] border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-semibold text-slate-900">Client reviews</h2>
+                        <h2 class="text-2xl font-semibold text-slate-900 flex items-center gap-3">
+                            <i data-lucide="star" class="w-6 h-6 text-slate-600"></i>
+                            Client reviews
+                        </h2>
                         <p class="mt-2 text-sm text-slate-600">Read what others say about this vendor.</p>
                     </div>
                 </div>
@@ -316,10 +325,13 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
             </section>
         </div>
 
-        <aside class="space-y-6">
+        <aside class="space-y-8">
             <!-- Complaints Section -->
             <section class="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm">
-                <h3 class="text-lg font-semibold text-slate-900">Report an issue</h3>
+                <h3 class="text-lg font-semibold text-slate-900 flex items-center gap-3">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-slate-600"></i>
+                    Report an issue
+                </h3>
                 <p class="mt-2 text-sm text-slate-600">If you experienced a problem, let us know.</p>
                 <?php if (Auth::isLoggedIn()): ?>
                 <button onclick="openComplaintForm()" class="mt-4 w-full rounded-full bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-600">File a Complaint</button>
@@ -329,7 +341,10 @@ $ratingDisplay = $reviewCount > 0 ? number_format((float)$avgRating, 1) : '0.0';
             </section>
 
             <section class="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm">
-                <h3 class="text-lg font-semibold text-slate-900">Contact vendor</h3>
+                <h3 class="text-lg font-semibold text-slate-900 flex items-center gap-3">
+                    <i data-lucide="phone" class="w-5 h-5 text-slate-600"></i>
+                    Contact vendor
+                </h3>
                 <div class="mt-6 space-y-4">
                     <?php if (!empty($vendor['phone'])): ?>
                     <a href="tel:<?= e($vendor['phone']) ?>" class="block rounded-[24px] bg-slate-900 px-5 py-4 text-center text-sm font-semibold text-white transition hover:bg-slate-800">Call Vendor</a>
@@ -488,21 +503,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const review = reviewForm.querySelector('textarea[name="review"]')?.value || '';
 
             if (!rating) {
-                showReviewMessage('Please select a rating', false);
+                showReviewMessage('Please select a star rating.', false);
+                return;
+            }
+
+            if (!review.trim()) {
+                showReviewMessage('Please enter a review.', false);
                 return;
             }
 
             if (review.trim().length < 10) {
-                showReviewMessage('Review must be at least 10 characters', false);
+                showReviewMessage('Review must be at least 10 characters.', false);
                 return;
             }
 
-            const csrfToken = CampusLink.getCsrf();
+            const csrfToken = reviewForm.querySelector('input[name="csrf_token"]')?.value || CampusLink.getCsrf();
             const vendorId = reviewForm.querySelector('input[name="vendor_id"]')?.value || '';
+            const submitBtn = reviewForm.querySelector('[type="submit"]');
 
             if (!csrfToken) {
-                showReviewMessage('Security token missing. Please refresh the page and try again.', false);
+                showReviewMessage('Session expired. Please refresh and try again.', false);
                 return;
+            }
+
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.disabled = true;
             }
 
             try {
@@ -517,13 +543,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(data.message || 'Request failed.');
                 }
 
-                showReviewMessage('Review submitted successfully!', true);
+                showReviewMessage(data.message || 'Review submitted successfully!', true);
                 reviewForm.reset();
                 setRating(0);
-                setTimeout(() => window.location.reload(), 1500);
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Review';
+                    submitBtn.classList.remove('btn-loading');
+                }
             } catch (error) {
                 console.error('Review submit error:', error);
                 showReviewMessage(error.message || 'Error submitting review', false);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('btn-loading');
+                }
             }
         });
     }
@@ -549,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (!csrfToken) {
-                showComplaintMessage('Security token missing. Please refresh the page and try again.', false);
+                showComplaintMessage('Session expired. Please refresh the page and try again.', false);
                 return;
             }
 

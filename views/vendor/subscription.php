@@ -22,11 +22,30 @@ function parsePlanFeatures($raw): array {
 }
 
 $planMeta = [
-    'basic'    => ['icon' => 'zap',   'badge' => ''],
+    'basic'    => ['icon' => 'zap',   'badge' => 'Free'],
     'premium'  => ['icon' => 'star',  'badge' => 'Most Popular'],
     'featured' => ['icon' => 'crown', 'badge' => 'Best Value'],
 ];
 $currentPlanType = $vendor['plan_type'] ?? 'basic';
+$isFreeStudent = $vendor['vendor_type'] === 'student' && $currentPlanType === 'basic';
+
+function getSubscriptionCardTitle(string $vendorType, string $planType): string {
+    if ($vendorType === 'student') {
+        return match ($planType) {
+            'basic' => 'Student Free',
+            'premium' => 'Student Boost',
+            'featured' => 'Student Featured',
+            default => ucfirst($planType) . ' Plan',
+        };
+    }
+    return ucfirst($vendorType) . ' ' . ucfirst($planType);
+}
+
+$planHighlights = [
+    'basic' => 'Basic marketplace visibility, vendor profile, product display, student discovery access.',
+    'premium' => 'Priority listing, boosted visibility, premium badge, more student reach.',
+    'featured' => 'Homepage placement, featured vendor section, maximum visibility, top discovery priority.',
+];
 ?>
 
 <style>
@@ -139,7 +158,7 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
 .sub-plan-card {
     position:relative; border-radius:var(--sub-radius);
     background:var(--sub-white); border:2px solid var(--sub-divider);
-    padding:1.5rem; cursor:pointer;
+    padding:1.55rem 1.5rem 1.25rem; cursor:default;
     transition: transform .35s var(--ease-expo), box-shadow .35s var(--ease-expo), border-color .25s;
     overflow:hidden; outline:none;
 }
@@ -152,7 +171,7 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
 .sub-plan-card.featured-card::before { background:linear-gradient(90deg,var(--sub-amber),#b45309); }
 
 .sub-plan-card:hover,
-.sub-plan-card:focus-visible {
+.sub-plan-card:focus-within {
     transform: translateY(-6px) scale(1.012);
     box-shadow: var(--sub-shadow-lg);
 }
@@ -190,9 +209,24 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
 .premium-card  .sub-plan-badge { background:var(--sub-green); }
 .featured-card .sub-plan-badge { background:var(--sub-amber); color:#7c2d12; }
 
-.sub-plan-type-label { font-size:.65rem; text-transform:uppercase; letter-spacing:.1em; font-weight:700; color:var(--sub-muted); margin-bottom:.25rem; }
-.sub-plan-price      { font-size:1.6rem; font-weight:800; color:var(--sub-text); letter-spacing:-.03em; line-height:1; }
-.sub-plan-price small{ font-size:.75rem; font-weight:500; color:var(--sub-muted); letter-spacing:0; }
+.sub-plan-type-label { font-size:.9rem; text-transform:none; letter-spacing:0; font-weight:800; color:var(--sub-text); margin-bottom:.35rem; }
+.sub-plan-description { font-size:.82rem; color:var(--sub-muted); line-height:1.5; margin-bottom:.9rem; }
+.sub-plan-price      { font-size:1.6rem; font-weight:900; color:var(--sub-text); letter-spacing:-.03em; line-height:1; margin-bottom:.75rem; }
+.sub-plan-price small{ font-size:.72rem; font-weight:600; color:var(--sub-muted); letter-spacing:0; }
+.sub-plan-button {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:100%; padding:.95rem 1rem; margin:0 auto .9rem;
+    background: linear-gradient(135deg, var(--sub-blue-lite), var(--sub-blue));
+    color:#fff; font-size:.88rem; font-weight:700; border:none;
+    border-radius:999px; cursor:pointer; transition: transform .25s var(--ease-expo), box-shadow .25s, opacity .2s;
+}
+.sub-plan-button:hover:not(.inactive) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(11,61,145,.14);
+}
+.sub-plan-button.inactive {
+    opacity:.55; cursor:not-allowed; pointer-events:none;
+}
 
 .sub-plan-features { margin-top:1rem; display:flex; flex-direction:column; gap:.5rem; }
 .sub-plan-feature  { display:flex; align-items:flex-start; gap:.5rem; font-size:.8rem; color:var(--sub-muted); line-height:1.4; }
@@ -324,12 +358,13 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
 
     <?php if (!empty($subscription) && $subscription): ?>
     <?php
-        $daysLeft  = max(0, (int)($subscription['days_left'] ?? 0));
-        $isActive  = $daysLeft > 0;
-        $isWarning = $isActive && $daysLeft <= 30;
-        $planAmt   = formatNaira((int)$subscription['amount'], true);
-        $expDate   = date('d M Y', strtotime($subscription['expiry_date']));
-        $startDate = !empty($subscription['start_date']) ? date('d M Y', strtotime($subscription['start_date'])) : '—';
+        $daysLeft      = max(0, (int)($subscription['days_left'] ?? 0));
+        $isFreeStudent = $vendor['vendor_type'] === 'student' && $vendor['plan_type'] === 'basic';
+        $isActive      = $isFreeStudent || $daysLeft > 0;
+        $isWarning     = !$isFreeStudent && $isActive && $daysLeft <= 30;
+        $planAmt       = formatNaira((int)$subscription['amount'], true);
+        $expDate       = !empty($subscription['expiry_date']) ? date('d M Y', strtotime($subscription['expiry_date'])) : ($isFreeStudent ? 'Active (No Expiry)' : '—');
+        $startDate     = !empty($subscription['start_date']) ? date('d M Y', strtotime($subscription['start_date'])) : '—';
     ?>
     <div class="sub-status-banner <?= $isActive ? 'active-banner' : 'inactive-banner' ?>">
         <div class="sub-banner-icon">
@@ -338,8 +373,8 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
         <div class="sub-banner-body">
             <div class="sub-banner-label">Current Plan</div>
             <div class="sub-banner-plan">
-                <?= htmlspecialchars(ucfirst($currentPlanType)) ?> Plan
-                <?php if (!$isActive): ?> &mdash; <span style="font-size:1rem;font-weight:600;opacity:.8;">Expired</span><?php endif; ?>
+                <?= htmlspecialchars(getPlanLabel($vendor['vendor_type'] ?? '', $currentPlanType)) ?>
+                <?php if (!$isActive && !$isFreeStudent): ?> &mdash; <span style="font-size:1rem;font-weight:600;opacity:.8;">Expired</span><?php endif; ?>
             </div>
             <div class="sub-banner-amount"><?= $planAmt ?> / semester</div>
             <?php if ($isActive): ?>
@@ -353,11 +388,19 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
                     <span class="sub-stat-label">Expires</span>
                     <span class="sub-stat-value"><?= $expDate ?></span>
                 </div>
+                <?php if (!$isFreeStudent): ?>
                 <div class="sub-stat-divider"></div>
                 <div class="sub-stat">
                     <span class="sub-stat-label">Days Left</span>
-                    <span class="sub-stat-value"><?= $daysLeft ?> days</span>
+                    <span class="sub-stat-value"><?= $daysLeft . ' days' ?></span>
                 </div>
+                <?php else: ?>
+                <div class="sub-stat-divider"></div>
+                <div class="sub-stat">
+                    <span class="sub-stat-label">Duration</span>
+                    <span class="sub-stat-value">Unlimited</span>
+                </div>
+                <?php endif; ?>
                 <?php if ($startDate !== '—'): ?>
                 <div class="sub-stat-divider"></div>
                 <div class="sub-stat">
@@ -370,14 +413,14 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
         </div>
     </div>
 
-    <?php if ($isWarning): ?>
+    <?php if ($isWarning && !$isFreeStudent): ?>
     <div class="sub-renew-strip">
         <i data-lucide="alert-triangle" style="width:18px;height:18px;color:#b45309;flex-shrink:0;" aria-hidden="true"></i>
         <div class="sub-renew-strip-text">
             <strong>Your plan expires in <?= $daysLeft ?> day<?= $daysLeft !== 1 ? 's' : '' ?>.</strong>
             Renew now to keep your profile visible.
         </div>
-        <a href="<?= SITE_URL ?>/vendor/payment?plan=<?= htmlspecialchars($currentPlanType) ?>"
+        <a href="<?= SITE_URL ?>/vendor/payment?renew=1"
            class="btn btn-primary" style="white-space:nowrap;flex-shrink:0;font-size:.85rem;padding:.55rem 1rem;">
             <i data-lucide="refresh-cw" style="width:14px;height:14px;" aria-hidden="true"></i>
             Renew Now
@@ -406,14 +449,19 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
 
     <div class="sub-plans-grid" id="plansGrid" role="radiogroup" aria-label="Select a plan">
         <?php foreach (($plans ?? []) as $plan):
-            $pType     = $plan['plan_type'] ?? '';
-            $pAmount   = $plan['amount_naira'] ?? 0;
-            $features  = parsePlanFeatures($plan['features'] ?? []);
-            $isCurrent = $pType === $currentPlanType;
-            $rank      = planRank($pType);
-            $curRank   = planRank($currentPlanType);
-            $action    = $rank > $curRank ? 'upgrade' : ($rank < $curRank ? 'downgrade' : 'renew');
-            $meta      = $planMeta[$pType] ?? ['icon' => 'zap', 'badge' => ''];
+            $pType       = $plan['plan_type'] ?? '';
+            $pAmount     = $plan['amount_naira'] ?? 0;
+            $features    = parsePlanFeatures($plan['features'] ?? []);
+            $isCurrent   = $pType === $currentPlanType;
+            $rank        = planRank($pType);
+            $curRank     = planRank($currentPlanType);
+            $action      = $isCurrent ? ($isFreeStudent ? 'current' : 'renew') : ($rank > $curRank ? 'upgrade' : 'downgrade');
+            $actionLabel = $isCurrent
+                ? ($isFreeStudent ? 'Current Plan' : 'Renew Plan')
+                : ($action === 'upgrade' ? ($pType === 'featured' ? 'Get Featured' : 'Upgrade Plan') : 'Change Plan');
+            $meta        = $planMeta[$pType] ?? ['icon' => 'zap', 'badge' => ''];
+            $summaryLabel = getSubscriptionCardTitle($vendor['vendor_type'] ?? '', $pType);
+            $summaryText  = $planHighlights[$pType] ?? 'Vendor visibility package for your campus audience.';
         ?>
         <div class="sub-plan-card <?= $pType ?>-card <?= $isCurrent ? 'current-plan' : '' ?>"
              data-plan="<?= htmlspecialchars($pType) ?>"
@@ -432,7 +480,8 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
                 <i data-lucide="<?= $meta['icon'] ?>" style="width:20px;height:20px;" aria-hidden="true"></i>
             </div>
 
-            <div class="sub-plan-type-label"><?= htmlspecialchars(ucfirst($pType)) ?></div>
+            <div class="sub-plan-type-label"><?= htmlspecialchars($summaryLabel) ?></div>
+            <div class="sub-plan-description"><?= htmlspecialchars($summaryText) ?></div>
             <div class="sub-plan-price">
                 &#8358;<?= number_format($pAmount) ?><small>/semester</small>
             </div>
@@ -515,8 +564,8 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
                         <tr>
                             <td class="plan-cell"><?= htmlspecialchars(ucfirst($h['plan_type'] ?? '')) ?></td>
                             <td class="amount-cell">&#8358;<?= number_format(($h['amount'] ?? 0) / 100, 2) ?></td>
-                            <td><?= date('d M Y', strtotime($h['start_date'])) ?></td>
-                            <td><?= date('d M Y', strtotime($h['expiry_date'])) ?></td>
+                            <td><?= !empty($h['start_date']) ? date('d M Y', strtotime($h['start_date'])) : '—' ?></td>
+                            <td><?= !empty($h['expiry_date']) ? date('d M Y', strtotime($h['expiry_date'])) : '—' ?></td>
                             <td>
                                 <span class="hist-badge <?= htmlspecialchars($hStatus) ?>">
                                     <i data-lucide="<?= $hStatus === 'active' ? 'check-circle' : ($hStatus === 'cancelled' ? 'x-circle' : 'clock') ?>"
@@ -550,9 +599,10 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
     const submitBtn    = document.getElementById('subSubmitBtn');
     const submitLabel  = document.getElementById('subSubmitLabel');
     const csrfInput    = document.getElementById('subCsrfToken');
+    const planForm     = document.getElementById('subPlanForm');
+    const cards        = [...grid.querySelectorAll('.sub-plan-card')];
+    let selectedCard   = null;
     if (!grid) return;
-
-    const cards = [...grid.querySelectorAll('.sub-plan-card')];
 
     /* ── CSRF auto-refresh every 10 min to prevent session timeout redirect ── */
     function refreshCsrf() {
@@ -566,18 +616,32 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
     }
     setInterval(refreshCsrf, 10 * 60 * 1000); // every 10 minutes
 
-    /* ── keyboard ── */
-    cards.forEach(card => {
-        card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                selectCard(card);
-            }
+    /* ── plan button actions only ── */
+    function clearSelection() {
+        selectedCard = null;
+        cards.forEach(card => {
+            card.classList.remove('plan-selected');
+            card.setAttribute('aria-checked', 'false');
         });
-        card.addEventListener('click', () => selectCard(card));
-    });
+        if (confirmPanel) confirmPanel.style.display = 'none';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.setAttribute('aria-disabled', 'true');
+            submitLabel.textContent = 'Select a plan above to continue';
+        }
+        actionInput.value = 'subscribe';
+        planInput.value   = '';
+    }
 
-    function selectCard(card) {
+    function selectPlanCard(card) {
+        if (!card) return;
+
+        const pType     = card.dataset.plan;
+        const pAction   = card.dataset.action || 'subscribe';
+        const pPrice    = card.dataset.price;
+        const isCurrent = card.dataset.isCurrent === '1';
+        const pLabel    = card.querySelector('.sub-plan-type-label')?.textContent?.trim() || pType;
+
         cards.forEach(c => {
             c.classList.remove('plan-selected');
             c.setAttribute('aria-checked', 'false');
@@ -585,47 +649,63 @@ $currentPlanType = $vendor['plan_type'] ?? 'basic';
 
         card.classList.add('plan-selected');
         card.setAttribute('aria-checked', 'true');
-
-        const pType     = card.dataset.plan;
-        const pAction   = card.dataset.action;   // upgrade / downgrade / renew
-        const pPrice    = card.dataset.price;
-        const isCurrent = card.dataset.isCurrent === '1';
-        const pLabel    = card.querySelector('.sub-plan-type-label')?.textContent?.trim() || pType;
+        selectedCard = card;
 
         planInput.value   = pType;
-        actionInput.value = pAction || 'subscribe';
+        actionInput.value = pAction;
 
-        /* confirm panel */
         if (confirmName)  confirmName.textContent  = pLabel + ' Plan';
         if (confirmPrice) confirmPrice.textContent = '₦' + pPrice;
+        if (confirmPanel) confirmPanel.style.display = 'block';
 
-        let confirmMsg;
-        if (isCurrent && pAction === 'renew') {
-            confirmMsg = `You are renewing your <strong>${pLabel} Plan</strong> &mdash; <strong>&#8358;${pPrice}</strong> / semester.`;
-        } else if (pAction === 'upgrade') {
-            confirmMsg = `You are upgrading to the <strong>${pLabel} Plan</strong> &mdash; <strong>&#8358;${pPrice}</strong> / semester.`;
-        } else if (pAction === 'downgrade') {
-            confirmMsg = `You are downgrading to the <strong>${pLabel} Plan</strong> &mdash; <strong>&#8358;${pPrice}</strong> / semester.`;
-        } else {
-            confirmMsg = `You selected the <strong>${pLabel} Plan</strong> &mdash; <strong>&#8358;${pPrice}</strong> / semester.`;
-        }
         const confirmTextEl = document.getElementById('subConfirmText');
-        if (confirmTextEl) confirmTextEl.innerHTML = confirmMsg + ' Click below to proceed.';
-        confirmPanel.style.display = 'block';
+        if (confirmTextEl) {
+            confirmTextEl.innerHTML = isCurrent
+                ? `You are already on the <strong>${pLabel}</strong>. Select a different plan to proceed.`
+                : `You selected <strong>${pLabel}</strong>. Click Continue to Checkout to proceed to payment.`;
+        }
 
-        /* button label */
-        const verb = pAction === 'upgrade'   ? 'Upgrade to'   :
-                     pAction === 'downgrade'  ? 'Downgrade to' :
-                     pAction === 'renew'      ? 'Renew'        : 'Subscribe to';
-        const suffix = pAction === 'renew' ? pLabel + ' Plan' : pLabel + ' Plan';
-        submitLabel.textContent = verb + ' ' + suffix;
-        submitBtn.disabled      = false;
-        submitBtn.setAttribute('aria-disabled', 'false');
-
-        if (window.innerWidth < 640) {
-            setTimeout(() => submitBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+        if (submitBtn) {
+            const isEnabled = !isCurrent || pAction === 'renew';
+            submitBtn.disabled = !isEnabled;
+            submitBtn.setAttribute('aria-disabled', isEnabled ? 'false' : 'true');
+            submitLabel.textContent = isEnabled
+                ? (pAction === 'renew' ? 'Renew current plan' : 'Continue to checkout')
+                : 'Current plan active';
         }
     }
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => selectPlanCard(card));
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                selectPlanCard(card);
+            }
+        });
+    });
+
+    document.addEventListener('click', event => {
+        const target = event.target;
+        if (
+            !grid.contains(target)
+            && !planForm.contains(target)
+            && !(confirmPanel && confirmPanel.contains(target))
+        ) {
+            clearSelection();
+        }
+    });
+
+    if (planForm) {
+        planForm.addEventListener('submit', function (event) {
+            if (!planInput.value || submitBtn.disabled) {
+                event.preventDefault();
+                return;
+            }
+        });
+    }
+
+    clearSelection();
 
     if (window.lucide) window.lucide.createIcons();
 })();

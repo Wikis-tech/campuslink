@@ -245,7 +245,12 @@ class AdminController {
         );
 
         // Notify vendor
-        $this->mailer->sendVendorApproval($vendor);
+        $this->mailer->sendVendorApproved(
+            $vendor['email'],
+            $vendor['full_name'],
+            $vendor['business_name'],
+            SITE_URL . '/vendor/dashboard'
+        );
 
         // Create notification
         (new NotificationModel())->create([
@@ -281,7 +286,12 @@ class AdminController {
             [$reason, AdminAuth::id(), $id]
         );
 
-        $this->mailer->sendVendorRejection($vendor, $reason);
+        $this->mailer->sendVendorRejected(
+            $vendor['email'],
+            $vendor['full_name'],
+            $vendor['business_name'],
+            $reason
+        );
 
         $this->redirect(
             'vendors/pending',
@@ -303,7 +313,12 @@ class AdminController {
             [$reason, AdminAuth::id(), $id]
         );
 
-        $this->mailer->sendVendorSuspension($vendor, $reason);
+        $this->mailer->sendVendorSuspension(
+            $vendor['email'],
+            $vendor['full_name'],
+            $vendor['business_name'],
+            $reason
+        );
 
         (new NotificationModel())->create([
             'recipient_type' => 'vendor',

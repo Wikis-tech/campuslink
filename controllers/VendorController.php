@@ -440,6 +440,17 @@ class VendorController extends Controller {
         $subInfo          = $this->subModel->getExpiryInfo($vendorId);
         $subscription     = $this->subModel->getActiveForVendor($vendorId);
         
+        // Free student vendors are considered active even if no paid subscription
+        if (!$subscription && $vendor && $vendor['vendor_type'] === 'student' && $vendor['plan_type'] === 'basic') {
+            $subscription = [
+                'vendor_id' => $vendorId,
+                'plan_type' => 'basic',
+                'vendor_type' => 'student',
+                'status' => 'active',
+                'days_left' => 999999, // Infinite
+            ];
+        }
+        
         // Add days_left to subscription for dashboard display
         if ($subscription) {
             $subscription['days_left'] = $subInfo['days_remaining'];
@@ -767,10 +778,30 @@ public function reviews(): void
         $allSubs  = $this->subModel->getAllForVendor($vendorId);
 
         $subscription          = $subInfo['subscription'] ?? null;
+        
+        // Free student vendors are considered active
+        if (!$subscription && $vendor && $vendor['vendor_type'] === 'student' && $vendor['plan_type'] === 'basic') {
+            $subscription = [
+                'vendor_id' => $vendorId,
+                'plan_type' => 'basic',
+                'vendor_type' => 'student',
+                'status' => 'active',
+                'amount' => 0,
+                'days_left' => 999999,
+            ];
+        }
+        
         $hasActiveSubscription = !empty($subscription);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->validateCSRF();
+
+            // CRITICAL: Re-verify vendor is authenticated for this action
+            // (prevents false logouts during subscription processing)
+            if (!Auth::isVendorLoggedIn() || Auth::vendorId() !== $vendorId) {
+                $this->redirectWith('vendor/login', 'error', 'Your session has expired. Please log in again.');
+                return;
+            }
 
             $action  = $this->post('action', '');
             $newPlan = $this->post('plan', '');
@@ -781,10 +812,19 @@ public function reviews(): void
             }
 
             $currentPlan = $vendor['plan_type'] ?? 'basic';
+            $isFreeStudent = $vendor['vendor_type'] === 'student' && $currentPlan === 'basic';
+
+            if ($isFreeStudent && $newPlan === $currentPlan) {
+                $this->redirectWith('vendor/subscription', 'info', 'Your free Basic plan is already active. Select a higher plan to upgrade.');
+                return;
+            }
 
             if (!$hasActiveSubscription || $action === 'subscribe') {
                 $this->session->set('payment_plan',      $newPlan);
                 $this->session->set('payment_vendor_id', $vendorId);
+                $this->session->set('payment_vendor_type', $vendor['vendor_type'] ?? 'student');
+                // CRITICAL: Preserve vendor session context before redirect
+                $this->session->set('pre_payment_vendor_id', $vendorId);
                 header('Location: ' . SITE_URL . '/vendor/payment?init=1');
                 exit;
             }
@@ -795,15 +835,12 @@ public function reviews(): void
                     $this->redirectWith('vendor/subscription', 'error', 'Please select a higher plan to upgrade.');
                     return;
                 }
-                $this->subModel->requestUpgrade($vendorId, $currentPlan, $newPlan);
-                Notification::sendToAdmin(
-                    'Upgrade Request',
-                    "Vendor #{$vendorId} ({$vendor['business_name']}) requested upgrade from $currentPlan to $newPlan.",
-                    Notification::TYPE_APPROVAL,
-                    'admin/subscriptions/upgrades'
-                );
-                $this->redirectWith('vendor/subscription', 'success', 'Upgrade request submitted. Admin will review and activate your new plan.');
-                return;
+                $this->session->set('payment_plan',      $newPlan);
+                $this->session->set('payment_vendor_id', $vendorId);
+                $this->session->set('payment_vendor_type', $vendor['vendor_type'] ?? 'student');
+                $this->session->set('pre_payment_vendor_id', $vendorId);
+                header('Location: ' . SITE_URL . '/vendor/payment?init=1');
+                exit;
             }
 
             if ($action === 'downgrade') {
@@ -820,17 +857,34 @@ public function reviews(): void
             if ($action === 'renew') {
                 $this->session->set('payment_plan',      $currentPlan);
                 $this->session->set('payment_vendor_id', $vendorId);
+                $this->session->set('payment_vendor_type', $vendor['vendor_type'] ?? 'student');
+                // CRITICAL: Preserve vendor session context and auth state
+                // Ensure session stays alive through payment redirect
+                $this->session->set('pre_payment_vendor_id', $vendorId);
+                $this->session->set('renewal_in_progress', true);
                 header('Location: ' . SITE_URL . '/vendor/payment?renew=1');
                 exit;
             }
 
             $this->session->set('payment_plan',      $newPlan);
             $this->session->set('payment_vendor_id', $vendorId);
+            $this->session->set('payment_vendor_type', $vendor['vendor_type'] ?? 'student');
             header('Location: ' . SITE_URL . '/vendor/payment?init=1');
             exit;
         }
 
         $plans = $this->planModel->getByVendorType($vendor['vendor_type']);
+
+        // CRITICAL: Clean up payment session context after successful renewal/processing
+        // This ensures fresh state for next operations (prevents stale redirects)
+        if (!$this->session->get('renewal_in_progress')) {
+            // Only clean if renewal is NOT still in progress (i.e., we've successfully returned)
+            $this->session->remove('payment_plan');
+            $this->session->remove('payment_vendor_id');
+            $this->session->remove('pre_payment_vendor_id');
+        }
+        // Always remove the renewal flag after subscription page loads
+        $this->session->remove('renewal_in_progress');
 
         $this->view('vendor/subscription', [
             'pageTitle'    => 'My Subscription - ' . SITE_NAME,

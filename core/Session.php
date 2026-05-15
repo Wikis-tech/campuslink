@@ -47,8 +47,8 @@ class Session
         if (!isset($_SESSION['_created'])) {
             $_SESSION['_created'] = time();
             session_regenerate_id(true);
-        } elseif (time() - $_SESSION['_created'] > 1800) {
-            // Regenerate every 30 min
+        } elseif (time() - $_SESSION['_created'] > 1800 && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            // Regenerate every 30 min, but not during POST to prevent logout
             $_SESSION['_created'] = time();
             session_regenerate_id(false);
         }

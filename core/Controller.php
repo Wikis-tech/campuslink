@@ -173,9 +173,9 @@ class Controller extends BaseController
 
         if (!CSRF::validate($token)) {
             if ($this->isAjax()) {
-                $this->jsonError('Invalid security token. Please refresh and try again.', 403);
+                $this->jsonError('Session expired. Please refresh and try again.', 403);
             } else {
-                $this->redirectWith('/', 'error', 'Security validation failed. Please try again.');
+                $this->redirectWith('/', 'error', 'Session expired. Please refresh and try again.');
             }
         }
     }

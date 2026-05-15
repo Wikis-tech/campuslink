@@ -290,21 +290,25 @@ date_default_timezone_set('Africa/Lagos');
 // ============================================================
 
 function getPlanAmount(string $vendorType, string $plan): int {
+    if (empty($vendorType) || empty($plan)) return 0;
     $plans = unserialize(VALID_PLANS);
     return $plans[$vendorType][$plan]['amount'] ?? 0;
 }
 
 function getPlanNaira(string $vendorType, string $plan): int {
+    if (empty($vendorType) || empty($plan)) return 0;
     $plans = unserialize(VALID_PLANS);
     return $plans[$vendorType][$plan]['naira'] ?? 0;
 }
 
 function getPlanLabel(string $vendorType, string $plan): string {
+    if (empty($vendorType) || empty($plan)) return 'Unknown Plan';
     $plans = unserialize(VALID_PLANS);
     return $plans[$vendorType][$plan]['label'] ?? 'Unknown Plan';
 }
 
 function isValidPlan(string $vendorType, string $plan): bool {
+    if (empty($vendorType) || empty($plan)) return false;
     $plans = unserialize(VALID_PLANS);
     return isset($plans[$vendorType][$plan]);
 }

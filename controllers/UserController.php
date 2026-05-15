@@ -194,7 +194,7 @@ class UserController extends BaseController {
 
         if (!CSRF::validate($csrf)) {
             http_response_code(403);
-            echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Invalid security token.']);
+            echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Session expired. Please refresh and try again.']);
             return;
         }
 

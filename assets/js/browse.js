@@ -254,11 +254,16 @@ function initReviewForm() {
         const submitBtn = form.querySelector('[type="submit"]');
 
         if (!rating) {
-            CampusLink.toast('Please select a star rating.', 'error');
+            CampusLink.toast('Please select a rating.', 'error');
             return;
         }
 
-        if (!review || review.length < 10) {
+        if (!review) {
+            CampusLink.toast('Please enter a review.', 'error');
+            return;
+        }
+
+        if (review.length < 10) {
             CampusLink.toast('Review must be at least 10 characters.', 'error');
             return;
         }
@@ -268,29 +273,37 @@ function initReviewForm() {
             return;
         }
 
+        const csrfToken = form.querySelector('input[name="csrf_token"]')?.value || CampusLink.getCsrf();
+        if (!csrfToken) {
+            CampusLink.toast('Session expired. Please refresh and try again.', 'error');
+            return;
+        }
+
         submitBtn.classList.add('btn-loading');
         submitBtn.disabled = true;
 
         try {
             const data = await CampusLink.ajax('/reviews/submit', 'POST', {
-                csrf_token: CampusLink.getCsrf(),
+                csrf_token: csrfToken,
                 vendor_id:  vendorId,
                 rating:     parseInt(rating),
                 review,
             });
 
             if (data.success || data.status === 'success') {
-                CampusLink.toast(data.message, 'success');
+                CampusLink.toast(data.message || 'Review submitted successfully.', 'success');
 
-                // Replace form with success message
                 const formWrapper = form.closest('.review-submit-form');
                 if (formWrapper) {
                     formWrapper.innerHTML = `
                         <div class="alert alert-success" style="margin:0;">
                             <span class="alert-icon">✅</span>
-                            ${data.message}
+                            ${CampusLink.escapeHtml(data.message || 'Review submitted successfully.')}
                         </div>
                     `;
+                } else {
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.disabled = false;
                 }
             } else {
                 CampusLink.toast(data.message || 'Could not submit review.', 'error');

@@ -151,7 +151,7 @@ class VendorModel extends Model
         string $sortBy = 'plan_priority'
     ): array {
         $params     = [];
-        $conditions = ["v.status = 'active'", "s.status = 'active'", "s.expiry_date > NOW()"];
+        $conditions = ["v.status = 'active'", "((s.status = 'active' AND s.expiry_date > NOW()) OR (s.id IS NULL AND v.vendor_type = 'student' AND v.plan_type = 'basic'))"];
 
         if (!empty($categorySlug)) {
             $conditions[] = "c.slug = ?";
@@ -182,7 +182,7 @@ class VendorModel extends Model
                     COALESCE(AVG(r.rating), 0) as avg_rating,
                     COUNT(DISTINCT r.id) as review_count
              FROM vendors v
-             INNER JOIN subscriptions s ON v.id = s.vendor_id
+             LEFT JOIN subscriptions s ON v.id = s.vendor_id
              LEFT JOIN categories c ON v.category_id = c.id
              LEFT JOIN reviews r ON r.vendor_id = v.id AND r.status = 'approved'
              WHERE $where
@@ -201,7 +201,7 @@ class VendorModel extends Model
         string $search = ''
     ): int {
         $params     = [];
-        $conditions = ["v.status = 'active'", "s.status = 'active'", "s.expiry_date > NOW()"];
+        $conditions = ["v.status = 'active'", "((s.status = 'active' AND s.expiry_date > NOW()) OR (s.id IS NULL AND v.vendor_type = 'student' AND v.plan_type = 'basic'))"];
 
         if (!empty($categorySlug)) {
             $conditions[] = "c.slug = ?";
@@ -219,7 +219,7 @@ class VendorModel extends Model
 
         return (int)$this->db->fetchColumn(
             "SELECT COUNT(DISTINCT v.id) FROM vendors v
-             INNER JOIN subscriptions s ON v.id = s.vendor_id
+             LEFT JOIN subscriptions s ON v.id = s.vendor_id
              LEFT JOIN categories c ON v.category_id = c.id
              WHERE $where",
             $params

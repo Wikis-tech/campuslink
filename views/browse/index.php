@@ -202,7 +202,7 @@
 .vendor-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1rem;
+    gap: 1.25rem;
 }
 @media (max-width: 480px) {
     .vendor-cards-grid {
@@ -216,13 +216,14 @@
     border-radius: 14px;
     border: 1px solid #e2e8f0;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     display: flex;
     flex-direction: column;
 }
 .vcard:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+    border-color: #cbd5e1;
 }
 .vcard-top {
     padding: 1.1rem 1rem 0.75rem;
@@ -333,12 +334,12 @@
 .vcard-actions .call:hover { background: #dbeafe; }
 .vcard-actions .view-full {
     grid-column: 1 / -1;
-    background: #f8fafc;
-    color: #374151;
+    background: #1a56db;
+    color: #fff;
     border-top: 1px solid #f1f5f9;
     font-size: 0.78rem;
 }
-.vcard-actions .view-full:hover { background: #f1f5f9; }
+.vcard-actions .view-full:hover { background: #1e40af; }
 
 /* ── Save button ─────────────────────────────────────── */
 .vcard-save {
@@ -622,7 +623,7 @@ $vendorCount = count($vendors);
                             <?php if ($v['plan_type'] === 'featured'): ?>
                             <span class="vbadge vbadge-featured"><i data-lucide="star"></i> Featured</span>
                             <?php elseif ($v['plan_type'] === 'premium'): ?>
-                            <span class="vbadge vbadge-premium"><i data-lucide="zap"></i> Premium</span>
+                            <span class="vbadge vbadge-premium"><i data-lucide="zap"></i> Boosted</span>
                             <?php endif; ?>
                         </div>
 

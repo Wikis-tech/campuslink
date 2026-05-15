@@ -230,14 +230,14 @@
                 <div class="plan-cards">
                     <?php
                     $planDefs = [
-                        'basic'    => ['label'=>'Basic',   'icon'=>'package', 'features'=>['Directory listing','WhatsApp & Call button','Student reviews','Category search']],
-                        'premium'  => ['label'=>'Premium', 'icon'=>'star',    'features'=>['Everything in Basic','Priority in search results','Premium badge on profile','Featured in category pages']],
-                        'featured' => ['label'=>'Featured','icon'=>'zap',     'features'=>['Everything in Premium','Homepage featured section','Top of all search results','Featured badge']],
+                        'basic'    => ['label'=>getPlanLabel('student','basic'),   'icon'=>'package', 'features'=>['Directory listing','WhatsApp & Call button','Student reviews','Category search']],
+                        'premium'  => ['label'=>getPlanLabel('student','premium'), 'icon'=>'star',    'features'=>['Everything in Basic','Priority in search results','Premium badge on profile','Featured in category pages']],
+                        'featured' => ['label'=>getPlanLabel('student','featured'),'icon'=>'zap',     'features'=>['Everything in Premium','Homepage featured section','Top of all search results','Featured badge']],
                     ];
                     foreach ($studentPlans as $plan):
                         $type    = $plan['plan_type'];
                         $def     = $planDefs[$type] ?? ['label'=>ucfirst($type),'icon'=>'box','features'=>[]];
-                        $price   = $plan['amount'] / 100;
+                        $price   = (int)$plan['amount'] === 0 ? 'Free' : '&#8358;' . number_format($plan['amount'] / 100);
                         $isFirst = ($type === 'basic');
                     ?>
                     <div class="plan-card <?= $type==='premium'?'popular':'' ?> <?= $isFirst?'selected':'' ?>"
@@ -251,8 +251,8 @@
                             <?= e($def['label']) ?>
                         </div>
                         <div class="plan-price">
-                            &#8358;<?= number_format($price) ?>
-                            <small>per semester (180 days)</small>
+                            <?= $price ?>
+                            <small><?= (int)$plan['amount'] === 0 ? 'Free — activates instantly' : 'per semester (180 days)' ?></small>
                         </div>
                         <ul class="plan-features">
                             <?php foreach ($def['features'] as $f): ?>
@@ -330,8 +330,10 @@
 
             <div class="vreg-notice">
                 <i data-lucide="alert-triangle" style="width:15px;height:15px;flex-shrink:0;margin-top:1px;"></i>
-                <span>Your application will be reviewed by our admin team within <strong>24&#8211;48 hours</strong>.
-                You will be notified by email once approved. Payment is made after approval.</span>
+                <span>
+                    Student Free vendors activate immediately after registration at no cost.
+                    Paid student plans require payment through Paystack and admin review before activation.
+                </span>
             </div>
 
             <button type="submit" class="vreg-submit">

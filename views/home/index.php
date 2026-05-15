@@ -352,26 +352,26 @@
                 <span class="section-label" style="text-align:left;display:inline-block;">For Vendors</span>
                 <h2>Reach Thousands of Students Every Semester</h2>
                 <p>
-                    List your campus service on CampusLink and get discovered by students
-                    actively looking for what you offer. Verified badge, WhatsApp button,
-                    reviews, and more — starting from just ₦2,000/semester.
+                    Join CampusLink free and list your student business without upfront cost.
+                    Get discovered on campus, grow through visibility upgrades, and choose paid
+                    boosts only when you want more priority placement.
                 </p>
                 <ul class="vendor-cta-benefits">
-                    <li>✅ Verified badge builds instant trust</li>
-                    <li>✅ Direct WhatsApp & phone contact from your profile</li>
-                    <li>✅ Honest star ratings from real students</li>
-                    <li>✅ Featured plans get priority placement</li>
-                    <li>✅ No commission — keep 100% of your earnings</li>
+                    <li>✅ Join free and start listing today</li>
+                    <li>✅ Get discovered by students across campus</li>
+                    <li>✅ Upgrade for more visibility anytime</li>
+                    <li>✅ Featured plans amplify your placement</li>
+                    <li>✅ No commission — keep 100% of your revenue</li>
                     <li>✅ Manage everything from your vendor dashboard</li>
                 </ul>
                 <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
                     <a href="<?= SITE_URL ?>/vendor/register?type=student"
                        class="btn btn-primary">
-                        🎓 Student Vendor — from ₦2,000
+                        🎓 List Your Business Free
                     </a>
                     <a href="<?= SITE_URL ?>/vendor/register?type=community"
                        class="btn btn-outline-primary">
-                        🏢 Business Vendor — from ₦4,000
+                        🏢 Grow Faster
                     </a>
                 </div>
             </div>
@@ -382,40 +382,40 @@
                     <div class="plan-preview-type">🎓 Student Vendor Plans</div>
                     <div class="plan-preview-plans">
                         <div class="plan-preview-item">
-                            <span class="plan-name">Basic</span>
-                            <span class="plan-price">₦2,000 <small>/semester</small></span>
+                            <span class="plan-name">Student Free</span>
+                            <span class="plan-price">Free <small>/semester</small></span>
                         </div>
                         <div class="plan-preview-item popular">
-                            <span class="plan-name">Premium ⭐</span>
-                            <span class="plan-price">₦5,000 <small>/semester</small></span>
+                            <span class="plan-name">Student Boost ⭐</span>
+                            <span class="plan-price">₦2,500 <small>/semester</small></span>
                         </div>
                         <div class="plan-preview-item">
-                            <span class="plan-name">Featured 🔥</span>
-                            <span class="plan-price">₦10,000 <small>/semester</small></span>
+                            <span class="plan-name">Student Featured 🔥</span>
+                            <span class="plan-price">₦5,000 <small>/semester</small></span>
                         </div>
                     </div>
                     <a href="<?= SITE_URL ?>/vendor/register?type=student"
-                       class="btn btn-primary btn-full">Get Started →</a>
+                       class="btn btn-primary btn-full">Start Free</a>
                 </div>
 
                 <div class="plan-preview-card">
                     <div class="plan-preview-type">🏢 Community Vendor Plans</div>
                     <div class="plan-preview-plans">
                         <div class="plan-preview-item">
-                            <span class="plan-name">Basic</span>
-                            <span class="plan-price">₦4,000 <small>/semester</small></span>
+                            <span class="plan-name">Community Basic</span>
+                            <span class="plan-price">₦3,000 <small>/semester</small></span>
                         </div>
                         <div class="plan-preview-item popular">
-                            <span class="plan-name">Premium ⭐</span>
-                            <span class="plan-price">₦7,000 <small>/semester</small></span>
+                            <span class="plan-name">Community Premium ⭐</span>
+                            <span class="plan-price">₦6,000 <small>/semester</small></span>
                         </div>
                         <div class="plan-preview-item">
-                            <span class="plan-name">Featured 🔥</span>
-                            <span class="plan-price">₦12,000 <small>/semester</small></span>
+                            <span class="plan-name">Community Featured 🔥</span>
+                            <span class="plan-price">₦10,000 <small>/semester</small></span>
                         </div>
                     </div>
                     <a href="<?= SITE_URL ?>/vendor/register?type=community"
-                       class="btn btn-outline-primary btn-full">Get Started →</a>
+                       class="btn btn-outline-primary btn-full">Boost Visibility</a>
                 </div>
             </div>
         </div>

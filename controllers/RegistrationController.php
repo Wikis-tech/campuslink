@@ -37,11 +37,29 @@ class RegistrationController extends Controller
         $this->mailer        = new Mailer();
     }
 
+    private function logoutVendorForRegistration(): void
+    {
+        Session::delete('vendor_logged_in');
+        Session::delete('vendor_id');
+        Session::delete('vendor_name');
+        Session::delete('vendor_email');
+        Session::delete('vendor_business');
+        Session::delete('vendor_type');
+        Session::delete('vendor_plan');
+        Session::delete('vendor_status');
+
+        Session::setFlash('success', 'You are now logged out. You may register a new vendor account.');
+    }
+
     // ============================================================
     // Registration type selection page
     // ============================================================
     public function index(): void
     {
+        if (Auth::isVendorLoggedIn()) {
+            $this->logoutVendorForRegistration();
+        }
+
         $type = $this->get('type', '');
 
         if ($type === 'student') {
@@ -65,8 +83,7 @@ class RegistrationController extends Controller
     public function student(): void
     {
         if (Auth::isVendorLoggedIn()) {
-            $this->redirect('vendor/dashboard');
-            return;
+            $this->logoutVendorForRegistration();
         }
 
         $categories = $this->categoryModel->getForSelect();
@@ -209,8 +226,7 @@ class RegistrationController extends Controller
     public function community(): void
     {
         if (Auth::isVendorLoggedIn()) {
-            $this->redirect('vendor/dashboard');
-            return;
+            $this->logoutVendorForRegistration();
         }
 
         $categories = $this->categoryModel->getForSelect();

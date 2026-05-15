@@ -40,14 +40,17 @@
     </section>
 
     <!-- Subscription Status Hero Card -->
-    <div class="container" style="margin-top: -2rem; position: relative; z-index: 10;">
+    <div class="container" style="position: relative; z-index: 10;">
         <?php if ($subscription): ?>
             <?php
-            $daysLeft    = (int)($subscription['days_left'] ?? 0);
+            $isFreeStudent = $vendor['vendor_type'] === 'student' && $vendor['plan_type'] === 'basic' && empty($subscription['expiry_date']);
+            $daysLeft    = $isFreeStudent ? 999999 : (int)($subscription['days_left'] ?? 0);
             $bannerClass = 'active';
-            if ($daysLeft <= 0)  $bannerClass = 'expired';
-            elseif ($daysLeft <= 7)  $bannerClass = 'expiring';
-            elseif ($vendor['status'] === 'grace_period') $bannerClass = 'grace';
+            if (!$isFreeStudent) {
+                if ($daysLeft <= 0)  $bannerClass = 'expired';
+                elseif ($daysLeft <= 7)  $bannerClass = 'expiring';
+                elseif ($vendor['status'] === 'grace_period') $bannerClass = 'grace';
+            }
 
             $bannerIcons = [
                 'active'   => 'check-circle',
@@ -73,7 +76,10 @@
                         </div>
                         <div>
                             <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: <?= $colors['text'] ?>;">
-                                <?php if ($bannerClass === 'active'): ?>
+                                <?php 
+                                if ($vendor['vendor_type'] === 'student' && $vendor['plan_type'] === 'basic' && ($daysLeft === 999999 || !isset($subscription['expiry_date']))): ?>
+                                    Student Free Plan Active
+                                <?php elseif ($bannerClass === 'active'): ?>
                                     Subscription Active
                                 <?php elseif ($bannerClass === 'expiring'): ?>
                                     Subscription Expiring Soon
@@ -84,17 +90,21 @@
                                 <?php endif; ?>
                             </h3>
                             <p style="margin: 0.5rem 0 0 0; color: rgba(0,0,0,0.6); font-size: 0.95rem;">
-                                <?php if ($daysLeft > 0): ?>
+                                <?php if ($isFreeStudent): ?>
+                                    Your profile is live. Upgrade anytime for more visibility.
+                                <?php elseif ($daysLeft > 0 && !empty($subscription['expiry_date'])): ?>
                                     Expires on <strong><?= date('d M Y', strtotime($subscription['expiry_date'])) ?></strong>
-                                <?php else: ?>
+                                <?php elseif (!empty($subscription['expiry_date'])): ?>
                                     Expired on <strong><?= date('d M Y', strtotime($subscription['expiry_date'])) ?></strong>
+                                <?php else: ?>
+                                    Subscription details unavailable
                                 <?php endif; ?>
                             </p>
                         </div>
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; justify-content: flex-end;">
-                        <?php if ($daysLeft > 0): ?>
+                        <?php if (!$isFreeStudent && $daysLeft > 0): ?>
                         <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.4); border-radius: 12px; min-width: 80px;">
                             <div style="font-size: 1.75rem; font-weight: 800; color: <?= $colors['text'] ?>;">
                                 <?= $daysLeft ?>
@@ -107,33 +117,33 @@
                         <a href="<?= SITE_URL ?>/vendor/subscription" 
                            class="btn btn-primary" 
                            style="background: <?= $colors['icon'] ?>; border: none; padding: 0.75rem 1.5rem; font-weight: 600; transition: all 0.3s ease;">
-                            <?= $daysLeft > 0 ? 'Manage Plan' : 'Renew Now' ?>
+                            <?= $isFreeStudent ? 'Upgrade Plan' : ($daysLeft > 0 ? 'Manage Plan' : 'Renew Now') ?>
                         </a>
                     </div>
                 </div>
             </div>
         <?php else: ?>
             <div class="subscription-hero-card" 
-                 style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(255,255,255,0.3) 100%); border: 2px solid #ef4444; backdrop-filter: blur(20px); border-radius: 24px; padding: 2rem; margin-bottom: 2rem; animation: slideUpFadeIn 0.8s ease-out 0.2s both;">
+                 style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(255,255,255,0.3) 100%); border: 2px solid #3b82f6; backdrop-filter: blur(20px); border-radius: 24px; padding: 2rem; margin-bottom: 2rem; animation: slideUpFadeIn 0.8s ease-out 0.2s both;">
                 
                 <div style="display: flex; gap: 1.5rem; align-items: center; justify-content: space-between;">
                     <div style="display: flex; gap: 1.5rem; align-items: start; flex: 1;">
-                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #ef4444; flex-shrink: 0;">
-                            <i data-lucide="x-circle" style="width:28px;height:28px;"></i>
+                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #3b82f6; flex-shrink: 0;">
+                            <i data-lucide="info" style="width:28px;height:28px;"></i>
                         </div>
                         <div>
-                            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #7f1d1d;">
-                                No Active Subscription
+                            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e40af;">
+                                No Active Paid Subscription
                             </h3>
                             <p style="margin: 0.5rem 0 0 0; color: rgba(0,0,0,0.6); font-size: 0.95rem;">
-                                Your profile is currently hidden from students.
+                                Your profile is live on CampusLink. Upgrade to Boost or Featured for higher visibility and featured placement.
                             </p>
                         </div>
                     </div>
                     <a href="<?= SITE_URL ?>/vendor/subscription" 
                        class="btn btn-primary" 
-                       style="background: #ef4444; border: none; padding: 0.75rem 1.5rem; font-weight: 600; white-space: nowrap;">
-                        Subscribe Now
+                       style="background: #3b82f6; border: none; padding: 0.75rem 1.5rem; font-weight: 600; white-space: nowrap;">
+                        Upgrade Plan
                     </a>
                 </div>
             </div>

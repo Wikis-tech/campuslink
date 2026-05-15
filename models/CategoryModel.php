@@ -18,9 +18,10 @@ class CategoryModel extends Model
     {
         return $this->db->fetchAll(
             "SELECT c.*, 
-                    COUNT(CASE WHEN v.status='active' THEN 1 END) as vendor_count
+                    COUNT(CASE WHEN v.status='active' AND s.status='active' AND s.expiry_date > NOW() THEN 1 END) as vendor_count
              FROM categories c
              LEFT JOIN vendors v ON v.category_id = c.id
+             LEFT JOIN subscriptions s ON s.vendor_id = v.id
              WHERE c.is_active = 1
              GROUP BY c.id
              ORDER BY c.sort_order ASC, c.name ASC"
@@ -34,9 +35,10 @@ class CategoryModel extends Model
     {
         return $this->db->fetchOne(
             "SELECT c.*,
-                    COUNT(CASE WHEN v.status='active' THEN 1 END) as vendor_count
+                    COUNT(CASE WHEN v.status='active' AND s.status='active' AND s.expiry_date > NOW() THEN 1 END) as vendor_count
              FROM categories c
              LEFT JOIN vendors v ON v.category_id = c.id
+             LEFT JOIN subscriptions s ON s.vendor_id = v.id
              WHERE c.slug = ? AND c.is_active = 1
              GROUP BY c.id",
             [$slug]

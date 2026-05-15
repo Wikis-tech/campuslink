@@ -48,11 +48,13 @@ $allowedPublicRoutes = [
     'user',
     'vendor',
     'logout',
+    'browse',
+    'categories',
+    'reviews',
+    'complaints',
 ];
 
-$isBrowsePage = $seg0 === 'browse' && $seg1 === '';
-
-if ((Auth::isLoggedIn() || Auth::isVendorLoggedIn()) && !in_array($seg0, $allowedPublicRoutes, true) && !$isBrowsePage) {
+if ((Auth::isLoggedIn() || Auth::isVendorLoggedIn()) && $seg0 !== '' && !in_array($seg0, $allowedPublicRoutes, true)) {
     // Logout the appropriate session
     if (Auth::isLoggedIn()) {
         Session::delete('user_logged_in');
@@ -948,7 +950,7 @@ $pageDesc  = 'CampusLink connects students with verified vendors within the univ
                     <div class="plan-preview-plans">
                         <div class="plan-preview-item">
                             <span class="plan-name">Basic</span>
-                            <span class="plan-price">&#8358;2,000<small>/sem</small></span>
+                            <span class="plan-price">&#8358;Free<small>/sem</small></span>
                         </div>
                         <div class="plan-preview-item popular">
                             <span class="plan-name">Premium <i data-lucide="star" class="plan-star" aria-hidden="true"></i></span>

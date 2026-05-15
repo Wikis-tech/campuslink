@@ -289,6 +289,30 @@ public function __construct()
     }
 
     // ============================================================
+    // TEMPLATE: Vendor suspended
+    // ============================================================
+    public function sendVendorSuspension(
+        string $email,
+        string $name,
+        string $businessName,
+        string $reason
+    ): bool {
+        $html = "
+        <p>Hi <strong>" . e($name) . "</strong>,</p>
+        <p>Your account for <strong>" . e($businessName) . "</strong> 
+           on " . SITE_NAME . " has been <strong>suspended</strong>.</p>
+        <p>This action was taken for the following reason:</p>
+        <div style='background:#fff3f3;border-left:4px solid #e53e3e;padding:16px;margin:20px 0;border-radius:4px;'>
+            " . e($reason) . "
+        </div>
+        <p>Your listing is no longer visible to students. If you believe this is a mistake or wish to appeal, 
+           please contact us at <a href='mailto:" . CONTACT_EMAIL . "'>" . CONTACT_EMAIL . "</a>.</p>
+        ";
+
+        return $this->send($email, $name, 'Account Suspended - Action Required', $html);
+    }
+
+    // ============================================================
     // TEMPLATE: Subscription expiry reminder
     // ============================================================
     public function sendSubscriptionReminder(

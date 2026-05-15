@@ -11,8 +11,8 @@ class BrowseController extends BaseController {
     $page       = max(1, (int)($_GET['page'] ?? 1));
     $perPage    = 12;
 
-    // Build WHERE clause - only show vendors with active subscriptions
-    $where  = ["v.status = 'active' AND s.status = 'active' AND s.expiry_date > NOW()"];
+    // Build WHERE clause - show vendors with active subscriptions OR free student vendors
+    $where  = ["v.status = 'active' AND ((s.id IS NULL AND v.vendor_type = 'student' AND v.plan_type = 'basic') OR (s.status = 'active' AND s.expiry_date > NOW()))"];
     $params = [];
 
     if ($search) {
@@ -40,10 +40,12 @@ class BrowseController extends BaseController {
     // Count total for pagination
     $total = $db->value(
         "SELECT COUNT(*) FROM vendors v 
-         INNER JOIN subscriptions s ON s.vendor_id = v.id 
+         LEFT JOIN subscriptions s ON s.vendor_id = v.id 
          WHERE {$whereStr}",
         $params
     );
+
+    error_log("Browse: total count {$total} for where: {$whereStr}");
 
     $pag    = paginate($total, $perPage);
     $offset = $pag['offset'];
@@ -56,7 +58,7 @@ class BrowseController extends BaseController {
                 COALESCE(AVG(r.rating), 0) AS avg_rating,
                 COUNT(r.id)               AS review_count
            FROM vendors v
-           INNER JOIN subscriptions s ON s.vendor_id = v.id
+           LEFT JOIN subscriptions s ON s.vendor_id = v.id
       LEFT JOIN categories c ON v.category_id = c.id
       LEFT JOIN reviews r    ON r.vendor_id = v.id
           WHERE {$whereStr}
@@ -66,14 +68,16 @@ class BrowseController extends BaseController {
         $params
     );
 
+    error_log("Browse: fetched " . count($vendors) . " vendors");
+
     $categories = $db->rows(
-        "SELECT c.*, COUNT(v.id) AS vendor_count
+        "SELECT c.*, COUNT(CASE WHEN v.status='active' AND ((s.id IS NULL AND v.vendor_type = 'student' AND v.plan_type = 'basic') OR (s.status = 'active' AND s.expiry_date > NOW())) THEN 1 END) AS vendor_count
            FROM categories c
-      LEFT JOIN vendors v ON v.category_id = c.id AND v.status = 'active'
-      LEFT JOIN subscriptions s ON s.vendor_id = v.id AND s.status = 'active' AND s.expiry_date > NOW()
-          WHERE v.id IS NULL OR (s.id IS NOT NULL)
+      LEFT JOIN vendors v ON v.category_id = c.id
+      LEFT JOIN subscriptions s ON s.vendor_id = v.id
+          WHERE c.is_active = 1
           GROUP BY c.id
-          ORDER BY vendor_count DESC"
+          ORDER BY c.sort_order ASC, c.name ASC"
     );
 
     $currentCategory = $categoryId

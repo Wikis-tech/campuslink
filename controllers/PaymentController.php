@@ -62,48 +62,82 @@ class PaymentController extends Controller
             exit;
         }
 
-        $vendorId   = $this->session->get('pending_vendor_id') ?: $this->session->get('payment_vendor_id');
-        $vendorType = $this->session->get('pending_vendor_type');
-        $planType   = $this->session->get('pending_plan') ?: $this->session->get('payment_plan', 'basic');
-        $isRenew    = $this->get('renew', 0);
-        $isInit     = $this->get('init', 0);
+        $vendorId            = $this->session->get('pending_vendor_id') ?: $this->session->get('payment_vendor_id');
+        $vendorType          = $this->session->get('pending_vendor_type') ?: $this->session->get('payment_vendor_type');
+        $planType            = $this->session->get('pending_plan') ?: $this->session->get('payment_plan', 'basic');
+        $pendingRegistration = $this->session->get('pending_registration');
+        $planQuery           = trim($this->get('plan', ''));
+        $isRenew             = $this->get('renew', 0);
+        $isInit              = $this->get('init', 0);
+
+        if (!$pendingRegistration && $planQuery && Auth::isVendorLoggedIn()) {
+            $loggedVendorId = Auth::vendorId();
+            $vendor = $this->vendorModel->find($loggedVendorId);
+            if ($vendor && isValidPlan($vendor['vendor_type'], $planQuery)) {
+                $this->session->set('payment_plan', $planQuery);
+                $this->session->set('payment_vendor_id', $loggedVendorId);
+                $this->session->set('pre_payment_vendor_id', $loggedVendorId);
+                $vendorId = $loggedVendorId;
+                $vendorType = $vendorType ?: $vendor['vendor_type'];
+                $planType = $planQuery;
+            }
+        }
+
+        if ($pendingRegistration) {
+            $vendorType = $vendorType ?: ($pendingRegistration['vendor_type'] ?? 'student');
+            $planType   = $planType   ?: ($pendingRegistration['plan_type'] ?? 'basic');
+        }
+
+        // CRITICAL: For renewal, vendor MUST be authenticated
+        if ($isRenew && !Auth::isVendorLoggedIn()) {
+            $this->redirectWith('vendor/login', 'error', 'Please log in to renew your subscription.');
+            return;
+        }
 
         // Use logged-in vendor if session has no vendor_id
         if (($isRenew || $isInit) && Auth::isVendorLoggedIn() && !$vendorId) {
             $vendorId   = Auth::vendorId();
             $vendor     = $this->vendorModel->find($vendorId);
-            $vendorType = $vendor['vendor_type'];
+            $vendorType = $vendorType ?: $vendor['vendor_type'];
             if ($isRenew) {
                 $planType = $vendor['plan_type'];
             }
         }
 
-        if (!$vendorId) {
+        if (!$vendorId && !$pendingRegistration) {
             $this->redirectWith('vendor/register', 'error', 'Please complete registration first.');
             return;
         }
 
-        $vendor = $this->vendorModel->find((int)$vendorId);
-        if (!$vendor) {
-            $this->redirectWith('vendor/register', 'error', 'Vendor account not found.');
-            return;
+        // Ensure vendorType is populated from vendor record before validation
+        if ($vendorId && empty($vendorType)) {
+            $vendor = $this->vendorModel->find((int)$vendorId);
+            if ($vendor && isset($vendor['vendor_type'])) {
+                $vendorType = $vendor['vendor_type'];
+            }
         }
 
-        if (empty($vendorType) && isset($vendor['vendor_type'])) {
-            $vendorType = $vendor['vendor_type'];
+        // Validate vendor type before calling getPlanAmount
+        if (empty($vendorType) || !in_array($vendorType, ['student', 'community'], true)) {
+            $this->redirectWith('vendor/subscription', 'error', 'Unable to determine your vendor type. Please try again.');
+            return;
         }
 
         $amount = getPlanAmount($vendorType, $planType);
 
         // ── If this is a free plan, process immediately ──
         if ((int)$amount === 0) {
-            // Activate free plan directly
-            if ($this->session->get('pending_registration')) {
+            if ($pendingRegistration) {
                 $this->processFreePlanRegistration($vendorId, $vendorType, $planType);
             } else {
-                // Vendor is renewing to free plan
                 $this->processFreePlanRenewal($vendorId, $planType);
             }
+            return;
+        }
+
+        $vendor = $this->vendorModel->find((int)$vendorId);
+        if (!$vendor) {
+            $this->redirectWith('vendor/subscription', 'error', 'Vendor account not found. Please try again.');
             return;
         }
 
@@ -133,27 +167,92 @@ class PaymentController extends Controller
     // ============================================================
     private function processFreePlanRegistration(int $vendorId, string $vendorType, string $planType): void
     {
-        $this->db->beginTransaction();
         try {
-            // Create vendor from pending registration data
-            $pendingReg = $this->session->get('pending_registration');
-            if (!$pendingReg) {
-                throw new Exception('No pending registration data found.');
+            $vendorId = $this->completeFreePlanActivation($vendorId, $vendorType, $planType, true);
+            if (!$vendorId) {
+                throw new Exception('Could not complete free plan activation.');
             }
 
-            // If vendor not yet created, create it now
-            if (!$vendorId) {
-                if ($vendorType === 'student') {
+            $vendor = $this->vendorModel->find($vendorId);
+            if (!$vendor) {
+                throw new Exception('Vendor not found after activation.');
+            }
+
+            $email = $vendor['school_email'] ?? $vendor['working_email'] ?? '';
+            if ($email) {
+                if (in_array($vendor['status'], ['approved', 'active'], true)) {
+                    $this->mailer->sendVendorApproved(
+                        $email,
+                        $vendor['full_name'],
+                        $vendor['business_name'],
+                        SITE_URL . '/vendor/dashboard'
+                    );
+                } else {
+                    $this->mailer->sendVendorRegistrationReceived(
+                        $email,
+                        $vendor['full_name'],
+                        $vendor['business_name']
+                    );
+                }
+            }
+
+            if ($vendor['status'] === 'approved') {
+                Notification::sendToVendor(
+                    $vendorId,
+                    'Account Activated',
+                    'Your ' . getPlanLabel($vendorType, $planType) .
+                    ' account has been activated. Start listing your services now!',
+                    Notification::TYPE_PAYMENT,
+                    'vendor/dashboard'
+                );
+            } else {
+                Notification::sendToVendor(
+                    $vendorId,
+                    'Registration Received',
+                    'Your registration for ' . getPlanLabel($vendorType, $planType) .
+                    ' has been received. Your account is pending admin approval. You will be notified once approved.',
+                    Notification::TYPE_PAYMENT,
+                    'vendor/dashboard'
+                );
+            }
+
+            $this->session->loginVendor($vendor);
+            $this->session->remove('pending_registration');
+            $this->session->remove('pending_vendor_id');
+            $this->session->remove('pending_vendor_type');
+            $this->session->remove('pending_plan');
+            $this->session->remove('pending_email');
+
+            $this->redirectWith('vendor/dashboard', 'success', 'Welcome! Your ' . getPlanLabel($vendorType, $planType) . ' account is active.');
+            return;
+
+        } catch (Exception $e) {
+            Logger::error('Free plan activation failed', $e->getMessage());
+            $this->redirectWith('vendor/register?type=' . $vendorType, 'error', 'Could not complete registration: ' . $e->getMessage());
+            return;
+        }
+    }
+
+    private function completeFreePlanActivation(int $vendorId, string $vendorType, string $planType, bool $isRegistration): int
+    {
+        $pendingReg = $this->session->get('pending_registration');
+        $this->db->beginTransaction();
+        try {
+            if ($isRegistration && !$vendorId) {
+                if (!$pendingReg) {
+                    throw new Exception('No pending registration data found.');
+                }
+
+                if ($pendingReg['vendor_type'] === 'student') {
                     $vendorId = $this->vendorModel->createStudentVendor($pendingReg);
                 } else {
                     $vendorId = $this->vendorModel->createCommunityVendor($pendingReg);
                 }
-                
+
                 if (!$vendorId) {
                     throw new Exception('Could not create vendor account.');
                 }
 
-                // Record terms acceptance
                 require_once __DIR__ . '/../models/TermsAcceptanceModel.php';
                 $termsModel = new TermsAcceptanceModel();
                 $termsModel->recordAll($vendorId, 'vendor', getClientIP());
@@ -161,21 +260,18 @@ class PaymentController extends Controller
 
             $vendor = $this->vendorModel->find($vendorId);
             if (!$vendor) {
-                throw new Exception('Vendor account not found after creation.');
+                throw new Exception('Vendor account not found.');
             }
 
-            // For Student Free plan, activate immediately (no admin approval needed)
             if ($vendorType === 'student' && $planType === 'basic') {
-                $this->vendorModel->updateStatus($vendorId, 'approved');
+                $this->vendorModel->approve($vendorId);
                 $this->vendorModel->activate($vendorId);
             }
-            // For other free plans (if any), require admin approval
-            else {
-                // Keep status as 'pending' requiring admin review
-            }
 
-            // Create a payment record with amount 0 for record-keeping
-            $reference = 'FREE_' . $vendorType . '_' . $vendorId . '_' . time();
+            $reference = $isRegistration
+                ? 'FREE_' . $vendorType . '_' . $vendorId . '_' . time()
+                : 'FREE_RENEW_' . $vendorId . '_' . time();
+
             $paymentId = $this->paymentModel->createPending([
                 'vendor_id'   => $vendorId,
                 'vendor_type' => $vendorType,
@@ -188,13 +284,11 @@ class PaymentController extends Controller
                 throw new Exception('Could not create payment record.');
             }
 
-            // Mark payment as completed (since it's free)
             $this->paymentModel->update($paymentId, [
                 'status'  => 'success',
                 'paid_at' => date('Y-m-d H:i:s'),
             ]);
 
-            // Create subscription
             $subId = $this->subModel->createSubscription([
                 'vendor_id'   => $vendorId,
                 'plan_type'   => $planType,
@@ -207,63 +301,19 @@ class PaymentController extends Controller
                 throw new Exception('Could not create subscription.');
             }
 
-            // Update vendor plan
             $this->vendorModel->updatePlan($vendorId, $planType);
 
+            if ($isRegistration) {
+                $this->session->remove('pending_registration');
+            }
+
             $this->db->commit();
+            return $vendorId;
 
         } catch (Exception $e) {
             $this->db->rollback();
-            Logger::error('Free plan activation failed', $e->getMessage());
-            $this->redirectWith('vendor/register?type=' . $vendorType, 'error', 'Could not complete registration: ' . $e->getMessage());
-            return;
+            throw $e;
         }
-
-        // Send welcome email
-        $email = $vendor['school_email'] ?? $vendor['working_email'] ?? '';
-        if ($email) {
-            $this->mailer->sendWelcomeEmail(
-                $email,
-                $vendor['full_name'],
-                $vendor['business_name'],
-                getPlanLabel($vendorType, $planType)
-            );
-        }
-
-        // Send notification
-        if ($vendor['status'] === 'approved') {
-            Notification::sendToVendor(
-                $vendorId,
-                'Account Activated',
-                'Your ' . getPlanLabel($vendorType, $planType) .
-                ' account has been activated. Start listing your services now!',
-                Notification::TYPE_PAYMENT,
-                'vendor/dashboard'
-            );
-        } else {
-            Notification::sendToVendor(
-                $vendorId,
-                'Registration Received',
-                'Your registration for ' . getPlanLabel($vendorType, $planType) .
-                ' has been received. Your account is pending admin approval. You will be notified once approved.',
-                Notification::TYPE_PAYMENT,
-                'vendor/dashboard'
-            );
-        }
-
-        Logger::payment('SUCCESS_FREE', 'FREE_' . $vendorType, 0, $vendorId, 'Free Plan Activated');
-
-        // Log in vendor
-        $this->session->loginVendor($vendor);
-
-        // Clear session data
-        $this->session->remove('pending_registration');
-        $this->session->remove('pending_vendor_id');
-        $this->session->remove('pending_vendor_type');
-        $this->session->remove('pending_plan');
-        $this->session->remove('pending_email');
-
-        $this->redirectWith('vendor/dashboard', 'success', 'Welcome! Your ' . getPlanLabel($vendorType, $planType) . ' account is active.');
     }
 
     // ============================================================
@@ -271,6 +321,13 @@ class PaymentController extends Controller
     // ============================================================
     private function processFreePlanRenewal(int $vendorId, string $planType): void
     {
+        // CRITICAL: Ensure vendor is authenticated before renewal
+        if (!Auth::isVendorLoggedIn() || Auth::vendorId() !== $vendorId) {
+            Logger::error('Free plan renewal auth check failed', "VendorID mismatch or not logged in: $vendorId");
+            $this->redirectWith('vendor/login', 'error', 'Your session has expired. Please log in again.');
+            return;
+        }
+
         $this->db->beginTransaction();
         try {
             $vendor = $this->vendorModel->find($vendorId);
@@ -319,6 +376,13 @@ class PaymentController extends Controller
             $this->redirectWith('vendor/subscription', 'error', 'Renewal failed: ' . $e->getMessage());
             return;
         }
+
+        // CRITICAL: Preserve vendor session after renewal - do NOT regenerate or clear session
+        // Update session with latest vendor info (keeps auth state intact)
+        $this->session->set('vendor_name', $vendor['full_name']);
+        $this->session->set('vendor_email', $vendor['email'] ?? $vendor['working_email']);
+        $this->session->set('vendor_business', $vendor['business_name']);
+        $this->session->set('vendor_plan', $planType);
 
         // Send notification
         Notification::sendToVendor(
@@ -442,13 +506,36 @@ class PaymentController extends Controller
 
         // ── SPECIAL CASE: FREE PLAN ──
         if ((int)$amount === 0) {
-            // For free plans, return success with a special flag
-            // The frontend will handle this differently
+            try {
+                $vendorId = $this->completeFreePlanActivation($vendorId, $vendorType, $planType, (bool)$pendingRegistration);
+                if (!$vendorId) {
+                    $this->jsonError('Could not activate free plan.');
+                    return;
+                }
+
+                $vendor = $this->vendorModel->find($vendorId);
+                if ($vendor && !Auth::isVendorLoggedIn()) {
+                    $this->session->loginVendor($vendor);
+                }
+
+                if ($pendingRegistration) {
+                    $this->session->remove('pending_registration');
+                    $this->session->remove('pending_vendor_id');
+                    $this->session->remove('pending_vendor_type');
+                    $this->session->remove('pending_plan');
+                    $this->session->remove('pending_email');
+                }
+            } catch (Exception $e) {
+                Logger::error('Free plan initiation failed', $e->getMessage());
+                $this->jsonError('Could not activate free plan. Please try again.');
+                return;
+            }
+
             $freshCsrf = CSRF::token();
             $this->jsonSuccess('Free plan activated.', [
-                'is_free_plan'  => true,
-                'reference'     => 'FREE_' . $vendorType . '_' . $vendorId . '_' . time(),
-                'amount'        => 0,
+                'is_free_plan'   => true,
+                'reference'      => 'FREE_' . $vendorType . '_' . $vendorId . '_' . time(),
+                'amount'         => 0,
                 'new_csrf_token' => $freshCsrf,
             ]);
             return;
