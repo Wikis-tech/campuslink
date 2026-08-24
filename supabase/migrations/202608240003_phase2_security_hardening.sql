@@ -37,7 +37,6 @@ for insert to authenticated
 with check (
   (select auth.uid()) = id
   and verification_status = 'pending'
-  and coalesce(status, 'pending') = 'pending'
 );
 
 revoke insert on public.vendor_profiles from authenticated;
