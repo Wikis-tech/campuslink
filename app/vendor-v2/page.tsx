@@ -27,12 +27,21 @@ export default async function VendorDashboard() {
 
   const { data: campus } = await supabase
     .from('vendor_institutions')
-    .select('status,institutions(name)')
+    .select('status,institution_id')
     .eq('vendor_id', userId)
     .eq('is_primary', true)
     .maybeSingle()
 
-  const school = Array.isArray(campus?.institutions) ? campus.institutions[0]?.name : (campus?.institutions as { name?: string } | null)?.name
+  let school: string | null = null
+  if (campus?.institution_id) {
+    const { data: institution } = await supabase
+      .from('institutions')
+      .select('name')
+      .eq('id', campus.institution_id)
+      .maybeSingle()
+    school = institution?.name || null
+  }
+
   const status = vendor.verification_status || 'pending'
 
   return (
