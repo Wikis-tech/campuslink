@@ -19,10 +19,23 @@ export default async function DashboardRouter() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('account_type')
+    .select('account_type,onboarding_completed_at')
     .eq('id', userId)
     .single()
 
-  if (profile?.account_type === 'vendor') redirect('/vendor-v2')
+  if (!profile) redirect('/login?error=We%20could%20not%20load%20your%20profile')
+
+  if (profile.account_type === 'vendor') {
+    const { data: vendor } = await supabase
+      .from('vendor_profiles')
+      .select('onboarding_completed_at')
+      .eq('id', userId)
+      .maybeSingle()
+
+    if (!vendor?.onboarding_completed_at) redirect('/onboarding/vendor')
+    redirect('/vendor-v2')
+  }
+
+  if (!profile.onboarding_completed_at) redirect('/onboarding/student')
   redirect('/student')
 }
