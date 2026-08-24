@@ -1,5 +1,5 @@
--- Campus Link V2 - synchronize legacy initial schema with the secure live foundation.
--- Idempotent by design so it can safely run after the original bootstrap migration.
+-- Campus Link V2 - synchronize the legacy bootstrap schema with the secure V2 foundation.
+-- This migration intentionally supports both a fresh legacy install and the already-created V2 database.
 
 create schema if not exists private;
 
@@ -7,30 +7,58 @@ alter table public.profiles
   add column if not exists account_type text not null default 'student' check (account_type in ('student','vendor')),
   add column if not exists student_verification_status text not null default 'pending' check (student_verification_status in ('pending','verified','rejected','suspended'));
 
-update public.profiles
-set account_type = case when role = 'vendor' then 'vendor' else 'student' end
-where account_type is null or account_type not in ('student','vendor');
+-- Copy legacy values only when the legacy columns exist. Dynamic SQL avoids parse failures on the live V2 schema.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'profiles' and column_name = 'role'
+  ) then
+    execute $sql$
+      update public.profiles
+      set account_type = case when role = 'vendor' then 'vendor' else 'student' end
+      where role in ('student','vendor','user')
+    $sql$;
+  end if;
 
-update public.profiles
-set student_verification_status = case
-  when verification_status in ('verified','rejected','suspended') then verification_status
-  else 'pending'
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'profiles' and column_name = 'verification_status'
+  ) then
+    execute $sql$
+      update public.profiles
+      set student_verification_status = case
+        when verification_status in ('verified','rejected','suspended') then verification_status
+        else 'pending'
+      end
+    $sql$;
+  end if;
 end
-where student_verification_status is null;
+$$;
 
 alter table public.vendor_profiles
   add column if not exists business_email text,
   add column if not exists verification_status text not null default 'pending' check (verification_status in ('pending','under_review','approved','rejected','suspended')),
   add column if not exists total_contacts bigint not null default 0 check (total_contacts >= 0);
 
-update public.vendor_profiles
-set verification_status = case
-  when status = 'approved' then 'approved'
-  when status = 'rejected' then 'rejected'
-  when status = 'suspended' then 'suspended'
-  else 'pending'
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'vendor_profiles' and column_name = 'status'
+  ) then
+    execute $sql$
+      update public.vendor_profiles
+      set verification_status = case
+        when status = 'approved' then 'approved'
+        when status = 'rejected' then 'rejected'
+        when status = 'suspended' then 'suspended'
+        else 'pending'
+      end
+    $sql$;
+  end if;
 end
-where verification_status is null;
+$$;
 
 create table if not exists public.admin_memberships (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -117,10 +145,9 @@ declare
   desired_type text;
 begin
   desired_type := case when new.raw_user_meta_data ->> 'account_type' = 'vendor' then 'vendor' else 'student' end;
-  insert into public.profiles (id, role, account_type, first_name, last_name)
+  insert into public.profiles (id, account_type, first_name, last_name)
   values (
     new.id,
-    desired_type,
     desired_type,
     nullif(trim(new.raw_user_meta_data ->> 'first_name'), ''),
     nullif(trim(new.raw_user_meta_data ->> 'last_name'), '')
