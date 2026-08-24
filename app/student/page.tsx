@@ -11,20 +11,25 @@ export default async function StudentDashboard() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('first_name,account_type,institution_id,student_verification_status,onboarding_completed_at,institutions(name)')
+    .select('first_name,account_type,institution_id,student_verification_status,onboarding_completed_at')
     .eq('id', userId)
     .single()
 
   if (profile?.account_type === 'vendor') redirect('/dashboard')
   if (!profile?.onboarding_completed_at) redirect('/onboarding/student')
 
-  const { data: verification } = await supabase
-    .from('student_verifications')
-    .select('status,verification_method,submitted_at,review_note')
-    .eq('student_id', userId)
-    .maybeSingle()
+  const [{ data: verification }, institutionResult] = await Promise.all([
+    supabase
+      .from('student_verifications')
+      .select('status,verification_method,submitted_at,review_note')
+      .eq('student_id', userId)
+      .maybeSingle(),
+    profile?.institution_id
+      ? supabase.from('institutions').select('name').eq('id', profile.institution_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ])
 
-  const school = Array.isArray(profile?.institutions) ? profile.institutions[0]?.name : (profile?.institutions as { name?: string } | null)?.name
+  const school = institutionResult.data?.name || null
   const status = verification?.status || profile?.student_verification_status || 'pending'
 
   return (
