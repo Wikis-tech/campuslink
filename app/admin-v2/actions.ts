@@ -149,3 +149,49 @@ export async function assignGlobalAdmin(formData: FormData) {
   revalidatePath('/admin-v2/admins')
   message('/admin-v2/admins', 'success', 'Global admin role saved.')
 }
+
+export async function saveCategory(formData: FormData) {
+  const supabase = await createClient()
+  const id = text(formData, 'category_id', 80)
+  const name = text(formData, 'name', 120)
+  const slug = slugify(text(formData, 'slug', 140) || name)
+  const description = text(formData, 'description', 500)
+  const icon = text(formData, 'icon', 80)
+  const active = text(formData, 'active', 10) !== 'false'
+  if (name.length < 2 || !slug) message('/admin-v2/categories', 'error', 'Enter a valid category name.')
+
+  const { error } = await supabase.rpc('admin_upsert_category', {
+    category_id: id || null,
+    category_name: name,
+    category_slug: slug,
+    category_description: description || null,
+    category_icon: icon || null,
+    category_active: active,
+  })
+  if (error) message('/admin-v2/categories', 'error', error.message)
+  revalidatePath('/admin-v2/categories')
+  revalidatePath('/student/discover')
+  message('/admin-v2/categories', 'success', id ? 'Category updated.' : 'Category created.')
+}
+
+export async function moderateReview(formData: FormData) {
+  const supabase = await createClient()
+  const reviewId = text(formData, 'review_id', 80)
+  const nextStatus = text(formData, 'status', 20)
+  const { error } = await supabase.rpc('admin_moderate_review', { review_id: reviewId, next_status: nextStatus })
+  if (error) message('/admin-v2/reviews', 'error', error.message)
+  revalidatePath('/admin-v2/reviews')
+  revalidatePath('/student/discover')
+  message('/admin-v2/reviews', 'success', `Review marked ${nextStatus}.`)
+}
+
+export async function processSchoolRequest(formData: FormData) {
+  const supabase = await createClient()
+  const requestId = text(formData, 'request_id', 80)
+  const decision = text(formData, 'decision', 20)
+  const { error } = await supabase.rpc('admin_process_school_request', { request_id: requestId, decision })
+  if (error) message('/admin-v2/schools', 'error', error.message)
+  revalidatePath('/admin-v2/schools')
+  revalidatePath('/onboarding/student')
+  message('/admin-v2/schools', 'success', decision === 'approve' ? 'School request approved and added to onboarding.' : 'School request rejected.')
+}
