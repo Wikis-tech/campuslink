@@ -28,7 +28,7 @@ export default async function AdminDashboard() {
 
   return (
     <>
-      <header className="admin-hero reveal-admin">
+      <header className="admin-hero phase45-admin-hero reveal-admin">
         <div className="admin-hero-copy">
           <div className="admin-hero-label"><ShieldCheck size={16}/> Campus Link Admin</div>
           <h1>Keep every campus safe, active and moving.</h1>
@@ -41,16 +41,16 @@ export default async function AdminDashboard() {
         </div>
       </header>
 
-      <section className="admin-grid admin-metric-grid stagger-admin">
-        <article className="admin-stat stat-blue"><div className="admin-stat-icon"><GraduationCap/></div><span>Students in scope</span><strong>{studentCount}</strong><small>Registered student accounts visible to your role.</small></article>
-        <article className="admin-stat stat-green"><div className="admin-stat-icon"><Store/></div><span>Vendors in scope</span><strong>{vendorCount}</strong><small>Businesses currently managed across Campus Link.</small></article>
-        <article className="admin-stat stat-soft"><div className="admin-stat-icon"><Building2/></div><span>Active schools</span><strong>{schoolCount}</strong><small>Institutions currently available in onboarding.</small></article>
-        <article className="admin-stat stat-warn"><div className="admin-stat-icon"><LifeBuoy/></div><span>Open reports</span><strong>{reportCount}</strong><small>Safety and support cases requiring attention.</small></article>
+      <section className="cl-data-rail admin-data-rail" aria-label="Campus Link operational summary">
+        <div className="brand"><span>Students in scope</span><strong>{studentCount}</strong><small>Registered student accounts</small></div>
+        <div className="accent"><span>Vendors in scope</span><strong>{vendorCount}</strong><small>Businesses currently managed</small></div>
+        <div><span>Active schools</span><strong>{schoolCount}</strong><small>Available in onboarding</small></div>
+        <div><span>Open reports</span><strong>{reportCount}</strong><small>Cases requiring attention</small></div>
       </section>
 
       <section className="admin-overview-grid">
         <AdminOverviewChart students={studentCount} vendors={vendorCount} schools={schoolCount} reports={reportCount}/>
-        <section className="admin-priority-card">
+        <section className="admin-priority-card cl-editorial-surface">
           <div className="admin-priority-head"><div><span>Priority queue</span><strong>What needs attention now</strong></div><Activity size={20}/></div>
           <Link href="/admin-v2/students" className="priority-row"><div className="priority-icon blue"><GraduationCap/></div><div><strong>Student verification</strong><span>Review student identity and school evidence.</span></div><b>{studentQueue}</b><ArrowUpRight/></Link>
           <Link href="/admin-v2/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>Vendor verification</strong><span>Review identity before campus visibility.</span></div><b>{vendorQueue}</b><ArrowUpRight/></Link>
