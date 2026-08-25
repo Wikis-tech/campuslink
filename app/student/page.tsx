@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { ArrowUpRight, BadgeCheck, Bookmark, MapPin, Search, ShieldCheck, Star, UsersRound } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { StudentActivityChart } from '@/components/dashboard-charts'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export default async function StudentDashboard() {
   const supabase = await createClient()
@@ -34,6 +35,7 @@ export default async function StudentDashboard() {
   const reviewCount = reviewResult.count || 0
   const contactCount = contactResult.count || 0
   const reportCount = reportResult.count || 0
+  const hasActivity = savedCount + reviewCount + contactCount + reportCount > 0
   let featured: any[] = []
   let campusVendorCount = 0
 
@@ -51,17 +53,20 @@ export default async function StudentDashboard() {
     <main className="student-app">
       <header className="student-nav">
         <Link href="/student" className="student-brand">Campus<span>Link</span></Link>
-        <nav className="student-navlinks">
-          <Link href="/student">Dashboard</Link>
-          <Link href="/student/discover">Discover</Link>
-          <Link href="/student/saved">Saved</Link>
-          <Link href="/onboarding/student">Verification</Link>
-          <form action="/auth/signout" method="post"><button>Sign out</button></form>
-        </nav>
+        <div className="student-navtools">
+          <nav className="student-navlinks">
+            <Link href="/student">Dashboard</Link>
+            <Link href="/student/discover">Discover</Link>
+            <Link href="/student/saved">Saved</Link>
+            <Link href="/onboarding/student">Verification</Link>
+            <form action="/auth/signout" method="post"><button>Sign out</button></form>
+          </nav>
+          <ThemeToggle compact />
+        </div>
       </header>
 
       <section className="student-shell">
-        <section className="student-hero-card reveal-panel">
+        <section className="student-hero-card phase45-hero reveal-panel">
           <div className="student-hero-copy">
             <div className="student-hero-kicker"><ShieldCheck size={16}/> Your campus network</div>
             <h1>Welcome back{profile.first_name ? `, ${profile.first_name}` : ''}.</h1>
@@ -72,17 +77,23 @@ export default async function StudentDashboard() {
               <button type="submit">Search <ArrowUpRight size={16}/></button>
             </form>
           </div>
+
           <div className="student-hero-side">
-            {school ? <div className="hero-campus"><MapPin size={18}/><span>Your campus</span><strong>{school}</strong></div> : <div className="hero-campus"><UsersRound size={18}/><span>Account</span><strong>Student</strong></div>}
-            <div className="hero-network-number"><span>Approved vendors around you</span><strong>{campusVendorCount}</strong><small>Updates automatically as your campus network grows.</small></div>
+            <div className="student-campus-card">
+              {school ? <MapPin size={18}/> : <UsersRound size={18}/>} 
+              <span>{school ? 'Your campus' : 'Your account'}</span>
+              <strong>{school || 'Student workspace'}</strong>
+              <small>{campusVendorCount} approved vendor{campusVendorCount === 1 ? '' : 's'} currently available around your campus network.</small>
+            </div>
           </div>
+          <div className="cl-link-arc" style={{right:24,bottom:18,width:190,height:70}} aria-hidden="true"><span className="arc-line"/></div>
         </section>
 
-        <section className="student-stat-grid stagger-grid">
-          <article className="student-stat-card blue"><span>Saved vendors</span><strong>{savedCount}</strong><small>Your shortlist for quick return visits.</small></article>
-          <article className="student-stat-card green"><span>Vendor contacts</span><strong>{contactCount}</strong><small>Connections started through Campus Link.</small></article>
-          <article className="student-stat-card soft"><span>Your reviews</span><strong>{reviewCount}</strong><small>Feedback shared with your campus community.</small></article>
-          <article className="student-stat-card dark"><span>Verification</span><strong className="status-word">{status.replace('_', ' ')}</strong><small>{status === 'verified' ? 'Your student identity is verified.' : 'You can keep browsing while verification is pending.'}</small></article>
+        <section className="cl-data-rail student-data-rail" aria-label="Your Campus Link activity summary">
+          <div className="brand"><span>Saved vendors</span><strong>{savedCount}</strong><small>Your shortlist</small></div>
+          <div className="accent"><span>Vendor contacts</span><strong>{contactCount}</strong><small>Connections started</small></div>
+          <div><span>Your reviews</span><strong>{reviewCount}</strong><small>Feedback shared</small></div>
+          <div><span>Verification</span><strong style={{fontSize:18,textTransform:'capitalize'}}>{status.replace('_', ' ')}</strong><small>{status === 'verified' ? 'Identity confirmed' : 'Account remains usable'}</small></div>
         </section>
 
         {!setupComplete ? (
@@ -97,8 +108,17 @@ export default async function StudentDashboard() {
         ) : null}
 
         <section className="student-insight-grid">
-          <StudentActivityChart saved={savedCount} reviews={reviewCount} contacts={contactCount} reports={reportCount}/>
-          <div className="student-quick-panel">
+          {hasActivity ? (
+            <StudentActivityChart saved={savedCount} reviews={reviewCount} contacts={contactCount} reports={reportCount}/>
+          ) : (
+            <section className="cl-empty-activity">
+              <div>
+                <strong>Your activity will grow with you.</strong>
+                <p>Save a vendor, contact someone or leave a review and your Campus Link activity will start appearing here.</p>
+              </div>
+            </section>
+          )}
+          <div className="student-quick-panel cl-editorial-surface">
             <div className="panel-heading"><span>Quick access</span><strong>Move around Campus Link</strong></div>
             <div className="quick-link-grid">
               <Link href="/student/discover" className="quick-link blue"><Search size={21}/><div><strong>Discover</strong><span>Browse approved campus vendors</span></div><ArrowUpRight/></Link>
