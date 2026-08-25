@@ -1,15 +1,17 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ArrowUpRight, BadgeCheck, Bookmark, MapPin, Search, ShieldCheck, Star, UsersRound } from 'lucide-react'
+import { ArrowUpRight, BadgeCheck, Bookmark, Search, ShieldCheck, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { StudentActivityChart } from '@/components/dashboard-charts'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { DynamicCampusContext, DynamicGreeting } from '@/components/dynamic-greeting'
 
 export default async function StudentDashboard() {
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const userId = claimsData?.claims?.sub
   if (!userId) redirect('/login')
+  const sessionSeed = typeof claimsData?.claims?.session_id === 'string' ? claimsData.claims.session_id : userId
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -66,11 +68,10 @@ export default async function StudentDashboard() {
       </header>
 
       <section className="student-shell">
-        <section className="student-hero-card phase45-hero reveal-panel">
+        <section className="student-hero-card phase45-hero phase46-hero reveal-panel">
           <div className="student-hero-copy">
-            <div className="student-hero-kicker"><ShieldCheck size={16}/> Your campus network</div>
-            <h1>Welcome back{profile.first_name ? `, ${profile.first_name}` : ''}.</h1>
-            <p>{school ? `Find trusted people already approved to serve ${school}.` : 'Explore Campus Link now and connect your account to your school whenever you are ready.'}</p>
+            <DynamicGreeting firstName={profile.first_name} sessionSeed={sessionSeed} role="student" />
+            <p>{school ? 'Search your campus, find someone trusted, and get moving.' : 'Explore Campus Link now and connect your account to your school whenever you are ready.'}</p>
             <form className="hero-search" action="/student/discover" method="get">
               <Search size={20}/>
               <input name="q" placeholder="What do you need today? Try phone repair, braids, tutor..."/>
@@ -79,14 +80,11 @@ export default async function StudentDashboard() {
           </div>
 
           <div className="student-hero-side">
-            <div className="student-campus-card">
-              {school ? <MapPin size={18}/> : <UsersRound size={18}/>} 
-              <span>{school ? 'Your campus' : 'Your account'}</span>
-              <strong>{school || 'Student workspace'}</strong>
-              <small>{campusVendorCount} approved vendor{campusVendorCount === 1 ? '' : 's'} currently available around your campus network.</small>
-            </div>
+            <DynamicCampusContext school={school} vendorCount={campusVendorCount} sessionSeed={sessionSeed} />
           </div>
-          <div className="cl-link-arc" style={{right:24,bottom:18,width:190,height:70}} aria-hidden="true"><span className="arc-line"/></div>
+          <div className="cl-link-arc phase46-arc" aria-hidden="true"><span className="arc-line"/></div>
+          <div className="phase46-orbit phase46-orbit-one" aria-hidden="true" />
+          <div className="phase46-orbit phase46-orbit-two" aria-hidden="true" />
         </section>
 
         <section className="cl-data-rail student-data-rail" aria-label="Your Campus Link activity summary">
@@ -143,7 +141,7 @@ export default async function StudentDashboard() {
             ))}
           </div>
         ) : (
-          <div className="empty-state branded-empty"><ShieldCheck size={34}/><h2>{school ? 'Your campus network is getting ready' : 'Connect your school to personalise Campus Link'}</h2><p>{school ? 'Approved vendors will appear here automatically as your school network grows.' : 'You can use your account already. Add your school whenever convenient so discovery becomes campus-specific.'}</p>{!school ? <Link href="/onboarding/student" className="search-button inline-button">Add my school</Link> : null}</div>
+          <div className="empty-state branded-empty"><ShieldCheck size={34}/><h2>{school ? 'Your local vendor list is still growing' : 'Connect your school to personalise Campus Link'}</h2><p>{school ? 'Approved vendors will show up here as more businesses are cleared for your school.' : 'You can use your account already. Add your school whenever convenient so discovery becomes campus-specific.'}</p>{!school ? <Link href="/onboarding/student" className="search-button inline-button">Add my school</Link> : null}</div>
         )}
       </section>
 
