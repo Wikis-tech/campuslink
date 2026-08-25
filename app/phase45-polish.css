@@ -45,6 +45,8 @@ html[data-theme='dark'] .onboarding-shell,
 html[data-theme='dark'] .auth-shell,
 html[data-theme='dark'] .dash-shell{background:var(--cl-bg)!important}
 
+.cl-floating-theme{position:fixed;right:18px;top:18px;z-index:90;padding:4px;border:1px solid var(--cl-line);border-radius:999px;background:color-mix(in srgb,var(--cl-surface) 80%,transparent);backdrop-filter:blur(16px);box-shadow:var(--cl-shadow)}
+
 /* Admin content pages */
 .admin-main table,.admin-main .admin-table,.admin-main .data-table{background:var(--cl-surface)!important;color:var(--cl-text)!important;border-color:var(--cl-line)!important}
 .admin-main th{color:var(--cl-muted)!important;border-color:var(--cl-line)!important}
@@ -92,4 +94,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .portal-shell{padding:18px 14px 80px!important}
   .portal-hero.phase45-vendor-hero{padding:24px 20px!important;display:grid!important;gap:20px!important}
   .portal-grid{grid-template-columns:1fr!important}
+  .cl-floating-theme{right:10px;top:10px}
+  .cl-floating-theme .cl-theme-toggle span{display:none}
 }
