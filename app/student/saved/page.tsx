@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Bookmark, MapPin, ShieldCheck, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { toggleSavedVendor } from '../actions'
 
 export default async function SavedVendorsPage() {
@@ -47,7 +48,10 @@ export default async function SavedVendorsPage() {
     <main className="student-app">
       <header className="student-nav">
         <Link href="/student" className="student-brand">Campus<span>Link</span></Link>
-        <nav className="student-navlinks"><Link href="/student">Dashboard</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
+        <div className="student-navtools">
+          <nav className="student-navlinks"><Link href="/student">Dashboard</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
+          <ThemeToggle compact />
+        </div>
       </header>
 
       <section className="student-shell">
