@@ -6,12 +6,14 @@ create table if not exists public.vendor_portfolio_items (
   title text not null,
   description text,
   image_url text not null,
+  storage_path text,
   sort_order integer not null default 0,
   is_active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
+alter table public.vendor_portfolio_items add column if not exists storage_path text;
 alter table public.vendor_portfolio_items enable row level security;
 
 drop policy if exists vendor_portfolio_public_read on public.vendor_portfolio_items;
