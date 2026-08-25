@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ThemeFloatingControl } from '@/components/theme-floating-control'
 import './globals.css'
 import './auth.css'
 import './phase45.css'
@@ -29,7 +30,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ThemeFloatingControl />
+      </body>
     </html>
   )
 }
