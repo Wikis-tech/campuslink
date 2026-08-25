@@ -2,7 +2,6 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteUrl } from '@/lib/site-url'
 
 export async function register(formData: FormData) {
   const firstName = String(formData.get('first_name') || '').trim().slice(0, 80)
@@ -29,7 +28,6 @@ export async function register(formData: FormData) {
         last_name: lastName,
         account_type: accountType,
       },
-      emailRedirectTo: `${getSiteUrl()}/auth/confirm`,
     },
   })
 
@@ -40,6 +38,9 @@ export async function register(formData: FormData) {
     }
     if (normalized.includes('password')) {
       redirect('/register?error=That%20password%20does%20not%20meet%20the%20security%20requirements')
+    }
+    if (normalized.includes('email') || normalized.includes('smtp')) {
+      redirect('/register?error=We%20could%20not%20send%20the%20verification%20email.%20Please%20try%20again%20in%20a%20moment')
     }
     redirect('/register?error=We%20could%20not%20create%20your%20account.%20Please%20try%20again')
   }
