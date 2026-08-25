@@ -3,12 +3,14 @@ import { redirect } from 'next/navigation'
 import { BadgeCheck, BarChart3, Bookmark, Building2, ImagePlus, MessageCircle, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { DynamicGreeting } from '@/components/dynamic-greeting'
 
 export default async function VendorDashboard() {
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const userId = claimsData?.claims?.sub
   if (!userId) redirect('/login')
+  const sessionSeed = typeof claimsData?.claims?.session_id === 'string' ? claimsData.claims.session_id : userId
 
   const { data: profile } = await supabase.from('profiles').select('first_name,account_type').eq('id', userId).maybeSingle()
   if (!profile || profile.account_type !== 'vendor') redirect('/dashboard')
@@ -26,9 +28,13 @@ export default async function VendorDashboard() {
           <Link href="/" className="brand">Campus<span>Link</span></Link>
           <div style={{display:'flex',alignItems:'center',gap:10}}><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></div>
         </header>
-        <section className="portal-hero phase45-vendor-hero">
-          <div><p className="eyebrow">Vendor workspace</p><h1>Welcome{profile.first_name ? `, ${profile.first_name}` : ''}.</h1><p>Your vendor account is active. Complete your business profile and verification when you are ready; student and vendor data remain completely separate.</p></div>
+        <section className="portal-hero phase45-vendor-hero phase46-vendor-hero">
+          <div>
+            <DynamicGreeting firstName={profile.first_name} sessionSeed={sessionSeed} role="vendor" />
+            <p>Your workspace is ready. Set up your business when you’re ready and we’ll keep your student and vendor activity completely separate.</p>
+          </div>
           <div className="status-card status-pending"><BadgeCheck size={22}/><div><span>Vendor setup</span><strong>not completed</strong></div></div>
+          <div className="phase46-orbit phase46-orbit-one" aria-hidden="true" />
         </section>
         <section className="portal-grid">
           <Link href="/onboarding/vendor" className="portal-action primary-action" style={{textDecoration:'none'}}><Building2 size={24}/><div><strong>Set up your business</strong><span>Add business details, services, campus and vendor verification evidence.</span></div></Link>
@@ -62,13 +68,14 @@ export default async function VendorDashboard() {
         <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
       </header>
 
-      <section className="portal-hero phase45-vendor-hero">
+      <section className="portal-hero phase45-vendor-hero phase46-vendor-hero">
         <div>
-          <p className="eyebrow">Vendor dashboard</p>
-          <h1>{vendor.business_name}</h1>
-          <p>{discoverable ? `Your business is live for verified discovery around ${school || 'your approved campus'}.` : `${school ? `Primary campus: ${school}. ` : ''}You can use your vendor workspace now; public discovery unlocks only after business verification and campus approval.`}</p>
+          <DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" />
+          <p>{discoverable ? `${vendor.business_name} is live around ${school || 'your approved campus'}. Check your activity and keep your profile fresh.` : `${school ? `${school} is your current campus. ` : ''}Your workspace is active; public discovery unlocks after business verification and campus approval.`}</p>
         </div>
         <div className={`status-card status-${status}`}><BadgeCheck size={22}/><div><span>Vendor verification</span><strong>{setupComplete ? status.replace('_',' ') : 'not completed'}</strong></div></div>
+        <div className="phase46-orbit phase46-orbit-one" aria-hidden="true" />
+        <div className="phase46-orbit phase46-orbit-two" aria-hidden="true" />
       </section>
 
       {!setupComplete ? <section className="portal-action primary-action" style={{marginBottom:24}}><BadgeCheck size={24}/><div><strong>Finish vendor verification</strong><span>Complete business details, campus selection and verification evidence. You can return to this dashboard at any time.</span></div><Link href="/onboarding/vendor" className="btn btn-primary">Continue setup</Link></section> : null}
