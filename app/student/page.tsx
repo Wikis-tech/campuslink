@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, Bookmark, MapPin, Search, ShieldCheck, Star } from 'lucide-react'
+import { ArrowUpRight, BadgeCheck, Bookmark, MapPin, Search, ShieldCheck, Star, UsersRound } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { StudentActivityChart } from '@/components/dashboard-charts'
 
 export default async function StudentDashboard() {
   const supabase = await createClient()
@@ -17,20 +18,29 @@ export default async function StudentDashboard() {
 
   if (!profile || profile.account_type === 'vendor') redirect('/dashboard')
 
-  const [{ data: verification }, institutionResult, savedResult] = await Promise.all([
+  const [{ data: verification }, institutionResult, savedResult, reviewResult, contactResult, reportResult] = await Promise.all([
     supabase.from('student_verifications').select('status,verification_method,submitted_at,review_note').eq('student_id', userId).maybeSingle(),
     profile.institution_id ? supabase.from('institutions').select('name').eq('id', profile.institution_id).maybeSingle() : Promise.resolve({ data: null }),
-    supabase.from('saved_vendors').select('vendor_id').eq('student_id', userId),
+    supabase.from('saved_vendors').select('vendor_id', { count: 'exact' }).eq('student_id', userId),
+    supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('student_id', userId),
+    supabase.from('contact_events').select('id', { count: 'exact', head: true }).eq('student_id', userId),
+    supabase.from('complaints').select('id', { count: 'exact', head: true }).eq('reporter_id', userId),
   ])
 
   const school = institutionResult.data?.name || null
   const status = verification?.status || profile.student_verification_status || 'pending'
   const setupComplete = Boolean(profile.onboarding_completed_at)
+  const savedCount = savedResult.count ?? savedResult.data?.length ?? 0
+  const reviewCount = reviewResult.count || 0
+  const contactCount = contactResult.count || 0
+  const reportCount = reportResult.count || 0
   let featured: any[] = []
+  let campusVendorCount = 0
 
   if (profile.institution_id) {
-    const { data: campusLinks } = await supabase.from('vendor_institutions').select('vendor_id').eq('institution_id', profile.institution_id).eq('status', 'approved').limit(8)
+    const { data: campusLinks } = await supabase.from('vendor_institutions').select('vendor_id').eq('institution_id', profile.institution_id).eq('status', 'approved').limit(50)
     const ids = (campusLinks || []).map((row) => row.vendor_id)
+    campusVendorCount = ids.length
     if (ids.length) {
       const { data } = await supabase.from('vendor_profiles').select('id,business_name,slug,logo_url,average_rating,review_count').in('id', ids).eq('verification_status', 'approved').order('average_rating', { ascending: false }).limit(3)
       featured = data || []
@@ -41,39 +51,80 @@ export default async function StudentDashboard() {
     <main className="student-app">
       <header className="student-nav">
         <Link href="/student" className="student-brand">Campus<span>Link</span></Link>
-        <nav className="student-navlinks"><Link href="/student">Dashboard</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><Link href="/onboarding/student">Verification</Link><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
+        <nav className="student-navlinks">
+          <Link href="/student">Dashboard</Link>
+          <Link href="/student/discover">Discover</Link>
+          <Link href="/student/saved">Saved</Link>
+          <Link href="/onboarding/student">Verification</Link>
+          <form action="/auth/signout" method="post"><button>Sign out</button></form>
+        </nav>
       </header>
 
       <section className="student-shell">
-        <div className="student-head">
-          <div><h1>Hi{profile.first_name ? `, ${profile.first_name}` : ''}. What do you need today?</h1><p>{school ? `Discover verified people serving ${school}.` : 'Start exploring Campus Link, then add your school when you are ready.'}</p></div>
-          {school ? <span className="campus-chip"><MapPin size={16}/>{school}</span> : <span className="campus-chip"><ShieldCheck size={16}/> Student account</span>}
-        </div>
+        <section className="student-hero-card reveal-panel">
+          <div className="student-hero-copy">
+            <div className="student-hero-kicker"><ShieldCheck size={16}/> Your campus network</div>
+            <h1>Welcome back{profile.first_name ? `, ${profile.first_name}` : ''}.</h1>
+            <p>{school ? `Find trusted people already approved to serve ${school}.` : 'Explore Campus Link now and connect your account to your school whenever you are ready.'}</p>
+            <form className="hero-search" action="/student/discover" method="get">
+              <Search size={20}/>
+              <input name="q" placeholder="What do you need today? Try phone repair, braids, tutor..."/>
+              <button type="submit">Search <ArrowUpRight size={16}/></button>
+            </form>
+          </div>
+          <div className="student-hero-side">
+            {school ? <div className="hero-campus"><MapPin size={18}/><span>Your campus</span><strong>{school}</strong></div> : <div className="hero-campus"><UsersRound size={18}/><span>Account</span><strong>Student</strong></div>}
+            <div className="hero-network-number"><span>Approved vendors around you</span><strong>{campusVendorCount}</strong><small>Updates automatically as your campus network grows.</small></div>
+          </div>
+        </section>
+
+        <section className="student-stat-grid stagger-grid">
+          <article className="student-stat-card blue"><span>Saved vendors</span><strong>{savedCount}</strong><small>Your shortlist for quick return visits.</small></article>
+          <article className="student-stat-card green"><span>Vendor contacts</span><strong>{contactCount}</strong><small>Connections started through Campus Link.</small></article>
+          <article className="student-stat-card soft"><span>Your reviews</span><strong>{reviewCount}</strong><small>Feedback shared with your campus community.</small></article>
+          <article className="student-stat-card dark"><span>Verification</span><strong className="status-word">{status.replace('_', ' ')}</strong><small>{status === 'verified' ? 'Your student identity is verified.' : 'You can keep browsing while verification is pending.'}</small></article>
+        </section>
 
         {!setupComplete ? (
-          <section className="verification-banner">
-            <div><span className="verification-icon"><BadgeCheck size={22}/></span><div><strong>Complete your student verification</strong><p>Add your school and student details to unlock campus-specific discovery and the ability to publish reviews.</p></div></div>
-            <Link href="/onboarding/student" className="verification-link">Complete verification</Link>
+          <section className="verification-banner reveal-panel">
+            <div><span className="verification-icon"><BadgeCheck size={22}/></span><div><strong>Complete your student verification</strong><p>Add your school and student details to unlock campus-specific discovery and review privileges.</p></div></div>
+            <Link href="/onboarding/student" className="verification-link">Complete verification <ArrowUpRight size={15}/></Link>
           </section>
         ) : status !== 'verified' ? (
-          <section className="verification-banner soft">
-            <div><span className="verification-icon"><ShieldCheck size={22}/></span><div><strong>Verification {status.replace('_', ' ')}</strong><p>You can continue using Campus Link while your student verification is being processed.</p></div></div>
+          <section className="verification-banner soft reveal-panel">
+            <div><span className="verification-icon"><ShieldCheck size={22}/></span><div><strong>Verification {status.replace('_', ' ')}</strong><p>Your account remains usable while the verification team reviews your submission.</p></div></div>
           </section>
         ) : null}
 
-        <form className="search-panel" action="/student/discover" method="get" style={{gridTemplateColumns:'1fr auto'}}>
-          <label className="search-field"><Search size={18}/><input name="q" placeholder="Search phone repair, tutor, photographer, braids..."/></label>
-          <button className="search-button" type="submit">Find a vendor</button>
-        </form>
-
-        <section className="portal-grid" style={{marginBottom:28}}>
-          <Link href="/student/discover" className="portal-action primary-action" style={{textDecoration:'none'}}><Search size={24}/><div><strong>Discover services</strong><span>{school ? 'Find vendors approved for your school.' : 'Add your school to unlock campus-specific results.'}</span></div></Link>
-          <Link href="/student/saved" className="portal-action" style={{textDecoration:'none'}}><Bookmark size={24}/><div><strong>Saved vendors</strong><span>{savedResult.data?.length || 0} saved vendor{savedResult.data?.length === 1 ? '' : 's'}.</span></div></Link>
-          <Link href="/onboarding/student" className="portal-action" style={{textDecoration:'none'}}><BadgeCheck size={24}/><div><strong>Student verification</strong><span>{status === 'verified' ? 'Verified — you can publish reviews.' : setupComplete ? `${status.replace('_', ' ')} — you can keep browsing while we review it.` : 'Not completed — verify when you are ready.'}</span></div></Link>
+        <section className="student-insight-grid">
+          <StudentActivityChart saved={savedCount} reviews={reviewCount} contacts={contactCount} reports={reportCount}/>
+          <div className="student-quick-panel">
+            <div className="panel-heading"><span>Quick access</span><strong>Move around Campus Link</strong></div>
+            <div className="quick-link-grid">
+              <Link href="/student/discover" className="quick-link blue"><Search size={21}/><div><strong>Discover</strong><span>Browse approved campus vendors</span></div><ArrowUpRight/></Link>
+              <Link href="/student/saved" className="quick-link green"><Bookmark size={21}/><div><strong>Saved</strong><span>Return to vendors you liked</span></div><ArrowUpRight/></Link>
+              <Link href="/onboarding/student" className="quick-link light"><BadgeCheck size={21}/><div><strong>Verification</strong><span>Manage your trust status</span></div><ArrowUpRight/></Link>
+            </div>
+          </div>
         </section>
 
-        <div className="result-meta"><strong style={{color:'#172033'}}>Popular around your campus</strong><Link href="/student/discover">See all vendors</Link></div>
-        {featured.length ? <div className="vendor-grid">{featured.map((vendor) => <article className="vendor-card" key={vendor.id}><div className="vendor-cover"></div><div className="vendor-avatar">{vendor.logo_url ? <img src={vendor.logo_url} alt={`${vendor.business_name} logo`}/> : vendor.business_name.slice(0,1)}</div><div className="vendor-card-body"><div className="vendor-card-top"><div><Link className="vendor-name" href={`/student/vendors/${vendor.slug}`}>{vendor.business_name}</Link><div className="verified-line"><ShieldCheck size={14}/> Campus verified</div></div><div className="rating"><Star size={15} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)}</div></div><div className="vendor-card-actions"><Link className="view-btn" href={`/student/vendors/${vendor.slug}`}>View profile</Link></div></div></article>)}</div> : <div className="empty-state"><ShieldCheck size={34}/><h2>{school ? 'Your campus network is getting ready' : 'Add your school to personalise Campus Link'}</h2><p>{school ? 'There are no approved vendors to show yet. As soon as vendors pass verification and campus approval, they will appear here automatically.' : 'You can already use your account. Complete student verification when convenient so we can show vendors approved for your campus.'}</p>{!school ? <Link href="/onboarding/student" className="search-button" style={{display:'inline-flex',marginTop:12}}>Add my school</Link> : null}</div>}
+        <div className="result-meta section-title-row"><div><span>Campus picks</span><strong>Popular around your campus</strong></div><Link href="/student/discover">See all vendors <ArrowUpRight size={15}/></Link></div>
+        {featured.length ? (
+          <div className="vendor-grid">
+            {featured.map((vendor) => (
+              <article className="vendor-card" key={vendor.id}>
+                <div className="vendor-cover"></div>
+                <div className="vendor-avatar">{vendor.logo_url ? <img src={vendor.logo_url} alt={`${vendor.business_name} logo`}/> : vendor.business_name.slice(0,1)}</div>
+                <div className="vendor-card-body">
+                  <div className="vendor-card-top"><div><Link className="vendor-name" href={`/student/vendors/${vendor.slug}`}>{vendor.business_name}</Link><div className="verified-line"><ShieldCheck size={14}/> Campus verified</div></div><div className="rating"><Star size={15} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)}</div></div>
+                  <div className="vendor-card-actions"><Link className="view-btn" href={`/student/vendors/${vendor.slug}`}>View profile <ArrowUpRight size={14}/></Link></div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state branded-empty"><ShieldCheck size={34}/><h2>{school ? 'Your campus network is getting ready' : 'Connect your school to personalise Campus Link'}</h2><p>{school ? 'Approved vendors will appear here automatically as your school network grows.' : 'You can use your account already. Add your school whenever convenient so discovery becomes campus-specific.'}</p>{!school ? <Link href="/onboarding/student" className="search-button inline-button">Add my school</Link> : null}</div>
+        )}
       </section>
 
       <nav className="bottom-nav"><Link href="/student">Home</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><Link href="/onboarding/student">Verify</Link></nav>
