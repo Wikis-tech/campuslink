@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BarChart3, Building2, ClipboardCheck, GraduationCap, LayoutDashboard, LifeBuoy, ShieldCheck, Store, UserCog } from 'lucide-react'
+import { BarChart3, Building2, ClipboardCheck, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldCheck, Store, UserCog } from 'lucide-react'
 import { requireAdminContext } from './lib'
 import './admin.css'
 
@@ -22,7 +22,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin-v2/schools"><Building2 /> Schools</Link>
             <Link href="/admin-v2/students"><GraduationCap /> Students</Link>
             <Link href="/admin-v2/vendors"><Store /> Vendors</Link>
+            <Link href="/admin-v2/reviews"><MessageSquareText /> Reviews</Link>
             <Link href="/admin-v2/reports"><LifeBuoy /> Reports</Link>
+            <Link href="/admin-v2/categories"><FolderKanban /> Categories</Link>
             <Link href="/admin-v2/admins"><UserCog /> Admins</Link>
             <Link href="/admin-v2/audit"><BarChart3 /> Audit</Link>
             <Link href="/student"><ClipboardCheck /> Student view</Link>
