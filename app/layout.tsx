@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import './auth.css'
+import './phase45.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
