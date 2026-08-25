@@ -1,7 +1,7 @@
 import { Building2, Globe2, MailCheck, Plus, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { canManageSchools, requireAdminContext } from '../lib'
-import { createInstitution, setInstitutionActive } from '../actions'
+import { createInstitution, processSchoolRequest, setInstitutionActive } from '../actions'
 
 export default async function SchoolsAdminPage({ searchParams }: { searchParams: Promise<{ success?: string; error?: string }> }) {
   const params = await searchParams
@@ -12,7 +12,7 @@ export default async function SchoolsAdminPage({ searchParams }: { searchParams:
   const [{ data: schools }, { data: requests }] = await Promise.all([
     supabase.from('institutions').select('id,name,slug,city,state,country,email_domain,is_active,verification_mode,allowed_student_email_domains,verification_instructions').order('name'),
     context.isGlobalAdmin
-      ? supabase.from('school_requests').select('id,school_name,city,state,website,status,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(12)
+      ? supabase.from('school_requests').select('id,school_name,city,state,website,status,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(30)
       : Promise.resolve({ data: [] as Array<Record<string, unknown>> }),
   ])
 
@@ -23,7 +23,7 @@ export default async function SchoolsAdminPage({ searchParams }: { searchParams:
       {params.error ? <div className="admin-error">{params.error}</div> : null}
 
       {manageable ? <section className="admin-section">
-        <div className="admin-section-head"><div><h2>Add a school</h2><p>New active schools become available to the onboarding dropdown immediately after the database migration is live.</p></div><Plus size={20}/></div>
+        <div className="admin-section-head"><div><h2>Add a school</h2><p>New active schools become available to the onboarding dropdown immediately.</p></div><Plus size={20}/></div>
         <div className="admin-section-body">
           <form action={createInstitution} className="admin-form">
             <div className="admin-form-grid">
@@ -58,10 +58,10 @@ export default async function SchoolsAdminPage({ searchParams }: { searchParams:
       </section>
 
       {context.isGlobalAdmin ? <section className="admin-section">
-        <div className="admin-section-head"><div><h2>Student-requested schools</h2><p>Requests submitted from “My school is not listed”. Verify the institution before adding it to the directory.</p></div></div>
-        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>School</th><th>Location</th><th>Website</th><th>Requested</th></tr></thead><tbody>
-          {(requests || []).map((request: any) => <tr key={request.id}><td><span className="admin-name">{request.school_name}</span></td><td>{[request.city,request.state].filter(Boolean).join(', ') || '—'}</td><td>{request.website || '—'}</td><td>{request.created_at ? new Date(request.created_at).toLocaleDateString() : '—'}</td></tr>)}
-          {!requests?.length ? <tr><td colSpan={4}><div className="empty-admin">No pending school requests.</div></td></tr> : null}
+        <div className="admin-section-head"><div><h2>Student-requested schools</h2><p>Requests submitted from “My school is not listed”. Approving creates an active school with hybrid verification; you can then refine its email configuration.</p></div></div>
+        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>School</th><th>Location</th><th>Website</th><th>Requested</th><th>Decision</th></tr></thead><tbody>
+          {(requests || []).map((request: any) => <tr key={request.id}><td><span className="admin-name">{request.school_name}</span></td><td>{[request.city,request.state].filter(Boolean).join(', ') || '—'}</td><td>{request.website || '—'}</td><td>{request.created_at ? new Date(request.created_at).toLocaleDateString() : '—'}</td><td><form action={processSchoolRequest} className="admin-actions"><input type="hidden" name="request_id" value={request.id}/><button className="admin-action success" name="decision" value="approve">Approve + add</button><button className="admin-action danger" name="decision" value="reject">Reject</button></form></td></tr>)}
+          {!requests?.length ? <tr><td colSpan={5}><div className="empty-admin">No pending school requests.</div></td></tr> : null}
         </tbody></table></div>
       </section> : null}
     </>
