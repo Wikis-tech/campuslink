@@ -1,0 +1,95 @@
+/* Phase 4.5 cross-product polish */
+html[data-theme='dark'] .auth-glass-panel,
+html[data-theme='dark'] .auth-card,
+html[data-theme='dark'] .dash-card,
+html[data-theme='dark'] .onboarding-panel{
+  background:rgba(12,24,41,.94)!important;
+  border-color:var(--cl-line)!important;
+  color:var(--cl-text)!important;
+  box-shadow:var(--cl-shadow-lg)!important;
+}
+html[data-theme='dark'] .auth-panel-head p,
+html[data-theme='dark'] .auth-foot,
+html[data-theme='dark'] .panel-heading>p:last-child,
+html[data-theme='dark'] .field-block small,
+html[data-theme='dark'] .verification-choice small,
+html[data-theme='dark'] .onboarding-note{color:var(--cl-muted)!important}
+html[data-theme='dark'] .auth-form label,
+html[data-theme='dark'] .account-choice legend,
+html[data-theme='dark'] .field-block label,
+html[data-theme='dark'] .verification-choice legend,
+html[data-theme='dark'] .school-request summary{color:var(--cl-text)!important}
+html[data-theme='dark'] .auth-form input,
+html[data-theme='dark'] .field-block input,
+html[data-theme='dark'] .field-block select,
+html[data-theme='dark'] .field-block textarea,
+html[data-theme='dark'] .school-request-form input,
+html[data-theme='dark'] .review-form select,
+html[data-theme='dark'] .review-form textarea,
+html[data-theme='dark'] .report-form input,
+html[data-theme='dark'] .report-form textarea{
+  background:var(--cl-surface-2)!important;
+  color:var(--cl-text)!important;
+  border-color:var(--cl-line)!important;
+}
+html[data-theme='dark'] .account-choice-modern label,
+html[data-theme='dark'] .verification-choice label,
+html[data-theme='dark'] .upload-box,
+html[data-theme='dark'] .service-box,
+html[data-theme='dark'] .onboarding-note{
+  background:var(--cl-surface-2)!important;
+  border-color:var(--cl-line)!important;
+  color:var(--cl-text)!important;
+}
+html[data-theme='dark'] .onboarding-shell,
+html[data-theme='dark'] .auth-shell,
+html[data-theme='dark'] .dash-shell{background:var(--cl-bg)!important}
+
+/* Admin content pages */
+.admin-main table,.admin-main .admin-table,.admin-main .data-table{background:var(--cl-surface)!important;color:var(--cl-text)!important;border-color:var(--cl-line)!important}
+.admin-main th{color:var(--cl-muted)!important;border-color:var(--cl-line)!important}
+.admin-main td{border-color:var(--cl-line)!important;color:var(--cl-text)!important}
+.admin-main input,.admin-main select,.admin-main textarea{background:var(--cl-surface)!important;color:var(--cl-text)!important;border-color:var(--cl-line)!important}
+.admin-main .admin-card,.admin-main .form-card,.admin-main .admin-panel,.admin-main .panel-card{background:var(--cl-surface)!important;color:var(--cl-text)!important;border-color:var(--cl-line)!important}
+.admin-main p,.admin-main small{color:var(--cl-muted)}
+
+/* Student discovery and profile surfaces */
+.student-app .search-panel,.student-app .search-field,.student-app .profile-side,.student-app .profile-section{color:var(--cl-text)}
+.student-app .search-panel,.student-app .search-field{background:var(--cl-surface)!important;border-color:var(--cl-line)!important}
+.student-app .search-field input,.student-app .search-panel select{color:var(--cl-text)!important}
+.student-app .vendor-desc,.student-app .profile-title p,.student-app .service-row span,.student-app .review-row p,.student-app .empty-state p{color:var(--cl-muted)!important}
+
+/* Make utility surfaces feel less template-like */
+.verification-banner{border-radius:4px 18px 4px 18px!important}
+.search-panel{border-radius:4px 18px 4px 18px!important;box-shadow:none!important}
+.profile-cover{border-radius:0!important}
+.vendor-profile{border-radius:4px 22px 4px 22px!important}
+.portal-grid{gap:14px!important}
+.admin-overview-grid{gap:16px!important}
+
+/* Focus states */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--cl-green) 42%,transparent)!important;
+  outline-offset:3px;
+}
+
+@media(max-width:900px){
+  .student-insight-grid,.admin-overview-grid{grid-template-columns:1fr!important}
+  .cl-data-rail{margin-left:-2px;margin-right:-2px}
+}
+
+@media(max-width:640px){
+  .student-nav{padding-left:14px!important;padding-right:14px!important}
+  .student-brand{font-size:18px!important}
+  .student-shell{width:min(100% - 20px,1240px)!important}
+  .student-hero-card.phase45-hero{padding:25px 20px!important;grid-template-columns:1fr!important;min-height:0}
+  .student-hero-copy h1{font-size:clamp(2.3rem,14vw,3.45rem)!important}
+  .hero-search{grid-template-columns:auto minmax(0,1fr)!important}
+  .hero-search button{grid-column:1/-1;justify-content:center}
+  .student-campus-card{margin-top:6px}
+  .cl-data-rail>div{min-width:138px}
+  .admin-main{padding:18px!important}
+  .portal-shell{padding:18px 14px 80px!important}
+  .portal-hero.phase45-vendor-hero{padding:24px 20px!important;display:grid!important;gap:20px!important}
+  .portal-grid{grid-template-columns:1fr!important}
+}
