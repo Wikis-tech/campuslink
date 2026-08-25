@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { BadgeCheck, BarChart3, Bookmark, Building2, ImagePlus, MessageCircle, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export default async function VendorDashboard() {
   const supabase = await createClient()
@@ -23,9 +24,9 @@ export default async function VendorDashboard() {
       <main className="portal-shell">
         <header className="portal-topbar">
           <Link href="/" className="brand">Campus<span>Link</span></Link>
-          <form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form>
+          <div style={{display:'flex',alignItems:'center',gap:10}}><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></div>
         </header>
-        <section className="portal-hero">
+        <section className="portal-hero phase45-vendor-hero">
           <div><p className="eyebrow">Vendor workspace</p><h1>Welcome{profile.first_name ? `, ${profile.first_name}` : ''}.</h1><p>Your vendor account is active. Complete your business profile and verification when you are ready; student and vendor data remain completely separate.</p></div>
           <div className="status-card status-pending"><BadgeCheck size={22}/><div><span>Vendor setup</span><strong>not completed</strong></div></div>
         </section>
@@ -58,10 +59,10 @@ export default async function VendorDashboard() {
     <main className="portal-shell">
       <header className="portal-topbar">
         <Link href="/" className="brand">Campus<span>Link</span></Link>
-        <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
+        <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
       </header>
 
-      <section className="portal-hero">
+      <section className="portal-hero phase45-vendor-hero">
         <div>
           <p className="eyebrow">Vendor dashboard</p>
           <h1>{vendor.business_name}</h1>
@@ -72,11 +73,11 @@ export default async function VendorDashboard() {
 
       {!setupComplete ? <section className="portal-action primary-action" style={{marginBottom:24}}><BadgeCheck size={24}/><div><strong>Finish vendor verification</strong><span>Complete business details, campus selection and verification evidence. You can return to this dashboard at any time.</span></div><Link href="/onboarding/vendor" className="btn btn-primary">Continue setup</Link></section> : null}
 
-      <section className="metrics-row">
-        <div><span>Student contacts</span><strong>{contactResult.count || 0}</strong></div>
-        <div><span>Student saves</span><strong>{saveResult.count || 0}</strong></div>
-        <div><span>Average rating</span><strong>{Number(vendor.average_rating || 0).toFixed(1)}</strong></div>
-        <div><span>Reviews</span><strong>{vendor.review_count || 0}</strong></div>
+      <section className="cl-data-rail vendor-data-rail" aria-label="Vendor performance summary">
+        <div className="brand"><span>Student contacts</span><strong>{contactResult.count || 0}</strong><small>Connections started</small></div>
+        <div className="accent"><span>Student saves</span><strong>{saveResult.count || 0}</strong><small>Students who bookmarked you</small></div>
+        <div><span>Average rating</span><strong>{Number(vendor.average_rating || 0).toFixed(1)}</strong><small>Across published reviews</small></div>
+        <div><span>Reviews</span><strong>{vendor.review_count || 0}</strong><small>Verified student feedback</small></div>
       </section>
 
       <section className="portal-grid">
