@@ -41,13 +41,15 @@ export default async function VendorProfilePage({ params, searchParams }: { para
 
   if (!campusApproval) notFound()
 
-  const [{ data: services }, { data: reviews }, { data: saved }, { data: institution }] = await Promise.all([
+  const [{ data: services }, { data: reviews }, { data: saved }, { data: institution }, portfolioResult] = await Promise.all([
     supabase.from('vendor_services').select('id,name,description,price_from,category_id').eq('vendor_id', vendor.id).eq('is_active', true).order('name'),
     supabase.from('reviews').select('id,rating,comment,created_at').eq('vendor_id', vendor.id).eq('status', 'published').order('created_at', { ascending: false }).limit(20),
     supabase.from('saved_vendors').select('vendor_id').eq('student_id', userId).eq('vendor_id', vendor.id).maybeSingle(),
     supabase.from('institutions').select('name').eq('id', profile.institution_id).maybeSingle(),
+    supabase.from('vendor_portfolio_items').select('id,title,description,image_url,sort_order').eq('vendor_id', vendor.id).eq('is_active', true).order('sort_order').order('created_at', { ascending: false }),
   ])
 
+  const portfolio = portfolioResult.data || []
   const initial = vendor.business_name?.slice(0,1)?.toUpperCase() || 'V'
   const returnTo = `/student/vendors/${vendor.slug}`
 
@@ -79,6 +81,8 @@ export default async function VendorProfilePage({ params, searchParams }: { para
                 <h2>Services</h2>
                 <div className="service-list">{(services || []).length ? (services || []).map((service) => <div className="service-row" key={service.id}><div><strong>{service.name}</strong>{service.description ? <span>{service.description}</span> : null}</div><strong>{service.price_from ? `From ₦${Number(service.price_from).toLocaleString()}` : 'Ask vendor'}</strong></div>) : <div className="service-row"><span>This vendor has not added detailed services yet.</span></div>}</div>
               </section>
+
+              {portfolio.length ? <section className="profile-section"><h2>Portfolio</h2><div style={{columns:'2 260px',columnGap:14}}>{portfolio.map((item) => <figure key={item.id} style={{breakInside:'avoid',margin:'0 0 14px',background:'#fff',border:'1px solid #e5e9f0',borderRadius:14,overflow:'hidden'}}><img src={item.image_url} alt={item.title} style={{display:'block',width:'100%',height:'auto'}}/><figcaption style={{padding:12}}><strong>{item.title}</strong>{item.description ? <p style={{margin:'6px 0 0',color:'#667085',fontSize:13}}>{item.description}</p> : null}</figcaption></figure>)}</div></section> : null}
 
               <section className="profile-section">
                 <h2>Student reviews</h2>
