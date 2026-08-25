@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BarChart3, Bookmark, Building2, MessageCircle, Star } from 'lucide-react'
+import { BadgeCheck, BarChart3, Bookmark, Building2, ImagePlus, MessageCircle, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function VendorDashboard() {
@@ -60,6 +60,7 @@ export default async function VendorDashboard() {
 
       <section className="portal-grid">
         <article className="portal-action primary-action"><Building2 size={24}/><div><strong>Campus visibility</strong><span>{campus?.status === 'approved' ? 'Approved for your selected campus.' : 'Your selected campus is awaiting review.'}</span></div></article>
+        <Link href="/vendor-v2/portfolio" className="portal-action" style={{textDecoration:'none'}}><ImagePlus size={24}/><div><strong>Portfolio</strong><span>Add real examples of your work for students to see.</span></div></Link>
         <article className="portal-action"><MessageCircle size={24}/><div><strong>Student enquiries</strong><span>{contactResult.count ? `${contactResult.count} student contact${contactResult.count === 1 ? '' : 's'} recorded.` : 'No student contacts recorded yet.'}</span></div></article>
         <article className="portal-action"><Bookmark size={24}/><div><strong>Saved by students</strong><span>{saveResult.count ? `${saveResult.count} student${saveResult.count === 1 ? '' : 's'} saved your profile.` : 'Your first save will appear here.'}</span></div></article>
         <article className="portal-action"><Star size={24}/><div><strong>Reputation</strong><span>{vendor.review_count ? `${vendor.review_count} review${vendor.review_count === 1 ? '' : 's'} averaging ${Number(vendor.average_rating || 0).toFixed(1)}/5.` : 'Reviews from verified students will appear here.'}</span></div></article>
