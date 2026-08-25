@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { BarChart3, Building2, ClipboardCheck, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldCheck, Store, UserCog } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { requireAdminContext } from './lib'
 import './admin.css'
 
@@ -16,7 +17,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="admin-shell">
         <aside className="admin-sidebar">
           <Link href="/admin-v2" className="admin-brand">Campus<span>Link</span> Admin</Link>
-          <div className="admin-role"><strong>{roleLabel}</strong>{context.isGlobalAdmin ? 'Global control-plane access' : `${context.schoolAssignments.length} school assignment${context.schoolAssignments.length === 1 ? '' : 's'}`}</div>
+          <div className="admin-sidebar-tools">
+            <div className="admin-role"><strong>{roleLabel}</strong>{context.isGlobalAdmin ? 'Global control-plane access' : `${context.schoolAssignments.length} school assignment${context.schoolAssignments.length === 1 ? '' : 's'}`}</div>
+            <ThemeToggle compact />
+          </div>
           <nav className="admin-nav">
             <Link href="/admin-v2"><LayoutDashboard /> Overview</Link>
             <Link href="/admin-v2/schools"><Building2 /> Schools</Link>
