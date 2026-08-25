@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { Activity, Building2, GraduationCap, LifeBuoy, ShieldCheck, Store } from 'lucide-react'
+import { Activity, ArrowUpRight, Building2, GraduationCap, LifeBuoy, ShieldCheck, Store, UsersRound } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { AdminOverviewChart } from '@/components/dashboard-charts'
 import { requireAdminContext } from './lib'
 
 export default async function AdminDashboard() {
@@ -18,39 +19,52 @@ export default async function AdminDashboard() {
 
   const role = context.globalRole || context.schoolAssignments[0]?.role || 'admin'
   const scoped = !context.isGlobalAdmin
+  const studentCount = students.count || 0
+  const vendorCount = vendors.count || 0
+  const schoolCount = schools.count || 0
+  const reportCount = reports.count || 0
+  const studentQueue = pendingStudents.count || 0
+  const vendorQueue = pendingVendors.count || 0
 
   return (
     <>
-      <header className="admin-topbar">
-        <div>
-          <span className="admin-pill"><ShieldCheck size={15}/> Phase 4 control plane</span>
-          <h1>Campus operations</h1>
-          <p>{scoped ? 'You are seeing only the schools assigned to your admin account.' : 'Manage onboarding, trust, schools and platform operations from one place.'}</p>
+      <header className="admin-hero reveal-admin">
+        <div className="admin-hero-copy">
+          <div className="admin-hero-label"><ShieldCheck size={16}/> Campus Link Admin</div>
+          <h1>Keep every campus safe, active and moving.</h1>
+          <p>{scoped ? 'Your workspace is limited to the schools assigned to your admin account.' : 'Manage schools, verification, vendors, reports and platform trust from one operational view.'}</p>
         </div>
-        <div className="admin-top-actions"><span className="status-badge status-approved">{role.replaceAll('_',' ')}</span></div>
+        <div className="admin-hero-side">
+          <span>Signed in as</span>
+          <strong>{role.replaceAll('_',' ')}</strong>
+          <small>{context.isGlobalAdmin ? 'Platform-wide access' : `${context.schoolAssignments.length} assigned school${context.schoolAssignments.length === 1 ? '' : 's'}`}</small>
+        </div>
       </header>
 
-      <section className="admin-grid">
-        <article className="admin-stat"><span>Students in scope</span><strong>{students.count || 0}</strong><small>Registered student profiles visible to your role.</small></article>
-        <article className="admin-stat"><span>Vendors in scope</span><strong>{vendors.count || 0}</strong><small>Vendor businesses visible to your role.</small></article>
-        <article className="admin-stat"><span>Active schools</span><strong>{schools.count || 0}</strong><small>Schools currently available in onboarding.</small></article>
-        <article className="admin-stat"><span>Open reports</span><strong>{reports.count || 0}</strong><small>Complaints requiring attention.</small></article>
+      <section className="admin-grid admin-metric-grid stagger-admin">
+        <article className="admin-stat stat-blue"><div className="admin-stat-icon"><GraduationCap/></div><span>Students in scope</span><strong>{studentCount}</strong><small>Registered student accounts visible to your role.</small></article>
+        <article className="admin-stat stat-green"><div className="admin-stat-icon"><Store/></div><span>Vendors in scope</span><strong>{vendorCount}</strong><small>Businesses currently managed across Campus Link.</small></article>
+        <article className="admin-stat stat-soft"><div className="admin-stat-icon"><Building2/></div><span>Active schools</span><strong>{schoolCount}</strong><small>Institutions currently available in onboarding.</small></article>
+        <article className="admin-stat stat-warn"><div className="admin-stat-icon"><LifeBuoy/></div><span>Open reports</span><strong>{reportCount}</strong><small>Safety and support cases requiring attention.</small></article>
       </section>
 
-      <section className="admin-section">
-        <div className="admin-section-head"><div><h2>Trust & verification queues</h2><p>These queues control who becomes trusted and discoverable.</p></div><Activity size={20}/></div>
-        <div className="admin-section-body queue-grid">
-          <Link href="/admin-v2/students" className="queue-card"><GraduationCap/><h3>Student verification</h3><p>Review school evidence and student identity without blocking basic account access.</p><div className="queue-number">{pendingStudents.count || 0}</div></Link>
-          <Link href="/admin-v2/vendors" className="queue-card"><Store/><h3>Vendor verification</h3><p>Identity approval is global; campus approval can be delegated to school admins.</p><div className="queue-number">{pendingVendors.count || 0}</div></Link>
-          <Link href="/admin-v2/schools" className="queue-card"><Building2/><h3>School management</h3><p>Add institutions, configure verification modes and archive schools without deleting historical records.</p><div className="queue-number">{schools.count || 0}</div></Link>
-          <Link href="/admin-v2/reports" className="queue-card"><LifeBuoy/><h3>Safety & reports</h3><p>Track suspicious vendors, complaints and support cases through a clear moderation lifecycle.</p><div className="queue-number">{reports.count || 0}</div></Link>
-        </div>
+      <section className="admin-overview-grid">
+        <AdminOverviewChart students={studentCount} vendors={vendorCount} schools={schoolCount} reports={reportCount}/>
+        <section className="admin-priority-card">
+          <div className="admin-priority-head"><div><span>Priority queue</span><strong>What needs attention now</strong></div><Activity size={20}/></div>
+          <Link href="/admin-v2/students" className="priority-row"><div className="priority-icon blue"><GraduationCap/></div><div><strong>Student verification</strong><span>Review student identity and school evidence.</span></div><b>{studentQueue}</b><ArrowUpRight/></Link>
+          <Link href="/admin-v2/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>Vendor verification</strong><span>Review identity before campus visibility.</span></div><b>{vendorQueue}</b><ArrowUpRight/></Link>
+          <Link href="/admin-v2/reports" className="priority-row"><div className="priority-icon amber"><LifeBuoy/></div><div><strong>Safety reports</strong><span>Investigate complaints and suspicious activity.</span></div><b>{reportCount}</b><ArrowUpRight/></Link>
+        </section>
       </section>
 
-      <section className="admin-section">
-        <div className="admin-section-head"><div><h2>Admin model</h2><p>Global roles stay powerful; school roles stay scoped.</p></div></div>
-        <div className="admin-section-body admin-note">
-          <strong>Recommended structure:</strong> Super Admin owns the platform. Operations Admin manages schools and staff. Verification Admin reviews identity. Support Admin handles reports. Content Admin manages public reference content. Analyst is read-only. School Admin, School Verifier and School Support are restricted to assigned institutions only.
+      <section className="admin-section modern-admin-section">
+        <div className="admin-section-head"><div><h2>Operations shortcuts</h2><p>Move directly into the areas that keep Campus Link organised and trustworthy.</p></div><UsersRound size={20}/></div>
+        <div className="admin-section-body queue-grid modern-queue-grid">
+          <Link href="/admin-v2/schools" className="queue-card"><Building2/><h3>School management</h3><p>Add institutions, configure verification rules and archive schools without breaking historical records.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link>
+          <Link href="/admin-v2/students" className="queue-card"><GraduationCap/><h3>Students</h3><p>Review verification evidence, statuses and campus membership from one place.</p><span className="queue-link">Review students <ArrowUpRight size={14}/></span></Link>
+          <Link href="/admin-v2/vendors" className="queue-card"><Store/><h3>Vendors</h3><p>Separate global identity approval from school-specific vendor visibility.</p><span className="queue-link">Manage vendors <ArrowUpRight size={14}/></span></Link>
+          <Link href="/admin-v2/reports" className="queue-card"><LifeBuoy/><h3>Trust & safety</h3><p>Follow complaints through a clear moderation lifecycle and preserve accountability.</p><span className="queue-link">Open reports <ArrowUpRight size={14}/></span></Link>
         </div>
       </section>
     </>
