@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { Bookmark, Flag, MapPin, MessageCircle, ShieldCheck, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { reportVendor, submitReview, toggleSavedVendor } from '../../actions'
 
 export default async function VendorProfilePage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ error?: string; review?: string; reported?: string }> }) {
@@ -57,7 +58,10 @@ export default async function VendorProfilePage({ params, searchParams }: { para
     <main className="student-app">
       <header className="student-nav">
         <Link href="/student" className="student-brand">Campus<span>Link</span></Link>
-        <nav className="student-navlinks"><Link href="/student">Dashboard</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
+        <div className="student-navtools">
+          <nav className="student-navlinks"><Link href="/student">Dashboard</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
+          <ThemeToggle compact />
+        </div>
       </header>
 
       <section className="student-shell">
@@ -73,7 +77,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
               <div className="profile-title">
                 <div className="verified-line"><ShieldCheck size={16}/> Verified for {institution?.name || 'your campus'}</div>
                 <h1>{vendor.business_name}</h1>
-                <div style={{display:'flex',gap:14,flexWrap:'wrap',marginTop:10}}><span className="rating"><Star size={16} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0} reviews)</span>{vendor.location_text ? <span style={{display:'inline-flex',alignItems:'center',gap:6,color:'#667085'}}><MapPin size={15}/>{vendor.location_text}</span> : null}</div>
+                <div style={{display:'flex',gap:14,flexWrap:'wrap',marginTop:10}}><span className="rating"><Star size={16} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0} reviews)</span>{vendor.location_text ? <span style={{display:'inline-flex',alignItems:'center',gap:6,color:'var(--cl-muted)'}}><MapPin size={15}/>{vendor.location_text}</span> : null}</div>
                 <p>{vendor.description || 'Verified Campus Link service provider.'}</p>
               </div>
 
@@ -82,7 +86,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
                 <div className="service-list">{(services || []).length ? (services || []).map((service) => <div className="service-row" key={service.id}><div><strong>{service.name}</strong>{service.description ? <span>{service.description}</span> : null}</div><strong>{service.price_from ? `From ₦${Number(service.price_from).toLocaleString()}` : 'Ask vendor'}</strong></div>) : <div className="service-row"><span>This vendor has not added detailed services yet.</span></div>}</div>
               </section>
 
-              {portfolio.length ? <section className="profile-section"><h2>Portfolio</h2><div style={{columns:'2 260px',columnGap:14}}>{portfolio.map((item) => <figure key={item.id} style={{breakInside:'avoid',margin:'0 0 14px',background:'#fff',border:'1px solid #e5e9f0',borderRadius:14,overflow:'hidden'}}><img src={item.image_url} alt={item.title} style={{display:'block',width:'100%',height:'auto'}}/><figcaption style={{padding:12}}><strong>{item.title}</strong>{item.description ? <p style={{margin:'6px 0 0',color:'#667085',fontSize:13}}>{item.description}</p> : null}</figcaption></figure>)}</div></section> : null}
+              {portfolio.length ? <section className="profile-section"><h2>Portfolio</h2><div style={{columns:'2 260px',columnGap:14}}>{portfolio.map((item) => <figure key={item.id} style={{breakInside:'avoid',margin:'0 0 14px',background:'var(--cl-surface)',border:'1px solid var(--cl-line)',borderRadius:14,overflow:'hidden'}}><img src={item.image_url} alt={item.title} style={{display:'block',width:'100%',height:'auto'}}/><figcaption style={{padding:12}}><strong>{item.title}</strong>{item.description ? <p style={{margin:'6px 0 0',color:'var(--cl-muted)',fontSize:13}}>{item.description}</p> : null}</figcaption></figure>)}</div></section> : null}
 
               <section className="profile-section">
                 <h2>Student reviews</h2>
@@ -98,7 +102,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
                 <form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="return_to" value={returnTo}/><button className="secondary-cta" style={{width:'100%'}}><Bookmark size={18} fill={saved ? 'currentColor' : 'none'}/> {saved ? 'Saved' : 'Save vendor'}</button></form>
               </div>
 
-              <section className="profile-section"><h2>Report a concern</h2><p style={{color:'#667085',fontSize:14}}>If something feels unsafe, misleading or suspicious, tell Campus Link. Reports are reviewed privately.</p><form className="report-form" action={reportVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><input name="title" minLength={4} maxLength={120} required placeholder="What happened?"/><textarea name="description" minLength={10} maxLength={1500} required placeholder="Give us enough detail to review the concern."/><button className="danger-cta" type="submit"><Flag size={17}/> Submit report</button></form></section>
+              <section className="profile-section"><h2>Report a concern</h2><p style={{color:'var(--cl-muted)',fontSize:14}}>If something feels unsafe, misleading or suspicious, tell Campus Link. Reports are reviewed privately.</p><form className="report-form" action={reportVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><input name="title" minLength={4} maxLength={120} required placeholder="What happened?"/><textarea name="description" minLength={10} maxLength={1500} required placeholder="Give us enough detail to review the concern."/><button className="danger-cta" type="submit"><Flag size={17}/> Submit report</button></form></section>
             </aside>
           </div>
         </article>
