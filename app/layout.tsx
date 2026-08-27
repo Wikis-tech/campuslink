@@ -5,6 +5,7 @@ import './auth.css'
 import './phase45.css'
 import './phase45-polish.css'
 import './phase46.css'
+import './phase45-46-redesign.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
