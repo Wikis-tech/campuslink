@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BarChart3, Bookmark, Building2, ImagePlus, MessageCircle, Star } from 'lucide-react'
+import { BadgeCheck, BarChart3, Bookmark, Building2, CircleDollarSign, ImagePlus, MessageCircle, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
@@ -65,7 +65,7 @@ export default async function VendorDashboard() {
     <main className="portal-shell">
       <header className="portal-topbar">
         <Link href="/" className="brand">Campus<span>Link</span></Link>
-        <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
+        <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/vendor-v2/growth" className="btn btn-ghost">Plans & growth</Link><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
       </header>
 
       <section className="portal-hero phase45-vendor-hero phase46-vendor-hero">
@@ -90,6 +90,7 @@ export default async function VendorDashboard() {
       <section className="portal-grid">
         <article className="portal-action primary-action"><Building2 size={24}/><div><strong>Campus visibility</strong><span>{campus?.status === 'approved' ? 'Approved for your selected campus.' : setupComplete ? 'Your selected campus is awaiting review.' : 'Select your campus during vendor setup.'}</span></div></article>
         <Link href={setupComplete ? '/vendor-v2/portfolio' : '/onboarding/vendor'} className="portal-action" style={{textDecoration:'none'}}><ImagePlus size={24}/><div><strong>Portfolio</strong><span>{setupComplete ? 'Add real examples of your work for students to see.' : 'Complete business setup before adding portfolio work.'}</span></div></Link>
+        <Link href="/vendor-v2/growth" className="portal-action" style={{textDecoration:'none'}}><CircleDollarSign size={24}/><div><strong>Plans & growth</strong><span>See what is included on Free, how Pro will work, and why payment never changes verification.</span></div></Link>
         <article className="portal-action"><MessageCircle size={24}/><div><strong>Student enquiries</strong><span>{contactResult.count ? `${contactResult.count} student contact${contactResult.count === 1 ? '' : 's'} recorded.` : 'No student contacts recorded yet.'}</span></div></article>
         <article className="portal-action"><Bookmark size={24}/><div><strong>Saved by students</strong><span>{saveResult.count ? `${saveResult.count} student${saveResult.count === 1 ? '' : 's'} saved your profile.` : 'Your first save will appear here.'}</span></div></article>
         <article className="portal-action"><Star size={24}/><div><strong>Reputation</strong><span>{vendor.review_count ? `${vendor.review_count} review${vendor.review_count === 1 ? '' : 's'} averaging ${Number(vendor.average_rating || 0).toFixed(1)}/5.` : 'Reviews from verified students will appear here.'}</span></div></article>
