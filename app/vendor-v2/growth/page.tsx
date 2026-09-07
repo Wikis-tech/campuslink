@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { PaystackCheckoutButton } from '@/components/paystack-checkout-button'
 
 function formatNaira(value: number | string | null | undefined) {
   const amount = Number(value || 0)
@@ -37,7 +38,7 @@ export default async function VendorGrowthPage() {
   const [{ data: vendor }, { data: campus }, { data: plans }, { data: subscriptions }, { data: entitlementRows }] = await Promise.all([
     supabase.from('vendor_profiles').select('business_name,verification_status,onboarding_completed_at,logo_url,description').eq('id', userId).maybeSingle(),
     supabase.from('vendor_institutions').select('status,institution_id').eq('vendor_id', userId).eq('is_primary', true).maybeSingle(),
-    supabase.from('subscription_plans').select('id,name,slug,tier,price_ngn,billing_interval,features,entitlements,is_active').eq('is_active', true).eq('is_public', true).order('sort_order'),
+    supabase.from('subscription_plans').select('id,name,slug,tier,price_ngn,billing_interval,features,entitlements,is_active,paystack_plan_code').eq('is_active', true).eq('is_public', true).order('sort_order'),
     supabase.from('subscriptions').select('id,plan_id,status,starts_at,ends_at,current_period_end').eq('vendor_id', userId).in('status', ['active', 'attention', 'non_renewing', 'past_due']).order('created_at', { ascending: false }).limit(1),
     supabase.rpc('get_my_vendor_entitlements'),
   ])
@@ -67,6 +68,7 @@ export default async function VendorGrowthPage() {
   const annualSaving = Math.max(monthlyAnnualised - annualPrice, 0)
   const currentServiceLimit = Number(entitlement?.entitlements?.service_limit || freePlan?.entitlements?.service_limit || 5)
   const currentPortfolioLimit = Number(entitlement?.entitlements?.portfolio_limit || freePlan?.entitlements?.portfolio_limit || 6)
+  const checkoutReady = Boolean(monthlyPro?.paystack_plan_code && annualPro?.paystack_plan_code)
 
   return (
     <main className="phase5a-growth-shell">
@@ -134,7 +136,9 @@ export default async function VendorGrowthPage() {
                 <li><Sparkles/> Featured and promotion eligibility</li>
               </ul>
               <div className="phase5a-price-note"><strong>{formatNaira(annualPro?.price_ngn || 24000)} / year</strong> · save {formatNaira(annualSaving)} versus paying monthly for 12 months.</div>
-              <div className="phase5a-plan-foot"><LockKeyhole size={17}/><span>Upgrade checkout activates in Phase 5C after Paystack test-mode verification is complete.</span></div>
+              {currentTier === 'Free' && checkoutReady ? <div className="phase5c-checkout-grid"><PaystackCheckoutButton planSlug="pro-monthly" label={`Upgrade monthly · ${formatNaira(monthlyPro?.price_ngn || 2500)}`}/><PaystackCheckoutButton planSlug="pro-annual" label={`Upgrade yearly · ${formatNaira(annualPro?.price_ngn || 24000)}`}/></div> : null}
+              {currentTier === 'Free' && !checkoutReady ? <div className="phase5a-plan-foot"><LockKeyhole size={17}/><span>Secure checkout will appear as soon as the two Paystack TEST plan codes are connected.</span></div> : null}
+              {currentTier === 'Pro' ? <div className="phase5a-plan-foot"><ShieldCheck size={17}/><span>Your Pro entitlement is active. Billing management arrives in Phase 5D.</span></div> : null}
             </article>
           </div>
         </section>
