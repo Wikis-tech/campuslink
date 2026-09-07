@@ -10,6 +10,7 @@ import './phase47-marketplace.css'
 import './phase5a.css'
 import './phase5b.css'
 import './phase5c.css'
+import './phase48-marketplace-command.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
@@ -33,13 +34,8 @@ const themeScript = `
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body>
-        {children}
-        <ThemeFloatingControl />
-      </body>
+      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
+      <body>{children}<ThemeFloatingControl /></body>
     </html>
   )
 }
