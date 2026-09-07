@@ -6,6 +6,7 @@ import './phase45.css'
 import './phase45-polish.css'
 import './phase46.css'
 import './phase45-46-redesign.css'
+import './phase47-marketplace.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
