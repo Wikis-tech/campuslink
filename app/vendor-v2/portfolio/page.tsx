@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ArrowLeft, ImagePlus, Trash2 } from 'lucide-react'
+import { ArrowLeft, ImagePlus, ShieldCheck, Sparkles, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { addPortfolioItem, deletePortfolioItem } from './actions'
 
-export default async function VendorPortfolioPage({ searchParams }: { searchParams: Promise<{ error?: string; added?: string; deleted?: string }> }) {
+export default async function VendorPortfolioPage({ searchParams }: { searchParams: Promise<{ error?: string; added?: string; deleted?: string; limit?: string }> }) {
   const notices = await searchParams
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
@@ -15,36 +15,49 @@ export default async function VendorPortfolioPage({ searchParams }: { searchPara
   const { data: profile } = await supabase.from('profiles').select('account_type').eq('id', userId).single()
   if (!profile || profile.account_type !== 'vendor') redirect('/dashboard')
 
-  const { data: items } = await supabase
-    .from('vendor_portfolio_items')
-    .select('id,title,description,image_url,created_at')
-    .eq('vendor_id', userId)
-    .order('created_at', { ascending: false })
+  const [{ data: items }, { data: entitlementRows }] = await Promise.all([
+    supabase.from('vendor_portfolio_items').select('id,title,description,image_url,created_at').eq('vendor_id', userId).order('created_at', { ascending: false }),
+    supabase.rpc('get_my_vendor_entitlements'),
+  ])
+
+  const entitlement = Array.isArray(entitlementRows) ? entitlementRows[0] : null
+  const tier = entitlement?.tier === 'pro' ? 'Pro' : 'Free'
+  const portfolioLimit = Number(entitlement?.entitlements?.portfolio_limit || 6)
+  const used = items?.length || 0
+  const remaining = Math.max(portfolioLimit - used, 0)
 
   return (
-    <main className="portal-shell">
-      <header className="portal-topbar"><Link href="/vendor-v2" className="brand">Campus<span>Link</span></Link><div style={{display:'flex',alignItems:'center',gap:10}}><ThemeToggle compact/><Link className="btn btn-ghost" href="/vendor-v2"><ArrowLeft size={17}/> Dashboard</Link></div></header>
+    <main className="phase5b-shell">
+      <header className="phase5b-topbar"><Link href="/vendor-v2" className="phase5b-back"><ArrowLeft size={17}/> Dashboard</Link><Link href="/" className="phase5b-brand">Campus<span>Link</span></Link><div className="phase5b-top-actions"><Link href="/vendor-v2/services">Services</Link><Link href="/vendor-v2/growth">Plans</Link><ThemeToggle compact/></div></header>
 
-      <section className="portal-hero phase45-vendor-hero"><div><p className="eyebrow">Vendor portfolio</p><h1>Show students what you can do.</h1><p>Upload real examples of your work. Portfolio images remain attached to your vendor account and become visible when your profile is approved.</p></div></section>
+      <section className="phase5b-content">
+        <section className="phase5b-page-head">
+          <div><span className="phase5b-kicker"><ImagePlus size={15}/> Portfolio</span><h1>Show real work. Build real confidence.</h1><p>Students make better decisions when they can see genuine examples. Your portfolio becomes public only when your vendor profile is eligible for discovery.</p></div>
+          <aside className="phase5b-limit-card"><span>{tier} plan</span><strong>{used} / {portfolioLimit}</strong><small>portfolio items</small><div className="phase5b-meter" aria-hidden="true"><span style={{ width: `${Math.min((used / Math.max(portfolioLimit, 1)) * 100, 100)}%` }}/></div><p>{remaining > 0 ? `${remaining} upload slot${remaining === 1 ? '' : 's'} remaining.` : 'Your portfolio limit is full.'}</p></aside>
+        </section>
 
-      {notices.error ? <div className="notice error">{notices.error}</div> : null}
-      {notices.added === '1' ? <div className="notice success">Portfolio item added.</div> : null}
-      {notices.deleted === '1' ? <div className="notice success">Portfolio item removed.</div> : null}
+        <div className="phase5b-trust-note"><ShieldCheck size={18}/><span>Portfolio capacity is a plan feature. Verification and campus approval remain separate trust decisions.</span></div>
 
-      <section style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) minmax(320px,420px)',gap:24,alignItems:'start',maxWidth:1120,margin:'30px auto 0'}}>
-        <div>
-          <h2 style={{fontFamily:'Sora,sans-serif'}}>Your work</h2>
-          {(items || []).length ? <div style={{columns:'2 260px',columnGap:16}}>{(items || []).map((item) => <article key={item.id} style={{breakInside:'avoid',marginBottom:16,background:'var(--cl-surface)',border:'1px solid var(--cl-line)',borderRadius:'4px 18px 4px 18px',overflow:'hidden'}}><img src={item.image_url} alt={item.title} style={{width:'100%',height:'auto',display:'block'}}/><div style={{padding:14}}><strong>{item.title}</strong>{item.description ? <p style={{color:'var(--cl-muted)',fontSize:14}}>{item.description}</p> : null}<form action={deletePortfolioItem}><input type="hidden" name="item_id" value={item.id}/><button className="btn btn-ghost" style={{color:'var(--cl-danger)'}}><Trash2 size={16}/> Remove</button></form></div></article>)}</div> : <div className="portal-action"><ImagePlus size={24}/><div><strong>No portfolio items yet</strong><span>Add your first example of completed work.</span></div></div>}
-        </div>
+        {notices.error ? <div className="notice error">{notices.error}</div> : null}
+        {notices.limit ? <div className="phase5b-plan-notice"><Sparkles size={18}/><div><strong>You have reached your {notices.limit}-item portfolio limit.</strong><span>Remove an older item or compare Pro when you need more space.</span></div><Link href="/vendor-v2/growth">Compare plans</Link></div> : null}
+        {notices.added === '1' ? <div className="notice success">Portfolio item added.</div> : null}
+        {notices.deleted === '1' ? <div className="notice success">Portfolio item removed.</div> : null}
 
-        <form action={addPortfolioItem} encType="multipart/form-data" className="cl-editorial-surface" style={{borderRadius:'4px 18px 4px 18px',padding:20,display:'grid',gap:14}}>
-          <h2 style={{fontFamily:'Sora,sans-serif',margin:0}}>Add work</h2>
-          <label><span style={{display:'block',fontWeight:700,marginBottom:6}}>Title</span><input name="title" required maxLength={100} placeholder="e.g. Knotless braids" style={{width:'100%',padding:12,border:'1px solid var(--cl-line)',borderRadius:10,background:'var(--cl-surface-2)',color:'var(--cl-text)'}}/></label>
-          <label><span style={{display:'block',fontWeight:700,marginBottom:6}}>Description</span><textarea name="description" maxLength={500} placeholder="Optional context about this work" style={{width:'100%',minHeight:90,padding:12,border:'1px solid var(--cl-line)',borderRadius:10,background:'var(--cl-surface-2)',color:'var(--cl-text)'}}/></label>
-          <label><span style={{display:'block',fontWeight:700,marginBottom:6}}>Image</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required/></label>
-          <p style={{margin:0,color:'var(--cl-muted)',fontSize:13}}>JPG, PNG or WEBP. Maximum 5 MB. Images keep their natural proportions on your profile.</p>
-          <button className="btn btn-primary" type="submit"><ImagePlus size={17}/> Upload portfolio item</button>
-        </form>
+        <section className="phase5b-workspace phase5b-portfolio-workspace">
+          <div className="phase5b-list-column">
+            <div className="phase5b-section-heading"><div><span>Your work</span><h2>{used ? `${used} example${used === 1 ? '' : 's'} uploaded` : 'Start with your strongest work'}</h2></div></div>
+            {used ? <div className="phase5b-portfolio-grid">{(items || []).map((item) => <article key={item.id} className="phase5b-portfolio-card"><img src={item.image_url} alt={item.title}/><div><strong>{item.title}</strong>{item.description ? <p>{item.description}</p> : null}<form action={deletePortfolioItem}><input type="hidden" name="item_id" value={item.id}/><button className="phase5b-action-button danger"><Trash2 size={15}/> Remove</button></form></div></article>)}</div> : <div className="phase5b-empty"><ImagePlus/><div><strong>No portfolio examples yet.</strong><span>Use clear, honest images of work you actually completed.</span></div></div>}
+          </div>
+
+          <form action={addPortfolioItem} encType="multipart/form-data" className="phase5b-editor">
+            <div className="phase5b-editor-head"><ImagePlus size={20}/><div><span>Add work</span><strong>{remaining > 0 ? `${remaining} upload slot${remaining === 1 ? '' : 's'} available` : 'Portfolio limit reached'}</strong></div></div>
+            <label><span>Title</span><input name="title" required maxLength={100} placeholder="e.g. Knotless braids"/></label>
+            <label><span>Description</span><textarea name="description" maxLength={500} placeholder="Optional context about the work, materials or result."/></label>
+            <label><span>Image</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required disabled={remaining <= 0}/></label>
+            <p className="phase5b-upload-help">JPG, PNG or WEBP · maximum 5 MB · natural portrait or landscape proportions are preserved.</p>
+            <button className="phase5b-primary" type="submit" disabled={remaining <= 0}><ImagePlus size={17}/>{remaining > 0 ? 'Upload portfolio item' : 'Limit reached'}</button>
+          </form>
+        </section>
       </section>
     </main>
   )
