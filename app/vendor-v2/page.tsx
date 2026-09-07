@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BarChart3, Bookmark, Building2, CircleDollarSign, ImagePlus, MessageCircle, Star } from 'lucide-react'
+import { BadgeCheck, BarChart3, Bookmark, Building2, CircleDollarSign, ImagePlus, ListChecks, MessageCircle, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
@@ -29,10 +29,7 @@ export default async function VendorDashboard() {
           <div style={{display:'flex',alignItems:'center',gap:10}}><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></div>
         </header>
         <section className="portal-hero phase45-vendor-hero phase46-vendor-hero">
-          <div>
-            <DynamicGreeting firstName={profile.first_name} sessionSeed={sessionSeed} role="vendor" />
-            <p>Your workspace is ready. Set up your business when you’re ready and we’ll keep your student and vendor activity completely separate.</p>
-          </div>
+          <div><DynamicGreeting firstName={profile.first_name} sessionSeed={sessionSeed} role="vendor" /><p>Your workspace is ready. Set up your business when you’re ready and we’ll keep your student and vendor activity completely separate.</p></div>
           <div className="status-card status-pending"><BadgeCheck size={22}/><div><span>Vendor setup</span><strong>not completed</strong></div></div>
           <div className="phase46-orbit phase46-orbit-one" aria-hidden="true" />
         </section>
@@ -45,10 +42,12 @@ export default async function VendorDashboard() {
     )
   }
 
-  const [{ data: campus }, contactResult, saveResult] = await Promise.all([
+  const [{ data: campus }, contactResult, saveResult, serviceResult, { data: entitlementRows }] = await Promise.all([
     supabase.from('vendor_institutions').select('status,institution_id').eq('vendor_id', userId).eq('is_primary', true).maybeSingle(),
     supabase.from('contact_events').select('id', { count: 'exact', head: true }).eq('vendor_id', userId),
     supabase.from('saved_vendors').select('vendor_id', { count: 'exact', head: true }).eq('vendor_id', userId),
+    supabase.from('vendor_services').select('id', { count: 'exact', head: true }).eq('vendor_id', userId).eq('is_active', true),
+    supabase.rpc('get_my_vendor_entitlements'),
   ])
 
   let school: string | null = null
@@ -60,19 +59,19 @@ export default async function VendorDashboard() {
   const status = vendor.verification_status || 'pending'
   const setupComplete = Boolean(vendor.onboarding_completed_at)
   const discoverable = setupComplete && status === 'approved' && campus?.status === 'approved'
+  const entitlement = Array.isArray(entitlementRows) ? entitlementRows[0] : null
+  const currentTier = entitlement?.tier === 'pro' ? 'Pro' : 'Free'
+  const serviceLimit = Number(entitlement?.entitlements?.service_limit || 5)
 
   return (
     <main className="portal-shell">
       <header className="portal-topbar">
         <Link href="/" className="brand">Campus<span>Link</span></Link>
-        <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/vendor-v2/growth" className="btn btn-ghost">Plans & growth</Link><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
+        <nav style={{display:'flex',alignItems:'center',gap:10}}><Link href="/vendor-v2/services" className="btn btn-ghost">Services</Link><Link href="/vendor-v2/growth" className="btn btn-ghost">Plans & growth</Link><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
       </header>
 
       <section className="portal-hero phase45-vendor-hero phase46-vendor-hero">
-        <div>
-          <DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" />
-          <p>{discoverable ? `${vendor.business_name} is live around ${school || 'your approved campus'}. Check your activity and keep your profile fresh.` : `${school ? `${school} is your current campus. ` : ''}Your workspace is active; public discovery unlocks after business verification and campus approval.`}</p>
-        </div>
+        <div><DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" /><p>{discoverable ? `${vendor.business_name} is live around ${school || 'your approved campus'}. Check your activity and keep your profile fresh.` : `${school ? `${school} is your current campus. ` : ''}Your workspace is active; public discovery unlocks after business verification and campus approval.`}</p></div>
         <div className={`status-card status-${status}`}><BadgeCheck size={22}/><div><span>Vendor verification</span><strong>{setupComplete ? status.replace('_',' ') : 'not completed'}</strong></div></div>
         <div className="phase46-orbit phase46-orbit-one" aria-hidden="true" />
         <div className="phase46-orbit phase46-orbit-two" aria-hidden="true" />
@@ -89,8 +88,9 @@ export default async function VendorDashboard() {
 
       <section className="portal-grid">
         <article className="portal-action primary-action"><Building2 size={24}/><div><strong>Campus visibility</strong><span>{campus?.status === 'approved' ? 'Approved for your selected campus.' : setupComplete ? 'Your selected campus is awaiting review.' : 'Select your campus during vendor setup.'}</span></div></article>
+        <Link href="/vendor-v2/services" className="portal-action" style={{textDecoration:'none'}}><ListChecks size={24}/><div><strong>Services</strong><span>{serviceResult.count || 0} of {serviceLimit} active on your {currentTier} plan. Add, pause or organise what students can find.</span></div></Link>
         <Link href={setupComplete ? '/vendor-v2/portfolio' : '/onboarding/vendor'} className="portal-action" style={{textDecoration:'none'}}><ImagePlus size={24}/><div><strong>Portfolio</strong><span>{setupComplete ? 'Add real examples of your work for students to see.' : 'Complete business setup before adding portfolio work.'}</span></div></Link>
-        <Link href="/vendor-v2/growth" className="portal-action" style={{textDecoration:'none'}}><CircleDollarSign size={24}/><div><strong>Plans & growth</strong><span>See what is included on Free, how Pro will work, and why payment never changes verification.</span></div></Link>
+        <Link href="/vendor-v2/growth" className="portal-action" style={{textDecoration:'none'}}><CircleDollarSign size={24}/><div><strong>{currentTier} plan · Plans & growth</strong><span>See your current limits, compare Pro, and understand why payment never changes verification.</span></div></Link>
         <article className="portal-action"><MessageCircle size={24}/><div><strong>Student enquiries</strong><span>{contactResult.count ? `${contactResult.count} student contact${contactResult.count === 1 ? '' : 's'} recorded.` : 'No student contacts recorded yet.'}</span></div></article>
         <article className="portal-action"><Bookmark size={24}/><div><strong>Saved by students</strong><span>{saveResult.count ? `${saveResult.count} student${saveResult.count === 1 ? '' : 's'} saved your profile.` : 'Your first save will appear here.'}</span></div></article>
         <article className="portal-action"><Star size={24}/><div><strong>Reputation</strong><span>{vendor.review_count ? `${vendor.review_count} review${vendor.review_count === 1 ? '' : 's'} averaging ${Number(vendor.average_rating || 0).toFixed(1)}/5.` : 'Reviews from verified students will appear here.'}</span></div></article>
