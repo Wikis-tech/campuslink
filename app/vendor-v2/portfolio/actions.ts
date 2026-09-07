@@ -18,6 +18,14 @@ async function requireVendor() {
   return { supabase, userId }
 }
 
+async function getPortfolioLimit(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const { data } = await supabase.rpc('get_my_vendor_entitlements')
+  const row = Array.isArray(data) ? data[0] : null
+  const raw = row?.entitlements?.portfolio_limit
+  const parsed = Number(raw)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 6
+}
+
 export async function addPortfolioItem(formData: FormData) {
   const title = String(formData.get('title') || '').trim().slice(0, 100)
   const description = String(formData.get('description') || '').trim().slice(0, 500)
@@ -34,6 +42,15 @@ export async function addPortfolioItem(formData: FormData) {
   }
 
   const { supabase, userId } = await requireVendor()
+  const [{ count }, portfolioLimit] = await Promise.all([
+    supabase.from('vendor_portfolio_items').select('id', { count: 'exact', head: true }).eq('vendor_id', userId),
+    getPortfolioLimit(supabase),
+  ])
+
+  if ((count || 0) >= portfolioLimit) {
+    redirect(`/vendor-v2/portfolio?limit=${portfolioLimit}`)
+  }
+
   const extension = image.type === 'image/png' ? 'png' : image.type === 'image/webp' ? 'webp' : 'jpg'
   const path = `${userId}/${crypto.randomUUID()}.${extension}`
 
@@ -54,6 +71,7 @@ export async function addPortfolioItem(formData: FormData) {
 
   if (insertError) {
     await supabase.storage.from('vendor-media').remove([path])
+    if (insertError.message.includes('PLAN_LIMIT_PORTFOLIO')) redirect(`/vendor-v2/portfolio?limit=${portfolioLimit}`)
     redirect('/vendor-v2/portfolio?error=We%20could%20not%20save%20the%20portfolio%20item')
   }
 
