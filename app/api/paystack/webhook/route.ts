@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { paystackEventFingerprint, verifyPaystackTransaction, verifyPaystackWebhookSignature } from '@/lib/paystack'
+import { reconcileSuccessfulPaystackPayment } from '@/lib/billing-reconcile'
+import { paystackEventFingerprint, verifyPaystackWebhookSignature } from '@/lib/paystack'
 
 export const runtime = 'nodejs'
 
@@ -24,7 +25,8 @@ function safeEventPayload(event: any) {
 }
 
 async function refreshEntitlements(admin: ReturnType<typeof createAdminClient>, vendorId: string) {
-  await admin.rpc('refresh_vendor_entitlements_after_billing', { target_vendor: vendorId })
+  const result = await admin.rpc('refresh_vendor_entitlements_after_billing', { target_vendor: vendorId })
+  if (result.error) throw result.error
 }
 
 export async function POST(request: Request) {
@@ -64,23 +66,22 @@ export async function POST(request: Request) {
     if (eventType === 'charge.success') {
       const reference = String(data.reference || '')
       if (reference) {
-        const { data: payment } = await admin.from('payments').select('id,vendor_id,subscription_id,amount_kobo,currency,status').eq('reference', reference).maybeSingle()
-        if (payment) {
-          const verified = await verifyPaystackTransaction(reference)
-          const tx = verified.data
-          if (tx.status !== 'success' || String(tx.reference) !== reference || Number(tx.amount) !== Number(payment.amount_kobo) || String(tx.currency) !== 'NGN') {
-            throw new Error('Verified Paystack transaction did not match Campus Link payment')
-          }
-          const customerCode = tx.customer?.customer_code || data.customer?.customer_code || null
-          await admin.from('payments').update({
-            status: 'successful', provider_transaction_id: String(tx.id), channel: tx.channel || null,
-            paid_at: tx.paid_at || tx.paidAt || new Date().toISOString(), provider_payload: safeEventPayload({ event: eventType, data: tx }),
-            updated_at: new Date().toISOString(),
-          }).eq('id', payment.id)
-          if (customerCode) {
-            await admin.from('billing_customers').upsert({ vendor_id: payment.vendor_id, provider_customer_code: customerCode, updated_at: new Date().toISOString() }, { onConflict: 'vendor_id' })
-            if (payment.subscription_id) await admin.from('subscriptions').update({ provider_customer_code: customerCode, last_payment_at: tx.paid_at || tx.paidAt || new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', payment.subscription_id)
-          }
+        // A signed webhook alone is not enough: this helper calls Paystack Verify,
+        // checks the server-created Campus Link payment, activates the exact linked
+        // subscription, and refreshes entitlements. This also makes charge.success
+        // a safe recovery path if subscription.create is delayed or arrives out of order.
+        const reconciled = await reconcileSuccessfulPaystackPayment(reference)
+        if (!reconciled.ok && reconciled.status === 'failed') {
+          throw new Error(`Verified charge reconciliation failed: ${reconciled.message || 'unknown'}`)
+        }
+
+        const { data: payment } = await admin
+          .from('payments')
+          .select('id,vendor_id')
+          .eq('reference', reference)
+          .maybeSingle()
+        if (payment && eventRowId) {
+          await admin.from('payment_events').update({ payment_id: payment.id, vendor_id: payment.vendor_id }).eq('id', eventRowId)
         }
       }
     }
