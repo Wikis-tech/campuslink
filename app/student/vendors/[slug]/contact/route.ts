@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-export async function GET(_request: Request, context: { params: Promise<{ slug: string }> }) {
+export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params
+  const url = new URL(request.url)
+  const requestedChannel = url.searchParams.get('channel') === 'phone' ? 'phone' : 'whatsapp'
+  const item = String(url.searchParams.get('item') || '').trim().slice(0, 160)
+
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const userId = claimsData?.claims?.sub
-  if (!userId) return NextResponse.redirect(new URL('/login', _request.url))
+  if (!userId) return NextResponse.redirect(new URL('/login', request.url))
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -15,17 +19,19 @@ export async function GET(_request: Request, context: { params: Promise<{ slug: 
     .single()
 
   if (!profile || profile.account_type !== 'student' || !profile.institution_id || !profile.onboarding_completed_at) {
-    return NextResponse.redirect(new URL('/dashboard', _request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   const { data: vendor } = await supabase
     .from('vendor_profiles')
-    .select('id,business_name,slug,whatsapp_number,verification_status')
+    .select('id,business_name,slug,whatsapp_number,verification_status,marketplace_status,suspended_until')
     .eq('slug', slug)
     .eq('verification_status', 'approved')
     .maybeSingle()
 
-  if (!vendor?.whatsapp_number) return NextResponse.redirect(new URL(`/student/vendors/${slug}?error=This%20vendor%20has%20not%20added%20a%20WhatsApp%20number`, _request.url))
+  if (!vendor) return NextResponse.redirect(new URL('/student/discover', request.url))
+  const safetyAllowed = vendor.marketplace_status === 'active' || (vendor.marketplace_status === 'suspended' && vendor.suspended_until && new Date(vendor.suspended_until) <= new Date())
+  if (!safetyAllowed) return NextResponse.redirect(new URL('/student/discover?error=Vendor%20temporarily%20unavailable', request.url))
 
   const { data: approval } = await supabase
     .from('vendor_institutions')
@@ -35,11 +41,17 @@ export async function GET(_request: Request, context: { params: Promise<{ slug: 
     .eq('status', 'approved')
     .maybeSingle()
 
-  if (!approval) return NextResponse.redirect(new URL('/student/discover', _request.url))
+  if (!approval) return NextResponse.redirect(new URL('/student/discover', request.url))
 
-  await supabase.from('contact_events').insert({ student_id: userId, vendor_id: vendor.id, channel: 'whatsapp' })
+  const phoneRaw = vendor.whatsapp_number || ''
+  if (!phoneRaw) return NextResponse.redirect(new URL(`/student/vendors/${slug}?error=This%20vendor%20has%20not%20added%20a%20contact%20number`, request.url))
 
-  const phone = vendor.whatsapp_number.replace(/\D/g, '').replace(/^0/, '234')
-  const message = encodeURIComponent(`Hi ${vendor.business_name}, I found your profile on Campus Link and would like to ask about your service.`)
+  await supabase.from('contact_events').insert({ student_id: userId, vendor_id: vendor.id, channel: requestedChannel })
+
+  const phone = phoneRaw.replace(/\D/g, '').replace(/^0/, '234')
+  if (requestedChannel === 'phone') return NextResponse.redirect(`tel:+${phone}`)
+
+  const contextText = item ? ` about “${item}”` : ' about your products or services'
+  const message = encodeURIComponent(`Hi ${vendor.business_name}, I found you on Campus Link and would like to ask${contextText}.`)
   return NextResponse.redirect(`https://wa.me/${phone}?text=${message}`)
 }
