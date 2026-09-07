@@ -1,11 +1,91 @@
 -- Campus Link — vendor products, marketplace safety holds, and report escalation.
--- Products are display/contact listings only. Campus Link still does not process student-to-vendor purchases.
+-- Safe to rerun after a partial/failed execution.
+-- Products are discovery/contact listings only. Campus Link does not process student-to-vendor purchases.
 
 create extension if not exists "pgcrypto";
 create schema if not exists private;
 
 -- ---------------------------------------------------------------------------
--- 1) Product catalogue, separate from services and portfolio.
+-- 1) Marketplace safety state first, because product RLS depends on it.
+-- ---------------------------------------------------------------------------
+alter table public.vendor_profiles
+  add column if not exists marketplace_status text not null default 'active',
+  add column if not exists risk_report_count integer not null default 0,
+  add column if not exists suspended_until timestamptz,
+  add column if not exists suspension_reason text,
+  add column if not exists safety_reviewed_at timestamptz,
+  add column if not exists safety_reviewed_by uuid references auth.users(id) on delete set null;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'vendor_profiles_marketplace_status_check'
+      and conrelid = 'public.vendor_profiles'::regclass
+  ) then
+    alter table public.vendor_profiles
+      add constraint vendor_profiles_marketplace_status_check
+      check (marketplace_status in ('active','under_review','suspended'));
+  end if;
+end
+$$;
+
+create index if not exists vendor_profiles_marketplace_status_idx
+  on public.vendor_profiles(marketplace_status, suspended_until);
+
+create or replace function private.student_can_access_vendor(target_vendor uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1
+    from public.profiles p
+    join public.vendor_institutions vi
+      on vi.institution_id = p.institution_id
+     and vi.vendor_id = target_vendor
+     and vi.status = 'approved'
+    join public.vendor_profiles vp
+      on vp.id = target_vendor
+     and vp.verification_status = 'approved'
+    where p.id = (select auth.uid())
+      and p.account_type = 'student'
+      and p.onboarding_completed_at is not null
+      and (
+        vp.marketplace_status = 'active'
+        or (
+          vp.marketplace_status = 'suspended'
+          and vp.suspended_until is not null
+          and vp.suspended_until <= now()
+        )
+      )
+  );
+$$;
+
+revoke all on function private.student_can_access_vendor(uuid) from public;
+grant usage on schema private to authenticated;
+grant execute on function private.student_can_access_vendor(uuid) to authenticated;
+
+drop policy if exists "public can view approved vendors" on public.vendor_profiles;
+drop policy if exists vendor_profiles_public_read on public.vendor_profiles;
+create policy vendor_profiles_public_read on public.vendor_profiles
+for select to anon, authenticated
+using (
+  verification_status = 'approved'
+  and (
+    marketplace_status = 'active'
+    or (
+      marketplace_status = 'suspended'
+      and suspended_until is not null
+      and suspended_until <= now()
+    )
+  )
+);
+
+-- ---------------------------------------------------------------------------
+-- 2) Product catalogue, separate from services and portfolio.
 -- ---------------------------------------------------------------------------
 create table if not exists public.vendor_products (
   id uuid primary key default gen_random_uuid(),
@@ -32,11 +112,9 @@ create index if not exists vendor_products_category_active_idx
 
 alter table public.vendor_products enable row level security;
 
--- Free and Pro product capacity. Products are not the same thing as portfolio items.
 update public.subscription_plans
 set entitlements = entitlements || jsonb_build_object(
-  'product_limit',
-  case when tier = 'pro' then 30 else 5 end
+  'product_limit', case when tier = 'pro' then 30 else 5 end
 ), updated_at = now()
 where tier in ('free','pro');
 
@@ -94,17 +172,13 @@ create trigger vendor_products_plan_limit
 before insert or update of is_active on public.vendor_products
 for each row execute procedure private.enforce_vendor_product_limit();
 
--- Vendors manage their own catalogue. Students may read only products from vendors
--- already discoverable at their own approved campus.
 drop policy if exists vendor_products_owner_read on public.vendor_products;
 create policy vendor_products_owner_read on public.vendor_products
-for select to authenticated
-using ((select auth.uid()) = vendor_id);
+for select to authenticated using ((select auth.uid()) = vendor_id);
 
 drop policy if exists vendor_products_owner_insert on public.vendor_products;
 create policy vendor_products_owner_insert on public.vendor_products
-for insert to authenticated
-with check ((select auth.uid()) = vendor_id);
+for insert to authenticated with check ((select auth.uid()) = vendor_id);
 
 drop policy if exists vendor_products_owner_update on public.vendor_products;
 create policy vendor_products_owner_update on public.vendor_products
@@ -114,52 +188,26 @@ with check ((select auth.uid()) = vendor_id);
 
 drop policy if exists vendor_products_owner_delete on public.vendor_products;
 create policy vendor_products_owner_delete on public.vendor_products
-for delete to authenticated
-using ((select auth.uid()) = vendor_id);
+for delete to authenticated using ((select auth.uid()) = vendor_id);
 
 drop policy if exists vendor_products_student_read on public.vendor_products;
 create policy vendor_products_student_read on public.vendor_products
 for select to authenticated
-using (is_active = true and (select private.student_can_access_vendor(vendor_id)));
+using (
+  is_active = true
+  and (select private.student_can_access_vendor(vendor_id))
+);
 
 revoke all on public.vendor_products from anon, authenticated;
 grant select, insert, update, delete on public.vendor_products to authenticated;
 
 -- ---------------------------------------------------------------------------
--- 2) Marketplace safety state. Payment never changes any of these fields.
+-- 3) Report escalation: five DISTINCT unresolved reporters in 30 days -> hold.
 -- ---------------------------------------------------------------------------
-alter table public.vendor_profiles
-  add column if not exists marketplace_status text not null default 'active',
-  add column if not exists risk_report_count integer not null default 0,
-  add column if not exists suspended_until timestamptz,
-  add column if not exists suspension_reason text,
-  add column if not exists safety_reviewed_at timestamptz,
-  add column if not exists safety_reviewed_by uuid references auth.users(id) on delete set null;
-
-do $$
-begin
-  if not exists (
-    select 1 from pg_constraint
-    where conname = 'vendor_profiles_marketplace_status_check'
-      and conrelid = 'public.vendor_profiles'::regclass
-  ) then
-    alter table public.vendor_profiles add constraint vendor_profiles_marketplace_status_check
-      check (marketplace_status in ('active','under_review','suspended'));
-  end if;
-end
-$$;
-
-create index if not exists vendor_profiles_marketplace_status_idx
-  on public.vendor_profiles(marketplace_status, suspended_until);
-
--- One unresolved report from one reporter should count once toward escalation.
 create unique index if not exists complaints_one_unresolved_per_reporter_vendor_uidx
   on public.complaints(reporter_id, vendor_id)
   where vendor_id is not null and status in ('open','reviewing');
 
--- Recalculate risk using distinct reporters in a recent window. At five reports,
--- Campus Link automatically hides the vendor from student discovery and marks the
--- case under review. The vendor can still sign in, see the hold, and cooperate with support.
 create or replace function private.recalculate_vendor_report_risk(target_vendor uuid)
 returns void
 language plpgsql
@@ -177,17 +225,19 @@ begin
     and created_at >= now() - interval '30 days';
 
   select marketplace_status into current_marketplace_status
-  from public.vendor_profiles where id = target_vendor;
+  from public.vendor_profiles
+  where id = target_vendor;
 
   update public.vendor_profiles
   set
-    risk_report_count = report_total,
+    risk_report_count = coalesce(report_total, 0),
     marketplace_status = case
-      when report_total >= 5 and current_marketplace_status = 'active' then 'under_review'
+      when coalesce(report_total, 0) >= 5 and current_marketplace_status = 'active' then 'under_review'
       else current_marketplace_status
     end,
     suspension_reason = case
-      when report_total >= 5 and current_marketplace_status = 'active' then 'Automatically placed under safety review after five distinct unresolved reports in 30 days.'
+      when coalesce(report_total, 0) >= 5 and current_marketplace_status = 'active'
+        then 'Automatically placed under safety review after five distinct unresolved reports in 30 days.'
       else suspension_reason
     end,
     updated_at = now()
@@ -205,14 +255,22 @@ set search_path = ''
 as $$
 begin
   if tg_op = 'DELETE' then
-    if old.vendor_id is not null then perform private.recalculate_vendor_report_risk(old.vendor_id); end if;
+    if old.vendor_id is not null then
+      perform private.recalculate_vendor_report_risk(old.vendor_id);
+    end if;
     return old;
   end if;
 
-  if new.vendor_id is not null then perform private.recalculate_vendor_report_risk(new.vendor_id); end if;
-  if tg_op = 'UPDATE' and old.vendor_id is distinct from new.vendor_id and old.vendor_id is not null then
+  if new.vendor_id is not null then
+    perform private.recalculate_vendor_report_risk(new.vendor_id);
+  end if;
+
+  if tg_op = 'UPDATE'
+     and old.vendor_id is distinct from new.vendor_id
+     and old.vendor_id is not null then
     perform private.recalculate_vendor_report_risk(old.vendor_id);
   end if;
+
   return new;
 end;
 $$;
@@ -224,54 +282,9 @@ create trigger complaints_vendor_risk_refresh
 after insert or update or delete on public.complaints
 for each row execute procedure private.handle_complaint_vendor_risk();
 
--- Student visibility now includes marketplace safety state. An expired timed
--- suspension becomes discoverable again automatically, while under_review remains hidden
--- until an authorised admin clears it.
-create or replace function private.student_can_access_vendor(target_vendor uuid)
-returns boolean
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select exists (
-    select 1
-    from public.profiles p
-    join public.vendor_institutions vi
-      on vi.institution_id = p.institution_id
-     and vi.vendor_id = target_vendor
-     and vi.status = 'approved'
-    join public.vendor_profiles vp
-      on vp.id = target_vendor
-     and vp.verification_status = 'approved'
-    where p.id = (select auth.uid())
-      and p.account_type = 'student'
-      and p.onboarding_completed_at is not null
-      and (
-        vp.marketplace_status = 'active'
-        or (vp.marketplace_status = 'suspended' and vp.suspended_until is not null and vp.suspended_until <= now())
-      )
-  );
-$$;
-
-revoke all on function private.student_can_access_vendor(uuid) from public;
-grant execute on function private.student_can_access_vendor(uuid) to authenticated;
-
--- Tighten the generic approved-vendor policy so safety-held vendors do not leak
--- through unrelated select queries.
-drop policy if exists "public can view approved vendors" on public.vendor_profiles;
-drop policy if exists vendor_profiles_public_read on public.vendor_profiles;
-create policy vendor_profiles_public_read on public.vendor_profiles
-for select to anon, authenticated
-using (
-  verification_status = 'approved'
-  and (
-    marketplace_status = 'active'
-    or (marketplace_status = 'suspended' and suspended_until is not null and suspended_until <= now())
-  )
-);
-
--- Admin safety action. This is intentionally separate from identity verification.
+-- ---------------------------------------------------------------------------
+-- 4) Admin marketplace-safety action, separate from billing and verification.
+-- ---------------------------------------------------------------------------
 create or replace function public.admin_set_vendor_marketplace_status(
   target_vendor uuid,
   next_status text,
@@ -289,26 +302,31 @@ begin
   if not (select private.has_admin_role(array['super_admin','operations_admin','support_admin','verification_admin'])) then
     raise exception 'Not authorised to manage vendor marketplace safety';
   end if;
+
   if next_status not in ('active','under_review','suspended') then
     raise exception 'Invalid marketplace status';
   end if;
+
   if suspension_days is not null and (suspension_days < 1 or suspension_days > 365) then
     raise exception 'Suspension days must be between 1 and 365';
   end if;
 
   until_time := case
-    when next_status = 'suspended' and suspension_days is not null then now() + make_interval(days => suspension_days)
+    when next_status = 'suspended' and suspension_days is not null
+      then now() + make_interval(days => suspension_days)
     else null
   end;
 
   update public.vendor_profiles
-  set marketplace_status = next_status,
-      suspended_until = until_time,
-      suspension_reason = nullif(trim(coalesce(note,'')),''),
-      safety_reviewed_at = now(),
-      safety_reviewed_by = (select auth.uid()),
-      updated_at = now()
+  set
+    marketplace_status = next_status,
+    suspended_until = until_time,
+    suspension_reason = nullif(trim(coalesce(note,'')),''),
+    safety_reviewed_at = now(),
+    safety_reviewed_by = (select auth.uid()),
+    updated_at = now()
   where id = target_vendor;
+
   if not found then raise exception 'Vendor not found'; end if;
 
   insert into public.audit_logs(actor_id,action,entity_type,entity_id,metadata)
@@ -317,7 +335,7 @@ begin
     'vendor_marketplace.' || next_status,
     'vendor',
     target_vendor::text,
-    jsonb_build_object('suspension_days',suspension_days,'note',note)
+    jsonb_build_object('suspension_days', suspension_days, 'note', note)
   );
 end;
 $$;
@@ -325,7 +343,9 @@ $$;
 revoke all on function public.admin_set_vendor_marketplace_status(uuid,text,integer,text) from public, anon;
 grant execute on function public.admin_set_vendor_marketplace_status(uuid,text,integer,text) to authenticated;
 
--- Refresh current entitlement snapshots so product_limit is immediately available.
+-- ---------------------------------------------------------------------------
+-- 5) Refresh existing vendors so product_limit and report risk are ready now.
+-- ---------------------------------------------------------------------------
 do $$
 declare
   v record;
