@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Building2, FileCheck2, ShieldCheck, Store } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { canReviewVendorIdentity, requireAdminContext } from '../lib'
@@ -43,7 +44,7 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
   const pendingIdentity = (vendors || []).filter((vendor) => ['pending','under_review'].includes(vendor.verification_status))
 
   return <>
-    <header className="admin-topbar"><div><span className="admin-pill"><Store size={15}/> Vendor trust</span><h1>Vendors</h1><p>Vendor identity and campus approval are deliberately separate. A business is discoverable only when both are approved.</p></div></header>
+    <header className="admin-topbar"><div><span className="admin-pill"><Store size={15}/> Vendor trust</span><h1>Vendors</h1><p>Vendor identity and campus approval are deliberately separate. Open Vendor 360 for connected storefront, reputation and safety context.</p></div></header>
     {params.success ? <div className="admin-success">{params.success}</div> : null}{params.error ? <div className="admin-error">{params.error}</div> : null}
     <section className="admin-grid">
       <article className="admin-stat"><span>Vendors in scope</span><strong>{vendors?.length || 0}</strong><small>Latest vendor profiles visible to your role.</small></article>
@@ -57,11 +58,11 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
         const links = linksByVendor.get(vendor.id) || []
         const doc = docMap.get(vendor.id)
         return <tr key={vendor.id}>
-          <td><span className="admin-name">{vendor.business_name}</span><span className="admin-sub">{vendor.location_text || 'Location not set'}</span><span className="admin-sub">{vendor.business_email || vendor.whatsapp_number || vendor.slug}</span></td>
+          <td><Link className="admin-name admin-link" href={`/admin-v2/vendors/${vendor.id}`}>{vendor.business_name}</Link><span className="admin-sub">{vendor.location_text || 'Location not set'}</span><span className="admin-sub">{vendor.business_email || vendor.whatsapp_number || vendor.slug}</span></td>
           <td><span className={`status-badge status-${vendor.verification_status}`}>{vendor.verification_status.replaceAll('_',' ')}</span><span className="admin-sub">{vendor.onboarding_completed_at ? 'Business setup completed' : 'Setup incomplete'}</span></td>
           <td>{links.length ? links.map((link) => <div key={link.institution_id} style={{marginBottom:8}}><span className="admin-name"><Building2 size={13}/> {schoolMap.get(link.institution_id) || 'School'}</span> <span className={`status-badge status-${link.status}`}>{link.status}</span>{link.review_note ? <span className="admin-sub">{link.review_note}</span> : null}</div>) : <span className="admin-sub">No campus request yet</span>}</td>
           <td>{doc ? <><span className="admin-sub"><FileCheck2 size={13}/> {doc.document_type.replaceAll('_',' ')}</span>{signedDocs.get(vendor.id) ? <a className="admin-link admin-sub" href={signedDocs.get(vendor.id)} target="_blank" rel="noreferrer">Open private evidence</a> : <span className="admin-sub">Identity evidence restricted to global verification staff</span>}</> : <span className="admin-sub">No evidence visible</span>}</td>
-          <td><div className="admin-form" style={{minWidth:260}}>
+          <td><div className="admin-form" style={{minWidth:260}}><Link className="admin-action" href={`/admin-v2/vendors/${vendor.id}`}>Open Vendor 360</Link>
             {canIdentity ? <form action={reviewVendorIdentity} className="admin-form"><input type="hidden" name="vendor_id" value={vendor.id}/><div className="admin-field"><input name="note" placeholder="Identity review note" maxLength={800}/></div><div className="admin-actions"><button className="admin-action success" name="decision" value="approve">Approve identity</button><button className="admin-action danger" name="decision" value="reject">Reject</button>{vendor.verification_status==='approved'?<button className="admin-action danger" name="decision" value="suspend">Suspend</button>:null}</div></form> : null}
             {links.map((link) => <form action={reviewVendorCampus} className="admin-form" key={`${vendor.id}-${link.institution_id}`}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="institution_id" value={link.institution_id}/><div className="admin-field"><input name="note" placeholder={`${schoolMap.get(link.institution_id) || 'Campus'} note`} maxLength={800}/></div><div className="admin-actions"><button className="admin-action success" name="decision" value="approve">Approve campus</button><button className="admin-action danger" name="decision" value="reject">Reject campus</button>{link.status==='approved'?<button className="admin-action danger" name="decision" value="suspend">Suspend</button>:null}</div></form>)}
           </div></td>
