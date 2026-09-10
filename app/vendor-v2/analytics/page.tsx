@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ArrowLeft, BarChart3, Eye, MessageCircle, MousePointerClick, Package, Search, Sparkles, Store, TrendingUp } from 'lucide-react'
+import { BarChart3, Eye, MessageCircle, MousePointerClick, Search, Sparkles, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { VendorAnalyticsChart } from '@/components/vendor-analytics-chart'
+import { VendorWorkspaceSidebar } from '@/components/vendor-workspace-sidebar'
 
 function formatDay(value: string) {
   return new Intl.DateTimeFormat('en-NG', { month: 'short', day: 'numeric' }).format(new Date(`${value}T12:00:00`))
@@ -18,7 +18,7 @@ export default async function VendorAnalyticsPage({ searchParams }: { searchPara
 
   const [{ data: profile }, { data: vendor }, { data: entitlementRows }] = await Promise.all([
     supabase.from('profiles').select('account_type').eq('id', userId).maybeSingle(),
-    supabase.from('vendor_profiles').select('business_name,average_rating,review_count').eq('id', userId).maybeSingle(),
+    supabase.from('vendor_profiles').select('business_name,average_rating,review_count,slug').eq('id', userId).maybeSingle(),
     supabase.rpc('get_my_vendor_entitlements'),
   ])
   if (!profile || profile.account_type !== 'vendor') redirect('/dashboard')
@@ -42,62 +42,71 @@ export default async function VendorAnalyticsPage({ searchParams }: { searchPara
     acc.profileViews += Number(row.profile_views || 0)
     acc.contacts += Number(row.contact_clicks || 0) + Number(row.whatsapp_clicks || 0)
     acc.saves += Number(row.saves || 0)
-    acc.productServiceViews += Number(row.service_views || 0)
+    acc.listingViews += Number(row.service_views || 0)
     acc.portfolioViews += Number(row.portfolio_views || 0)
     return acc
-  }, { impressions:0, profileViews:0, contacts:0, saves:0, productServiceViews:0, portfolioViews:0 })
+  }, { impressions:0, profileViews:0, contacts:0, saves:0, listingViews:0, portfolioViews:0 })
 
-  const ctr = totals.impressions > 0 ? (totals.profileViews / totals.impressions) * 100 : 0
+  const profileRate = totals.impressions > 0 ? (totals.profileViews / totals.impressions) * 100 : 0
   const contactRate = totals.profileViews > 0 ? (totals.contacts / totals.profileViews) * 100 : 0
+  const saveRate = totals.profileViews > 0 ? (totals.saves / totals.profileViews) * 100 : 0
   const chartData = rows.map((row: any) => ({ day: formatDay(row.day), impressions:Number(row.search_impressions||0), profileViews:Number(row.profile_views||0), contacts:Number(row.contact_clicks||0)+Number(row.whatsapp_clicks||0) }))
+  const sortedListings = [...(listings || [])].sort((a:any,b:any)=>Number(b.contacts||0)-Number(a.contacts||0) || Number(b.views||0)-Number(a.views||0))
+  const topListing = sortedListings[0]
 
-  return (
-    <main className="v5e-page">
-      <aside className="v5e-sidebar">
-        <Link href="/vendor-v2" className="v3-brand">Campus<span>Link</span></Link>
-        <nav>
-          <Link href="/vendor-v2"><Store size={17}/> Overview</Link>
-          <Link className="active" href="/vendor-v2/analytics"><BarChart3 size={17}/> Analytics</Link>
-          <Link href="/vendor-v2/products"><Package size={17}/> Products</Link>
-          <Link href="/vendor-v2/growth"><TrendingUp size={17}/> Growth</Link>
-        </nav>
-        <div className="v5e-side-footer"><ThemeToggle compact/><Link href="/vendor-v2/billing">Plan & billing</Link></div>
-      </aside>
+  let insight = 'Your analytics will become more useful as students discover and contact your business.'
+  if (totals.impressions > 0 && profileRate < 10) insight = 'Students are seeing you, but relatively few are opening your profile. Stronger product images, titles and pricing may help.'
+  else if (totals.profileViews > 0 && contactRate < 8) insight = 'Students are opening your profile, but contact intent is still low. Improve trust signals, pricing clarity and portfolio proof.'
+  else if (totals.contacts > 0) insight = 'Students are moving from discovery to contact. Keep your strongest listings current and respond quickly when enquiries arrive.'
 
-      <section className="v5e-content">
-        <header className="v5e-topbar">
-          <div><Link href="/vendor-v2" className="v5e-back"><ArrowLeft size={15}/> Overview</Link><h1>Performance</h1><p>See what students notice, open and contact — without exposing student identities.</p></div>
-          <div className="v5e-range">{[7,30,90].map((value)=><Link key={value} className={days===value?'active':''} aria-disabled={value>maxDays} href={value<=maxDays?`/vendor-v2/analytics?range=${value}`:'#'}>{value}D{value>maxDays?<span> Pro</span>:null}</Link>)}</div>
-        </header>
+  return <main className="v5e-page">
+    <VendorWorkspaceSidebar storefrontHref={vendor.slug ? `/student/vendors/${vendor.slug}` : undefined}/>
+    <section className="v5e-content vendor-analytics-content">
+      <header className="v5e-topbar vendor-section-header">
+        <div><span className="v5e-section-label">Analytics</span><h1>Understand what students respond to.</h1><p>See how your storefront moves from campus visibility to real contact intent, without exposing student identities.</p></div>
+        <div className="v5e-range">{[7,30,90].map((value)=><Link key={value} className={days===value?'active':''} aria-disabled={value>maxDays} href={value<=maxDays?`/vendor-v2/analytics?range=${value}`:'#'}>{value}D{value>maxDays?<span> Pro</span>:null}</Link>)}</div>
+      </header>
 
-        <section className="v5e-summary">
-          <article><span><Search size={17}/> Search impressions</span><strong>{totals.impressions.toLocaleString()}</strong><small>Times your listings appeared</small></article>
-          <article><span><Eye size={17}/> Profile views</span><strong>{totals.profileViews.toLocaleString()}</strong><small>{ctr.toFixed(1)}% from impressions</small></article>
-          <article><span><MessageCircle size={17}/> Contact intent</span><strong>{totals.contacts.toLocaleString()}</strong><small>{contactRate.toFixed(1)}% of profile views</small></article>
-          <article><span><MousePointerClick size={17}/> Saves</span><strong>{totals.saves.toLocaleString()}</strong><small>Students who bookmarked you</small></article>
-        </section>
+      <section className="analytics-insight-strip"><Sparkles size={18}/><div><span>Campus Link insight</span><strong>{insight}</strong></div></section>
 
-        <section className="v5e-main-grid">
-          <article className="v5e-panel v5e-chart-panel">
-            <div className="v5e-panel-head"><div><small>Visibility over time</small><h2>How students move toward contact</h2></div><span>{tier} plan · {days} days</span></div>
-            {chartData.length ? <VendorAnalyticsChart data={chartData}/> : <div className="v5e-empty"><BarChart3 size={30}/><strong>Your analytics will build as students discover you.</strong><p>Profile views, search appearances and contact intent will appear here automatically.</p></div>}
-          </article>
-
-          <aside className="v5e-panel v5e-funnel">
-            <div className="v5e-panel-head"><div><small>Discovery funnel</small><h2>From visibility to enquiry</h2></div></div>
-            <div className="v5e-funnel-step"><span>1</span><div><strong>{totals.impressions.toLocaleString()}</strong><small>Search appearances</small></div></div>
-            <div className="v5e-funnel-step"><span>2</span><div><strong>{totals.profileViews.toLocaleString()}</strong><small>Profile views</small></div></div>
-            <div className="v5e-funnel-step"><span>3</span><div><strong>{totals.contacts.toLocaleString()}</strong><small>Contact actions</small></div></div>
-          </aside>
-        </section>
-
-        <section className="v5e-panel">
-          <div className="v5e-panel-head"><div><small>Listing performance</small><h2>What is getting attention</h2></div><span>{(listings||[]).length} tracked listings</span></div>
-          {(listings||[]).length ? <div className="v5e-table"><div className="v5e-table-row head"><span>Listing</span><span>Views</span><span>Impressions</span><span>Contacts</span></div>{(listings||[]).map((item:any)=><div className="v5e-table-row" key={`${item.listing_type}-${item.listing_id}`}><span><strong>{item.listing_name}</strong><small>{item.listing_type}</small></span><span>{Number(item.views||0).toLocaleString()}</span><span>{Number(item.impressions||0).toLocaleString()}</span><span>{Number(item.contacts||0).toLocaleString()}</span></div>)}</div> : <div className="v5e-empty compact"><Sparkles size={24}/><strong>No listing activity yet.</strong><p>As students open products and services, their aggregate performance will appear here.</p></div>}
-        </section>
-
-        {tier === 'Free' ? <section className="v5e-upgrade"><div><small>Free analytics</small><h2>You have the essential 7-day view.</h2><p>Pro unlocks longer history and deeper growth insights. Verification and trust remain completely separate from payment.</p></div><Link href="/vendor-v2/growth">Compare Pro</Link></section> : null}
+      <section className="analytics-metric-strip">
+        <article><div><Search size={17}/><span>Impressions</span></div><strong>{totals.impressions.toLocaleString()}</strong><small>Appeared in student discovery</small></article>
+        <article><div><Eye size={17}/><span>Profile views</span></div><strong>{totals.profileViews.toLocaleString()}</strong><small>{profileRate.toFixed(1)}% of impressions</small></article>
+        <article><div><MessageCircle size={17}/><span>Contacts</span></div><strong>{totals.contacts.toLocaleString()}</strong><small>{contactRate.toFixed(1)}% of profile views</small></article>
+        <article><div><MousePointerClick size={17}/><span>Saves</span></div><strong>{totals.saves.toLocaleString()}</strong><small>{saveRate.toFixed(1)}% of profile views</small></article>
       </section>
-    </main>
-  )
+
+      <section className="analytics-layout">
+        <article className="v5e-panel analytics-chart-card">
+          <div className="v5e-panel-head"><div><small>Visibility trend</small><h2>Discovery → profile → contact</h2></div><span>{tier} · {days} days</span></div>
+          {chartData.length ? <VendorAnalyticsChart data={chartData}/> : <div className="v5e-empty"><BarChart3 size={30}/><strong>No activity in this period yet.</strong><p>When students discover your products, services or profile, aggregate activity will appear here.</p></div>}
+        </article>
+
+        <aside className="v5e-panel analytics-funnel-card">
+          <div className="v5e-panel-head"><div><small>Discovery funnel</small><h2>Where attention becomes intent</h2></div></div>
+          <div className="analytics-funnel-line"><span>Search appearances</span><strong>{totals.impressions.toLocaleString()}</strong></div>
+          <div className="analytics-funnel-bar"><span style={{width:'100%'}}/></div>
+          <div className="analytics-funnel-line"><span>Profile views</span><strong>{totals.profileViews.toLocaleString()}</strong></div>
+          <div className="analytics-funnel-bar"><span style={{width:`${Math.min(profileRate,100)}%`}}/></div>
+          <div className="analytics-funnel-line"><span>Contacts</span><strong>{totals.contacts.toLocaleString()}</strong></div>
+          <div className="analytics-funnel-bar"><span style={{width:`${Math.min(contactRate,100)}%`}}/></div>
+          <p>These are aggregate business signals. Vendors never see which individual student viewed them.</p>
+        </aside>
+      </section>
+
+      <section className="analytics-bottom-grid">
+        <article className="v5e-panel">
+          <div className="v5e-panel-head"><div><small>Listing performance</small><h2>What students are responding to</h2></div><span>{(listings||[]).length} tracked</span></div>
+          {sortedListings.length ? <div className="analytics-listings">{sortedListings.slice(0,8).map((item:any,index:number)=><div className="analytics-listing-row" key={`${item.listing_type}-${item.listing_id}`}><span className="analytics-rank">{index+1}</span><div><strong>{item.listing_name}</strong><small>{item.listing_type}</small></div><div><strong>{Number(item.views||0).toLocaleString()}</strong><small>views</small></div><div><strong>{Number(item.contacts||0).toLocaleString()}</strong><small>contacts</small></div></div>)}</div> : <div className="v5e-empty compact"><Sparkles size={24}/><strong>No listing activity yet.</strong><p>Add products and services, then share your storefront and let Campus Link discovery begin working.</p></div>}
+        </article>
+
+        <aside className="v5e-panel analytics-highlight-card">
+          <div className="v5e-panel-head"><div><small>Best performer</small><h2>{topListing ? topListing.listing_name : 'No leader yet'}</h2></div><TrendingUp size={20}/></div>
+          {topListing ? <><strong className="analytics-big-number">{Number(topListing.contacts||0).toLocaleString()}</strong><span>contact actions</span><div className="analytics-mini-stats"><div><strong>{Number(topListing.views||0).toLocaleString()}</strong><small>views</small></div><div><strong>{Number(topListing.impressions||0).toLocaleString()}</strong><small>impressions</small></div></div></> : <p>Your strongest product or service will appear here once there is enough activity.</p>}
+        </aside>
+      </section>
+
+      {tier === 'Free' ? <section className="v5e-upgrade"><div><small>Free analytics</small><h2>Your 7-day view stays useful.</h2><p>Pro unlocks longer history and deeper growth tools. Payment never changes verification or trust status.</p></div><Link href="/vendor-v2/growth">Compare Pro</Link></section> : null}
+    </section>
+  </main>
 }
