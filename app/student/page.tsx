@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ArrowUpRight, BadgeCheck, BookOpen, Bookmark, Camera, Home, Laptop, MapPin, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
+import { BadgeCheck, BookOpen, Bookmark, Camera, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
+import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
 
 function CategoryIcon({ name }: { name: string }) {
   const value = name.toLowerCase()
@@ -18,6 +18,11 @@ function CategoryIcon({ name }: { name: string }) {
   return <Shapes size={18}/>
 }
 
+function vendorIsSafe(vendor: any) {
+  if (vendor.marketplace_status === 'active') return true
+  return vendor.marketplace_status === 'suspended' && vendor.suspended_until && new Date(vendor.suspended_until) <= new Date()
+}
+
 export default async function StudentDashboard() {
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
@@ -30,18 +35,20 @@ export default async function StudentDashboard() {
     .select('first_name,account_type,institution_id,student_verification_status,onboarding_completed_at')
     .eq('id', userId)
     .maybeSingle()
-  if (!profile || profile.account_type === 'vendor') redirect('/dashboard')
+
+  if (!profile || profile.account_type !== 'student') redirect('/dashboard')
 
   const [institutionResult, savedResult, reviewResult, contactResult, categoryResult] = await Promise.all([
     profile.institution_id ? supabase.from('institutions').select('name,city,state').eq('id', profile.institution_id).maybeSingle() : Promise.resolve({ data: null }),
     supabase.from('saved_vendors').select('vendor_id', { count: 'exact' }).eq('student_id', userId),
     supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('student_id', userId),
     supabase.from('contact_events').select('id', { count: 'exact', head: true }).eq('student_id', userId),
-    supabase.from('categories').select('id,name,slug').eq('is_active', true).order('name').limit(10),
+    supabase.from('categories').select('id,name,slug').eq('is_active', true).order('name').limit(12),
   ])
 
-  const school = institutionResult.data?.name || null
-  const location = [institutionResult.data?.city, institutionResult.data?.state].filter(Boolean).join(', ')
+  const institution = institutionResult.data
+  const school = institution?.name || null
+  const location = [institution?.city, institution?.state].filter(Boolean).join(', ')
   const status = profile.student_verification_status || 'pending'
   const setupComplete = Boolean(profile.onboarding_completed_at)
   const savedCount = savedResult.count ?? savedResult.data?.length ?? 0
@@ -49,62 +56,121 @@ export default async function StudentDashboard() {
   const contactCount = contactResult.count || 0
   const categories = categoryResult.data || []
 
-  let featured: any[] = []
+  let vendors: any[] = []
   let products: any[] = []
   let services: any[] = []
-  let campusVendorCount = 0
 
   if (profile.institution_id) {
-    const { data: campusLinks } = await supabase.from('vendor_institutions').select('vendor_id').eq('institution_id', profile.institution_id).eq('status', 'approved').limit(60)
-    const ids = (campusLinks || []).map((row) => row.vendor_id)
-    campusVendorCount = ids.length
-    if (ids.length) {
-      const [vendorResult, productResult, serviceResult] = await Promise.all([
-        supabase.from('vendor_profiles').select('id,business_name,slug,description,logo_url,cover_url,average_rating,review_count,marketplace_status,suspended_until').in('id', ids).eq('verification_status', 'approved').order('average_rating', { ascending: false }).limit(8),
-        supabase.from('vendor_products').select('id,vendor_id,name,price_ngn,pricing_type,cover_image_url,created_at').in('vendor_id', ids).eq('is_active', true).order('created_at', { ascending: false }).limit(12),
-        supabase.from('vendor_services').select('id,vendor_id,name,price_from,description').in('vendor_id', ids).eq('is_active', true).limit(10),
-      ])
-      featured = (vendorResult.data || []).filter((vendor) => vendor.marketplace_status === 'active' || (vendor.marketplace_status === 'suspended' && vendor.suspended_until && new Date(vendor.suspended_until) <= new Date()))
-      products = productResult.data || []
-      services = serviceResult.data || []
+    const { data: campusLinks } = await supabase
+      .from('vendor_institutions')
+      .select('vendor_id')
+      .eq('institution_id', profile.institution_id)
+      .eq('status', 'approved')
+      .limit(100)
+
+    const campusVendorIds = (campusLinks || []).map((row) => row.vendor_id)
+    if (campusVendorIds.length) {
+      const { data: candidateVendors } = await supabase
+        .from('vendor_profiles')
+        .select('id,business_name,slug,description,logo_url,cover_url,average_rating,review_count,marketplace_status,suspended_until')
+        .in('id', campusVendorIds)
+        .eq('verification_status', 'approved')
+        .order('average_rating', { ascending: false })
+
+      vendors = (candidateVendors || []).filter(vendorIsSafe)
+      const safeVendorIds = vendors.map((vendor) => vendor.id)
+
+      if (safeVendorIds.length) {
+        const [productResult, serviceResult] = await Promise.all([
+          supabase.from('vendor_products').select('id,vendor_id,name,description,price_ngn,pricing_type,cover_image_url,created_at').in('vendor_id', safeVendorIds).eq('is_active', true).order('created_at', { ascending: false }).limit(12),
+          supabase.from('vendor_services').select('id,vendor_id,name,price_from,description').in('vendor_id', safeVendorIds).eq('is_active', true).order('created_at', { ascending: false }).limit(12),
+        ])
+        products = productResult.data || []
+        services = serviceResult.data || []
+      }
     }
   }
 
-  const vendorMap = new Map(featured.map((vendor) => [vendor.id, vendor]))
+  const vendorMap = new Map(vendors.map((vendor) => [vendor.id, vendor]))
+  const featuredVendors = vendors.slice(0, 6)
+  const featuredServices = services.slice(0, 8)
 
   return (
-    <main className="v3-student-page">
-      <header className="v3-appbar">
-        <div className="v3-appbar-inner">
-          <Link href="/student" className="v3-brand">Campus<span>Link</span></Link>
-          <nav className="v3-nav"><Link href="/student">Home</Link><Link href="/student/discover">Discover</Link><Link href="/student/saved">Saved</Link><Link href="/onboarding/student">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
-        </div>
-      </header>
+    <main className="cl-student-page">
+      <StudentMarketplaceHeader firstName={profile.first_name} schoolName={school} />
 
-      <section className="v3-shell">
-        <section className="v3-hero">
-          <div className="v3-hero-main">
-            {school ? <div className="v3-campus-chip"><MapPin size={15}/><span>{school}{location ? ` · ${location}` : ''}</span></div> : null}
+      <section className="cl-student-shell">
+        <section className="cl-student-hero">
+          <div className="cl-student-hero-copy">
+            <span className="cl-student-eyebrow"><MapPin size={15}/> {school ? `${school}${location ? ` · ${location}` : ''}` : 'Set your campus to personalize discovery'}</span>
             <DynamicGreeting firstName={profile.first_name} sessionSeed={sessionSeed} role="student" />
-            <p>{school ? 'Search products, services and trusted vendors already connected to your campus.' : 'Add your school to make Campus Link local to you, then discover vendors students can actually reach.'}</p>
-            <form className="v3-search" action="/student/discover" method="get"><Search size={19}/><input name="q" placeholder="Search clothes, food, braids, repairs, tutors..."/><button type="submit">Search campus</button></form>
+            <p>Find products and services from vendors approved for your campus, compare their work, reviews and reputation, then contact them directly.</p>
+            <form className="cl-student-hero-search" action="/student/discover" method="get">
+              <Search size={20}/>
+              <input name="q" placeholder="Try “phone repair”, “braids”, “cakes”, “graphic design”..." aria-label="Search your campus marketplace" />
+              <button type="submit">Search</button>
+            </form>
           </div>
-          <aside className="v3-hero-side"><div><span>Your campus today</span><strong>{school || 'Set your school'}</strong><p>{school ? `${campusVendorCount} approved vendor${campusVendorCount === 1 ? '' : 's'} currently connected to your school.` : 'Once your school is set, Campus Link keeps discovery focused on people and businesses relevant to you.'}</p></div><div className="v3-trust-line"><ShieldCheck size={17}/> Payment never buys verification.</div></aside>
+          <aside className="cl-student-hero-aside">
+            <div className="cl-student-campus-card">
+              <small>Your campus marketplace</small>
+              <strong>{school || 'Add your university'}</strong>
+              <p>{school ? `${vendors.length} approved vendor${vendors.length === 1 ? '' : 's'} currently visible to students at your institution.` : 'Campus Link keeps discovery school-specific so you see businesses that can actually serve your community.'}</p>
+              <div className="cl-student-campus-trust"><ShieldCheck size={16}/> Identity + campus approval are required for visibility.</div>
+            </div>
+          </aside>
         </section>
 
-        {categories.length ? <section className="v3-section"><div className="v3-section-head"><div><small>Browse by need</small><h2>What are you looking for?</h2></div><Link href="/student/discover">See everything <ArrowUpRight size={14}/></Link></div><div className="v3-category-rail">{categories.slice(0,6).map((category) => <Link className="v3-category-card" href={`/student/discover?category=${encodeURIComponent(category.slug)}`} key={category.id}><span><CategoryIcon name={category.name}/></span><strong>{category.name}</strong></Link>)}</div></section> : null}
+        {categories.length ? <section className="cl-student-section">
+          <div className="cl-student-section-head"><div><h2>Explore by category</h2><p>Start with what you need, then compare real campus vendors.</p></div><Link href="/student/discover">See all categories</Link></div>
+          <div className="cl-student-categories">
+            {categories.slice(0, 6).map((category) => <Link className="cl-student-category" href={`/student/discover?category=${encodeURIComponent(category.slug)}`} key={category.id}><span className="cl-student-category-icon"><CategoryIcon name={category.name}/></span><strong>{category.name}</strong></Link>)}
+          </div>
+        </section> : null}
 
-        <section className="v3-section"><div className="v3-section-head"><div><small>Fresh around campus</small><h2>Products students can ask about</h2></div><Link href="/student/discover">Explore marketplace <ArrowUpRight size={14}/></Link></div>{products.length ? <div className="v3-product-rail">{products.map((product) => { const vendor = vendorMap.get(product.vendor_id); const price = product.pricing_type === 'contact' ? 'Ask for price' : `${product.pricing_type === 'from' ? 'From ' : ''}₦${Number(product.price_ngn || 0).toLocaleString()}`; return <Link href={`/student/products/${product.id}`} className="v3-product-card" key={product.id}><div className="v3-product-image">{product.cover_image_url ? <img src={product.cover_image_url} alt={product.name}/> : <Package size={36}/>}</div><div className="v3-product-copy"><strong>{product.name}</strong><p>{vendor?.business_name || 'Campus vendor'}</p><div className="v3-product-meta"><span>{price}</span><small>View item</small></div></div></Link>})}</div> : <div className="v3-surface"><strong>Products will appear here as vendors add their catalogues.</strong><p style={{color:'var(--v3-muted)'}}>Services are already available; product listings are being introduced separately so it stays clear what a vendor sells versus what they do.</p></div>}</section>
+        <section className="cl-student-section">
+          <div className="cl-student-section-head"><div><h2>Fresh around your campus</h2><p>Individual products you can open, compare and ask the vendor about.</p></div><Link href="/student/discover">Explore marketplace</Link></div>
+          {products.length ? <div className="cl-gig-grid">
+            {products.slice(0, 8).map((product) => {
+              const vendor = vendorMap.get(product.vendor_id)
+              const price = product.pricing_type === 'contact' ? 'Ask for price' : `${product.pricing_type === 'from' ? 'From ' : ''}₦${Number(product.price_ngn || 0).toLocaleString()}`
+              return <Link href={`/student/products/${product.id}`} className="cl-gig-card" key={product.id}>
+                <div className="cl-gig-image">{product.cover_image_url ? <img src={product.cover_image_url} alt={product.name}/> : <div className="cl-gig-placeholder"><Package size={38}/></div>}<span className="cl-gig-badge">Campus approved</span></div>
+                <div className="cl-gig-copy">
+                  <div className="cl-gig-seller"><span className="cl-gig-seller-avatar">{vendor?.logo_url ? <img src={vendor.logo_url} alt=""/> : (vendor?.business_name || 'V').slice(0,1)}</span><span>{vendor?.business_name || 'Campus vendor'}</span><ShieldCheck size={12}/></div>
+                  <div className="cl-gig-title">{product.name}</div>
+                  <div className="cl-gig-rating"><Star size={13} fill="currentColor"/> {Number(vendor?.average_rating || 0).toFixed(1)} <span style={{color:'var(--v3-muted)'}}>({vendor?.review_count || 0})</span></div>
+                  <div className="cl-gig-price">Starting at <strong>{price}</strong></div>
+                </div>
+              </Link>
+            })}
+          </div> : <div className="v3-surface"><strong>No products have been listed on your campus yet.</strong><p style={{color:'var(--v3-muted)'}}>Approved vendors will appear here as they add products. You can already browse services and vendor profiles.</p></div>}
+        </section>
 
-        <section className="v3-section"><div className="v3-section-head"><div><small>Services near you</small><h2>People you can contact today</h2></div><Link href="/student/discover">Browse services <ArrowUpRight size={14}/></Link></div>{featured.length ? <div className="v3-vendor-rail">{featured.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="v3-vendor-card" key={vendor.id}><div className="v3-product-image">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : <ShieldCheck size={38}/>}</div><div className="v3-product-copy"><strong>{vendor.business_name}</strong><p>{vendor.description || 'Approved Campus Link vendor.'}</p><div className="v3-product-meta"><span><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)}</span><small>Verified</small></div></div></Link>)}</div> : <div className="v3-surface"><strong>Your local vendor list is still growing.</strong><p style={{color:'var(--v3-muted)'}}>Approved vendors will show here as businesses are cleared for your campus.</p></div>}</section>
+        {featuredServices.length ? <section className="cl-student-section">
+          <div className="cl-student-section-head"><div><h2>Services students are offering</h2><p>Open the vendor profile to compare portfolio proof, ratings and contact options.</p></div><Link href="/student/discover">Browse all services</Link></div>
+          <div className="cl-gig-grid">
+            {featuredServices.map((service) => {
+              const vendor = vendorMap.get(service.vendor_id)
+              if (!vendor) return null
+              return <Link href={`/student/vendors/${vendor.slug}`} className="cl-gig-card" key={service.id}>
+                <div className="cl-gig-image">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : <div className="cl-gig-placeholder"><MessageCircle size={38}/></div>}<span className="cl-gig-badge">Service</span></div>
+                <div className="cl-gig-copy"><div className="cl-gig-seller"><span className="cl-gig-seller-avatar">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><span>{vendor.business_name}</span><ShieldCheck size={12}/></div><div className="cl-gig-title">{service.name}</div><div className="cl-gig-rating"><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} <span style={{color:'var(--v3-muted)'}}>({vendor.review_count || 0})</span></div><div className="cl-gig-price">{service.price_from ? <>Starting at <strong>₦{Number(service.price_from).toLocaleString()}</strong></> : <strong>Ask vendor for price</strong>}</div></div>
+              </Link>
+            })}
+          </div>
+        </section> : null}
 
-        <section className="v3-split v3-section">
-          <div className="v3-surface"><div className="v3-section-head" style={{marginBottom:8}}><div><small>Your space</small><h2 style={{fontSize:23}}>Campus Link activity</h2></div></div><div className="v3-activity-strip"><div><small>Saved</small><strong>{savedCount}</strong><small>vendors</small></div><div><small>Contacts</small><strong>{contactCount}</strong><small>started</small></div><div><small>Reviews</small><strong>{reviewCount}</strong><small>shared</small></div><div><small>Verification</small><strong style={{fontSize:18,textTransform:'capitalize'}}>{status.replace('_',' ')}</strong><small>status</small></div></div></div>
-          <div className="v3-surface"><div className="v3-section-head" style={{marginBottom:6}}><div><small>Quick actions</small><h2 style={{fontSize:23}}>Go straight there</h2></div></div><div className="v3-action-list"><Link href="/student/discover" className="v3-action-row"><span><Search size={19}/></span><div><strong>Discover vendors</strong><small>Search products, services and profiles.</small></div><ArrowUpRight size={16}/></Link><Link href="/student/saved" className="v3-action-row"><span><Bookmark size={19}/></span><div><strong>Saved vendors</strong><small>Return to businesses you shortlisted.</small></div><ArrowUpRight size={16}/></Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student" className="v3-action-row"><span><BadgeCheck size={19}/></span><div><strong>Complete verification</strong><small>Strengthen your account and review privileges.</small></div><ArrowUpRight size={16}/></Link> : null}</div></div>
+        <section className="cl-student-section">
+          <div className="cl-student-section-head"><div><h2>Trusted businesses on your campus</h2><p>Profiles combine products, services, portfolio proof, reviews and direct contact.</p></div><Link href="/student/discover">Discover more</Link></div>
+          {featuredVendors.length ? <div className="cl-vendor-grid-fiverr">{featuredVendors.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="cl-vendor-tile" key={vendor.id}><div className="cl-vendor-tile-cover">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : null}</div><div className="cl-vendor-tile-body"><div className="cl-vendor-tile-top"><span className="cl-vendor-tile-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}</strong><div className="cl-safety-note"><ShieldCheck size={13}/> Campus approved</div></div></div><p>{vendor.description || 'Approved Campus Link vendor.'}</p><div className="cl-vendor-meta"><span><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span><span className="verified">View profile</span></div></div></Link>)}</div> : <div className="v3-surface"><strong>Your campus vendor network is still growing.</strong><p style={{color:'var(--v3-muted)'}}>Campus Link only surfaces businesses after identity verification and campus approval.</p></div>}
+        </section>
+
+        <section className="cl-student-section cl-student-utility-grid">
+          <div className="cl-student-utility"><h3>Your Campus Link activity</h3><p>Useful shortcuts without turning the Student experience into an analytics dashboard.</p><div className="cl-student-stat-row"><div><small>Saved</small><strong>{savedCount}</strong></div><div><small>Contacts</small><strong>{contactCount}</strong></div><div><small>Reviews</small><strong>{reviewCount}</strong></div><div><small>Verification</small><strong style={{fontSize:14,textTransform:'capitalize'}}>{status.replaceAll('_',' ')}</strong></div></div></div>
+          <div className="cl-student-utility"><h3>Account & safety</h3><p>Your verification improves review integrity. Vendor payments never purchase trust or campus approval.</p><div className="cl-student-actions"><Link href="/student/saved"><Bookmark size={18}/> Saved vendors</Link><Link href="/student/discover"><Search size={18}/> Discover campus vendors</Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><BadgeCheck size={18}/> Complete Student verification</Link> : <Link href="/onboarding/student"><ShieldCheck size={18}/> Review your verified profile</Link>}</div></div>
         </section>
       </section>
-
-      <nav className="v3-mobile-nav"><Link className="active" href="/student"><Home size={17}/><br/>Home</Link><Link href="/student/discover"><Search size={17}/><br/>Discover</Link><Link href="/student/saved"><Bookmark size={17}/><br/>Saved</Link><Link href="/onboarding/student"><BadgeCheck size={17}/><br/>Profile</Link></nav>
     </main>
   )
 }
