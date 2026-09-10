@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BarChart3, Building2, ClipboardCheck, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldCheck, Store, UserCog } from 'lucide-react'
+import { BarChart3, Building2, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { requireAdminContext } from './lib'
 import './admin.css'
@@ -23,6 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <nav className="admin-nav">
             <Link href="/admin-v2"><LayoutDashboard /> Overview</Link>
+            <Link href="/admin-v2/marketplace"><ShoppingBag /> Marketplace</Link>
             <Link href="/admin-v2/schools"><Building2 /> Schools</Link>
             <Link href="/admin-v2/students"><GraduationCap /> Students</Link>
             <Link href="/admin-v2/vendors"><Store /> Vendors</Link>
@@ -31,7 +32,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin-v2/categories"><FolderKanban /> Categories</Link>
             <Link href="/admin-v2/admins"><UserCog /> Admins</Link>
             <Link href="/admin-v2/audit"><BarChart3 /> Audit</Link>
-            <Link href="/student"><ClipboardCheck /> Student view</Link>
           </nav>
           <div className="admin-sidebar-foot">
             <Link href="/"><ShieldCheck /> Back to Campus Link</Link>
