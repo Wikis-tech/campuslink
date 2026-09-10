@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  BadgeCheck, BarChart3, Building2, CircleDollarSign, Eye, ImagePlus, LayoutDashboard,
-  ListChecks, MessageCircle, Package, Plus, ShieldAlert, Sparkles, Star, Store, TrendingUp,
+  BadgeCheck, BarChart3, Building2, CircleDollarSign, Eye, ImagePlus,
+  ListChecks, MessageCircle, Package, Plus, ShieldAlert, Sparkles, TrendingUp,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
+import { VendorWorkspaceSidebar } from '@/components/vendor-workspace-sidebar'
 
 export default async function VendorDashboard() {
   const supabase = await createClient()
@@ -62,15 +62,9 @@ export default async function VendorDashboard() {
   }),{impressions:0,views:0,contacts:0,saves:0})
 
   const healthChecks = [
-    setupComplete,
-    verification === 'approved',
-    campus?.status === 'approved',
-    Boolean(vendor.whatsapp_number),
-    Boolean(vendor.logo_url),
-    Boolean(vendor.cover_url),
-    Boolean(vendor.description && vendor.description.trim().length >= 40),
-    (productCount + (serviceResult.count || 0)) > 0,
-    (portfolioResult.count || 0) > 0,
+    setupComplete, verification === 'approved', campus?.status === 'approved', Boolean(vendor.whatsapp_number),
+    Boolean(vendor.logo_url), Boolean(vendor.cover_url), Boolean(vendor.description && vendor.description.trim().length >= 40),
+    (productCount + (serviceResult.count || 0)) > 0, (portfolioResult.count || 0) > 0,
   ]
   const healthScore = Math.round((healthChecks.filter(Boolean).length / healthChecks.length) * 100)
 
@@ -78,7 +72,7 @@ export default async function VendorDashboard() {
     !setupComplete ? { icon:<BadgeCheck size={17}/>, title:'Finish business setup', copy:'Complete your business details and verification evidence.', href:'/onboarding/vendor' } : null,
     verification !== 'approved' ? { icon:<BadgeCheck size={17}/>, title:'Complete identity verification', copy:`Current status: ${verification.replace('_',' ')}.`, href:'/onboarding/vendor' } : null,
     campus?.status !== 'approved' ? { icon:<Building2 size={17}/>, title:'Finish campus approval', copy:'Students cannot discover you until your campus is approved.', href:'/onboarding/vendor' } : null,
-    !vendor.logo_url ? { icon:<Store size={17}/>, title:'Add a business logo', copy:'A recognizable storefront is easier for students to trust.', href:'/onboarding/vendor' } : null,
+    !vendor.logo_url ? { icon:<Sparkles size={17}/>, title:'Add a business logo', copy:'A recognizable storefront is easier for students to trust.', href:'/onboarding/vendor' } : null,
     !vendor.cover_url ? { icon:<ImagePlus size={17}/>, title:'Add a cover image', copy:'Show students what your business looks or feels like.', href:'/onboarding/vendor' } : null,
     productCount === 0 ? { icon:<Package size={17}/>, title:'Add your first product', copy:'Show a real item students can open and ask about.', href:'/vendor-v2/products' } : null,
     (portfolioResult.count || 0) === 0 ? { icon:<ImagePlus size={17}/>, title:'Add proof of work', copy:'Portfolio examples help students judge quality before contacting you.', href:'/vendor-v2/portfolio' } : null,
@@ -88,24 +82,11 @@ export default async function VendorDashboard() {
 
   return (
     <main className="v5e-vendor-page">
-      <aside className="v5e-sidebar">
-        <Link href="/vendor-v2" className="v3-brand">Campus<span>Link</span></Link>
-        <nav>
-          <Link className="active" href="/vendor-v2"><LayoutDashboard size={17}/> Overview</Link>
-          <Link href="/vendor-v2/products"><Package size={17}/> Products</Link>
-          <Link href="/vendor-v2/services"><ListChecks size={17}/> Services</Link>
-          <Link href="/vendor-v2/portfolio"><ImagePlus size={17}/> Portfolio</Link>
-          <Link href="/vendor-v2/analytics"><BarChart3 size={17}/> Analytics</Link>
-          <Link href="/vendor-v2/growth"><TrendingUp size={17}/> Growth</Link>
-          <Link href="/vendor-v2/billing"><CircleDollarSign size={17}/> Billing</Link>
-        </nav>
-        <div className="v5e-side-footer"><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost" style={{width:'100%'}}>Sign out</button></form></div>
-      </aside>
-
+      <VendorWorkspaceSidebar storefrontHref={`/student/vendors/${vendor.slug}`}/>
       <section className="v5e-vendor-main">
         <header className="v5e-vendor-header">
-          <div><small style={{fontWeight:850,color:'var(--v3-muted)',textTransform:'uppercase',letterSpacing:'.08em'}}>{vendor.business_name}</small><DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" /><p>{discoverable ? `Your storefront is live around ${school || 'your campus'}. Here is what needs attention and how students are responding.` : 'Your business workspace is ready. Complete the important items below before public discovery.'}</p></div>
-          <div className="v5e-vendor-actions"><Link href="/vendor-v2/products" className="btn btn-primary"><Plus size={16}/> Add product</Link><Link href={`/student/vendors/${vendor.slug}`} className="btn btn-ghost">Preview storefront</Link></div>
+          <div><small className="v5e-eyebrow">{vendor.business_name}</small><DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" /><p>{discoverable ? `Your storefront is live around ${school || 'your campus'}. Focus on the next useful action, then watch how students respond.` : 'Your business workspace is ready. Complete the important items below before public discovery.'}</p></div>
+          <div className="v5e-vendor-actions"><Link href="/vendor-v2/products" className="btn btn-primary"><Plus size={16}/> Add product</Link><Link href={`/student/vendors/${vendor.slug}`} className="btn btn-ghost"><Eye size={16}/> Preview storefront</Link></div>
         </header>
 
         {marketplace !== 'active' && !suspensionExpired ? <div className="v5e-alert"><strong>Marketplace visibility paused.</strong> Safety review is separate from your paid plan. You can still manage your business while the case is reviewed.</div> : null}
@@ -119,18 +100,18 @@ export default async function VendorDashboard() {
 
         <section className="v5e-dashboard-grid">
           <div>
-            <article className="v5e-card">
-              <div className="v5e-card-head"><h2>{tasks.length ? `Today's priorities · ${tasks.length}` : 'You are in good shape today'}</h2><Link href="/onboarding/vendor">Business settings</Link></div>
+            <article className="v5e-card v5e-priority-card">
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Action centre</span><h2>{tasks.length ? `${tasks.length} things worth doing next` : 'You are in good shape today'}</h2></div><Link href="/onboarding/vendor">Business settings</Link></div>
               {tasks.length ? tasks.slice(0,5).map((task,index)=><div className="v5e-todo" key={`${task.title}-${index}`}><span>{task.icon}</span><div><strong>{task.title}</strong><small>{task.copy}</small></div><Link href={task.href}>Open</Link></div>) : <div className="v5e-todo"><span><Sparkles size={17}/></span><div><strong>No urgent setup tasks</strong><small>Keep products, services and portfolio examples current.</small></div><Link href="/vendor-v2/products">Manage</Link></div>}
             </article>
 
             <article className="v5e-card">
-              <div className="v5e-card-head"><h2>Performance · last 7 days</h2><Link href="/vendor-v2/analytics">Open analytics</Link></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Performance snapshot</span><h2>Last 7 days</h2></div><Link href="/vendor-v2/analytics">Open analytics</Link></div>
               <div className="v5e-kpis"><div><span>Impressions</span><strong>{analytics.impressions}</strong></div><div><span>Profile views</span><strong>{analytics.views}</strong></div><div><span>Contacts</span><strong>{analytics.contacts}</strong></div><div><span>Saves</span><strong>{analytics.saves}</strong></div></div>
             </article>
 
             <article className="v5e-card">
-              <div className="v5e-card-head"><h2>Your storefront</h2><Link href={`/student/vendors/${vendor.slug}`}>Preview</Link></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Storefront inventory</span><h2>What students can discover</h2></div><Link href={`/student/vendors/${vendor.slug}`}>Preview</Link></div>
               <div className="v5e-storefront-row"><div><strong>Products</strong><small>{productCount} of {productLimit} active listings</small></div><Link href="/vendor-v2/products">Manage</Link></div>
               <div className="v5e-storefront-row"><div><strong>Services</strong><small>{serviceResult.count || 0} of {serviceLimit} active services</small></div><Link href="/vendor-v2/services">Manage</Link></div>
               <div className="v5e-storefront-row"><div><strong>Portfolio</strong><small>{portfolioResult.count || 0} of {portfolioLimit} proof-of-work items</small></div><Link href="/vendor-v2/portfolio">Manage</Link></div>
@@ -139,19 +120,19 @@ export default async function VendorDashboard() {
 
           <aside>
             <article className="v5e-card">
-              <div className="v5e-card-head"><h2>Business health</h2><span style={{fontSize:12,color:'var(--v3-muted)',fontWeight:800}}>Actionable, not a trust score</span></div>
-              <div className="v5e-health-score"><div className="v5e-health-ring" style={{'--score':healthScore} as React.CSSProperties}><strong>{healthScore}%</strong></div><div className="v5e-health-copy"><strong>{healthScore>=85?'Strong setup':healthScore>=60?'Good foundation':'Needs attention'}</strong><small>Based on profile completeness, listings and verification readiness.</small></div></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Business health</span><h2>Improve the storefront</h2></div><span className="v5e-card-note">Not a trust score</span></div>
+              <div className="v5e-health-score"><div className="v5e-health-ring" style={{'--score':healthScore} as React.CSSProperties}><strong>{healthScore}%</strong></div><div className="v5e-health-copy"><strong>{healthScore>=85?'Strong setup':healthScore>=60?'Good foundation':'Needs attention'}</strong><small>Profile completeness, listings and verification readiness.</small></div></div>
               <div className="v5e-mini-links"><Link href="/onboarding/vendor">Improve profile <span>→</span></Link><Link href="/vendor-v2/analytics">View performance <span>→</span></Link></div>
             </article>
 
             <article className="v5e-card">
-              <div className="v5e-card-head"><h2>Student response</h2></div>
-              <div className="v5e-kpis" style={{gridTemplateColumns:'1fr 1fr'}}><div><span>All contacts</span><strong>{contactResult.count || 0}</strong></div><div><span>All saves</span><strong>{saveResult.count || 0}</strong></div><div><span>Rating</span><strong>{Number(vendor.average_rating || 0).toFixed(1)}</strong></div><div><span>Reviews</span><strong>{vendor.review_count || 0}</strong></div></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Student response</span><h2>Lifetime signals</h2></div></div>
+              <div className="v5e-kpis v5e-kpis-two"><div><span>Contacts</span><strong>{contactResult.count || 0}</strong></div><div><span>Saves</span><strong>{saveResult.count || 0}</strong></div><div><span>Rating</span><strong>{Number(vendor.average_rating || 0).toFixed(1)}</strong></div><div><span>Reviews</span><strong>{vendor.review_count || 0}</strong></div></div>
             </article>
 
             <article className="v5e-card">
-              <div className="v5e-card-head"><h2>Trust & safety</h2></div>
-              <div className="v5e-storefront-row"><div><strong>{marketplace === 'active' ? 'No active marketplace hold' : `Status: ${marketplace.replace('_',' ')}`}</strong><small>{vendor.risk_report_count ? `${vendor.risk_report_count} unresolved report${vendor.risk_report_count===1?'':'s'} in the current safety window.` : 'Paid plans never override verification or safety.'}</small></div><ShieldAlert size={18}/></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Trust & safety</span><h2>{marketplace === 'active' ? 'Good standing' : marketplace.replace('_',' ')}</h2></div><ShieldAlert size={18}/></div>
+              <p className="v5e-trust-copy">{vendor.risk_report_count ? `${vendor.risk_report_count} unresolved report${vendor.risk_report_count===1?'':'s'} in the current safety window.` : 'Paid plans never override verification, campus approval or marketplace safety.'}</p>
             </article>
           </aside>
         </section>
