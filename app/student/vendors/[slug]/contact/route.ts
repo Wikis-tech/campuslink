@@ -6,6 +6,8 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const url = new URL(request.url)
   const channel = url.searchParams.get('channel') === 'phone' ? 'phone' : 'whatsapp'
   const item = String(url.searchParams.get('item') || '').trim().slice(0,160)
+  const productId = String(url.searchParams.get('product') || '').trim() || null
+  const serviceId = String(url.searchParams.get('service') || '').trim() || null
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const userId = claimsData?.claims?.sub
@@ -19,7 +21,15 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const {data:approval}=await supabase.from('vendor_institutions').select('vendor_id').eq('vendor_id',vendor.id).eq('institution_id',profile.institution_id).eq('status','approved').maybeSingle()
   if(!approval) return NextResponse.redirect(new URL('/student/discover',request.url))
   const raw=vendor.whatsapp_number||''; if(!raw) return NextResponse.redirect(new URL(`/student/vendors/${slug}?error=This%20vendor%20has%20not%20added%20a%20contact%20number`,request.url))
+
   await supabase.from('contact_events').insert({student_id:userId,vendor_id:vendor.id,channel})
+  await supabase.rpc('record_vendor_analytics_event', {
+    target_vendor: vendor.id,
+    event_name: channel === 'phone' ? 'phone_click' : 'whatsapp_click',
+    target_product: productId,
+    target_service: serviceId,
+  }).catch(() => null)
+
   const phone=raw.replace(/\D/g,'').replace(/^0/,'234')
   if(channel==='phone') return NextResponse.redirect(`tel:+${phone}`)
   const contextText=item?` about “${item}”`:' about your products or services'
