@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BarChart3, Bookmark, Building2, CircleDollarSign, ImagePlus, ListChecks, MessageCircle, Package, Star } from 'lucide-react'
+import { BadgeCheck, BarChart3, Bookmark, Building2, CircleDollarSign, CreditCard, ImagePlus, ListChecks, MessageCircle, Package, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
@@ -59,7 +59,7 @@ export default async function VendorDashboard() {
     <main className="portal-shell">
       <header className="portal-topbar">
         <Link href="/" className="brand">Campus<span>Link</span></Link>
-        <nav style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}><Link href="/vendor-v2/products" className="btn btn-ghost">Products</Link><Link href="/vendor-v2/services" className="btn btn-ghost">Services</Link><Link href="/vendor-v2/growth" className="btn btn-ghost">Plans & growth</Link><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
+        <nav style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}><Link href="/vendor-v2/products" className="btn btn-ghost">Products</Link><Link href="/vendor-v2/services" className="btn btn-ghost">Services</Link><Link href="/vendor-v2/growth" className="btn btn-ghost">Plans & growth</Link><Link href="/vendor-v2/billing" className="btn btn-ghost">Billing</Link><Link href="/onboarding/vendor" className="btn btn-ghost">Verification</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button className="btn btn-ghost">Sign out</button></form></nav>
       </header>
 
       <section className="portal-hero phase45-vendor-hero phase46-vendor-hero">
@@ -84,6 +84,7 @@ export default async function VendorDashboard() {
         <Link href="/vendor-v2/services" className="portal-action" style={{textDecoration:'none'}}><ListChecks size={24}/><div><strong>Services</strong><span>{serviceResult.count || 0} of {serviceLimit} active on your {currentTier} plan. Add, pause or organise what students can hire you for.</span></div></Link>
         <Link href={setupComplete ? '/vendor-v2/portfolio' : '/onboarding/vendor'} className="portal-action" style={{textDecoration:'none'}}><ImagePlus size={24}/><div><strong>Portfolio</strong><span>{setupComplete ? 'Add real examples of your work for students to see.' : 'Complete business setup before adding portfolio work.'}</span></div></Link>
         <Link href="/vendor-v2/growth" className="portal-action" style={{textDecoration:'none'}}><CircleDollarSign size={24}/><div><strong>{currentTier} plan · Plans & growth</strong><span>See your limits, compare Pro, and understand why payment never changes verification or safety status.</span></div></Link>
+        <Link href="/vendor-v2/billing" className="portal-action" style={{textDecoration:'none'}}><CreditCard size={24}/><div><strong>Billing & subscription</strong><span>See payment history, renewal state and secure Paystack subscription controls.</span></div></Link>
         <article className="portal-action"><MessageCircle size={24}/><div><strong>Student enquiries</strong><span>{contactResult.count ? `${contactResult.count} student contact${contactResult.count === 1 ? '' : 's'} recorded.` : 'No student contacts recorded yet.'}</span></div></article>
         <article className="portal-action"><Bookmark size={24}/><div><strong>Saved by students</strong><span>{saveResult.count ? `${saveResult.count} student${saveResult.count === 1 ? '' : 's'} saved your profile.` : 'Your first save will appear here.'}</span></div></article>
         <article className="portal-action"><Star size={24}/><div><strong>Reputation</strong><span>{vendor.review_count ? `${vendor.review_count} review${vendor.review_count === 1 ? '' : 's'} averaging ${Number(vendor.average_rating || 0).toFixed(1)}/5.` : 'Reviews from verified students will appear here.'}</span></div></article>
