@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BookOpen, Bookmark, Camera, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
+import { BadgeCheck, BookOpen, Bookmark, Camera, ChevronRight, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
@@ -94,83 +94,90 @@ export default async function StudentDashboard() {
   const vendorMap = new Map(vendors.map((vendor) => [vendor.id, vendor]))
   const featuredVendors = vendors.slice(0, 6)
   const featuredServices = services.slice(0, 8)
+  const popularSearches = ['Phone repair', 'Hair & beauty', 'Food', 'Graphic design'].filter((term, index) => index < 4)
 
   return (
-    <main className="cl-student-page">
+    <main className="cl-fv-page">
       <StudentMarketplaceHeader firstName={profile.first_name} schoolName={school} />
 
-      <section className="cl-student-shell">
-        <section className="cl-student-hero">
-          <div className="cl-student-hero-copy">
-            <span className="cl-student-eyebrow"><MapPin size={15}/> {school ? `${school}${location ? ` · ${location}` : ''}` : 'Set your campus to personalize discovery'}</span>
+      <div className="cl-fv-shell">
+        <section className="cl-fv-welcome">
+          <div className="cl-fv-welcome-main">
+            <div className="cl-fv-overline"><MapPin size={15}/> {school ? `${school}${location ? ` · ${location}` : ''}` : 'Set your campus to personalize discovery'}</div>
             <DynamicGreeting firstName={profile.first_name} sessionSeed={sessionSeed} role="student" />
-            <p>Find products and services from vendors approved for your campus, compare their work, reviews and reputation, then contact them directly.</p>
-            <form className="cl-student-hero-search" action="/student/discover" method="get">
+            <p>Find trusted products and services around your campus. Compare listings, check the vendor behind them, then contact the vendor directly.</p>
+
+            <form className="cl-fv-search" action="/student/discover" method="get">
               <Search size={20}/>
-              <input name="q" placeholder="Try “phone repair”, “braids”, “cakes”, “graphic design”..." aria-label="Search your campus marketplace" />
+              <input name="q" placeholder="What are you looking for today?" aria-label="Search Campus Link marketplace" />
               <button type="submit">Search</button>
             </form>
-          </div>
-          <aside className="cl-student-hero-aside">
-            <div className="cl-student-campus-card">
-              <small>Your campus marketplace</small>
-              <strong>{school || 'Add your university'}</strong>
-              <p>{school ? `${vendors.length} approved vendor${vendors.length === 1 ? '' : 's'} currently visible to students at your institution.` : 'Campus Link keeps discovery school-specific so you see businesses that can actually serve your community.'}</p>
-              <div className="cl-student-campus-trust"><ShieldCheck size={16}/> Identity + campus approval are required for visibility.</div>
+
+            <div className="cl-fv-popular">
+              <small>Popular:</small>
+              {popularSearches.map((term) => <Link key={term} href={`/student/discover?q=${encodeURIComponent(term)}`}>{term}</Link>)}
             </div>
+          </div>
+
+          <aside className="cl-fv-campus">
+            <div>
+              <div className="cl-fv-campus-top"><div><small>Your campus</small><h2>{school || 'Complete your campus profile'}</h2><p>{school ? `${vendors.length} approved vendor${vendors.length === 1 ? '' : 's'} are currently visible to students at your institution.` : 'Campus Link keeps discovery tied to your institution so results stay useful and local.'}</p></div><span className="cl-fv-campus-icon"><ShieldCheck size={21}/></span></div>
+              <div className="cl-fv-campus-stats"><div><strong>{vendors.length}</strong><span>Approved vendors</span></div><div><strong>{products.length + services.length}</strong><span>Active listings loaded</span></div></div>
+            </div>
+            <div className="cl-fv-campus-trust"><ShieldCheck size={16}/> Every visible vendor must pass identity verification and campus approval. Paid plans do not purchase trust.</div>
           </aside>
         </section>
 
-        {categories.length ? <section className="cl-student-section">
-          <div className="cl-student-section-head"><div><h2>Explore by category</h2><p>Start with what you need, then compare real campus vendors.</p></div><Link href="/student/discover">See all categories</Link></div>
-          <div className="cl-student-categories">
-            {categories.slice(0, 6).map((category) => <Link className="cl-student-category" href={`/student/discover?category=${encodeURIComponent(category.slug)}`} key={category.id}><span className="cl-student-category-icon"><CategoryIcon name={category.name}/></span><strong>{category.name}</strong></Link>)}
+        {categories.length ? <section className="cl-fv-section">
+          <div className="cl-fv-section-head"><div><h2>Explore by category</h2><p>Browse the marketplace the same way you think about what you need.</p></div><Link href="/student/discover">See all</Link></div>
+          <div className="cl-fv-categories">
+            {categories.slice(0, 6).map((category) => <Link className="cl-fv-category" href={`/student/discover?category=${encodeURIComponent(category.slug)}`} key={category.id}><span className="cl-fv-category-icon"><CategoryIcon name={category.name}/></span><strong>{category.name}</strong></Link>)}
           </div>
         </section> : null}
 
-        <section className="cl-student-section">
-          <div className="cl-student-section-head"><div><h2>Fresh around your campus</h2><p>Individual products you can open, compare and ask the vendor about.</p></div><Link href="/student/discover">Explore marketplace</Link></div>
-          {products.length ? <div className="cl-gig-grid">
+        <section className="cl-fv-section">
+          <div className="cl-fv-section-head"><div><h2>Recommended around your campus</h2><p>Fresh product listings from approved vendors.</p></div><Link href="/student/discover">Explore marketplace</Link></div>
+          {products.length ? <div className="cl-fv-listing-grid">
             {products.slice(0, 8).map((product) => {
               const vendor = vendorMap.get(product.vendor_id)
               const price = product.pricing_type === 'contact' ? 'Ask for price' : `${product.pricing_type === 'from' ? 'From ' : ''}₦${Number(product.price_ngn || 0).toLocaleString()}`
-              return <Link href={`/student/products/${product.id}`} className="cl-gig-card" key={product.id}>
-                <div className="cl-gig-image">{product.cover_image_url ? <img src={product.cover_image_url} alt={product.name}/> : <div className="cl-gig-placeholder"><Package size={38}/></div>}<span className="cl-gig-badge">Campus approved</span></div>
-                <div className="cl-gig-copy">
-                  <div className="cl-gig-seller"><span className="cl-gig-seller-avatar">{vendor?.logo_url ? <img src={vendor.logo_url} alt=""/> : (vendor?.business_name || 'V').slice(0,1)}</span><span>{vendor?.business_name || 'Campus vendor'}</span><ShieldCheck size={12}/></div>
-                  <div className="cl-gig-title">{product.name}</div>
-                  <div className="cl-gig-rating"><Star size={13} fill="currentColor"/> {Number(vendor?.average_rating || 0).toFixed(1)} <span style={{color:'var(--v3-muted)'}}>({vendor?.review_count || 0})</span></div>
-                  <div className="cl-gig-price">Starting at <strong>{price}</strong></div>
+              return <Link href={`/student/products/${product.id}`} className="cl-fv-listing" key={product.id}>
+                <div className="cl-fv-listing-media">{product.cover_image_url ? <img src={product.cover_image_url} alt={product.name}/> : <div className="cl-fv-listing-placeholder"><Package size={38}/></div>}<span className="cl-fv-chip">Product</span></div>
+                <div className="cl-fv-listing-body">
+                  <div className="cl-fv-seller"><span className="cl-fv-avatar">{vendor?.logo_url ? <img src={vendor.logo_url} alt=""/> : (vendor?.business_name || 'V').slice(0,1)}</span><span>{vendor?.business_name || 'Campus vendor'}</span><ShieldCheck size={12}/></div>
+                  <div className="cl-fv-title">{product.name}</div>
+                  <div className="cl-fv-rating"><Star size={13} fill="currentColor"/> {Number(vendor?.average_rating || 0).toFixed(1)} <span>({vendor?.review_count || 0})</span></div>
+                  <div className="cl-fv-price"><span>Starting at</span><strong>{price}</strong></div>
                 </div>
               </Link>
             })}
-          </div> : <div className="v3-surface"><strong>No products have been listed on your campus yet.</strong><p style={{color:'var(--v3-muted)'}}>Approved vendors will appear here as they add products. You can already browse services and vendor profiles.</p></div>}
+          </div> : <div className="cl-fv-empty"><strong>No product listings yet.</strong><p>Approved vendors will appear here as they add products. Services and Vendor profiles are still available.</p></div>}
         </section>
 
-        {featuredServices.length ? <section className="cl-student-section">
-          <div className="cl-student-section-head"><div><h2>Services students are offering</h2><p>Open the vendor profile to compare portfolio proof, ratings and contact options.</p></div><Link href="/student/discover">Browse all services</Link></div>
-          <div className="cl-gig-grid">
+        {featuredServices.length ? <section className="cl-fv-section">
+          <div className="cl-fv-section-head"><div><h2>Services you may need</h2><p>Fiverr-style service discovery, but limited to businesses approved for your campus.</p></div><Link href="/student/discover">Browse services</Link></div>
+          <div className="cl-fv-listing-grid">
             {featuredServices.map((service) => {
               const vendor = vendorMap.get(service.vendor_id)
               if (!vendor) return null
-              return <Link href={`/student/vendors/${vendor.slug}`} className="cl-gig-card" key={service.id}>
-                <div className="cl-gig-image">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : <div className="cl-gig-placeholder"><MessageCircle size={38}/></div>}<span className="cl-gig-badge">Service</span></div>
-                <div className="cl-gig-copy"><div className="cl-gig-seller"><span className="cl-gig-seller-avatar">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><span>{vendor.business_name}</span><ShieldCheck size={12}/></div><div className="cl-gig-title">{service.name}</div><div className="cl-gig-rating"><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} <span style={{color:'var(--v3-muted)'}}>({vendor.review_count || 0})</span></div><div className="cl-gig-price">{service.price_from ? <>Starting at <strong>₦{Number(service.price_from).toLocaleString()}</strong></> : <strong>Ask vendor for price</strong>}</div></div>
+              return <Link href={`/student/services/${service.id}`} className="cl-fv-listing" key={service.id}>
+                <div className="cl-fv-listing-media">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : <div className="cl-fv-listing-placeholder"><MessageCircle size={38}/></div>}<span className="cl-fv-chip">Service</span></div>
+                <div className="cl-fv-listing-body"><div className="cl-fv-seller"><span className="cl-fv-avatar">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><span>{vendor.business_name}</span><ShieldCheck size={12}/></div><div className="cl-fv-title">{service.name}</div><div className="cl-fv-rating"><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} <span>({vendor.review_count || 0})</span></div><div className="cl-fv-price"><span>Starting at</span><strong>{service.price_from ? `₦${Number(service.price_from).toLocaleString()}` : 'Ask vendor'}</strong></div></div>
               </Link>
             })}
           </div>
         </section> : null}
 
-        <section className="cl-student-section">
-          <div className="cl-student-section-head"><div><h2>Trusted businesses on your campus</h2><p>Profiles combine products, services, portfolio proof, reviews and direct contact.</p></div><Link href="/student/discover">Discover more</Link></div>
-          {featuredVendors.length ? <div className="cl-vendor-grid-fiverr">{featuredVendors.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="cl-vendor-tile" key={vendor.id}><div className="cl-vendor-tile-cover">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : null}</div><div className="cl-vendor-tile-body"><div className="cl-vendor-tile-top"><span className="cl-vendor-tile-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}</strong><div className="cl-safety-note"><ShieldCheck size={13}/> Campus approved</div></div></div><p>{vendor.description || 'Approved Campus Link vendor.'}</p><div className="cl-vendor-meta"><span><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span><span className="verified">View profile</span></div></div></Link>)}</div> : <div className="v3-surface"><strong>Your campus vendor network is still growing.</strong><p style={{color:'var(--v3-muted)'}}>Campus Link only surfaces businesses after identity verification and campus approval.</p></div>}
+        <section className="cl-fv-section">
+          <div className="cl-fv-section-head"><div><h2>Trusted vendors on your campus</h2><p>Open a storefront to compare products, services, portfolio proof, reviews and contact options.</p></div><Link href="/student/discover">View all vendors</Link></div>
+          {featuredVendors.length ? <div className="cl-fv-vendor-row">{featuredVendors.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="cl-fv-vendor" key={vendor.id}><span className="cl-fv-vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}<ShieldCheck size={13}/></strong><p>{vendor.description || 'Approved Campus Link vendor.'}</p><div className="cl-fv-vendor-meta"><span><Star size={12} fill="currentColor"/> <b>{Number(vendor.average_rating || 0).toFixed(1)}</b> ({vendor.review_count || 0})</span><span>View storefront</span></div></div></Link>)}</div> : <div className="cl-fv-empty"><strong>Your campus marketplace is still growing.</strong><p>Campus Link only surfaces vendors after identity verification and campus approval.</p></div>}
         </section>
 
-        <section className="cl-student-section cl-student-utility-grid">
-          <div className="cl-student-utility"><h3>Your Campus Link activity</h3><p>Useful shortcuts without turning the Student experience into an analytics dashboard.</p><div className="cl-student-stat-row"><div><small>Saved</small><strong>{savedCount}</strong></div><div><small>Contacts</small><strong>{contactCount}</strong></div><div><small>Reviews</small><strong>{reviewCount}</strong></div><div><small>Verification</small><strong style={{fontSize:14,textTransform:'capitalize'}}>{status.replaceAll('_',' ')}</strong></div></div></div>
-          <div className="cl-student-utility"><h3>Account & safety</h3><p>Your verification improves review integrity. Vendor payments never purchase trust or campus approval.</p><div className="cl-student-actions"><Link href="/student/saved"><Bookmark size={18}/> Saved vendors</Link><Link href="/student/discover"><Search size={18}/> Discover campus vendors</Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><BadgeCheck size={18}/> Complete Student verification</Link> : <Link href="/onboarding/student"><ShieldCheck size={18}/> Review your verified profile</Link>}</div></div>
+        <section className="cl-fv-bottom">
+          <div className="cl-fv-bottom-card"><h3>Your activity</h3><p>Useful account signals without turning the Student experience into a dashboard.</p><div className="cl-fv-stats"><div><small>Saved</small><strong>{savedCount}</strong></div><div><small>Contacts</small><strong>{contactCount}</strong></div><div><small>Reviews</small><strong>{reviewCount}</strong></div><div><small>Verification</small><strong style={{fontSize:13,textTransform:'capitalize'}}>{status.replaceAll('_',' ')}</strong></div></div></div>
+          <div className="cl-fv-bottom-card"><h3>Account & safety</h3><p>Manage the parts of Campus Link that protect your identity and marketplace experience.</p><div className="cl-fv-links"><Link href="/student/saved"><span><Bookmark size={16}/> Saved vendors</span><ChevronRight size={16}/></Link><Link href="/student/discover"><span><Search size={16}/> Discover marketplace</span><ChevronRight size={16}/></Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><span><BadgeCheck size={16}/> Complete verification</span><ChevronRight size={16}/></Link> : <Link href="/onboarding/student"><span><ShieldCheck size={16}/> Review verified profile</span><ChevronRight size={16}/></Link>}</div></div>
         </section>
-      </section>
+      </div>
     </main>
   )
 }
