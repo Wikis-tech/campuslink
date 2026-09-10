@@ -37,8 +37,10 @@ export async function toggleSavedVendor(formData: FormData) {
 
   if (existing) {
     await supabase.from('saved_vendors').delete().eq('student_id', userId).eq('vendor_id', vendorId)
+    await supabase.rpc('record_vendor_analytics_event', { target_vendor: vendorId, event_name: 'unsave', target_product: null, target_service: null })
   } else {
     await supabase.from('saved_vendors').insert({ student_id: userId, vendor_id: vendorId })
+    await supabase.rpc('record_vendor_analytics_event', { target_vendor: vendorId, event_name: 'save', target_product: null, target_service: null })
   }
 
   revalidatePath('/student')
@@ -63,6 +65,7 @@ export async function submitReview(formData: FormData) {
     redirect(`${returnTo}?error=Your%20student%20account%20must%20be%20verified%20before%20you%20can%20review%20vendors`)
   }
 
+  const { data: existingReview } = await supabase.from('reviews').select('id').eq('student_id', userId).eq('vendor_id', vendorId).maybeSingle()
   const { error } = await supabase.from('reviews').upsert(
     {
       student_id: userId,
@@ -76,6 +79,7 @@ export async function submitReview(formData: FormData) {
   )
 
   if (error) redirect(`${returnTo}?error=We%20could%20not%20save%20your%20review`)
+  if (!existingReview) await supabase.rpc('record_vendor_analytics_event', { target_vendor: vendorId, event_name: 'review_received', target_product: null, target_service: null })
   revalidatePath(returnTo)
   redirect(`${returnTo}?review=saved`)
 }
