@@ -28,7 +28,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
     event_name: channel === 'phone' ? 'phone_click' : 'whatsapp_click',
     target_product: productId,
     target_service: serviceId,
-  }).catch(() => null)
+  })
 
   const phone=raw.replace(/\D/g,'').replace(/^0/,'234')
   if(channel==='phone') return NextResponse.redirect(`tel:+${phone}`)
