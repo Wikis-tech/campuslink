@@ -1,0 +1,135 @@
+:root{
+  --cl-bg:#f7f8f5;
+  --cl-surface:#ffffff;
+  --cl-surface-2:#eef2f6;
+  --cl-surface-3:#e8eef7;
+  --cl-text:#172033;
+  --cl-muted:#687386;
+  --cl-line:rgba(15,34,61,.12);
+  --cl-line-strong:rgba(11,61,145,.22);
+  --cl-blue:#0b3d91;
+  --cl-blue-deep:#082d6a;
+  --cl-green:#1ea952;
+  --cl-green-soft:#dff5e8;
+  --cl-amber:#b7791f;
+  --cl-danger:#b42318;
+  --cl-shadow:0 18px 48px rgba(20,35,58,.08);
+  --cl-shadow-lg:0 28px 80px rgba(8,45,106,.13);
+}
+
+html[data-theme='dark']{
+  --cl-bg:#07111f;
+  --cl-surface:#0c1829;
+  --cl-surface-2:#102039;
+  --cl-surface-3:#162a46;
+  --cl-text:#f5f7fa;
+  --cl-muted:#9aa8ba;
+  --cl-line:rgba(210,224,243,.12);
+  --cl-line-strong:rgba(90,149,233,.28);
+  --cl-blue:#4f8ee8;
+  --cl-blue-deep:#173d73;
+  --cl-green:#4ed282;
+  --cl-green-soft:#133727;
+  --cl-amber:#e8b35f;
+  --cl-danger:#ff8f86;
+  --cl-shadow:0 18px 48px rgba(0,0,0,.22);
+  --cl-shadow-lg:0 28px 80px rgba(0,0,0,.3);
+}
+
+body{background:var(--cl-bg);color:var(--cl-text);transition:background-color .25s ease,color .25s ease}
+
+.cl-theme-toggle{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:8px 11px;border:1px solid var(--cl-line);background:color-mix(in srgb,var(--cl-surface) 88%,transparent);color:var(--cl-text);border-radius:999px;cursor:pointer;font:700 12px 'DM Sans',sans-serif;text-transform:capitalize;transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.cl-theme-toggle:hover{transform:translateY(-1px);border-color:var(--cl-line-strong);background:var(--cl-surface)}
+.cl-theme-toggle.compact{width:38px;justify-content:center;padding:8px}
+
+.cl-link-arc{position:absolute;pointer-events:none;opacity:.6}
+.cl-link-arc:before,.cl-link-arc:after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:var(--cl-green);box-shadow:0 0 0 5px color-mix(in srgb,var(--cl-green) 14%,transparent)}
+.cl-link-arc:before{left:-3px;top:-3px}.cl-link-arc:after{right:-3px;bottom:-3px}
+.cl-link-arc .arc-line{position:absolute;inset:0;border-top:1px solid color-mix(in srgb,var(--cl-blue) 38%,transparent);border-right:1px solid color-mix(in srgb,var(--cl-green) 42%,transparent);border-radius:0 28px 0 0}
+
+.cl-data-rail{display:flex;align-items:stretch;overflow:auto;border-top:1px solid var(--cl-line);border-bottom:1px solid var(--cl-line);background:transparent;scrollbar-width:none}
+.cl-data-rail::-webkit-scrollbar{display:none}
+.cl-data-rail>div{min-width:170px;flex:1;padding:18px 22px;position:relative}
+.cl-data-rail>div+div:before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:var(--cl-line)}
+.cl-data-rail span,.cl-data-rail small{display:block}.cl-data-rail span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--cl-muted)}
+.cl-data-rail strong{display:block;margin-top:8px;font:800 28px/1 Sora,sans-serif;color:var(--cl-text)}
+.cl-data-rail small{margin-top:7px;color:var(--cl-muted);font-size:12px;line-height:1.45}
+.cl-data-rail .accent strong{color:var(--cl-green)}
+.cl-data-rail .brand strong{color:var(--cl-blue)}
+
+.cl-editorial-surface{position:relative;overflow:hidden;background:var(--cl-surface);border:1px solid var(--cl-line);box-shadow:var(--cl-shadow)}
+.cl-editorial-surface:after{content:"";position:absolute;inset:auto -70px -90px auto;width:200px;height:200px;border:1px solid color-mix(in srgb,var(--cl-blue) 22%,transparent);border-radius:50%}
+
+.cl-empty-activity{min-height:250px;display:grid;place-items:center;padding:28px;text-align:center;background:linear-gradient(180deg,color-mix(in srgb,var(--cl-surface) 94%,transparent),color-mix(in srgb,var(--cl-surface-2) 70%,transparent));border:1px solid var(--cl-line);position:relative;overflow:hidden}
+.cl-empty-activity:before{content:"";position:absolute;width:180px;height:90px;left:8%;bottom:18%;border-bottom:1px solid color-mix(in srgb,var(--cl-green) 35%,transparent);border-right:1px solid color-mix(in srgb,var(--cl-blue) 30%,transparent);border-radius:0 0 44px 0;transform:rotate(-4deg)}
+.cl-empty-activity strong{font:800 18px Sora,sans-serif}.cl-empty-activity p{max-width:420px;color:var(--cl-muted);margin:8px auto 0;line-height:1.6}
+
+.cl-skeleton{position:relative;overflow:hidden;background:var(--cl-surface-2);border-radius:14px}
+.cl-skeleton:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,color-mix(in srgb,#fff 28%,transparent),transparent);animation:cl-shimmer 1.25s infinite}
+@keyframes cl-shimmer{100%{transform:translateX(100%)}}
+
+/* Student identity refinement */
+.student-app{background:var(--cl-bg)!important;color:var(--cl-text)!important}
+.student-nav{background:color-mix(in srgb,var(--cl-surface) 90%,transparent)!important;border-color:var(--cl-line)!important}
+.student-brand{color:var(--cl-blue)!important}.student-navlinks a,.student-navlinks button{color:var(--cl-text)!important}
+.student-navtools{display:flex;align-items:center;gap:8px}
+.student-shell{position:relative}
+.student-hero-card.phase45-hero{border-radius:6px 30px 6px 30px!important;background:var(--cl-blue-deep)!important;box-shadow:var(--cl-shadow-lg)!important;min-height:330px}
+.student-hero-card.phase45-hero:before{width:520px;height:220px;right:-130px;top:-90px;border:1px solid rgba(255,255,255,.14);background:none!important;border-radius:50%}
+.student-hero-card.phase45-hero:after{width:330px;height:110px;left:auto;right:5%;bottom:-58px;border:1px solid rgba(78,210,130,.28);background:none!important;border-radius:50%}
+.student-hero-copy h1{max-width:680px}
+.student-hero-side{position:relative}
+.student-campus-card{position:relative;padding:18px 0 18px 20px;border-left:1px solid rgba(255,255,255,.28)}
+.student-campus-card:before{content:"";position:absolute;width:8px;height:8px;border-radius:50%;left:-4px;top:20px;background:#78dfa0;box-shadow:0 0 0 5px rgba(120,223,160,.13)}
+.student-campus-card span{display:block;color:#b8c8df;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.student-campus-card strong{display:block;margin-top:8px;font:700 19px/1.35 Sora,sans-serif}.student-campus-card small{display:block;margin-top:12px;color:#d7e2f1;line-height:1.5}
+.student-stat-grid{display:none!important}
+.student-data-rail{margin:18px 0 28px}
+.student-insight-grid{align-items:stretch}
+.student-quick-panel{border-radius:4px 22px 4px 22px!important;background:var(--cl-surface)!important;border-color:var(--cl-line)!important;color:var(--cl-text)!important}
+.quick-link{border-radius:0!important;background:transparent!important;border:0!important;border-bottom:1px solid var(--cl-line)!important;color:var(--cl-text)!important}
+.quick-link:last-child{border-bottom:0!important}.quick-link:hover{background:var(--cl-surface-2)!important;transform:translateX(3px)!important}
+.vendor-card{border-radius:4px 18px 4px 18px!important;background:var(--cl-surface)!important;border-color:var(--cl-line)!important;color:var(--cl-text)!important}
+.vendor-cover{background:linear-gradient(110deg,var(--cl-blue-deep),var(--cl-blue),var(--cl-green))!important}
+.vendor-name,.student-head h1,.profile-title h1,.profile-section h2,.empty-state h2{color:var(--cl-text)!important}
+.service-tag{background:var(--cl-surface-2)!important;color:var(--cl-text)!important}
+.empty-state,.vendor-profile,.service-row,.review-row,.review-form,.report-form{background:var(--cl-surface)!important;border-color:var(--cl-line)!important;color:var(--cl-text)!important}
+.bottom-nav{background:color-mix(in srgb,var(--cl-surface) 94%,transparent)!important;border-color:var(--cl-line)!important}
+
+/* Admin identity refinement */
+.admin-app{background:var(--cl-bg)!important;color:var(--cl-text)!important}
+.admin-sidebar{background:var(--cl-blue-deep)!important}
+.admin-sidebar-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 6px}
+.admin-main{background:var(--cl-bg)!important}
+.admin-hero.phase45-admin-hero{border-radius:6px 28px 6px 28px!important;background:var(--cl-blue-deep)!important;position:relative;overflow:hidden}
+.admin-hero.phase45-admin-hero:after{content:"";position:absolute;width:360px;height:150px;border:1px solid rgba(255,255,255,.14);border-radius:50%;right:-70px;bottom:-80px;transform:rotate(-8deg)}
+.admin-metric-grid{display:none!important}
+.admin-data-rail{margin:18px 0 24px}
+.admin-priority-card,.admin-section,.admin-chart-card{background:var(--cl-surface)!important;border-color:var(--cl-line)!important;color:var(--cl-text)!important}
+.priority-row,.queue-card{background:transparent!important;border-color:var(--cl-line)!important;color:var(--cl-text)!important}
+.queue-card{border-radius:4px 18px 4px 18px!important}
+
+/* Vendor identity refinement */
+.portal-shell{min-height:100vh;background:var(--cl-bg)!important;color:var(--cl-text)!important}
+.portal-topbar{background:color-mix(in srgb,var(--cl-surface) 92%,transparent)!important;border-color:var(--cl-line)!important}
+.portal-hero.phase45-vendor-hero{border-radius:6px 28px 6px 28px!important;background:var(--cl-blue-deep)!important;color:#fff!important;position:relative;overflow:hidden}
+.portal-hero.phase45-vendor-hero:after{content:"";position:absolute;width:320px;height:110px;border:1px solid rgba(78,210,130,.3);border-radius:50%;right:-50px;top:-45px;transform:rotate(7deg)}
+.metrics-row.vendor-data-rail{display:flex!important;background:transparent!important;border-radius:0!important;box-shadow:none!important;border:0!important}
+.metrics-row.vendor-data-rail>div{background:transparent!important;border:0!important}
+.portal-action{background:var(--cl-surface)!important;border-color:var(--cl-line)!important;color:var(--cl-text)!important;border-radius:4px 18px 4px 18px!important}
+
+html[data-theme='dark'] .student-hero-card.phase45-hero,html[data-theme='dark'] .admin-hero.phase45-admin-hero,html[data-theme='dark'] .portal-hero.phase45-vendor-hero{background:#0a2342!important}
+html[data-theme='dark'] .hero-search{background:#f8fafc!important}
+html[data-theme='dark'] .hero-search input{color:#172033!important}
+html[data-theme='dark'] .student-navlinks a:hover,html[data-theme='dark'] .student-navlinks button:hover{background:var(--cl-surface-2)!important;color:#fff!important}
+html[data-theme='dark'] .student-quick-panel,html[data-theme='dark'] .vendor-card,html[data-theme='dark'] .admin-priority-card,html[data-theme='dark'] .admin-section,html[data-theme='dark'] .portal-action{box-shadow:none!important}
+
+@media(max-width:760px){
+  .cl-data-rail>div{min-width:150px;padding:15px 16px}
+  .student-hero-card.phase45-hero{border-radius:4px 22px 4px 22px!important}
+  .student-navtools .cl-theme-toggle span{display:none}
+  .admin-sidebar-tools{align-items:flex-start;flex-direction:column}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}

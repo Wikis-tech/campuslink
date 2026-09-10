@@ -1,4 +1,18 @@
-# XAMPP and local development
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel/
+coverage/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+config.php
+includes/config.php
+
+# Legacy PHP / local development
 *.log
 logs/
 cache/
@@ -7,6 +21,11 @@ vendor_libs/
 *.tmp
 *.swp
 
+# Database exports (migrations under supabase/migrations are intentionally tracked)
+*.sql
+!supabase/migrations/*.sql
+schema.sql
+
 # OS files
 .DS_Store
 Thumbs.db
@@ -14,15 +33,3 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
-
-# Config files with secrets
-config.php
-includes/config.php
-
-# Database
-*.sql
-schema.sql
-
-# Config files with secrets
-config.php
-includes/config.php

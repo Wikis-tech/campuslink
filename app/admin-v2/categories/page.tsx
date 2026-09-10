@@ -1,0 +1,19 @@
+import { FolderKanban, Plus } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import { requireAdminContext } from '../lib'
+import { saveCategory } from '../actions'
+
+export default async function CategoriesPage({ searchParams }: { searchParams: Promise<{ success?: string; error?: string }> }) {
+  const params = await searchParams
+  const context = await requireAdminContext()
+  const supabase = await createClient()
+  const canManage = ['super_admin','operations_admin','content_admin'].includes(context.globalRole || '')
+  const { data: categories } = await supabase.from('categories').select('id,name,slug,description,icon,is_active,created_at').order('name')
+
+  return <>
+    <header className="admin-topbar"><div><span className="admin-pill"><FolderKanban size={15}/> Discovery content</span><h1>Categories</h1><p>Manage the service categories students use to discover vendors.</p></div></header>
+    {params.success ? <div className="admin-success">{params.success}</div> : null}{params.error ? <div className="admin-error">{params.error}</div> : null}
+    {canManage ? <section className="admin-section"><div className="admin-section-head"><div><h2>Add a category</h2><p>Keep categories broad enough for discovery and specific enough to be useful.</p></div><Plus size={20}/></div><div className="admin-section-body"><form action={saveCategory} className="admin-form"><div className="admin-form-grid"><div className="admin-field"><label>Name</label><input name="name" required placeholder="Hair & Beauty"/></div><div className="admin-field"><label>Slug</label><input name="slug" placeholder="hair-beauty"/></div><div className="admin-field"><label>Icon name <span style={{fontWeight:500}}>(optional)</span></label><input name="icon" placeholder="scissors"/></div><div className="admin-field"><label>Status</label><select name="active" defaultValue="true"><option value="true">Active</option><option value="false">Hidden</option></select></div></div><div className="admin-field"><label>Description</label><textarea name="description" rows={3} placeholder="Hair styling, barbering, nails and beauty services"/></div><div><button className="admin-action primary">Create category</button></div></form></div></section> : null}
+    <section className="admin-section"><div className="admin-section-head"><div><h2>Category directory</h2><p>{categories?.length || 0} category{categories?.length===1?'':'ies'} configured.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Category</th><th>Description</th><th>Status</th><th>Update</th></tr></thead><tbody>{(categories || []).map((category)=><tr key={category.id}><td><span className="admin-name">{category.name}</span><span className="admin-sub">/{category.slug}</span></td><td>{category.description || '—'}</td><td><span className={`status-badge ${category.is_active?'status-approved':'status-rejected'}`}>{category.is_active?'active':'hidden'}</span></td><td>{canManage?<form action={saveCategory} className="admin-form" style={{minWidth:260}}><input type="hidden" name="category_id" value={category.id}/><div className="admin-field"><input name="name" defaultValue={category.name} required/></div><div className="admin-field"><input name="slug" defaultValue={category.slug} required/></div><div className="admin-field"><input name="description" defaultValue={category.description || ''} placeholder="Description"/></div><div className="admin-field"><select name="active" defaultValue={category.is_active?'true':'false'}><option value="true">Active</option><option value="false">Hidden</option></select></div><button className="admin-action primary">Save</button></form>:<span className="admin-sub">Read-only</span>}</td></tr>)}{!categories?.length?<tr><td colSpan={4}><div className="empty-admin">No categories configured.</div></td></tr>:null}</tbody></table></div></section>
+  </>
+}

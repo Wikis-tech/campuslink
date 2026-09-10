@@ -1,0 +1,265 @@
+/* Phase 4.5 + 4.6 redesign — Campus Link editorial campus system
+   Inspired by task-first dashboards: stronger hierarchy, fewer cards,
+   architectural lines, restrained motion and true mobile behaviour. */
+
+:root{
+  --cl-page-max:1240px;
+  --cl-radius-sm:10px;
+  --cl-radius-md:16px;
+  --cl-radius-lg:24px;
+  --cl-ease:cubic-bezier(.2,.72,.2,1);
+}
+
+/* Shared product canvas */
+.student-app,.portal-shell,.admin-app{
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--cl-blue) 4%,transparent) 1px,transparent 1px),
+    linear-gradient(color-mix(in srgb,var(--cl-blue) 4%,transparent) 1px,transparent 1px),
+    var(--cl-bg)!important;
+  background-size:56px 56px,56px 56px,auto!important;
+}
+.student-app:before,.portal-shell:before,.admin-app:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--cl-blue) 8%,transparent),transparent 28%),radial-gradient(circle at 88% 18%,color-mix(in srgb,var(--cl-green) 7%,transparent),transparent 24%);
+}
+.student-app>* ,.portal-shell>* ,.admin-app>*{position:relative;z-index:1}
+
+/* Student navigation: calm, editorial and compact */
+.student-nav{
+  width:min(var(--cl-page-max),calc(100% - 36px));
+  margin:14px auto 0;padding:0 10px 0 18px!important;height:58px!important;
+  border:1px solid var(--cl-line)!important;border-radius:14px!important;
+  box-shadow:0 8px 28px color-mix(in srgb,var(--cl-blue) 6%,transparent)!important;
+  position:sticky!important;top:12px!important;z-index:60!important;
+}
+.student-brand{font-size:17px!important;letter-spacing:-.035em!important}
+.student-navlinks{gap:2px!important}
+.student-navlinks a,.student-navlinks button{
+  padding:8px 11px!important;border-radius:9px!important;font-size:12px!important;font-weight:700!important;
+  letter-spacing:-.01em!important;transition:background .2s ease,color .2s ease,transform .2s ease!important;
+}
+.student-navlinks a:hover,.student-navlinks button:hover{transform:none!important;background:var(--cl-surface-2)!important}
+
+.student-shell{width:min(var(--cl-page-max),calc(100% - 36px))!important;margin:28px auto 80px!important}
+
+/* Student hero: one strong editorial object, not a SaaS card */
+.student-hero-card.phase45-hero.phase46-hero{
+  min-height:390px!important;padding:46px 50px!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr)!important;gap:56px!important;
+  border-radius:2px 34px 2px 34px!important;
+  background:linear-gradient(115deg,#071f49 0%,#0a3479 64%,#105a58 118%)!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:0 26px 80px rgba(8,45,106,.18)!important;
+  overflow:hidden!important;
+}
+.student-hero-card.phase45-hero.phase46-hero:before{
+  content:""!important;position:absolute!important;inset:auto auto 27px 0!important;width:46%!important;height:1px!important;
+  border:0!important;border-radius:0!important;background:linear-gradient(90deg,rgba(120,223,160,.8),rgba(120,223,160,0))!important;
+}
+.student-hero-card.phase45-hero.phase46-hero:after{
+  content:""!important;position:absolute!important;right:34px!important;top:32px!important;width:120px!important;height:120px!important;
+  border:1px solid rgba(255,255,255,.13)!important;border-left-color:rgba(120,223,160,.62)!important;border-radius:50%!important;background:none!important;
+}
+.student-hero-copy{align-self:center!important}
+.dynamic-greeting{
+  max-width:760px!important;margin:0 0 18px!important;color:#fff!important;
+  font-size:clamp(3rem,5.6vw,5.4rem)!important;line-height:.94!important;letter-spacing:-.065em!important;
+}
+.phase46-hero .student-hero-copy>p{max-width:590px!important;font-size:15px!important;color:#d7e4f4!important;line-height:1.72!important}
+.hero-search{
+  max-width:680px!important;margin-top:27px!important;padding:7px 7px 7px 15px!important;
+  border-radius:13px!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.97)!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.12)!important;
+}
+.hero-search input{font-size:14px!important}
+.hero-search button{border-radius:9px!important;background:#0b3d91!important;box-shadow:none!important}
+.hero-search button:hover{background:#082d6a!important;transform:translateX(2px)!important}
+
+/* Campus context becomes an editorial location marker rather than a card */
+.student-hero-side{align-self:end!important;justify-self:stretch!important}
+.dynamic-campus-context.student-campus-card{
+  padding:20px 0 0 24px!important;border:0!important;border-left:1px solid rgba(255,255,255,.32)!important;
+  background:transparent!important;box-shadow:none!important;min-height:118px!important;
+}
+.dynamic-campus-context.student-campus-card:before{top:18px!important}
+.dynamic-campus-context span{font-size:10px!important;color:#9fc2e7!important}
+.dynamic-campus-context strong{font-size:20px!important;color:#fff!important;max-width:260px!important}
+.dynamic-campus-context small{font-size:12px!important;color:#cddbeb!important}
+.phase46-orbit-one{opacity:.48!important}.phase46-orbit-two{opacity:.28!important}.phase46-arc{opacity:.32!important}
+
+/* Metrics: table-like data strip, intentionally not card-shaped */
+.cl-data-rail{
+  margin:20px 0 34px!important;background:color-mix(in srgb,var(--cl-surface) 78%,transparent)!important;
+  border:1px solid var(--cl-line)!important;border-radius:0!important;box-shadow:none!important;
+  backdrop-filter:blur(10px)!important;
+}
+.cl-data-rail>div{padding:17px 20px!important;min-width:170px!important}
+.cl-data-rail span{font-size:10px!important;letter-spacing:.1em!important}
+.cl-data-rail strong{font-size:24px!important;letter-spacing:-.035em!important}
+.cl-data-rail small{font-size:11px!important}
+.student-data-rail:after,.vendor-data-rail:after,.admin-data-rail:after{height:2px!important;bottom:-2px!important}
+
+/* Student middle section: asymmetric editorial layout */
+.student-insight-grid{grid-template-columns:minmax(0,1.3fr) minmax(310px,.7fr)!important;gap:18px!important;margin-top:0!important}
+.student-quick-panel,.cl-empty-activity,.chart-card{
+  border-radius:var(--cl-radius-md)!important;box-shadow:none!important;border:1px solid var(--cl-line)!important;
+}
+.student-quick-panel{padding:0!important;overflow:hidden!important}
+.panel-heading{padding:20px 20px 12px!important;border-bottom:1px solid var(--cl-line)!important}
+.quick-link-grid{gap:0!important}
+.quick-link{min-height:76px!important;padding:15px 18px!important}
+.quick-link:hover{transform:none!important;padding-left:22px!important;background:color-mix(in srgb,var(--cl-blue) 5%,var(--cl-surface))!important}
+.quick-link>svg:first-child{width:19px!important;height:19px!important}
+.quick-link>svg:last-child{width:16px!important;height:16px!important}
+
+.verification-banner{
+  border-radius:var(--cl-radius-sm)!important;box-shadow:none!important;border:1px solid var(--cl-line)!important;
+  border-left:3px solid var(--cl-green)!important;background:var(--cl-surface)!important;
+}
+.section-title-row{margin-top:42px!important;padding-bottom:13px!important;border-bottom:1px solid var(--cl-line)!important}
+.section-title-row>div span{letter-spacing:.1em!important;font-size:10px!important}
+.section-title-row>div strong{font-size:20px!important;letter-spacing:-.03em!important}
+
+/* Vendor cards become marketplace/editorial tiles instead of generic glass cards */
+.vendor-grid{gap:14px!important}
+.vendor-card{
+  border-radius:12px!important;box-shadow:none!important;overflow:hidden!important;
+  transition:transform .25s var(--cl-ease),border-color .25s ease,box-shadow .25s ease!important;
+}
+.vendor-card:hover{transform:translateY(-5px)!important;border-color:color-mix(in srgb,var(--cl-blue) 35%,var(--cl-line))!important;box-shadow:0 20px 44px color-mix(in srgb,var(--cl-blue) 10%,transparent)!important}
+.vendor-cover{height:84px!important;background:linear-gradient(105deg,#0a2b61 0%,#0b3d91 68%,#176a54 100%)!important}
+.vendor-avatar{border-radius:10px!important;box-shadow:0 8px 24px rgba(8,45,106,.15)!important}
+.vendor-card-body{padding:18px!important}
+.view-btn{border-radius:8px!important}
+
+/* Vendor dashboard: fewer isolated cards, stronger operational hierarchy */
+.portal-shell{padding:16px 22px 90px!important}
+.portal-topbar{
+  width:min(var(--cl-page-max),100%);margin:0 auto 20px!important;height:58px!important;padding:0 16px!important;
+  border:1px solid var(--cl-line)!important;border-radius:14px!important;position:sticky!important;top:12px!important;z-index:50!important;
+  box-shadow:0 8px 28px color-mix(in srgb,var(--cl-blue) 6%,transparent)!important;
+}
+.portal-hero.phase45-vendor-hero.phase46-vendor-hero{
+  width:min(var(--cl-page-max),100%);margin:0 auto!important;min-height:330px!important;padding:42px 46px!important;
+  border-radius:2px 30px 2px 30px!important;background:linear-gradient(120deg,#071f49,#0b3d91 72%,#12564e 125%)!important;
+  border:1px solid rgba(255,255,255,.12)!important;box-shadow:0 24px 70px rgba(8,45,106,.16)!important;
+}
+.portal-hero.phase45-vendor-hero.phase46-vendor-hero:before{content:"";position:absolute;left:0;bottom:28px;width:42%;height:1px;background:linear-gradient(90deg,#64dc97,transparent)}
+.portal-hero .dynamic-greeting{color:#fff!important}
+.portal-hero .status-card{border-radius:12px!important;border:1px solid rgba(255,255,255,.2)!important;box-shadow:none!important}
+.vendor-data-rail,.portal-grid,.portal-action[style*="marginBottom"]{width:min(var(--cl-page-max),100%);margin-left:auto!important;margin-right:auto!important}
+.portal-grid{grid-template-columns:repeat(12,1fr)!important;gap:14px!important;margin-top:24px!important}
+.portal-action{grid-column:span 4!important;min-height:170px!important;border-radius:12px!important;box-shadow:none!important;padding:22px!important}
+.portal-action:nth-child(1),.portal-action:nth-child(6){grid-column:span 6!important}
+.portal-action:hover{transform:translateY(-4px)!important;border-color:var(--cl-line-strong)!important;box-shadow:0 18px 40px color-mix(in srgb,var(--cl-blue) 8%,transparent)!important}
+.portal-action.primary-action{border-top:3px solid var(--cl-green)!important}
+
+/* Admin: operational console, not a dashboard-template wall of cards */
+.admin-shell{grid-template-columns:238px minmax(0,1fr)!important}
+.admin-sidebar{
+  margin:14px 0 14px 14px!important;height:calc(100vh - 28px)!important;border-radius:16px!important;
+  box-shadow:0 18px 50px rgba(4,20,45,.18)!important;padding:22px 14px!important;
+}
+.admin-brand{font-size:16px!important;padding:0 8px 16px!important;border-bottom:1px solid rgba(255,255,255,.12)!important}
+.admin-role{font-size:10px!important;line-height:1.45!important;color:#aebfd6!important}.admin-role strong{font-size:11px!important;color:#fff!important}
+.admin-nav{gap:3px!important;margin-top:12px!important}
+.admin-nav a{min-height:40px!important;padding:9px 10px!important;border-radius:9px!important;font-size:12px!important}
+.admin-nav a:hover{background:rgba(255,255,255,.09)!important;transform:translateX(2px)!important}
+.admin-nav svg{width:17px!important;height:17px!important}
+.admin-main{padding:30px 34px 70px!important;max-width:1500px!important}
+.admin-hero.phase45-admin-hero{
+  min-height:300px!important;padding:42px 46px!important;border-radius:2px 28px 2px 28px!important;
+  background:linear-gradient(120deg,#071f49,#0a357c 74%,#13554d 125%)!important;box-shadow:0 24px 70px rgba(8,45,106,.16)!important;
+}
+.admin-hero.phase45-admin-hero:before{content:"";position:absolute;left:0;bottom:28px;width:44%;height:1px;background:linear-gradient(90deg,#64dc97,transparent)}
+.admin-hero-label{background:transparent!important;border:0!important;padding:0!important;color:#86dfaa!important;letter-spacing:.09em!important;text-transform:uppercase!important;font-size:10px!important}
+.admin-hero h1{max-width:760px!important;font-size:clamp(2.6rem,4.3vw,4.7rem)!important;line-height:.98!important;letter-spacing:-.06em!important}
+.admin-hero-side{border-radius:12px!important;background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:none!important}
+.admin-overview-grid{grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr)!important;gap:18px!important}
+.admin-chart-card,.admin-priority-card,.admin-section{border-radius:14px!important;box-shadow:none!important}
+.priority-row{border-radius:0!important;border:0!important;border-top:1px solid var(--cl-line)!important;padding:16px 4px!important}
+.priority-row:hover{transform:none!important;background:color-mix(in srgb,var(--cl-blue) 4%,var(--cl-surface))!important;padding-left:10px!important;padding-right:10px!important}
+.modern-queue-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:1px!important;background:var(--cl-line)!important;border:1px solid var(--cl-line)!important}
+.queue-card{border:0!important;border-radius:0!important;min-height:200px!important;background:var(--cl-surface)!important;padding:24px!important;box-shadow:none!important}
+.queue-card:hover{transform:none!important;background:color-mix(in srgb,var(--cl-blue) 4%,var(--cl-surface))!important}
+
+/* Dark mode: preserve depth without neon or pure-black SaaS styling */
+html[data-theme='dark'] .student-app,
+html[data-theme='dark'] .portal-shell,
+html[data-theme='dark'] .admin-app{
+  background:
+    linear-gradient(90deg,rgba(102,146,204,.035) 1px,transparent 1px),
+    linear-gradient(rgba(102,146,204,.035) 1px,transparent 1px),
+    #07111f!important;background-size:56px 56px,56px 56px,auto!important;
+}
+html[data-theme='dark'] .student-nav,html[data-theme='dark'] .portal-topbar{background:rgba(12,24,41,.88)!important}
+html[data-theme='dark'] .student-hero-card.phase45-hero.phase46-hero,
+html[data-theme='dark'] .portal-hero.phase45-vendor-hero.phase46-vendor-hero,
+html[data-theme='dark'] .admin-hero.phase45-admin-hero{background:linear-gradient(120deg,#071a33,#0a2b55 72%,#0b3d38 130%)!important}
+html[data-theme='dark'] .cl-data-rail{background:rgba(12,24,41,.7)!important}
+html[data-theme='dark'] .vendor-card:hover,html[data-theme='dark'] .portal-action:hover{box-shadow:0 18px 40px rgba(0,0,0,.18)!important}
+
+/* Responsive behaviour: desktop → tablet → mobile */
+@media(max-width:1100px){
+  .student-hero-card.phase45-hero.phase46-hero{grid-template-columns:1fr!important;gap:28px!important;min-height:0!important}
+  .student-hero-side{max-width:520px!important}
+  .student-insight-grid,.admin-overview-grid{grid-template-columns:1fr!important}
+  .portal-action,.portal-action:nth-child(1),.portal-action:nth-child(6){grid-column:span 6!important}
+  .admin-shell{grid-template-columns:210px minmax(0,1fr)!important}
+  .admin-main{padding:26px 24px 60px!important}
+}
+
+@media(max-width:820px){
+  .student-nav{width:calc(100% - 20px)!important;margin-top:10px!important;padding:0 10px!important}
+  .student-navlinks{display:none!important}
+  .student-shell{width:calc(100% - 20px)!important;margin-top:18px!important}
+  .student-hero-card.phase45-hero.phase46-hero{padding:32px 25px!important;border-radius:2px 24px 2px 24px!important}
+  .dynamic-greeting{font-size:clamp(2.7rem,12vw,4.25rem)!important}
+  .hero-search{max-width:none!important}
+  .cl-data-rail{margin-left:0!important;margin-right:0!important}
+  .student-insight-grid{grid-template-columns:1fr!important}
+
+  .portal-shell{padding:10px 10px 80px!important}
+  .portal-topbar{top:8px!important}
+  .portal-hero.phase45-vendor-hero.phase46-vendor-hero{padding:30px 24px!important}
+  .portal-grid{grid-template-columns:1fr!important}
+  .portal-action,.portal-action:nth-child(1),.portal-action:nth-child(6){grid-column:auto!important;min-height:140px!important}
+
+  .admin-shell{display:block!important}
+  .admin-sidebar{
+    position:sticky!important;top:0!important;z-index:70!important;margin:0!important;width:100%!important;height:auto!important;
+    border-radius:0!important;padding:10px 12px!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:10px!important;
+  }
+  .admin-brand{border:0!important;padding:0!important;white-space:nowrap!important}
+  .admin-sidebar-tools{margin:0!important;justify-self:end!important}.admin-role{display:none!important}
+  .admin-nav{grid-column:1/-1!important;display:flex!important;overflow-x:auto!important;gap:4px!important;margin:8px 0 0!important;padding-bottom:2px!important;scrollbar-width:none!important}
+  .admin-nav::-webkit-scrollbar{display:none!important}
+  .admin-nav a{white-space:nowrap!important;flex:0 0 auto!important}
+  .admin-sidebar-foot{display:none!important}
+  .admin-main{padding:20px 12px 70px!important}
+  .admin-hero.phase45-admin-hero{padding:30px 24px!important;min-height:0!important}
+  .admin-hero h1{font-size:clamp(2.45rem,9vw,3.7rem)!important}
+  .modern-queue-grid{grid-template-columns:1fr!important}
+}
+
+@media(max-width:560px){
+  .student-hero-card.phase45-hero.phase46-hero{padding:27px 20px 30px!important}
+  .phase46-hero .student-hero-copy>p{font-size:14px!important}
+  .hero-search{grid-template-columns:auto minmax(0,1fr)!important;border-radius:12px!important}
+  .hero-search button{grid-column:1/-1!important;width:100%!important;justify-content:center!important;margin-top:3px!important}
+  .student-campus-card{padding-left:18px!important}
+  .cl-data-rail>div{min-width:145px!important;padding:15px!important}
+  .section-title-row{align-items:flex-end!important}
+  .vendor-grid{grid-template-columns:1fr!important}
+
+  .portal-topbar nav a{display:none!important}
+  .portal-hero.phase45-vendor-hero.phase46-vendor-hero{padding:27px 20px!important}
+  .portal-hero .status-card{width:100%!important}
+
+  .admin-hero-side{margin-top:20px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .student-app:before,.portal-shell:before,.admin-app:before{background:none!important}
+  .vendor-card,.portal-action,.quick-link,.admin-nav a,.priority-row{transition:none!important}
+}
