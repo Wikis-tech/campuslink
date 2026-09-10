@@ -75,7 +75,7 @@ export default async function VendorGrowthPage() {
       <header className="phase5a-topbar">
         <Link href="/vendor-v2" className="phase5a-back"><ArrowLeft size={17}/> Dashboard</Link>
         <Link href="/" className="phase5a-brand">Campus<span>Link</span></Link>
-        <div className="phase5a-top-actions"><Link href="/vendor-v2/services">Services</Link><Link href="/vendor-v2/portfolio">Portfolio</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button>Sign out</button></form></div>
+        <div className="phase5a-top-actions"><Link href="/vendor-v2/services">Services</Link><Link href="/vendor-v2/portfolio">Portfolio</Link><Link href="/vendor-v2/billing">Billing</Link><ThemeToggle compact/><form action="/auth/signout" method="post"><button>Sign out</button></form></div>
       </header>
 
       <section className="phase5a-content">
@@ -138,7 +138,7 @@ export default async function VendorGrowthPage() {
               <div className="phase5a-price-note"><strong>{formatNaira(annualPro?.price_ngn || 24000)} / year</strong> · save {formatNaira(annualSaving)} versus paying monthly for 12 months.</div>
               {currentTier === 'Free' && checkoutReady ? <div className="phase5c-checkout-grid"><PaystackCheckoutButton planSlug="pro-monthly" label={`Upgrade monthly · ${formatNaira(monthlyPro?.price_ngn || 2500)}`}/><PaystackCheckoutButton planSlug="pro-annual" label={`Upgrade yearly · ${formatNaira(annualPro?.price_ngn || 24000)}`}/></div> : null}
               {currentTier === 'Free' && !checkoutReady ? <div className="phase5a-plan-foot"><LockKeyhole size={17}/><span>Secure checkout will appear as soon as the two Paystack TEST plan codes are connected.</span></div> : null}
-              {currentTier === 'Pro' ? <div className="phase5a-plan-foot"><ShieldCheck size={17}/><span>Your Pro entitlement is active. Billing management arrives in Phase 5D.</span></div> : null}
+              {currentTier === 'Pro' ? <div className="phase5a-plan-foot"><CircleDollarSign size={17}/><span>Pro is active. <Link href="/vendor-v2/billing">Open billing & subscription management</Link>.</span></div> : null}
             </article>
           </div>
         </section>
@@ -154,7 +154,7 @@ export default async function VendorGrowthPage() {
           <div className="phase5a-trust-steps">
             <Link href="/vendor-v2/services" style={{textDecoration:'none',color:'inherit'}}><span><ListChecks/></span><div><strong>Services</strong><small>Add, pause and organise your active offer.</small></div></Link>
             <Link href="/vendor-v2/portfolio" style={{textDecoration:'none',color:'inherit'}}><span><ImagePlus/></span><div><strong>Portfolio</strong><small>Show genuine work within your current plan limit.</small></div></Link>
-            <div><span><BarChart3/></span><div><strong>Analytics</strong><small>Advanced analytics arrives in Phase 5E after event tracking is complete.</small></div></div>
+            <Link href="/vendor-v2/billing" style={{textDecoration:'none',color:'inherit'}}><span><CircleDollarSign/></span><div><strong>Billing</strong><small>See payment history, renewal state and secure Paystack controls.</small></div></Link>
           </div>
         </section>
       </section>
