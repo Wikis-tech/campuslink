@@ -10,6 +10,7 @@ import './phase47-marketplace.css'
 import './phase5a.css'
 import './phase5b.css'
 import './phase5c.css'
+import './phase5d.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
