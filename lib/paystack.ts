@@ -88,6 +88,34 @@ export async function verifyPaystackTransaction(reference: string) {
   return paystackRequest<any>(`/transaction/verify/${encodeURIComponent(reference)}`)
 }
 
+export async function fetchPaystackSubscription(subscriptionCode: string) {
+  assertPaystackTestMode()
+  return paystackRequest<any>(`/subscription/${encodeURIComponent(subscriptionCode)}`)
+}
+
+export async function generatePaystackSubscriptionManageLink(subscriptionCode: string) {
+  assertPaystackTestMode()
+  return paystackRequest<{ link: string }>(`/subscription/${encodeURIComponent(subscriptionCode)}/manage/link`, {
+    method: 'GET',
+  })
+}
+
+export async function sendPaystackSubscriptionManageEmail(subscriptionCode: string) {
+  assertPaystackTestMode()
+  return paystackRequest<Record<string, never>>(`/subscription/${encodeURIComponent(subscriptionCode)}/manage/email`, {
+    method: 'POST',
+  })
+}
+
+export function isTrustedPaystackManageUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && (url.hostname === 'paystack.com' || url.hostname.endsWith('.paystack.com'))
+  } catch {
+    return false
+  }
+}
+
 export function verifyPaystackWebhookSignature(rawBody: string, signature: string | null) {
   if (!signature || !/^[a-f0-9]{128}$/i.test(signature)) return false
   const expected = createHmac('sha512', secretKey()).update(rawBody, 'utf8').digest('hex')
