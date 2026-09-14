@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  BadgeCheck, BarChart3, Building2, CircleDollarSign, Eye, ImagePlus,
-  ListChecks, MessageCircle, Package, Plus, ShieldAlert, Sparkles, TrendingUp,
+  BadgeCheck, Building2, CircleDollarSign, ImagePlus,
+  MessageCircle, Package, Plus, ShieldAlert, Store, TrendingUp,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
@@ -72,7 +72,7 @@ export default async function VendorDashboard() {
     !setupComplete ? { icon:<BadgeCheck size={17}/>, title:'Finish business setup', copy:'Complete your business details and verification evidence.', href:'/onboarding/vendor' } : null,
     verification !== 'approved' ? { icon:<BadgeCheck size={17}/>, title:'Complete identity verification', copy:`Current status: ${verification.replace('_',' ')}.`, href:'/onboarding/vendor' } : null,
     campus?.status !== 'approved' ? { icon:<Building2 size={17}/>, title:'Finish campus approval', copy:'Students cannot discover you until your campus is approved.', href:'/onboarding/vendor' } : null,
-    !vendor.logo_url ? { icon:<Sparkles size={17}/>, title:'Add a business logo', copy:'A recognizable storefront is easier for students to trust.', href:'/onboarding/vendor' } : null,
+    !vendor.logo_url ? { icon:<Store size={17}/>, title:'Add a business logo', copy:'A recognizable storefront is easier for students to trust.', href:'/onboarding/vendor' } : null,
     !vendor.cover_url ? { icon:<ImagePlus size={17}/>, title:'Add a cover image', copy:'Show students what your business looks or feels like.', href:'/onboarding/vendor' } : null,
     productCount === 0 ? { icon:<Package size={17}/>, title:'Add your first product', copy:'Show a real item students can open and ask about.', href:'/vendor-v2/products' } : null,
     (portfolioResult.count || 0) === 0 ? { icon:<ImagePlus size={17}/>, title:'Add proof of work', copy:'Portfolio examples help students judge quality before contacting you.', href:'/vendor-v2/portfolio' } : null,
@@ -82,11 +82,11 @@ export default async function VendorDashboard() {
 
   return (
     <main className="v5e-vendor-page">
-      <VendorWorkspaceSidebar storefrontHref={`/student/vendors/${vendor.slug}`}/>
+      <VendorWorkspaceSidebar/>
       <section className="v5e-vendor-main">
         <header className="v5e-vendor-header">
-          <div><small className="v5e-eyebrow">{vendor.business_name}</small><DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" /><p>{discoverable ? `Your storefront is live around ${school || 'your campus'}. Focus on the next useful action, then watch how students respond.` : 'Your business workspace is ready. Complete the important items below before public discovery.'}</p></div>
-          <div className="v5e-vendor-actions"><Link href="/vendor-v2/products" className="btn btn-primary"><Plus size={16}/> Add product</Link><Link href={`/student/vendors/${vendor.slug}`} className="btn btn-ghost"><Eye size={16}/> Preview storefront</Link></div>
+          <div><small className="v5e-eyebrow">{vendor.business_name}</small><DynamicGreeting firstName={profile.first_name || vendor.business_name} sessionSeed={sessionSeed} role="vendor" /><p>{discoverable ? `Your business is live around ${school || 'your campus'}. Focus on the next useful action, then watch how students respond.` : 'Your business workspace is ready. Complete the important items below before public discovery.'}</p></div>
+          <div className="v5e-vendor-actions"><Link href="/vendor-v2/products" className="btn btn-primary"><Plus size={16}/> Add product</Link></div>
         </header>
 
         {marketplace !== 'active' && !suspensionExpired ? <div className="v5e-alert"><strong>Marketplace visibility paused.</strong> Safety review is separate from your paid plan. You can still manage your business while the case is reviewed.</div> : null}
@@ -102,7 +102,7 @@ export default async function VendorDashboard() {
           <div>
             <article className="v5e-card v5e-priority-card">
               <div className="v5e-card-head"><div><span className="v5e-section-label">Action centre</span><h2>{tasks.length ? `${tasks.length} things worth doing next` : 'You are in good shape today'}</h2></div><Link href="/onboarding/vendor">Business settings</Link></div>
-              {tasks.length ? tasks.slice(0,5).map((task,index)=><div className="v5e-todo" key={`${task.title}-${index}`}><span>{task.icon}</span><div><strong>{task.title}</strong><small>{task.copy}</small></div><Link href={task.href}>Open</Link></div>) : <div className="v5e-todo"><span><Sparkles size={17}/></span><div><strong>No urgent setup tasks</strong><small>Keep products, services and portfolio examples current.</small></div><Link href="/vendor-v2/products">Manage</Link></div>}
+              {tasks.length ? tasks.slice(0,5).map((task,index)=><div className="v5e-todo" key={`${task.title}-${index}`}><span>{task.icon}</span><div><strong>{task.title}</strong><small>{task.copy}</small></div><Link href={task.href}>Open</Link></div>) : <div className="v5e-todo"><span><TrendingUp size={17}/></span><div><strong>No urgent setup tasks</strong><small>Keep products, services and portfolio examples current.</small></div><Link href="/vendor-v2/products">Manage</Link></div>}
             </article>
 
             <article className="v5e-card">
@@ -111,7 +111,7 @@ export default async function VendorDashboard() {
             </article>
 
             <article className="v5e-card">
-              <div className="v5e-card-head"><div><span className="v5e-section-label">Storefront inventory</span><h2>What students can discover</h2></div><Link href={`/student/vendors/${vendor.slug}`}>Preview</Link></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Marketplace inventory</span><h2>What students can discover</h2></div></div>
               <div className="v5e-storefront-row"><div><strong>Products</strong><small>{productCount} of {productLimit} active listings</small></div><Link href="/vendor-v2/products">Manage</Link></div>
               <div className="v5e-storefront-row"><div><strong>Services</strong><small>{serviceResult.count || 0} of {serviceLimit} active services</small></div><Link href="/vendor-v2/services">Manage</Link></div>
               <div className="v5e-storefront-row"><div><strong>Portfolio</strong><small>{portfolioResult.count || 0} of {portfolioLimit} proof-of-work items</small></div><Link href="/vendor-v2/portfolio">Manage</Link></div>
@@ -120,7 +120,7 @@ export default async function VendorDashboard() {
 
           <aside>
             <article className="v5e-card">
-              <div className="v5e-card-head"><div><span className="v5e-section-label">Business health</span><h2>Improve the storefront</h2></div><span className="v5e-card-note">Not a trust score</span></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Business health</span><h2>Improve your presence</h2></div><span className="v5e-card-note">Not a trust score</span></div>
               <div className="v5e-health-score"><div className="v5e-health-ring" style={{'--score':healthScore} as React.CSSProperties}><strong>{healthScore}%</strong></div><div className="v5e-health-copy"><strong>{healthScore>=85?'Strong setup':healthScore>=60?'Good foundation':'Needs attention'}</strong><small>Profile completeness, listings and verification readiness.</small></div></div>
               <div className="v5e-mini-links"><Link href="/onboarding/vendor">Improve profile <span>→</span></Link><Link href="/vendor-v2/analytics">View performance <span>→</span></Link></div>
             </article>
