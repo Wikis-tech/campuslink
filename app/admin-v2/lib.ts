@@ -12,7 +12,7 @@ export async function requireAdminContext(): Promise<AdminContext> {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
   const user = userData.user
-  if (!user) redirect('/login')
+  if (!user) redirect('/admin-login')
 
   const [{ data: globalAdmin }, { data: schoolAssignments }] = await Promise.all([
     supabase
@@ -29,7 +29,7 @@ export async function requireAdminContext(): Promise<AdminContext> {
   ])
 
   const assignments = schoolAssignments || []
-  if (!globalAdmin && assignments.length === 0) redirect('/dashboard')
+  if (!globalAdmin && assignments.length === 0) redirect('/admin-login?error=This%20account%20does%20not%20have%20admin%20access')
 
   return {
     userId: user.id,
