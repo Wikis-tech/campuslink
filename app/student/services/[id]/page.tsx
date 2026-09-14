@@ -33,6 +33,8 @@ export default async function StudentServicePage({ params }: { params: Promise<{
 
   const price = service.price_from ? `From ₦${Number(service.price_from).toLocaleString()}` : 'Contact for price'
   const item = encodeURIComponent(service.name)
+  const whatsappHref = `/student/vendors/${vendor.slug}/contact?item=${item}&service=${service.id}`
+  const phoneHref = `/student/vendors/${vendor.slug}/contact?channel=phone&item=${item}&service=${service.id}`
 
   return <main className="cl-student-page">
     <VendorAnalyticsBeacon vendorId={vendor.id} event="service_view" serviceId={service.id}/>
@@ -54,8 +56,8 @@ export default async function StudentServicePage({ params }: { params: Promise<{
             </Link>
           </div>
           <div style={{display:'grid',gap:10,marginTop:24}}>
-            <Link href={`/student/vendors/${vendor.slug}/contact?item=${item}&service=${service.id}`} className="btn btn-primary"><MessageCircle size={17}/> Ask on WhatsApp</Link>
-            <Link href={`/student/vendors/${vendor.slug}/contact?channel=phone&item=${item}&service=${service.id}`} className="btn btn-ghost"><Phone size={17}/> Call vendor</Link>
+            <a href={whatsappHref} className="btn btn-primary"><MessageCircle size={17}/> Ask on WhatsApp</a>
+            <a href={phoneHref} className="btn btn-ghost"><Phone size={17}/> Call vendor</a>
             <Link href={`/student/vendors/${vendor.slug}`} className="btn btn-ghost">View full storefront</Link>
           </div>
           <p style={{fontSize:12,color:'var(--v3-muted)',marginTop:18}}>Campus Link does not process the service transaction. Agree scope, price and fulfilment directly with the vendor.</p>
