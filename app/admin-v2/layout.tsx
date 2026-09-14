@@ -6,7 +6,6 @@ import { AdminSessionGuard } from '@/components/admin-session-guard'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdminContext } from './lib'
 import './admin.css'
-import './admin-fiverr.css'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const context = await requireAdminContext()
