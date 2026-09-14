@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 const ALLOWED_TYPES = new Set(['image/jpeg','image/png','image/webp'])
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const MAX_FILE_SIZE = 4 * 1024 * 1024
 
 async function requireVendor() {
   const supabase = await createClient()
@@ -38,7 +38,7 @@ export async function addPortfolioItem(formData: FormData) {
     redirect('/vendor-v2/portfolio?error=Use%20a%20JPG,%20PNG%20or%20WEBP%20image')
   }
   if (image.size > MAX_FILE_SIZE) {
-    redirect('/vendor-v2/portfolio?error=Portfolio%20images%20must%20be%205MB%20or%20smaller')
+    redirect('/vendor-v2/portfolio?error=Portfolio%20images%20must%20be%204MB%20or%20smaller')
   }
 
   const { supabase, userId } = await requireVendor()
@@ -58,7 +58,7 @@ export async function addPortfolioItem(formData: FormData) {
     contentType: image.type,
     upsert: false,
   })
-  if (uploadError) redirect('/vendor-v2/portfolio?error=We%20could%20not%20upload%20that%20image')
+  if (uploadError) redirect(`/vendor-v2/portfolio?error=${encodeURIComponent(uploadError.message || 'We could not upload that image')}`)
 
   const { data: publicUrlData } = supabase.storage.from('vendor-media').getPublicUrl(path)
   const { error: insertError } = await supabase.from('vendor_portfolio_items').insert({
@@ -72,7 +72,7 @@ export async function addPortfolioItem(formData: FormData) {
   if (insertError) {
     await supabase.storage.from('vendor-media').remove([path])
     if (insertError.message.includes('PLAN_LIMIT_PORTFOLIO')) redirect(`/vendor-v2/portfolio?limit=${portfolioLimit}`)
-    redirect('/vendor-v2/portfolio?error=We%20could%20not%20save%20the%20portfolio%20item')
+    redirect(`/vendor-v2/portfolio?error=${encodeURIComponent(insertError.message || 'We could not save the portfolio item')}`)
   }
 
   revalidatePath('/vendor-v2/portfolio')
