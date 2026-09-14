@@ -16,10 +16,12 @@ import './phase5e-rework.css'
 import './phase5e-student-marketplace.css'
 import './student-fiverr.css'
 import './vendor-polish.css'
+import './admin-v2/admin-fiverr.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
   description: 'Discover trusted, verified services around your campus.',
+  icons: { icon: '/icon.svg' },
 }
 
 const themeScript = `
