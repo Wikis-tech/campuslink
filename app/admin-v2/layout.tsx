@@ -1,11 +1,18 @@
 import Link from 'next/link'
 import { BarChart3, Building2, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { AdminMobileNav } from '@/components/admin-mobile-nav'
+import { AdminSessionGuard } from '@/components/admin-session-guard'
+import { createClient } from '@/lib/supabase/server'
 import { requireAdminContext } from './lib'
 import './admin.css'
+import './admin-fiverr.css'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const context = await requireAdminContext()
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  const email = userData.user?.email || 'admin'
   const roleLabel = context.globalRole
     ? context.globalRole.replaceAll('_', ' ')
     : context.schoolAssignments.length === 1
@@ -13,11 +20,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       : 'school admin'
 
   return (
-    <main className="admin-app">
+    <main className="admin-app admin-fiverr-app">
+      <AdminSessionGuard/>
+      <AdminMobileNav email={email} role={roleLabel}/>
       <div className="admin-shell">
-        <aside className="admin-sidebar">
+        <aside className="admin-sidebar admin-fiverr-sidebar">
           <Link href="/admin-v2" className="admin-brand">Campus<span>Link</span> Admin</Link>
           <div className="admin-sidebar-tools">
+            <div className="admin-profile-card"><span className="admin-profile-avatar">{email.slice(0,1).toUpperCase()}</span><div><strong>{email}</strong><small>{roleLabel}</small></div></div>
             <div className="admin-role"><strong>{roleLabel}</strong>{context.isGlobalAdmin ? 'Global control-plane access' : `${context.schoolAssignments.length} school assignment${context.schoolAssignments.length === 1 ? '' : 's'}`}</div>
             <ThemeToggle compact />
           </div>
@@ -34,7 +44,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin-v2/audit"><BarChart3 /> Audit</Link>
           </nav>
           <div className="admin-sidebar-foot">
-            <Link href="/"><ShieldCheck /> Back to Campus Link</Link>
+            <div className="admin-security-note"><ShieldCheck size={15}/> Auto sign-out after 20 minutes idle</div>
             <form action="/auth/signout" method="post"><button type="submit">Sign out</button></form>
           </div>
         </aside>
