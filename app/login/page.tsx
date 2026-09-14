@@ -20,7 +20,7 @@ export default async function LoginPage({
           <div className="auth-story-copy">
             <span className="auth-kicker"><ShieldCheck size={16} /> Campus Link access</span>
             <h1>Welcome back to your campus network.</h1>
-            <p>Sign in to continue to your student, vendor or admin workspace. Your role and permissions are resolved securely after authentication.</p>
+            <p>Students and Vendors sign in here. Administrative accounts use the separate secure Admin login.</p>
             <div className="auth-security-line"><LockKeyhole size={17} /> Secure session handling and role-based access controls are active.</div>
           </div>
           <Link className="auth-back-link" href="/"><ArrowLeft size={16} /> Back to Campus Link</Link>
@@ -29,7 +29,7 @@ export default async function LoginPage({
         <section className="auth-glass-panel reveal-scale">
           <div className="auth-panel-head">
             <span className="auth-kicker dark">Welcome back</span>
-            <h2>Sign in</h2>
+            <h2>Student / Vendor sign in</h2>
             <p>Use the email and password attached to your Campus Link account.</p>
           </div>
 
@@ -47,6 +47,7 @@ export default async function LoginPage({
             <button className="btn btn-primary auth-primary-action" type="submit">Sign in</button>
           </form>
 
+          <p className="auth-foot">Administrator? <Link href="/admin-login">Use secure Admin login</Link></p>
           <p className="auth-foot">New to Campus Link? <Link href="/register">Create an account</Link></p>
         </section>
       </div>
