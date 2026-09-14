@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { LockKeyhole, ShieldCheck } from 'lucide-react'
 import { adminLogin } from './actions'
-import '../admin-v2/admin-fiverr.css'
 
 export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ error?: string; reason?: string }> }) {
   const params = await searchParams
