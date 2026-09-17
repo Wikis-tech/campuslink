@@ -17,6 +17,7 @@ import './phase5e-student-marketplace.css'
 import './student-fiverr.css'
 import './vendor-polish.css'
 import './admin-v2/admin-fiverr.css'
+import './typography-polish.css'
 
 export const metadata: Metadata = {
   title: 'Campus Link',
