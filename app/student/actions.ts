@@ -75,34 +75,34 @@ export async function submitReview(formData: FormData) {
     redirect(`${returnTo}?error=Choose%20a%20rating%20from%201%20to%205`)
   }
 
-  const { supabase, userId, profile } = await studentContext()
+  const { supabase, profile } = await studentContext()
   await assertVendorAvailableToStudent(supabase, profile.institution_id, vendorId, returnTo)
   if (profile.student_verification_status !== 'verified') {
     redirect(`${returnTo}?error=Your%20student%20account%20must%20be%20verified%20before%20you%20can%20review%20vendors`)
   }
 
-  const { data: existingReview } = await supabase.from('reviews').select('id').eq('student_id', userId).eq('vendor_id', vendorId).maybeSingle()
-  const { error } = await supabase.from('reviews').upsert(
-    {
-      student_id: userId,
-      vendor_id: vendorId,
-      rating,
-      comment: comment || null,
-      status: 'published',
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'student_id,vendor_id' }
-  )
+  const { data, error } = await supabase.rpc('student_submit_vendor_review', {
+    target_vendor: vendorId,
+    review_rating: rating,
+    review_comment: comment || null,
+  })
 
-  if (error) redirect(`${returnTo}?error=We%20could%20not%20save%20your%20review`)
-  if (!existingReview) await supabase.rpc('record_vendor_analytics_event', { target_vendor: vendorId, event_name: 'review_received', target_product: null, target_service: null })
+  if (error) redirect(`${returnTo}?error=${encodeURIComponent(error.message || 'We could not save your review')}`)
+  const result = Array.isArray(data) ? data[0] : data
+  if (result?.is_new) {
+    await supabase.rpc('record_vendor_analytics_event', { target_vendor: vendorId, event_name: 'review_received', target_product: null, target_service: null })
+  }
+
   revalidatePath(returnTo)
+  revalidatePath('/vendor-v2/reviews')
+  revalidatePath('/admin-v2/reviews')
   redirect(`${returnTo}?review=saved`)
 }
 
 export async function reportVendor(formData: FormData) {
   const vendorId = String(formData.get('vendor_id') || '')
   const slug = String(formData.get('slug') || '')
+  const category = String(formData.get('category') || 'other')
   const title = String(formData.get('title') || '').trim().slice(0, 120)
   const description = String(formData.get('description') || '').trim().slice(0, 1500)
   const returnTo = slug ? `/student/vendors/${encodeURIComponent(slug)}` : '/student/discover'
@@ -111,22 +111,28 @@ export async function reportVendor(formData: FormData) {
     redirect(`${returnTo}?error=Please%20give%20us%20a%20clear%20reason%20for%20the%20report`)
   }
 
-  const { supabase, userId, profile } = await studentContext()
+  const allowedCategories = new Set(['fraud_scam','harassment','fake_product','misrepresentation','unsafe_behavior','spam','prohibited_item','other'])
+  if (!allowedCategories.has(category)) redirect(`${returnTo}?error=Choose%20a%20valid%20report%20category`)
+
+  const { supabase, profile } = await studentContext()
   await assertVendorAvailableToStudent(supabase, profile.institution_id, vendorId, returnTo)
 
-  const { error } = await supabase.from('complaints').insert({
-    reporter_id: userId,
-    vendor_id: vendorId,
-    title,
-    description,
+  const { error } = await supabase.rpc('student_report_vendor', {
+    target_vendor: vendorId,
+    report_category: category,
+    report_title: title,
+    report_description: description,
   })
 
   if (error) {
-    const message = error.code === '23505'
-      ? 'You%20already%20have%20an%20open%20report%20for%20this%20vendor.%20Campus%20Link%20is%20reviewing%20it.'
-      : 'We%20could%20not%20submit%20your%20report'
-    redirect(`${returnTo}?error=${message}`)
+    const duplicate = error.code === '23505' || /already|duplicate/i.test(error.message || '')
+    const message = duplicate
+      ? 'You already have an open report for this vendor. Campus Link is reviewing it.'
+      : error.message || 'We could not submit your report'
+    redirect(`${returnTo}?error=${encodeURIComponent(message)}`)
   }
+
   revalidatePath('/admin-v2/reports')
+  revalidatePath('/admin-v2/safety')
   redirect(`${returnTo}?reported=1`)
 }
