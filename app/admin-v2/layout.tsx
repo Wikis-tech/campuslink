@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
+import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldAlert, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AdminMobileNav } from '@/components/admin-mobile-nav'
 import { AdminSessionGuard } from '@/components/admin-session-guard'
@@ -34,6 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin-v2"><LayoutDashboard /> Overview</Link>
             <Link href="/admin-v2/marketplace"><ShoppingBag /> Marketplace</Link>
             <Link href="/admin-v2/campus-intelligence"><CalendarRange /> Campus Intelligence</Link>
+            <Link href="/admin-v2/safety"><ShieldAlert /> Trust & Safety</Link>
             <Link href="/admin-v2/schools"><Building2 /> Schools</Link>
             <Link href="/admin-v2/students"><GraduationCap /> Students</Link>
             <Link href="/admin-v2/vendors"><Store /> Vendors</Link>
