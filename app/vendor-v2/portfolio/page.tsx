@@ -37,14 +37,14 @@ export default async function VendorPortfolioPage({ searchParams }: { searchPara
       <section className="phase5b-workspace phase5b-portfolio-workspace">
         <div className="phase5b-list-column">
           <div className="phase5b-section-heading"><div><span>Your work</span><h2>{used ? `${used} example${used === 1 ? '' : 's'} uploaded` : 'Start with your strongest work'}</h2></div></div>
-          {used ? <div className="phase5b-portfolio-grid">{(items || []).map((item) => <article key={item.id} className="phase5b-portfolio-card"><img src={item.image_url} alt={item.title}/><div><strong>{item.title}</strong>{item.description ? <p>{item.description}</p> : null}<form action={deletePortfolioItem}><input type="hidden" name="item_id" value={item.id}/><button className="phase5b-action-button danger"><Trash2 size={15}/> Remove</button></form></div></article>)}</div> : <div className="phase5b-empty"><ImagePlus/><div><strong>No portfolio examples yet.</strong><span>Use clear, honest images of work you actually completed.</span></div></div>}
+          {used ? <div className="phase5b-portfolio-grid">{(items || []).map((item) => <article key={item.id} className="phase5b-portfolio-card"><img src={item.image_url} alt={item.title} loading="lazy"/><div><strong>{item.title}</strong>{item.description ? <p>{item.description}</p> : null}<form action={deletePortfolioItem}><input type="hidden" name="item_id" value={item.id}/><button className="phase5b-action-button danger"><Trash2 size={15}/> Remove</button></form></div></article>)}</div> : <div className="phase5b-empty"><ImagePlus/><div><strong>No portfolio examples yet.</strong><span>Use clear, honest images of work you actually completed.</span></div></div>}
         </div>
         <form action={addPortfolioItem} encType="multipart/form-data" className="phase5b-editor vendor-editor-card">
           <div className="phase5b-editor-head"><ImagePlus size={20}/><div><span>Add work</span><strong>{remaining > 0 ? `${remaining} upload slot${remaining === 1 ? '' : 's'} available` : 'Portfolio limit reached'}</strong></div></div>
           <label><span>Title</span><input name="title" required maxLength={100} placeholder="e.g. Knotless braids"/></label>
           <label><span>Description</span><textarea name="description" maxLength={500} placeholder="Optional context about the work or result."/></label>
           <label><span>Image</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required disabled={remaining <= 0}/></label>
-          <p className="phase5b-upload-help">JPG, PNG or WEBP · maximum 5 MB.</p>
+          <p className="phase5b-upload-help">JPG, PNG or WEBP · maximum 4 MB.</p>
           <button className="phase5b-primary" type="submit" disabled={remaining <= 0}><ImagePlus size={17}/>{remaining > 0 ? 'Upload portfolio item' : 'Limit reached'}</button>
         </form>
       </section>
