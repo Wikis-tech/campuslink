@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Building2, GraduationCap, Home, Menu, ShieldCheck, ShoppingBag, Store, UserCog } from 'lucide-react'
+import { Building2, CalendarRange, GraduationCap, Home, Menu, ShieldCheck, ShoppingBag, Store, UserCog } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const nav = [
   { href:'/admin-v2', label:'Overview', icon:Home },
   { href:'/admin-v2/marketplace', label:'Market', icon:ShoppingBag },
+  { href:'/admin-v2/campus-intelligence', label:'Campus', icon:CalendarRange },
   { href:'/admin-v2/students', label:'Students', icon:GraduationCap },
   { href:'/admin-v2/vendors', label:'Vendors', icon:Store },
   { href:'/admin-v2/schools', label:'Schools', icon:Building2 },
