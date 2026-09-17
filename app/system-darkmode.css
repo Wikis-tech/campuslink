@@ -1,0 +1,177 @@
+/* Final dark-mode compatibility layer for the whole Campus Link product. Loaded last. */
+html[data-theme="dark"]{
+  --ink:#f4f7fb;
+  --muted:#9aabc0;
+  --line:#26364a;
+  --brand:#78aef5;
+  --brand-dark:#4d8cde;
+  --brand-light:#8dbbfa;
+  --accent:#58d88d;
+  --accent-dark:#58d88d;
+  --surface:#0f1c2b;
+  --soft:#0b1724;
+  --v3-bg:#08121f;
+  --v3-page:#08121f;
+  --v3-surface:#0f1c2b;
+  --v3-ink:#f4f7fb;
+  --v3-muted:#9aabc0;
+  --v3-line:#26364a;
+  --v3-blue:#78aef5;
+  --v3-navy:#0b2e5d;
+  --v3-green:#58d88d;
+  --v3-soft-blue:#14263d;
+  --v3-soft-green:#123223;
+  --p47-bg:#08121f;
+  --p47-bg-soft:#0b1725;
+  --p47-surface:#0f1c2b;
+  --p47-surface-2:#13243a;
+  --p47-text:#f4f7fb;
+  --p47-muted:#9aabc0;
+  --p47-line:rgba(224,233,244,.13);
+  --p47-line-strong:rgba(120,174,245,.34);
+  --p47-brand:#78aef5;
+  --p47-brand-deep:#173b6c;
+  --p47-accent:#58d88d;
+  --p47-accent-soft:#123223;
+  --p47-warm:#182431;
+  color-scheme:dark;
+}
+html[data-theme="dark"] body{background:#08121f;color:#f4f7fb}
+
+/* Shared readable typography */
+html[data-theme="dark"] h1,html[data-theme="dark"] h2,html[data-theme="dark"] h3,html[data-theme="dark"] h4,html[data-theme="dark"] h5,html[data-theme="dark"] h6,
+html[data-theme="dark"] strong,html[data-theme="dark"] label{color:#f4f7fb}
+html[data-theme="dark"] p,html[data-theme="dark"] small,html[data-theme="dark"] .muted{color:#9aabc0}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+  background:#0b1725!important;color:#f4f7fb!important;border-color:#2b3c52!important
+}
+html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#74859a!important}
+html[data-theme="dark"] option{background:#0f1c2b;color:#f4f7fb}
+
+/* Student marketplace / discovery */
+html[data-theme="dark"] .cl-fv-page,html[data-theme="dark"] .student-app,html[data-theme="dark"] .student-shell{background:#08121f!important;color:#f4f7fb!important}
+html[data-theme="dark"] .cl-fv-campus,html[data-theme="dark"] .cl-fv-category,html[data-theme="dark"] .cl-fv-vendor,
+html[data-theme="dark"] .student-data-rail,html[data-theme="dark"] .student-quick-panel,html[data-theme="dark"] .cl-empty-activity,
+html[data-theme="dark"] .vendor-card,html[data-theme="dark"] .vendor-profile,html[data-theme="dark"] .profile-side,
+html[data-theme="dark"] .profile-section,html[data-theme="dark"] .service-row,html[data-theme="dark"] .review-row,
+html[data-theme="dark"] .review-form,html[data-theme="dark"] .report-form,html[data-theme="dark"] .empty-state{
+  background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important
+}
+html[data-theme="dark"] .cl-fv-title,html[data-theme="dark"] .cl-fv-price strong,html[data-theme="dark"] .cl-fv-vendor strong,
+html[data-theme="dark"] .marketplace-section-head strong,html[data-theme="dark"] .vendor-name,
+html[data-theme="dark"] .profile-section h2,html[data-theme="dark"] .profile-section h3{color:#f4f7fb!important}
+html[data-theme="dark"] .cl-fv-seller,html[data-theme="dark"] .cl-fv-price,html[data-theme="dark"] .cl-fv-vendor p,
+html[data-theme="dark"] .cl-fv-vendor-meta,html[data-theme="dark"] .vendor-desc,html[data-theme="dark"] .result-meta,
+html[data-theme="dark"] .student-head p{color:#9aabc0!important}
+html[data-theme="dark"] .search-panel,html[data-theme="dark"] .student-nav{
+  background:color-mix(in srgb,#0f1c2b 96%,transparent)!important;border-color:#26364a!important
+}
+html[data-theme="dark"] .search-field,html[data-theme="dark"] .search-panel select{background:#13243a!important;color:#f4f7fb!important}
+html[data-theme="dark"] .cl-fv-listing-media,html[data-theme="dark"] .vendor-cover,html[data-theme="dark"] .profile-cover{background:#13243a!important}
+
+/* Vendor workspace */
+html[data-theme="dark"] .v5e-page,html[data-theme="dark"] .v5e-vendor-page{background:#08121f!important;color:#f4f7fb!important}
+html[data-theme="dark"] .v5e-sidebar,html[data-theme="dark"] .v5e-sidebar-shared{background:#0a1828!important;border-color:#26364a!important}
+html[data-theme="dark"] .v5e-sidebar nav a,html[data-theme="dark"] .v5e-sidebar-shared nav a,html[data-theme="dark"] .v5e-signout{color:#aebdd0!important}
+html[data-theme="dark"] .v5e-sidebar nav a:hover,html[data-theme="dark"] .v5e-sidebar nav a.active,
+html[data-theme="dark"] .v5e-sidebar-shared nav a:hover,html[data-theme="dark"] .v5e-sidebar-shared nav a.active{background:#132b4a!important;color:#8ab7f7!important}
+html[data-theme="dark"] .v5e-vendor-main,html[data-theme="dark"] .v5e-content{color:#f4f7fb!important}
+html[data-theme="dark"] .v5e-vendor-header h1,html[data-theme="dark"] .v5e-topbar h1{color:#f4f7fb!important}
+html[data-theme="dark"] .v5e-vendor-header p,html[data-theme="dark"] .v5e-topbar p,
+html[data-theme="dark"] .v5e-section-label,html[data-theme="dark"] .v5e-eyebrow{color:#9aabc0!important}
+html[data-theme="dark"] .v5e-statusbar,html[data-theme="dark"] .v5e-card,html[data-theme="dark"] .v5e-panel,
+html[data-theme="dark"] .v5e-summary,html[data-theme="dark"] .phase5b-list-column,html[data-theme="dark"] .phase5b-editor,
+html[data-theme="dark"] .phase5b-portfolio-card,html[data-theme="dark"] .v3-product-card,
+html[data-theme="dark"] .vendor-plan-pill,html[data-theme="dark"] .analytics-insight-strip,
+html[data-theme="dark"] .analytics-metric-strip,html[data-theme="dark"] .growth-trust-strip,
+html[data-theme="dark"] .growth-trust-grid article,html[data-theme="dark"] .growth-plan-card,
+html[data-theme="dark"] .billing-control-grid form{
+  background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important
+}
+html[data-theme="dark"] .v5e-statusbar span,html[data-theme="dark"] .v5e-card-note,html[data-theme="dark"] .v5e-trust-copy,
+html[data-theme="dark"] .phase5b-section-heading span,html[data-theme="dark"] .phase5b-service-main p,
+html[data-theme="dark"] .phase5b-service-main small,html[data-theme="dark"] .analytics-funnel-line span,
+html[data-theme="dark"] .analytics-listing-row small,html[data-theme="dark"] .growth-plan-card>p,
+html[data-theme="dark"] .growth-principles span,html[data-theme="dark"] .billing-meta-row span{color:#9aabc0!important}
+html[data-theme="dark"] .v5e-card-head h2,html[data-theme="dark"] .v5e-panel-head h2,
+html[data-theme="dark"] .phase5b-section-heading h2,html[data-theme="dark"] .phase5b-editor strong,
+html[data-theme="dark"] .phase5b-service-title strong,html[data-theme="dark"] .analytics-listing-row strong,
+html[data-theme="dark"] .billing-price strong{color:#f4f7fb!important}
+html[data-theme="dark"] .phase5b-service-state,html[data-theme="dark"] .analytics-rank{background:#14263d!important;color:#8ab7f7!important}
+html[data-theme="dark"] .phase5b-trust-note{background:#10291d!important;border-color:#28583d!important;color:#d9f3e4!important}
+html[data-theme="dark"] .notice.success{background:#10291d!important;border-color:#28583d!important;color:#bce8cb!important}
+html[data-theme="dark"] .notice.error,html[data-theme="dark"] .v5e-alert{background:#321719!important;border-color:#71343a!important;color:#ffb8bf!important}
+html[data-theme="dark"] .v5e-mobile-bottom-nav{background:color-mix(in srgb,#0a1828 97%,transparent)!important;border-color:#26364a!important}
+
+/* Admin */
+html[data-theme="dark"] .admin-fiverr-app,html[data-theme="dark"] .admin-shell{background:#08121f!important;color:#f4f7fb!important}
+html[data-theme="dark"] .admin-fiverr-sidebar{background:#0a1828!important;border-color:#26364a!important}
+html[data-theme="dark"] .admin-fiverr-sidebar .admin-brand,html[data-theme="dark"] .admin-fiverr-sidebar .admin-role strong,
+html[data-theme="dark"] .admin-profile-card strong{color:#f4f7fb!important}
+html[data-theme="dark"] .admin-fiverr-sidebar .admin-role{background:#13243a!important;color:#9aabc0!important}
+html[data-theme="dark"] .admin-fiverr-sidebar .admin-nav a{color:#aebdd0!important}
+html[data-theme="dark"] .admin-fiverr-sidebar .admin-nav a:hover,html[data-theme="dark"] .admin-fiverr-sidebar .admin-nav a.active{background:#132b4a!important;color:#8ab7f7!important}
+html[data-theme="dark"] .admin-fiverr-app .admin-main{background:#08121f!important;color:#f4f7fb!important}
+html[data-theme="dark"] .admin-fiverr-app .admin-hero,html[data-theme="dark"] .admin-fiverr-app .admin-stat,
+html[data-theme="dark"] .admin-fiverr-app .admin-section,html[data-theme="dark"] .admin-fiverr-app .chart-shell,
+html[data-theme="dark"] .admin-fiverr-app .admin-priority-card,html[data-theme="dark"] .admin-fiverr-app .queue-card{
+  background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important
+}
+html[data-theme="dark"] .admin-fiverr-app .admin-hero p,html[data-theme="dark"] .admin-fiverr-app .admin-hero-side span,
+html[data-theme="dark"] .admin-fiverr-app .admin-hero-side small,html[data-theme="dark"] .admin-profile-card small,
+html[data-theme="dark"] .admin-security-note{color:#9aabc0!important}
+html[data-theme="dark"] .admin-fiverr-app .admin-hero-side{background:#13243a!important;border-color:#26364a!important}
+html[data-theme="dark"] .admin-mobile-topbar,html[data-theme="dark"] .admin-mobile-bottom-nav{background:#0a1828!important;border-color:#26364a!important}
+html[data-theme="dark"] .admin-mobile-brand{color:#f4f7fb!important}
+html[data-theme="dark"] .admin-mobile-profile-popover{background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important}
+html[data-theme="dark"] .admin-mobile-bottom-nav a{color:#9aabc0!important}
+html[data-theme="dark"] .admin-mobile-bottom-nav a.active{background:#123223!important;color:#58d88d!important}
+
+/* Auth, onboarding, dashboard fallback */
+html[data-theme="dark"] .auth-shell,html[data-theme="dark"] .dash-shell,html[data-theme="dark"] .onboarding-shell{background:#08121f!important;color:#f4f7fb!important}
+html[data-theme="dark"] .auth-card,html[data-theme="dark"] .dash-card,html[data-theme="dark"] .auth-glass-panel,
+html[data-theme="dark"] .onboarding-panel,html[data-theme="dark"] .admin-login-card{
+  background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important;box-shadow:0 28px 80px rgba(0,0,0,.3)!important
+}
+html[data-theme="dark"] .auth-panel-head p,html[data-theme="dark"] .auth-foot,
+html[data-theme="dark"] .panel-heading>p:last-child,html[data-theme="dark"] .field-block small{color:#9aabc0!important}
+html[data-theme="dark"] .auth-form label,html[data-theme="dark"] .account-choice legend,
+html[data-theme="dark"] .field-block label,html[data-theme="dark"] .verification-choice legend,
+html[data-theme="dark"] .school-request summary{color:#f4f7fb!important}
+html[data-theme="dark"] .account-choice-modern label,html[data-theme="dark"] .verification-choice label,
+html[data-theme="dark"] .upload-box,html[data-theme="dark"] .service-box,html[data-theme="dark"] .onboarding-note{
+  background:#13243a!important;border-color:#2b3c52!important;color:#f4f7fb!important
+}
+html[data-theme="dark"] .auth-error{background:#321719!important;border-color:#71343a!important;color:#ffb8bf!important}
+html[data-theme="dark"] .auth-success{background:#10291d!important;border-color:#28583d!important;color:#bce8cb!important}
+html[data-theme="dark"] .admin-login-page{background:#08121f!important}
+html[data-theme="dark"] .admin-login-card>p,html[data-theme="dark"] .admin-login-card>small{color:#9aabc0!important}
+html[data-theme="dark"] .admin-login-form input{background:#0b1725!important;border-color:#2b3c52!important;color:#f4f7fb!important}
+
+/* Public landing when theme control is used */
+html[data-theme="dark"] .landing-page{background:linear-gradient(180deg,#08121f 0%,#0a1624 45%,#08121f 100%)!important;color:#f4f7fb!important}
+html[data-theme="dark"] .site-nav{background:rgba(8,18,31,.9)!important;border-color:#26364a!important}
+html[data-theme="dark"] .desktop-nav a{color:#aebdd0!important}
+html[data-theme="dark"] .desktop-nav a:hover{background:#13243a!important;color:#8ab7f7!important}
+html[data-theme="dark"] .btn-ghost,html[data-theme="dark"] .btn-soft{background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important}
+html[data-theme="dark"] .landing-hero,html[data-theme="dark"] .section-muted{background:#08121f!important}
+html[data-theme="dark"] .hero-copy-block h1,html[data-theme="dark"] .section-heading h2,html[data-theme="dark"] .vendor-cta h2{color:#f4f7fb!important}
+html[data-theme="dark"] .hero-copy-block>p,html[data-theme="dark"] .section-heading p,html[data-theme="dark"] .vendor-cta p{color:#9aabc0!important}
+html[data-theme="dark"] .hero-search-shell,html[data-theme="dark"] .category-chip,html[data-theme="dark"] .step-card,
+html[data-theme="dark"] .landing-strip,html[data-theme="dark"] .vendor-cta,html[data-theme="dark"] .featured-vendor-row,
+html[data-theme="dark"] .showcase-stat{background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important}
+html[data-theme="dark"] .strip-inner>div{border-color:#26364a!important;color:#aebdd0!important}
+html[data-theme="dark"] .glass-panel{background:linear-gradient(150deg,rgba(15,28,43,.96),rgba(19,36,58,.9))!important;border-color:#26364a!important}
+
+/* Tables, generic cards, dividers */
+html[data-theme="dark"] table,html[data-theme="dark"] thead,html[data-theme="dark"] tbody,
+html[data-theme="dark"] .card,html[data-theme="dark"] .panel{color:#f4f7fb}
+html[data-theme="dark"] th{color:#aebdd0!important}
+html[data-theme="dark"] td{color:#e7edf5!important;border-color:#26364a!important}
+html[data-theme="dark"] hr{border-color:#26364a!important}
+
+/* Keep intentionally dark branded blocks legible */
+html[data-theme="dark"] .growth-plan-card.pro,html[data-theme="dark"] .analytics-highlight-card,
+html[data-theme="dark"] .primary-action,html[data-theme="dark"] .showcase-trust-card{color:#fff!important}
+html[data-theme="dark"] .growth-plan-card.pro strong,html[data-theme="dark"] .analytics-highlight-card strong,
+html[data-theme="dark"] .primary-action strong{color:#fff!important}
