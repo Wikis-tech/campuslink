@@ -9,6 +9,7 @@ const navItems = [
   { href: '/student', label: 'Home', icon: Home },
   { href: '/student/discover', label: 'Discover', icon: Search },
   { href: '/student/saved', label: 'Saved', icon: Bookmark },
+  { href: '/student/safety', label: 'Safety', icon: ShieldCheck },
   { href: '/onboarding/student', label: 'Verification', icon: BadgeCheck },
 ]
 
@@ -44,6 +45,7 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
               <div className="cl-student-account-popover">
                 <Link href="/onboarding/student"><UserRound size={16}/> Profile & verification</Link>
                 <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
+                <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
                 <form action="/auth/signout" method="post"><button type="submit">Sign out</button></form>
               </div>
             </details>
@@ -60,7 +62,7 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
       </header>
 
       <nav className="cl-student-mobile-nav" aria-label="Student mobile navigation">
-        {navItems.slice(0, 4).map(({ href, label, icon: Icon }) => {
+        {navItems.slice(0, 5).map(({ href, label, icon: Icon }) => {
           const active = href === '/student' ? pathname === '/student' : pathname.startsWith(href)
           return <Link key={href} href={href} className={active ? 'active' : ''}><Icon size={18}/><span>{label}</span></Link>
         })}
