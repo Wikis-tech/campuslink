@@ -1,0 +1,64 @@
+/* Admin navigation overflow hardening.
+   Keep identity/security controls available while allowing long navigation menus
+   to scroll independently on shorter laptop screens. */
+@media (min-width: 821px) {
+  .admin-fiverr-app .admin-fiverr-sidebar {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    gap: 12px;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-brand,
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-sidebar-tools,
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-sidebar-foot {
+    flex: 0 0 auto;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding-right: 5px;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #c7c9cc transparent;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-nav::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-nav::-webkit-scrollbar-thumb {
+    background: #c7c9cc;
+    border-radius: 999px;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-nav::-webkit-scrollbar-thumb:hover {
+    background: #a8abb0;
+  }
+
+  .admin-fiverr-app .admin-fiverr-sidebar .admin-sidebar-foot {
+    margin-top: 0;
+    padding-top: 10px;
+    border-top: 1px solid #ececee;
+  }
+
+  html[data-theme="dark"] .admin-fiverr-app .admin-fiverr-sidebar .admin-nav {
+    scrollbar-color: #4a4d52 transparent;
+  }
+
+  html[data-theme="dark"] .admin-fiverr-app .admin-fiverr-sidebar .admin-nav::-webkit-scrollbar-thumb {
+    background: #4a4d52;
+  }
+
+  html[data-theme="dark"] .admin-fiverr-app .admin-fiverr-sidebar .admin-sidebar-foot {
+    border-top-color: #343537;
+  }
+}
