@@ -22,7 +22,9 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   if(!approval) return NextResponse.redirect(new URL('/student/discover',request.url))
   const raw=vendor.whatsapp_number||''; if(!raw) return NextResponse.redirect(new URL(`/student/vendors/${slug}?error=This%20vendor%20has%20not%20added%20a%20contact%20number`,request.url))
 
-  await supabase.from('contact_events').insert({student_id:userId,vendor_id:vendor.id,channel})
+  const { error: contactError } = await supabase.rpc('student_record_contact_event', { target_vendor: vendor.id, contact_channel: channel })
+  if (contactError) console.error('Campus Link contact evidence was not recorded', { code: contactError.code })
+
   await supabase.rpc('record_vendor_analytics_event', {
     target_vendor: vendor.id,
     event_name: channel === 'phone' ? 'phone_click' : 'whatsapp_click',
