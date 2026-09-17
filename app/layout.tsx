@@ -18,6 +18,7 @@ import './student-fiverr.css'
 import './vendor-polish.css'
 import './admin-v2/admin-fiverr.css'
 import './typography-polish.css'
+import './phase5f.css'
 import './system-darkmode.css'
 
 export const metadata: Metadata = {
