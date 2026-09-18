@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { BadgeCheck, MessageSquareReply, ShieldCheck, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { checkPhase5gReadiness } from '@/lib/phase5g-readiness'
 import { VendorWorkspaceSidebar } from '@/components/vendor-workspace-sidebar'
 import { respondToReview } from './actions'
 
@@ -16,6 +17,17 @@ export default async function VendorReviewsPage({ searchParams }: { searchParams
     supabase.from('vendor_profiles').select('business_name,average_rating,review_count,marketplace_status').eq('id', userId).maybeSingle(),
   ])
   if (profile?.account_type !== 'vendor') redirect('/dashboard')
+
+  const readiness = await checkPhase5gReadiness(supabase)
+  if (!readiness.ready) {
+    return <main className="v5e-vendor-page">
+      <VendorWorkspaceSidebar/>
+      <section className="v5e-vendor-main phase5g-workspace">
+        <header className="v5e-vendor-header phase5g-header"><div><small className="v5e-eyebrow">Reputation</small><h1>Reviews & responses</h1><p>Your review tools are temporarily unavailable while Campus Link completes a trust-system database update.</p></div></header>
+        <div className="notice error"><strong>Review tools are not ready yet.</strong> No review data has been lost. Please try again after the system update is completed.</div>
+      </section>
+    </main>
+  }
 
   const { data: reviews } = await supabase
     .from('reviews')
