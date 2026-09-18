@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { AlertTriangle, BadgeCheck, Flag, Handshake, LockKeyhole, ShieldCheck, UsersRound } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { checkPhase5gReadiness } from '@/lib/phase5g-readiness'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
 
 const categoryLabel: Record<string,string> = {
@@ -18,10 +19,15 @@ export default async function StudentSafetyPage() {
   if (!profile || profile.account_type !== 'student') redirect('/dashboard')
   if (!profile.onboarding_completed_at || !profile.institution_id) redirect('/onboarding/student')
 
-  const [{ data: institution }, { data: reports }] = await Promise.all([
+  const readiness = await checkPhase5gReadiness(supabase)
+
+  const [{ data: institution }, reportResult] = await Promise.all([
     supabase.from('institutions').select('name').eq('id', profile.institution_id).maybeSingle(),
-    supabase.from('complaints').select('id,vendor_id,title,category,status,created_at').eq('reporter_id', userId).order('created_at',{ascending:false}).limit(20),
+    readiness.schemaReady
+      ? supabase.from('complaints').select('id,vendor_id,title,category,status,created_at').eq('reporter_id', userId).order('created_at',{ascending:false}).limit(20)
+      : supabase.from('complaints').select('id,vendor_id,title,status,created_at').eq('reporter_id', userId).order('created_at',{ascending:false}).limit(20),
   ])
+  const reports = (reportResult.data || []).map((row:any) => ({ ...row, category: row.category || 'other' }))
   const vendorIds = Array.from(new Set((reports || []).map((r:any)=>r.vendor_id).filter(Boolean))) as string[]
   const { data: vendors } = vendorIds.length ? await supabase.from('vendor_profiles').select('id,business_name,slug').in('id',vendorIds) : { data: [] as any[] }
   const vendorMap = new Map((vendors || []).map((v:any)=>[v.id,v]))
@@ -29,6 +35,7 @@ export default async function StudentSafetyPage() {
   return <main className="cl-student-page">
     <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name}/>
     <section className="cl-student-shell phase5g-safety-page">
+      {!readiness.ready ? <div className="notice error">Some advanced trust features are temporarily unavailable while Campus Link finishes a safety-system update. Safety guidance remains available.</div> : null}
       <header className="phase5g-safety-hero"><span><ShieldCheck size={16}/> Campus Link Safety Centre</span><h1>Trade around campus with more confidence.</h1><p>Campus Link helps you identify approved businesses, understand trust signals and report concerns privately. Campus Link does not process the payment between you and a Vendor.</p></header>
 
       <section className="phase5g-safety-grid">
