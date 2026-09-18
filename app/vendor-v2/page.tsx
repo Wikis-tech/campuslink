@@ -72,8 +72,8 @@ export default async function VendorDashboard() {
     !setupComplete ? { icon:<BadgeCheck size={17}/>, title:'Finish business setup', copy:'Complete your business details and verification evidence.', href:'/onboarding/vendor' } : null,
     verification !== 'approved' ? { icon:<BadgeCheck size={17}/>, title:'Complete identity verification', copy:`Current status: ${verification.replace('_',' ')}.`, href:'/onboarding/vendor' } : null,
     campus?.status !== 'approved' ? { icon:<Building2 size={17}/>, title:'Finish campus approval', copy:'Students cannot discover you until your campus is approved.', href:'/onboarding/vendor' } : null,
-    !vendor.logo_url ? { icon:<Store size={17}/>, title:'Add a business logo', copy:'A recognizable storefront is easier for students to trust.', href:'/onboarding/vendor' } : null,
-    !vendor.cover_url ? { icon:<ImagePlus size={17}/>, title:'Add a cover image', copy:'Show students what your business looks or feels like.', href:'/onboarding/vendor' } : null,
+    !vendor.logo_url ? { icon:<Store size={17}/>, title:'Add a business logo', copy:'A recognizable storefront is easier for students to trust.', href:'/vendor-v2/profile' } : null,
+    !vendor.cover_url ? { icon:<ImagePlus size={17}/>, title:'Add a cover image', copy:'Show students what your business looks or feels like.', href:'/vendor-v2/profile' } : null,
     productCount === 0 ? { icon:<Package size={17}/>, title:'Add your first product', copy:'Show a real item students can open and ask about.', href:'/vendor-v2/products' } : null,
     (portfolioResult.count || 0) === 0 ? { icon:<ImagePlus size={17}/>, title:'Add proof of work', copy:'Portfolio examples help students judge quality before contacting you.', href:'/vendor-v2/portfolio' } : null,
     productsWithoutPrice > 0 ? { icon:<CircleDollarSign size={17}/>, title:`Add pricing to ${productsWithoutPrice} product${productsWithoutPrice===1?'':'s'}`, copy:'Clear prices reduce unnecessary back-and-forth.', href:'/vendor-v2/products' } : null,
@@ -101,7 +101,7 @@ export default async function VendorDashboard() {
         <section className="v5e-dashboard-grid">
           <div>
             <article className="v5e-card v5e-priority-card">
-              <div className="v5e-card-head"><div><span className="v5e-section-label">Action centre</span><h2>{tasks.length ? `${tasks.length} things worth doing next` : 'You are in good shape today'}</h2></div><Link href="/onboarding/vendor">Business settings</Link></div>
+              <div className="v5e-card-head"><div><span className="v5e-section-label">Action centre</span><h2>{tasks.length ? `${tasks.length} things worth doing next` : 'You are in good shape today'}</h2></div><Link href="/vendor-v2/profile">Business settings</Link></div>
               {tasks.length ? tasks.slice(0,5).map((task,index)=><div className="v5e-todo" key={`${task.title}-${index}`}><span>{task.icon}</span><div><strong>{task.title}</strong><small>{task.copy}</small></div><Link href={task.href}>Open</Link></div>) : <div className="v5e-todo"><span><TrendingUp size={17}/></span><div><strong>No urgent setup tasks</strong><small>Keep products, services and portfolio examples current.</small></div><Link href="/vendor-v2/products">Manage</Link></div>}
             </article>
 
@@ -122,7 +122,7 @@ export default async function VendorDashboard() {
             <article className="v5e-card">
               <div className="v5e-card-head"><div><span className="v5e-section-label">Business health</span><h2>Improve your presence</h2></div><span className="v5e-card-note">Not a trust score</span></div>
               <div className="v5e-health-score"><div className="v5e-health-ring" style={{'--score':healthScore} as React.CSSProperties}><strong>{healthScore}%</strong></div><div className="v5e-health-copy"><strong>{healthScore>=85?'Strong setup':healthScore>=60?'Good foundation':'Needs attention'}</strong><small>Profile completeness, listings and verification readiness.</small></div></div>
-              <div className="v5e-mini-links"><Link href="/onboarding/vendor">Improve profile <span>→</span></Link><Link href="/vendor-v2/analytics">View performance <span>→</span></Link></div>
+              <div className="v5e-mini-links"><Link href="/vendor-v2/profile">Improve profile <span>→</span></Link><Link href="/vendor-v2/analytics">View performance <span>→</span></Link></div>
             </article>
 
             <article className="v5e-card">
