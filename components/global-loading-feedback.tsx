@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 const MAX_WAIT_MS = 10000
@@ -25,32 +25,34 @@ function isInternalNavigation(anchor: HTMLAnchorElement) {
 export function GlobalLoadingFeedback() {
   const pathname = usePathname()
   const [visible, setVisible] = useState(false)
+  const activeRef = useRef(false)
   const showTimer = useRef<number | null>(null)
   const safetyTimer = useRef<number | null>(null)
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (showTimer.current) window.clearTimeout(showTimer.current)
     if (safetyTimer.current) window.clearTimeout(safetyTimer.current)
     showTimer.current = null
     safetyTimer.current = null
+    activeRef.current = false
     setVisible(false)
     document.documentElement.removeAttribute('data-campuslink-loading')
-  }
+  }, [])
 
-  const start = () => {
-    if (showTimer.current || visible) return
+  const start = useCallback(() => {
+    if (showTimer.current || activeRef.current) return
+    activeRef.current = true
     document.documentElement.setAttribute('data-campuslink-loading', 'true')
     showTimer.current = window.setTimeout(() => {
       setVisible(true)
       showTimer.current = null
     }, SHOW_DELAY_MS)
     safetyTimer.current = window.setTimeout(stop, MAX_WAIT_MS)
-  }
+  }, [stop])
 
   useEffect(() => {
     stop()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
+  }, [pathname, stop])
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -71,7 +73,9 @@ export function GlobalLoadingFeedback() {
 
     const onPageShow = () => stop()
     const onPopState = () => stop()
-    const onVisibility = () => { if (document.visibilityState === 'visible') stop() }
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible' && activeRef.current) stop()
+    }
 
     document.addEventListener('click', onClick, true)
     document.addEventListener('submit', onSubmit, true)
@@ -87,8 +91,7 @@ export function GlobalLoadingFeedback() {
       document.removeEventListener('visibilitychange', onVisibility)
       stop()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible])
+  }, [start, stop])
 
   if (!visible) return null
 
