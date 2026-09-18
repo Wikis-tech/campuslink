@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { AlertTriangle, BadgeCheck, FileWarning, ShieldCheck, Siren } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { checkPhase5gReadiness } from '@/lib/phase5g-readiness'
 import { requireAdminContext } from '../lib'
 import { moderateVendorResponse, setVendorSafetyStatus, updateSafetyCase } from './actions'
 
@@ -11,6 +12,20 @@ export default async function AdminSafetyPage({ searchParams }: { searchParams: 
   const context = await requireAdminContext()
   const canControlMarketplace = ['super_admin','operations_admin','support_admin','verification_admin'].includes(context.globalRole || '')
   const supabase = await createClient()
+  const readiness = await checkPhase5gReadiness(supabase)
+
+  if (!readiness.ready) {
+    return <>
+      <header className="admin-topbar"><div><span className="admin-pill"><ShieldCheck size={15}/> Trust & safety</span><h1>Safety investigations</h1><p>Phase 5G is in the application, but its live database dependencies are not fully available yet.</p></div></header>
+      <div className="admin-error phase5g-readiness-error">
+        <strong>Phase 5G database setup is incomplete.</strong>
+        <p>{readiness.issues.join(' ')}</p>
+        <p>Apply these migrations in order, then refresh this page:</p>
+        <code>202609170008_phase5g_trust_reviews_safety.sql</code>
+        <code>202609170009_phase5g_interaction_integrity.sql</code>
+      </div>
+    </>
+  }
 
   const { data: complaints } = await supabase.from('complaints').select('id,reporter_id,vendor_id,title,description,category,severity,status,assigned_to,resolution_code,resolved_at,created_at,updated_at').order('created_at',{ascending:false}).limit(100)
   const vendorIds = Array.from(new Set((complaints || []).map((r:any)=>r.vendor_id).filter(Boolean))) as string[]
