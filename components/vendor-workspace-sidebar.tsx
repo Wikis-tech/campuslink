@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart3, CalendarClock, CircleDollarSign, ImagePlus, LayoutDashboard, ListChecks, MessageSquareText, Package, TrendingUp } from 'lucide-react'
+import { BarChart3, CalendarClock, CircleDollarSign, ImagePlus, LayoutDashboard, ListChecks, MessageSquareText, Package, Store, TrendingUp } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const items = [
   { href: '/vendor-v2', label: 'Overview', icon: LayoutDashboard },
+  { href: '/vendor-v2/profile', label: 'Profile', icon: Store },
   { href: '/vendor-v2/products', label: 'Products', icon: Package },
   { href: '/vendor-v2/services', label: 'Services', icon: ListChecks },
   { href: '/vendor-v2/portfolio', label: 'Portfolio', icon: ImagePlus },
