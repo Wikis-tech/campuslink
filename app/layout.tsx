@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ThemeFloatingControl } from '@/components/theme-floating-control'
+import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
 import './globals.css'
 import './auth.css'
 import './phase45.css'
@@ -22,6 +23,7 @@ import './typography-polish.css'
 import './phase5f.css'
 import './phase5g.css'
 import './phase5g-polish.css'
+import './loading-feedback.css'
 import './system-darkmode.css'
 
 export const metadata: Metadata = {
@@ -48,7 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body>{children}<ThemeFloatingControl /></body>
+      <body>{children}<GlobalLoadingFeedback/><ThemeFloatingControl /></body>
     </html>
   )
 }
