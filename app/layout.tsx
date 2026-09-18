@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { ThemeFloatingControl } from '@/components/theme-floating-control'
 import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
 import './globals.css'
@@ -50,7 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body>{children}<GlobalLoadingFeedback/><ThemeFloatingControl /></body>
+      <body>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><ThemeFloatingControl /></body>
     </html>
   )
 }
