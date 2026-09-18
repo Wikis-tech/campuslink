@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { BadgeCheck, Bookmark, CalendarDays, CheckCircle2, Flag, MapPin, MessageCircle, Package, ShieldCheck, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { checkPhase5gReadiness } from '@/lib/phase5g-readiness'
 import { VendorAnalyticsBeacon } from '@/components/vendor-analytics-beacon'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
 import { reportVendor, submitReview, toggleSavedVendor } from '../../actions'
@@ -30,10 +31,15 @@ export default async function VendorProfilePage({ params, searchParams }: { para
   const { data: campusApproval } = await supabase.from('vendor_institutions').select('vendor_id').eq('vendor_id', vendor.id).eq('institution_id', profile.institution_id).eq('status', 'approved').maybeSingle()
   if (!campusApproval) notFound()
 
+  const phase5g = await checkPhase5gReadiness(supabase)
+  const reviewSelect = phase5g.schemaReady
+    ? 'id,student_id,rating,comment,created_at,contact_verified_at,vendor_response,vendor_response_status'
+    : 'id,student_id,rating,comment,created_at'
+
   const [{ data: products }, { data: services }, { data: reviews }, { data: saved }, { data: institution }, { data: portfolio }] = await Promise.all([
     supabase.from('vendor_products').select('id,name,description,price_ngn,pricing_type,cover_image_url').eq('vendor_id', vendor.id).eq('is_active', true).order('sort_order').order('created_at', { ascending: false }),
     supabase.from('vendor_services').select('id,name,description,price_from').eq('vendor_id', vendor.id).eq('is_active', true).order('name'),
-    supabase.from('reviews').select('id,student_id,rating,comment,created_at,contact_verified_at,vendor_response,vendor_response_status').eq('vendor_id', vendor.id).eq('status', 'published').order('created_at', { ascending: false }).limit(20),
+    supabase.from('reviews').select(reviewSelect).eq('vendor_id', vendor.id).eq('status', 'published').order('created_at', { ascending: false }).limit(20),
     supabase.from('saved_vendors').select('vendor_id').eq('student_id', userId).eq('vendor_id', vendor.id).maybeSingle(),
     supabase.from('institutions').select('name').eq('id', profile.institution_id).maybeSingle(),
     supabase.from('vendor_portfolio_items').select('id,title,description,image_url,sort_order').eq('vendor_id', vendor.id).eq('is_active', true).order('sort_order').order('created_at', { ascending: false }),
@@ -45,7 +51,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
     : { data: [] as any[] }
 
   const verifiedReviewers = new Set((reviewerProfiles || []).filter((row:any) => row.student_verification_status === 'verified').map((row:any) => row.id))
-  const verifiedContactReviews = (reviews || []).filter((review:any) => review.contact_verified_at).length
+  const verifiedContactReviews = phase5g.schemaReady ? (reviews || []).filter((review:any) => review.contact_verified_at).length : 0
   const initial = vendor.business_name?.slice(0,1)?.toUpperCase() || 'V'
   const returnTo = `/student/vendors/${vendor.slug}`
   const memberSince = vendor.created_at ? new Date(vendor.created_at).toLocaleDateString('en-NG',{month:'short',year:'numeric'}) : 'Campus Link member'
@@ -54,6 +60,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
     <VendorAnalyticsBeacon vendorId={vendor.id} event="profile_view"/>
     <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name}/>
     <section className="cl-student-shell phase5g-storefront">
+      {!phase5g.ready ? <div className="notice error">Some advanced trust, review and reporting features are temporarily unavailable while Campus Link completes a safety-system update. You can still browse this Vendor.</div> : null}
       {notices.error ? <div className="notice error">{notices.error}</div> : null}
       {notices.review === 'saved' ? <div className="notice success">Your review has been saved.</div> : null}
       {notices.reported === '1' ? <div className="notice success">Your report has been submitted privately to Campus Link for review.</div> : null}
@@ -80,7 +87,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
           <div><BadgeCheck/><span><strong>Identity verified</strong><small>Campus Link approved the Vendor identity.</small></span></div>
           <div><BadgeCheck/><span><strong>Campus approved</strong><small>Approved to appear at {institution?.name || 'this campus'}.</small></span></div>
           <div><ShieldCheck/><span><strong>Account in good standing</strong><small>No active marketplace safety hold.</small></span></div>
-          <div><MessageCircle/><span><strong>{verifiedContactReviews} verified-contact review{verifiedContactReviews === 1 ? '' : 's'}</strong><small>Backed by a Campus Link contact event.</small></span></div>
+          {phase5g.schemaReady ? <div><MessageCircle/><span><strong>{verifiedContactReviews} verified-contact review{verifiedContactReviews === 1 ? '' : 's'}</strong><small>Backed by a Campus Link contact event.</small></span></div> : <div><MessageCircle/><span><strong>Contact evidence updating</strong><small>Advanced interaction verification is temporarily unavailable.</small></span></div>}
           <div><CalendarDays/><span><strong>Member since {memberSince}</strong><small>Account history is part of the trust context.</small></span></div>
         </div>
       </section>
@@ -95,9 +102,9 @@ export default async function VendorProfilePage({ params, searchParams }: { para
         <div className="v3-surface phase5g-reviews-public"><div className="cl-student-section-head"><div><h2>Student reviews</h2><p>Verified-contact means the Student used Campus Link to contact this Vendor before reviewing. It does not mean Campus Link witnessed or processed a purchase.</p></div></div>
           {(reviews || []).map((review:any) => <article className="phase5g-public-review" key={review.id}><div className="phase5g-review-top"><strong>{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</strong><span>{new Date(review.created_at).toLocaleDateString('en-NG')}</span></div><p>{review.comment || 'Rating only'}</p><div className="phase5g-review-badges">{verifiedReviewers.has(review.student_id) ? <span><BadgeCheck size={14}/> Verified Student</span> : <span>Student</span>}{review.contact_verified_at ? <span><MessageCircle size={14}/> Contacted through Campus Link</span> : null}</div>{review.vendor_response && review.vendor_response_status === 'published' ? <div className="phase5g-vendor-response"><strong>Vendor response</strong><p>{review.vendor_response}</p></div> : null}</article>)}
           {!(reviews || []).length ? <p>No published reviews yet.</p> : null}
-          {profile.student_verification_status === 'verified' ? <form className="review-form phase5g-review-form" action={submitReview}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><strong>Share your experience</strong><small>One review per Vendor. You can edit it later, but repeated rapid edits are rate-limited.</small><select name="rating" required defaultValue=""><option value="" disabled>Choose rating</option><option value="5">5 — Excellent</option><option value="4">4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Poor</option><option value="1">1 — Very poor</option></select><textarea name="comment" maxLength={1000} placeholder="Keep your review factual and helpful."/><button className="btn btn-primary">Submit review</button></form> : <p className="cl-safety-note"><ShieldCheck size={15}/> Complete Student verification before posting public reviews.</p>}
+          {phase5g.ready && profile.student_verification_status === 'verified' ? <form className="review-form phase5g-review-form" action={submitReview}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><strong>Share your experience</strong><small>One review per Vendor. You can edit it later, but repeated rapid edits are rate-limited.</small><select name="rating" required defaultValue=""><option value="" disabled>Choose rating</option><option value="5">5 — Excellent</option><option value="4">4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Poor</option><option value="1">1 — Very poor</option></select><textarea name="comment" maxLength={1000} placeholder="Keep your review factual and helpful."/><button className="btn btn-primary">Submit review</button></form> : <p className="cl-safety-note"><ShieldCheck size={15}/> {phase5g.ready ? 'Complete Student verification before posting public reviews.' : 'Review posting is temporarily unavailable while trust services update.'}</p>}
         </div>
-        <aside className="v3-surface phase5g-report-panel"><div className="cl-student-section-head"><div><h2>Safety & reporting</h2><p>Reports are private and categorized so the right Admin team can investigate faster.</p></div></div><p>Five distinct unresolved Student reports in the safety window can automatically place a Vendor under review. A report alone is not a public accusation.</p><Link href="/student/safety" className="phase5g-safety-link"><ShieldCheck size={15}/> Read the Safety Centre</Link><form className="report-form" action={reportVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><label>Concern category<select name="category" required defaultValue=""><option value="" disabled>Choose a category</option>{reportCategories.map(([value,label])=><option value={value} key={value}>{label}</option>)}</select></label><label>What happened?<input name="title" minLength={4} maxLength={120} required placeholder="Short factual summary"/></label><label>Details<textarea name="description" minLength={10} maxLength={1500} required placeholder="Give enough factual detail for Admin review. Do not include passwords or unnecessary sensitive information."/></label><button className="danger-cta"><Flag size={17}/> Submit private report</button></form></aside>
+        <aside className="v3-surface phase5g-report-panel"><div className="cl-student-section-head"><div><h2>Safety & reporting</h2><p>Reports are private and categorized so the right Admin team can investigate faster.</p></div></div><p>Five distinct unresolved Student reports in the safety window can automatically place a Vendor under review. A report alone is not a public accusation.</p><Link href="/student/safety" className="phase5g-safety-link"><ShieldCheck size={15}/> Read the Safety Centre</Link>{phase5g.ready ? <form className="report-form" action={reportVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><label>Concern category<select name="category" required defaultValue=""><option value="" disabled>Choose a category</option>{reportCategories.map(([value,label])=><option value={value} key={value}>{label}</option>)}</select></label><label>What happened?<input name="title" minLength={4} maxLength={120} required placeholder="Short factual summary"/></label><label>Details<textarea name="description" minLength={10} maxLength={1500} required placeholder="Give enough factual detail for Admin review. Do not include passwords or unnecessary sensitive information."/></label><button className="danger-cta"><Flag size={17}/> Submit private report</button></form> : <p className="cl-safety-note"><ShieldCheck size={15}/> Private reporting is temporarily unavailable while safety services update.</p>}</aside>
       </section>
     </section>
   </main>
