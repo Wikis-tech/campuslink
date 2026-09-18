@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const MAX_WAIT_MS = 10000
 const SHOW_DELAY_MS = 140
@@ -24,6 +24,8 @@ function isInternalNavigation(anchor: HTMLAnchorElement) {
 
 export function GlobalLoadingFeedback() {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const navigationKey = `${pathname}?${searchParams.toString()}`
   const [visible, setVisible] = useState(false)
   const activeRef = useRef(false)
   const showTimer = useRef<number | null>(null)
@@ -52,7 +54,7 @@ export function GlobalLoadingFeedback() {
 
   useEffect(() => {
     stop()
-  }, [pathname, stop])
+  }, [navigationKey, stop])
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
