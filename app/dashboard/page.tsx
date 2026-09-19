@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export default async function DashboardRouter() {
   const supabase = await createClient()
@@ -11,14 +12,16 @@ export default async function DashboardRouter() {
 
   if (userError || !user) redirect('/login')
 
-  const { data: admin } = await supabase
-    .from('admin_memberships')
-    .select('role,is_active')
-    .eq('user_id', user.id)
-    .eq('is_active', true)
-    .maybeSingle()
+  const adminClient = createAdminClient()
+  const [{ data: globalAdmin }, { data: schoolAdmin }] = await Promise.all([
+    adminClient.from('admin_memberships').select('user_id').eq('user_id', user.id).eq('is_active', true).maybeSingle(),
+    adminClient.from('institution_admin_assignments').select('user_id').eq('user_id', user.id).eq('is_active', true).limit(1),
+  ])
 
-  if (admin) redirect('/admin-v2')
+  if (globalAdmin || (schoolAdmin || []).length) {
+    await supabase.auth.signOut()
+    redirect('/login?error=This%20account%20uses%20a%20separate%20authorized%20sign-in%20flow')
+  }
 
   // Resolve the account type through a security-definer RPC first. The RPC can
   // only repair/read auth.uid(), so it cannot cross account boundaries. This
