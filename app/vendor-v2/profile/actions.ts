@@ -3,19 +3,13 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { assertSafeImageUpload } from '@/lib/file-validation'
 
-const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const LOGO_MAX = 2 * 1024 * 1024
 const COVER_MAX = 4 * 1024 * 1024
 
 function clean(value: FormDataEntryValue | null, max: number) {
   return String(value || '').trim().slice(0, max)
-}
-
-function extFor(file: File) {
-  if (file.type === 'image/png') return 'png'
-  if (file.type === 'image/webp') return 'webp'
-  return 'jpg'
 }
 
 function ownedStoragePath(publicUrl: string | null | undefined, userId: string) {
@@ -49,10 +43,10 @@ async function uploadVendorImage(
   kind: 'logo' | 'cover',
 ) {
   const max = kind === 'logo' ? LOGO_MAX : COVER_MAX
-  if (!IMAGE_TYPES.has(file.type)) throw new Error('Use a JPG, PNG or WEBP image.')
   if (file.size > max) throw new Error(kind === 'logo' ? 'Logo must be 2MB or smaller.' : 'Cover image must be 4MB or smaller.')
+  const extension = await assertSafeImageUpload(file)
 
-  const path = `${userId}/profile/${kind}-${crypto.randomUUID()}.${extFor(file)}`
+  const path = `${userId}/profile/${kind}-${crypto.randomUUID()}.${extension}`
   const { error } = await supabase.storage.from('vendor-media').upload(path, file, {
     contentType: file.type,
     upsert: false,
