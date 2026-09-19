@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
+import { CampusLinkLoadingScreen } from '@/components/campuslink-loading-screen'
 
 const MAX_WAIT_MS = 10000
 const SHOW_DELAY_MS = 0
@@ -106,15 +107,5 @@ export function GlobalLoadingFeedback() {
 
   if (!visible) return null
 
-  return (
-    <div className="campuslink-loading-overlay" role="status" aria-live="polite" aria-label="Campus Link is loading">
-      <div className="campuslink-loading-card">
-        <div className="campuslink-loading-spinner" aria-hidden="true" />
-        <div>
-          <strong>CampusLink</strong>
-          <span>Loading…</span>
-        </div>
-      </div>
-    </div>
-  )
+  return <CampusLinkLoadingScreen />
 }
