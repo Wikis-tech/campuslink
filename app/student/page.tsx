@@ -38,12 +38,20 @@ export default async function StudentDashboard() {
 
   if (!profile || profile.account_type !== 'student') redirect('/dashboard')
 
-  const [institutionResult, savedResult, reviewResult, contactResult, categoryResult] = await Promise.all([
+  const [institutionResult, savedResult, reviewResult, contactResult, categoryResult, smartResult] = await Promise.all([
     profile.institution_id ? supabase.from('institutions').select('name,city,state').eq('id', profile.institution_id).maybeSingle() : Promise.resolve({ data: null }),
     supabase.from('saved_vendors').select('vendor_id', { count: 'exact' }).eq('student_id', userId),
     supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('student_id', userId),
     supabase.from('contact_events').select('id', { count: 'exact', head: true }).eq('student_id', userId),
     supabase.from('categories').select('id,name,slug').eq('is_active', true).order('name').limit(12),
+    profile.institution_id
+      ? supabase.rpc('student_smart_search', {
+          target_institution: profile.institution_id,
+          search_query: '',
+          category_slug: null,
+          result_limit: 80,
+        })
+      : Promise.resolve({ data: [] as any[] }),
   ])
 
   const institution = institutionResult.data
@@ -55,6 +63,14 @@ export default async function StudentDashboard() {
   const reviewCount = reviewResult.count || 0
   const contactCount = contactResult.count || 0
   const categories = categoryResult.data || []
+  const smartRows = (smartResult.data || []) as any[]
+  const entityRank = new Map<string, number>()
+  const vendorRank = new Map<string, number>()
+  for (const row of smartRows) {
+    const score = Number(row.relevance_score || 0)
+    entityRank.set(`${row.entity_type}:${row.entity_id}`, score)
+    vendorRank.set(row.vendor_id, Math.max(vendorRank.get(row.vendor_id) || 0, score))
+  }
 
   let vendors: any[] = []
   let products: any[] = []
@@ -90,6 +106,10 @@ export default async function StudentDashboard() {
       }
     }
   }
+
+  vendors.sort((a,b) => (vendorRank.get(b.id) || 0) - (vendorRank.get(a.id) || 0))
+  products.sort((a,b) => (entityRank.get(`product:${b.id}`) || 0) - (entityRank.get(`product:${a.id}`) || 0))
+  services.sort((a,b) => (entityRank.get(`service:${b.id}`) || 0) - (entityRank.get(`service:${a.id}`) || 0))
 
   const vendorMap = new Map(vendors.map((vendor) => [vendor.id, vendor]))
   const featuredVendors = vendors.slice(0, 6)
