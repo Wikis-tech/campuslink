@@ -3,8 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { assertSafeImageUpload } from '@/lib/file-validation'
 
-const ALLOWED_TYPES = new Set(['image/jpeg','image/png','image/webp'])
 const MAX_FILE_SIZE = 4 * 1024 * 1024
 
 async function requireVendor() {
@@ -34,9 +34,6 @@ export async function addPortfolioItem(formData: FormData) {
   if (!title || !(image instanceof File) || image.size === 0) {
     redirect('/vendor-v2/portfolio?error=Add%20a%20title%20and%20portfolio%20image')
   }
-  if (!ALLOWED_TYPES.has(image.type)) {
-    redirect('/vendor-v2/portfolio?error=Use%20a%20JPG,%20PNG%20or%20WEBP%20image')
-  }
   if (image.size > MAX_FILE_SIZE) {
     redirect('/vendor-v2/portfolio?error=Portfolio%20images%20must%20be%204MB%20or%20smaller')
   }
@@ -51,7 +48,12 @@ export async function addPortfolioItem(formData: FormData) {
     redirect(`/vendor-v2/portfolio?limit=${portfolioLimit}`)
   }
 
-  const extension = image.type === 'image/png' ? 'png' : image.type === 'image/webp' ? 'webp' : 'jpg'
+  let extension: string
+  try {
+    extension = await assertSafeImageUpload(image)
+  } catch (error) {
+    redirect(`/vendor-v2/portfolio?error=${encodeURIComponent(error instanceof Error ? error.message : 'Invalid portfolio image')}`)
+  }
   const path = `${userId}/${crypto.randomUUID()}.${extension}`
 
   const { error: uploadError } = await supabase.storage.from('vendor-media').upload(path, image, {
