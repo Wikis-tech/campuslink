@@ -30,8 +30,8 @@
   --radius-lg: 18px;
   --radius-xl: 24px;
   --radius-pill: 999px;
-  --font-head: 'Sora', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-head: var(--font-sora), sans-serif;
+  --font-body: var(--font-dm-sans), sans-serif;
   --hero-gradient: linear-gradient(135deg, #0b3d91 0%, #1e5bb8 60%, #1a4fa8 100%);
   --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
   --transition-slow: 0.4s cubic-bezier(0.4,0,0.2,1);
