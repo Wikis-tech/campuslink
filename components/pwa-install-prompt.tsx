@@ -1,8 +1,9 @@
 'use client'
 
 import { Download, Share2, X } from 'lucide-react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type InstallPromptChoice = {
   outcome: 'accepted' | 'dismissed'
@@ -36,10 +37,7 @@ export function PwaInstallPrompt() {
   const [visible, setVisible] = useState(false)
   const [installing, setInstalling] = useState(false)
 
-  const isAdminRoute = useMemo(
-    () => pathname.startsWith('/admin') || pathname.startsWith('/admin-login-campus'),
-    [pathname],
-  )
+  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/admin-login-campus')
 
   useEffect(() => {
     if (isAdminRoute || isStandaloneMode()) return
@@ -111,7 +109,7 @@ export function PwaInstallPrompt() {
       </button>
 
       <div className="cl-pwa-install-mark" aria-hidden="true">
-        <img src="/pwa-icon.svg" alt="" width={42} height={42} />
+        <Image src="/pwa-icon.svg" alt="" width={42} height={42} priority />
       </div>
 
       <div className="cl-pwa-install-copy">
