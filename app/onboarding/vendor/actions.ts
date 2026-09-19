@@ -2,9 +2,9 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { assertSafeVerificationUpload } from '@/lib/file-validation'
 
 const ALLOWED_DOCUMENT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
-const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'pdf'])
 const MAX_DOCUMENT_BYTES = 5 * 1024 * 1024
 
 function clean(value: FormDataEntryValue | null, max = 180) {
@@ -91,9 +91,14 @@ export async function completeVendorOnboarding(formData: FormData) {
     redirect('/onboarding/vendor?error=Upload%20a%20verification%20document%20before%20submitting')
   }
 
-  const ext = fileExtension(verificationDocument.name)
-  if (verificationDocument.size > MAX_DOCUMENT_BYTES || !ALLOWED_DOCUMENT_TYPES.has(verificationDocument.type) || !ALLOWED_EXTENSIONS.has(ext)) {
+  if (verificationDocument.size > MAX_DOCUMENT_BYTES || !ALLOWED_DOCUMENT_TYPES.has(verificationDocument.type)) {
     redirect('/onboarding/vendor?error=Verification%20document%20must%20be%20PDF%2C%20JPG%2C%20PNG%20or%20WEBP%20and%20under%205MB')
+  }
+  let detectedExtension: string
+  try {
+    detectedExtension = await assertSafeVerificationUpload(verificationDocument)
+  } catch {
+    redirect('/onboarding/vendor?error=Verification%20document%20content%20does%20not%20match%20its%20declared%20file%20type')
   }
 
   const allowedDocTypes = vendorType === 'student_vendor'
@@ -110,7 +115,7 @@ export async function completeVendorOnboarding(formData: FormData) {
   }
 
   // Upload first. If any database step fails, the private object is removed before returning an error.
-  const storagePath = `${userId}/vendor/${safeFileName(verificationDocument.name)}`
+  const storagePath = `${userId}/vendor/${crypto.randomUUID()}.${detectedExtension}`
   const { error: uploadError } = await supabase.storage
     .from('verification-documents')
     .upload(storagePath, verificationDocument, { contentType: verificationDocument.type, upsert: false })
