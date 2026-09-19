@@ -110,17 +110,13 @@ export async function completeStudentOnboarding(formData: FormData) {
     if (storagePath) await supabase.storage.from('verification-documents').remove([storagePath])
   }
 
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .update({
-      institution_id: institutionId,
-      phone,
-      course_of_study: course,
-      study_level: level,
-      school_email: schoolEmail || null,
-    })
-    .eq('id', userId)
-    .eq('account_type', 'student')
+  const { error: profileError } = await supabase.rpc('student_prepare_onboarding_profile', {
+    target_institution: institutionId,
+    student_phone: phone,
+    student_course: course,
+    student_level: level,
+    student_school_email: schoolEmail || null,
+  })
 
   if (profileError) {
     await cleanupUpload()
@@ -164,11 +160,7 @@ export async function completeStudentOnboarding(formData: FormData) {
     documentId = documentRow?.id || null
   }
 
-  const { error: completionError } = await supabase
-    .from('profiles')
-    .update({ onboarding_completed_at: now })
-    .eq('id', userId)
-    .eq('account_type', 'student')
+  const { error: completionError } = await supabase.rpc('student_mark_onboarding_complete')
 
   if (completionError) {
     if (documentId) await supabase.from('student_documents').delete().eq('id', documentId).eq('student_id', userId)
