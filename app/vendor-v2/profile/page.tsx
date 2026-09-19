@@ -61,7 +61,7 @@ export default async function VendorProfileSettingsPage({
               </label>
               <label className="vendor-upload-field">
                 <span><UploadCloud size={17}/> Cover image</span>
-                <small>Use a wide photo that represents your work or brand. JPG, PNG or WEBP · max 4MB.</small>
+                <small>Use a wide brand photo for the large profile banner. Around 1600×600 works well. JPG, PNG or WEBP · max 4MB.</small>
                 <input type="file" name="cover" accept="image/jpeg,image/png,image/webp"/>
               </label>
             </div>
