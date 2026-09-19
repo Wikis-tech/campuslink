@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import './landing-legacy.css'
 import {
   ArrowRight,
   Award,
@@ -55,9 +56,6 @@ const vendorSamples = [
 export default function HomePage() {
   return (
     <main className="legacy-home">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wikis-tech/campuslink@527f9fb9e1be4aa1fdbe198e86acc6833ac920ad/assets/css/main.css" />
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wikis-tech/campuslink@527f9fb9e1be4aa1fdbe198e86acc6833ac920ad/assets/css/hero.css" />
-
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
           <Link href="/" className="logo">
@@ -202,15 +200,61 @@ export default function HomePage() {
         <div className="container"><div className="vcta-card"><div className="vcta-inner"><div className="vcta-text"><div className="section-label light"><div className="label-line light" /><span>For Service Providers</span><div className="label-line light" /></div><h2>Build trust first. <br />Grow from there.</h2><p>Create a useful vendor profile for free. When you need more capacity and business insights, Pro is there — without changing your verification status.</p></div><div className="vcta-actions"><Link href="/register" className="btn btn-vcta-primary"><Store size={16} /> Register as Vendor</Link><a href="#pricing" className="btn btn-vcta-ghost">Compare Free & Pro <ArrowRight size={16} /></a></div></div></div></div>
       </section>
 
-      <footer className="site-footer">
-        <div className="container">
-          <div className="footer-layout">
-            <div className="footer-brand"><div className="footer-logo">Campus<strong>link</strong></div><p className="footer-desc">A secure, lightweight digital campus service directory connecting students with verified vendors within the university environment.</p><p className="footer-desc">CampusLink is a directory platform only. We do not provide services or process student-to-vendor transactions.</p><p className="footer-contact">campuslinkd@gmail.com</p></div>
-            <div className="footer-links"><h4>Quick Links</h4><Link href="/">Home</Link><a href="#featured">Browse Services</a><a href="#categories">All Categories</a><a href="#how">How It Works</a><a href="#pricing">Vendor Pricing</a></div>
-            <div className="footer-links"><h4>For Vendors</h4><Link href="/register">Register as Vendor</Link><Link href="/login">Vendor Login</Link><a href="#pricing">Free & Pro Plans</a><a href="#trust">Trust & Verification</a><a href="#trust">Complaint Resolution</a></div>
-            <div className="footer-links"><h4>Legal & Policies</h4><a href="#">General Terms & Conditions</a><a href="#">User Terms & Conditions</a><a href="#">Vendor Terms & Conditions</a><a href="#">Privacy Policy</a><a href="#">Refund Policy</a></div>
+      <footer className="cl-public-footer">
+        <div className="container cl-public-footer-inner">
+          <div className="cl-public-footer-grid">
+            <div className="cl-public-footer-brand">
+              <Link href="/" className="cl-public-footer-logo" aria-label="Campus Link home">
+                <span className="cl-public-footer-logo-mark">
+                  <img
+                    src="https://raw.githubusercontent.com/Wikis-tech/campuslink/master/assets/images/campuslink-logo-white.png"
+                    alt=""
+                    width="32"
+                    height="32"
+                  />
+                </span>
+                <span>Campus<strong>Link</strong></span>
+              </Link>
+              <p>Trusted campus discovery for students, vendors and university communities.</p>
+              <p>Campus Link helps people discover and assess approved vendors. Transactions remain directly between students and vendors.</p>
+              <a className="cl-public-footer-contact" href="mailto:campuslinkd@gmail.com">campuslinkd@gmail.com</a>
+            </div>
+
+            <div className="cl-public-footer-col">
+              <h4>Explore</h4>
+              <a href="#featured">Browse Vendors</a>
+              <a href="#categories">Categories</a>
+              <a href="#how">How It Works</a>
+              <a href="#trust">Trust & Safety</a>
+            </div>
+
+            <div className="cl-public-footer-col">
+              <h4>Vendors</h4>
+              <Link href="/register">Create an Account</Link>
+              <Link href="/login">Vendor Login</Link>
+              <a href="#pricing">Free & Pro</a>
+              <a href="#trust">Verification</a>
+            </div>
+
+            <div className="cl-public-footer-col">
+              <h4>Campus Link</h4>
+              <Link href="/register">Student Sign Up</Link>
+              <Link href="/login">Sign In</Link>
+              <a href="#pricing">Pricing</a>
+              <a href="#trust">Safety Principles</a>
+            </div>
           </div>
-          <div className="footer-bottom"><p>© 2026 CampusLink. All rights reserved. | Governed by Nigerian Law</p><p>Built for the campus community</p></div>
+
+          <div className="cl-public-footer-divider" />
+
+          <div className="cl-public-footer-bottom">
+            <p>© 2026 Campus Link. All rights reserved.</p>
+            <div className="cl-public-footer-principles" aria-label="Campus Link principles">
+              <span>Students browse free</span>
+              <span>Trust is not for sale</span>
+              <span>Direct vendor contact</span>
+            </div>
+          </div>
         </div>
       </footer>
     </main>
