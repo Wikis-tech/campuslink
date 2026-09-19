@@ -16,6 +16,11 @@ function applyTheme(mode: ThemeMode) {
   root.dataset.theme = resolved
   root.dataset.themePreference = mode
   root.style.colorScheme = resolved
+
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+  if (themeColor) {
+    themeColor.content = resolved === 'dark' ? '#071D3F' : '#0B3D91'
+  }
 }
 
 export function ThemeToggle({ compact = false }: { compact?: boolean }) {
