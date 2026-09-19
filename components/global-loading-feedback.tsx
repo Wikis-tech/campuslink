@@ -6,6 +6,7 @@ import { CampusLinkLoadingScreen } from '@/components/campuslink-loading-screen'
 
 const MAX_WAIT_MS = 10000
 const SHOW_DELAY_MS = 0
+const LOCAL_ACTION_MS = 650
 
 function isInternalNavigation(anchor: HTMLAnchorElement) {
   if (anchor.target && anchor.target !== '_self') return false
@@ -31,18 +32,21 @@ export function GlobalLoadingFeedback() {
   const activeRef = useRef(false)
   const showTimer = useRef<number | null>(null)
   const safetyTimer = useRef<number | null>(null)
+  const localTimer = useRef<number | null>(null)
 
   const stop = useCallback(() => {
     if (showTimer.current) window.clearTimeout(showTimer.current)
     if (safetyTimer.current) window.clearTimeout(safetyTimer.current)
+    if (localTimer.current) window.clearTimeout(localTimer.current)
     showTimer.current = null
     safetyTimer.current = null
+    localTimer.current = null
     activeRef.current = false
     setVisible(false)
     document.documentElement.removeAttribute('data-campuslink-loading')
   }, [])
 
-  const start = useCallback(() => {
+  const start = useCallback((autoStopMs?: number) => {
     if (showTimer.current || activeRef.current) return
     activeRef.current = true
     document.documentElement.setAttribute('data-campuslink-loading', 'true')
@@ -51,6 +55,7 @@ export function GlobalLoadingFeedback() {
       showTimer.current = null
     }, SHOW_DELAY_MS)
     safetyTimer.current = window.setTimeout(stop, MAX_WAIT_MS)
+    if (autoStopMs) localTimer.current = window.setTimeout(stop, autoStopMs)
   }, [stop])
 
   useEffect(() => {
@@ -71,7 +76,9 @@ export function GlobalLoadingFeedback() {
       if (!button || button.disabled || button.dataset.noLoading === 'true') return
 
       const form = button.closest('form')
-      if (form && (!button.type || button.type === 'submit')) start()
+      const isSubmit = Boolean(form && (!button.type || button.type === 'submit'))
+      if (isSubmit) start()
+      else start(LOCAL_ACTION_MS)
     }
 
     const onSubmit = (event: SubmitEvent) => {
