@@ -4,9 +4,9 @@ import { randomUUID } from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { assertSafeImageUpload } from '@/lib/file-validation'
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
-const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
 function text(formData: FormData, key: string, max = 1000) { return String(formData.get(key) || '').trim().slice(0, max) }
 function back(type: 'success' | 'error', value: string): never { redirect(`/vendor-v2/products?${type}=${encodeURIComponent(value)}`) }
@@ -23,7 +23,7 @@ export async function createProduct(formData: FormData) {
   const { count } = await supabase.from('vendor_products').select('id', { count:'exact', head:true }).eq('vendor_id', user.id).eq('is_active', true)
   if ((count || 0) >= productLimit) back('error', `Your current plan allows ${productLimit} active products. Pause one or upgrade your plan.`)
   let coverImageUrl:string|null=null, storagePath:string|null=null
-  if (image instanceof File && image.size > 0) { if (!ALLOWED_TYPES.has(image.type)) back('error','Product image must be JPG, PNG or WEBP.'); if (image.size > MAX_IMAGE_BYTES) back('error','Product image must be 5 MB or smaller.'); const ext=image.type==='image/png'?'png':image.type==='image/webp'?'webp':'jpg'; storagePath=`${user.id}/products/${randomUUID()}.${ext}`; const uploaded=await supabase.storage.from('vendor-media').upload(storagePath,await image.arrayBuffer(),{contentType:image.type,upsert:false}); if(uploaded.error) back('error',uploaded.error.message); coverImageUrl=supabase.storage.from('vendor-media').getPublicUrl(storagePath).data.publicUrl }
+  if (image instanceof File && image.size > 0) { if (image.size > MAX_IMAGE_BYTES) back('error','Product image must be 5 MB or smaller.'); let ext: string; try { ext = await assertSafeImageUpload(image) } catch (error) { back('error', error instanceof Error ? error.message : 'Invalid product image.') } storagePath=`${user.id}/products/${randomUUID()}.${ext}`; const uploaded=await supabase.storage.from('vendor-media').upload(storagePath,await image.arrayBuffer(),{contentType:image.type,upsert:false}); if(uploaded.error) back('error',uploaded.error.message); coverImageUrl=supabase.storage.from('vendor-media').getPublicUrl(storagePath).data.publicUrl }
   const inserted=await supabase.from('vendor_products').insert({vendor_id:user.id,category_id:categoryId||null,name,description:description||null,price_ngn:pricingType==='contact'?null:price,pricing_type:pricingType,cover_image_url:coverImageUrl,storage_path:storagePath,is_active:true})
   if(inserted.error){if(storagePath) await supabase.storage.from('vendor-media').remove([storagePath]); back('error',inserted.error.message)}
   revalidatePath('/vendor-v2/products'); revalidatePath('/vendor-v2'); revalidatePath('/student'); back('success','Product added to your Campus Link catalogue.')
