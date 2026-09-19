@@ -1,7 +1,8 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Suspense } from 'react'
 import { ThemeFloatingControl } from '@/components/theme-floating-control'
 import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
+import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
 import './globals.css'
 import './auth.css'
 import './phase45.css'
@@ -27,11 +28,37 @@ import './phase5g.css'
 import './phase5g-polish.css'
 import './loading-feedback.css'
 import './system-darkmode.css'
+import './pwa-foundation.css'
 
 export const metadata: Metadata = {
-  title: 'Campus Link',
-  description: 'Discover trusted, verified services around your campus.',
-  icons: { icon: '/icon.svg' },
+  applicationName: 'Campus Link',
+  title: {
+    default: 'Campus Link',
+    template: '%s · Campus Link',
+  },
+  description: 'Discover trusted campus vendors, products and services around your school.',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'Campus Link',
+    statusBarStyle: 'black-translucent',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#0B3D91' },
+    { media: '(prefers-color-scheme: dark)', color: '#071D3F' },
+  ],
 }
 
 const themeScript = `
@@ -52,7 +79,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><ThemeFloatingControl /></body>
+      <body>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaInstallPrompt /><ThemeFloatingControl /></body>
     </html>
   )
 }
