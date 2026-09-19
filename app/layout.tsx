@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { DM_Sans, Sora } from 'next/font/google'
 import { Suspense } from 'react'
 import { ThemeFloatingControl } from '@/components/theme-floating-control'
 import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
@@ -29,6 +30,9 @@ import './phase5g-polish.css'
 import './loading-feedback.css'
 import './system-darkmode.css'
 import './pwa-foundation.css'
+
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', display: 'swap' })
+const sora = Sora({ subsets: ['latin'], variable: '--font-sora', display: 'swap' })
 
 export const metadata: Metadata = {
   applicationName: 'Campus Link',
@@ -76,7 +80,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaInstallPrompt /><ThemeFloatingControl /></body>
+      <body className={`${dmSans.variable} ${sora.variable}`}>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaInstallPrompt /><ThemeFloatingControl /></body>
     </html>
   )
 }
