@@ -10,7 +10,7 @@ export function AdminSessionGuard() {
   useEffect(() => {
     const logout = async () => {
       try { await fetch('/api/admin/session-timeout', { method: 'POST', credentials: 'same-origin' }) } catch {}
-      window.location.replace('/admin-login?reason=idle')
+      window.location.replace('/admin-login-campus?reason=idle')
     }
     const reset = () => {
       if (timer.current) clearTimeout(timer.current)
