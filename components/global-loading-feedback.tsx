@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 const MAX_WAIT_MS = 10000
-const SHOW_DELAY_MS = 140
+const SHOW_DELAY_MS = 0
 
 function isInternalNavigation(anchor: HTMLAnchorElement) {
   if (anchor.target && anchor.target !== '_self') return false
@@ -61,7 +61,16 @@ export function GlobalLoadingFeedback() {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const target = event.target as Element | null
       const anchor = target?.closest('a[href]') as HTMLAnchorElement | null
-      if (anchor && isInternalNavigation(anchor)) start()
+      if (anchor && isInternalNavigation(anchor)) {
+        start()
+        return
+      }
+
+      const button = target?.closest('button') as HTMLButtonElement | null
+      if (!button || button.disabled || button.dataset.noLoading === 'true') return
+
+      const form = button.closest('form')
+      if (form && (!button.type || button.type === 'submit')) start()
     }
 
     const onSubmit = (event: SubmitEvent) => {
