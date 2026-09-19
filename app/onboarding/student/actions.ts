@@ -2,9 +2,9 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { assertSafeVerificationUpload } from '@/lib/file-validation'
 
 const ALLOWED_DOCUMENT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
-const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'pdf'])
 const MAX_DOCUMENT_BYTES = 5 * 1024 * 1024
 
 function clean(value: FormDataEntryValue | null, max = 160) {
@@ -86,12 +86,17 @@ export async function completeStudentOnboarding(formData: FormData) {
 
   let storagePath: string | null = null
   if (document instanceof File && document.size > 0) {
-    const ext = fileExtension(document.name)
-    if (document.size > MAX_DOCUMENT_BYTES || !ALLOWED_DOCUMENT_TYPES.has(document.type) || !ALLOWED_EXTENSIONS.has(ext)) {
+    if (document.size > MAX_DOCUMENT_BYTES || !ALLOWED_DOCUMENT_TYPES.has(document.type)) {
       redirect('/onboarding/student?error=Verification%20document%20must%20be%20PDF%2C%20JPG%2C%20PNG%20or%20WEBP%20and%20under%205MB')
     }
+    let detectedExtension: string
+    try {
+      detectedExtension = await assertSafeVerificationUpload(document)
+    } catch {
+      redirect('/onboarding/student?error=Verification%20document%20content%20does%20not%20match%20its%20declared%20file%20type')
+    }
 
-    storagePath = `${userId}/student/${safeFileName(document.name)}`
+    storagePath = `${userId}/student/${crypto.randomUUID()}.${detectedExtension}`
     const { error: uploadError } = await supabase.storage
       .from('verification-documents')
       .upload(storagePath, document, { contentType: document.type, upsert: false })
