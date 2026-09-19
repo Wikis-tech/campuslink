@@ -6,7 +6,20 @@ const allowedEvents = new Set([
   'profile_view','product_view','service_view','portfolio_view','search_impression','search_click',
 ])
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
 export async function POST(request: Request) {
+  const requestOrigin = new URL(request.url).origin
+  const suppliedOrigin = request.headers.get('origin')
+  if (suppliedOrigin && suppliedOrigin !== requestOrigin) {
+    return NextResponse.json({ ok: false }, { status: 403 })
+  }
+  const contentLength = Number(request.headers.get('content-length') || 0)
+  if (contentLength > 8192) return NextResponse.json({ ok: false }, { status: 413 })
+  if (!String(request.headers.get('content-type') || '').toLowerCase().includes('application/json')) {
+    return NextResponse.json({ ok: false }, { status: 415 })
+  }
+
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const userId = claimsData?.claims?.sub
@@ -18,7 +31,12 @@ export async function POST(request: Request) {
   const productId = typeof body?.productId === 'string' ? body.productId : null
   const serviceId = typeof body?.serviceId === 'string' ? body.serviceId : null
 
-  if (!vendorId || !allowedEvents.has(event)) {
+  if (
+    !UUID_RE.test(vendorId) ||
+    !allowedEvents.has(event) ||
+    (productId && !UUID_RE.test(productId)) ||
+    (serviceId && !UUID_RE.test(serviceId))
+  ) {
     return NextResponse.json({ ok: false }, { status: 400 })
   }
 
