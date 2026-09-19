@@ -22,7 +22,7 @@ export async function createAdminAccount(formData: FormData) {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
   const actor = userData.user
-  if (!actor) redirect('/admin-login')
+  if (!actor) redirect('/admin-login-campus')
 
   const { data: membership } = await supabase
     .from('admin_memberships')
@@ -44,7 +44,7 @@ export async function createAdminAccount(formData: FormData) {
     email,
     password,
     email_confirm: true,
-    user_metadata: { campuslink_admin_account: true },
+    user_metadata: { campuslink_admin_account: true, account_type: 'admin' },
   })
 
   if (createError || !created.user) {
