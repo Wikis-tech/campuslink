@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Campus Link">
+  <defs>
+    <linearGradient id="bg" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B3D91"/>
+      <stop offset="1" stop-color="#082D6A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M144 144h224v64H208v96h128v64H144z" fill="#fff"/>
+  <circle cx="368" cy="352" r="56" fill="#1EA952"/>
+</svg>
