@@ -11,6 +11,7 @@ const items = [
   { href: '/vendor-v2/products', label: 'Products', icon: Package },
   { href: '/vendor-v2/services', label: 'Services', icon: ListChecks },
   { href: '/vendor-v2/portfolio', label: 'Portfolio', icon: ImagePlus },
+  { href: '/vendor-v2/profile', label: 'Business profile', icon: Store },
   { href: '/vendor-v2/availability', label: 'Availability', icon: CalendarClock },
   { href: '/vendor-v2/reviews', label: 'Reviews', icon: MessageSquareText },
   { href: '/vendor-v2/analytics', label: 'Analytics', icon: BarChart3 },
