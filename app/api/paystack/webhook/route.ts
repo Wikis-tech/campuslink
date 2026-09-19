@@ -30,7 +30,13 @@ async function refreshEntitlements(admin: ReturnType<typeof createAdminClient>, 
 }
 
 export async function POST(request: Request) {
+  const contentLength = Number(request.headers.get('content-length') || 0)
+  if (contentLength > 262144) return NextResponse.json({ ok: false }, { status: 413 })
+
   const rawBody = await request.text()
+  if (Buffer.byteLength(rawBody, 'utf8') > 262144) {
+    return NextResponse.json({ ok: false }, { status: 413 })
+  }
   const signature = request.headers.get('x-paystack-signature')
   if (!verifyPaystackWebhookSignature(rawBody, signature)) {
     return NextResponse.json({ ok: false }, { status: 401 })
