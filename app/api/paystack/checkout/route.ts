@@ -8,6 +8,18 @@ const ALLOWED_PLANS = new Set(['pro-monthly', 'pro-annual'])
 
 export async function POST(request: Request) {
   try {
+    const requestOrigin = new URL(request.url).origin
+    const suppliedOrigin = request.headers.get('origin')
+    if (suppliedOrigin && suppliedOrigin !== requestOrigin) {
+      return NextResponse.json({ error: 'Invalid request origin.' }, { status: 403 })
+    }
+    const contentLength = Number(request.headers.get('content-length') || 0)
+    if (contentLength > 4096) {
+      return NextResponse.json({ error: 'Request is too large.' }, { status: 413 })
+    }
+    if (!String(request.headers.get('content-type') || '').toLowerCase().includes('application/json')) {
+      return NextResponse.json({ error: 'JSON request required.' }, { status: 415 })
+    }
     const supabase = await createClient()
     const { data: userResult } = await supabase.auth.getUser()
     const user = userResult.user
