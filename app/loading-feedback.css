@@ -4,49 +4,43 @@
   z-index:99999;
   display:grid;
   place-items:center;
-  padding:24px;
-  background:rgba(248,250,252,.72);
-  backdrop-filter:blur(5px);
-  -webkit-backdrop-filter:blur(5px);
-  animation:campuslink-loading-fade .16s ease-out both;
+  background:rgba(248,250,252,.56);
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+  animation:campuslink-loading-fade .12s ease-out both;
 }
-.campuslink-loading-card{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  min-width:190px;
-  padding:16px 18px;
-  border:1px solid rgba(15,23,42,.10);
-  border-radius:18px;
-  background:rgba(255,255,255,.96);
-  box-shadow:0 20px 60px rgba(15,23,42,.16);
-}
-.campuslink-loading-card>div:last-child{display:grid;gap:2px}
-.campuslink-loading-card strong{font-size:.95rem;letter-spacing:-.02em;color:#0b1b31}
-.campuslink-loading-card span{font-size:.76rem;color:#6b7280}
 .campuslink-loading-spinner{
-  width:32px;
-  height:32px;
-  flex:0 0 32px;
+  width:42px;
+  height:42px;
   border-radius:50%;
-  border:3px solid rgba(11,61,145,.16);
+  border:4px solid rgba(11,61,145,.16);
   border-top-color:#0b3d91;
   border-right-color:#1ea952;
-  animation:campuslink-spin .72s linear infinite;
+  box-shadow:0 8px 28px rgba(11,61,145,.12);
+  animation:campuslink-spin .68s linear infinite;
 }
-html[data-theme="dark"] .campuslink-loading-overlay{background:rgba(5,15,30,.74)}
-html[data-theme="dark"] .campuslink-loading-card{
-  border-color:rgba(148,163,184,.18);
-  background:rgba(10,27,49,.96);
-  box-shadow:0 20px 60px rgba(0,0,0,.38);
+.campuslink-loading-sr{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
 }
-html[data-theme="dark"] .campuslink-loading-card strong{color:#f8fafc}
-html[data-theme="dark"] .campuslink-loading-card span{color:#a9b4c4}
-html[data-theme="dark"] .campuslink-loading-spinner{border-color:rgba(125,170,255,.16);border-top-color:#74a7ff;border-right-color:#54d692}
+html[data-theme="dark"] .campuslink-loading-overlay{background:rgba(5,15,30,.58)}
+html[data-theme="dark"] .campuslink-loading-spinner{
+  border-color:rgba(125,170,255,.16);
+  border-top-color:#74a7ff;
+  border-right-color:#54d692;
+  box-shadow:0 8px 28px rgba(0,0,0,.28);
+}
 html[data-campuslink-loading="true"] body{cursor:progress}
 @keyframes campuslink-spin{to{transform:rotate(360deg)}}
 @keyframes campuslink-loading-fade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){
   .campuslink-loading-overlay{animation:none}
-  .campuslink-loading-spinner{animation-duration:1.4s}
+  .campuslink-loading-spinner{animation-duration:1.35s}
 }
