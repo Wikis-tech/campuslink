@@ -1,0 +1,115 @@
+.cl-pwa-install{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:90;
+  width:min(410px,calc(100vw - 32px));
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:13px;
+  align-items:center;
+  padding:14px 15px;
+  border:1px solid rgba(11,61,145,.14);
+  border-radius:20px;
+  background:rgba(255,255,255,.94);
+  color:#182230;
+  box-shadow:0 20px 60px rgba(8,45,106,.16);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  animation:clPwaPromptIn .34s cubic-bezier(.22,.8,.28,1) both;
+}
+.cl-pwa-install-mark{
+  width:44px;
+  height:44px;
+  border-radius:13px;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(8,45,106,.18);
+}
+.cl-pwa-install-mark img{width:100%;height:100%;object-fit:cover}
+.cl-pwa-install-copy{min-width:0}
+.cl-pwa-install-copy strong{
+  display:block;
+  margin:0 0 3px;
+  font-family:var(--font-head);
+  font-size:.9rem;
+  color:#10213a;
+}
+.cl-pwa-install-copy p{
+  margin:0;
+  color:#667085;
+  font-size:.76rem;
+  line-height:1.45;
+}
+.cl-pwa-install-copy p svg{vertical-align:-2px}
+.cl-pwa-install-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:38px;
+  padding:0 13px;
+  border:0;
+  border-radius:12px;
+  background:#0b3d91;
+  color:#fff;
+  font-family:var(--font-head);
+  font-size:.76rem;
+  font-weight:800;
+  cursor:pointer;
+  transition:transform .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.cl-pwa-install-button:hover{transform:translateY(-1px);background:#082d6a;box-shadow:0 8px 18px rgba(11,61,145,.22)}
+.cl-pwa-install-button:disabled{opacity:.62;cursor:wait;transform:none}
+.cl-pwa-install-close{
+  position:absolute;
+  top:7px;
+  right:7px;
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#8490a1;
+  cursor:pointer;
+}
+.cl-pwa-install-close:hover{background:#f1f4f8;color:#344054}
+
+html[data-theme='dark'] .cl-pwa-install{
+  border-color:rgba(148,163,184,.18);
+  background:rgba(8,24,48,.94);
+  color:#eef4fb;
+  box-shadow:0 24px 68px rgba(0,0,0,.34);
+}
+html[data-theme='dark'] .cl-pwa-install-copy strong{color:#f5f8fc}
+html[data-theme='dark'] .cl-pwa-install-copy p{color:#aebed1}
+html[data-theme='dark'] .cl-pwa-install-close{color:#9aabc0}
+html[data-theme='dark'] .cl-pwa-install-close:hover{background:rgba(255,255,255,.07);color:#fff}
+
+@keyframes clPwaPromptIn{
+  from{opacity:0;transform:translateY(16px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:700px){
+  .cl-pwa-install{
+    left:16px;
+    right:16px;
+    bottom:86px;
+    width:auto;
+    grid-template-columns:auto minmax(0,1fr);
+    padding:13px 42px 13px 13px;
+    border-radius:18px;
+  }
+  .cl-pwa-install-button{
+    grid-column:1 / -1;
+    width:100%;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .cl-pwa-install{animation:none}
+  .cl-pwa-install-button{transition:none}
+}
