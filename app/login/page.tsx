@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, LockKeyhole, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, ShieldCheck } from 'lucide-react'
 import { login } from './actions'
 import { Brand } from '@/components/Brand'
 import { AuthBackdrop } from '@/components/AuthBackdrop'
@@ -18,10 +18,10 @@ export default async function LoginPage({
         <section className="auth-story reveal-up">
           <Brand light />
           <div className="auth-story-copy">
-            <span className="auth-kicker"><ShieldCheck size={16} /> Campus Link access</span>
+            <span className="auth-kicker"><ShieldCheck size={16} /> Welcome back</span>
             <h1>Welcome back to your campus network.</h1>
-            <p>Students and Vendors sign in here. Administrative accounts use the separate secure Admin login.</p>
-            <div className="auth-security-line"><LockKeyhole size={17} /> Secure session handling and role-based access controls are active.</div>
+            <p>Sign in to continue to your Campus Link account.</p>
+            
           </div>
           <Link className="auth-back-link" href="/"><ArrowLeft size={16} /> Back to Campus Link</Link>
         </section>
@@ -47,7 +47,6 @@ export default async function LoginPage({
             <button className="btn btn-primary auth-primary-action" type="submit">Sign in</button>
           </form>
 
-          <p className="auth-foot">Administrator? <Link href="/admin-login">Use secure Admin login</Link></p>
           <p className="auth-foot">New to Campus Link? <Link href="/register">Create an account</Link></p>
         </section>
       </div>
