@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { getPlatformBranding } from '@/lib/platform-branding'
 
+export const dynamic = 'force-dynamic'
+
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const branding = await getPlatformBranding()
   const revision = branding.revision || 1
