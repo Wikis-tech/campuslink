@@ -54,6 +54,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
     <button
       type="button"
       className={`cl-theme-toggle${compact ? ' compact' : ''}`}
+      data-no-loading="true"
       onClick={next}
       aria-label={`${label}. Activate next appearance mode.`}
       title={`${label} · click to change`}

@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BadgeCheck, Bookmark, Home, LogOut, Menu, Search, ShieldCheck, UserRound } from 'lucide-react'
+import { BadgeCheck, Bookmark, Home, LogOut, Menu, Search, ShieldCheck, UserRound, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const navItems = [
@@ -16,6 +17,31 @@ const navItems = [
 export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?: string | null; schoolName?: string | null }) {
   const pathname = usePathname()
   const initial = (firstName || 'S').slice(0, 1).toUpperCase()
+  const [mobileAccountOpen, setMobileAccountOpen] = useState(false)
+  const mobileAccountRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    setMobileAccountOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!mobileAccountOpen) return
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null
+      if (target && !mobileAccountRef.current?.contains(target)) setMobileAccountOpen(false)
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileAccountOpen(false)
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [mobileAccountOpen])
 
   return (
     <>
@@ -68,9 +94,20 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
             return <Link key={href} href={href} className={active ? 'active' : ''}><Icon size={18}/><span>{label}</span></Link>
           })}
         </div>
-        <details className="cl-student-mobile-more">
-          <summary aria-label="Open student account actions"><Menu size={18}/><span>Account</span></summary>
-          <div className="cl-student-mobile-sheet">
+        <div className={`cl-student-mobile-more${mobileAccountOpen ? ' open' : ''}`} ref={mobileAccountRef}>
+          <button
+            type="button"
+            className="cl-student-mobile-more-button"
+            data-no-loading="true"
+            aria-label={mobileAccountOpen ? 'Close student account actions' : 'Open student account actions'}
+            aria-expanded={mobileAccountOpen}
+            aria-controls="student-mobile-account-sheet"
+            onClick={() => setMobileAccountOpen((open) => !open)}
+          >
+            {mobileAccountOpen ? <X size={18}/> : <Menu size={18}/>}
+            <span>Account</span>
+          </button>
+          {mobileAccountOpen ? <div className="cl-student-mobile-sheet" id="student-mobile-account-sheet" role="dialog" aria-label="Student account actions">
             <div className="cl-student-mobile-sheet-head">
               <span className="cl-student-avatar">{initial}</span>
               <div><strong>{firstName || 'Student'}</strong><small>{schoolName || 'Campus Link account'}</small></div>
@@ -80,8 +117,8 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
             <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
             <div className="cl-student-mobile-theme"><ThemeToggle compact /></div>
             <form action="/auth/signout" method="post"><button type="submit"><LogOut size={16}/> Sign out</button></form>
-          </div>
-        </details>
+          </div> : null}
+        </div>
       </nav>
     </>
   )
