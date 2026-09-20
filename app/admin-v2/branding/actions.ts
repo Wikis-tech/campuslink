@@ -118,7 +118,15 @@ export async function updatePlatformBranding(formData: FormData) {
   }
 
   const oldPaths = uploaded
-    .map((item) => ownedBrandingPath(current?.[item.field]))
+    .map((item) => {
+      const oldUrl =
+        item.field === 'website_logo_url'
+          ? current?.website_logo_url
+          : item.field === 'favicon_url'
+            ? current?.favicon_url
+            : current?.app_icon_url
+      return ownedBrandingPath(oldUrl)
+    })
     .filter(Boolean) as string[]
 
   if (oldPaths.length) await admin.storage.from('branding-assets').remove(oldPaths)
