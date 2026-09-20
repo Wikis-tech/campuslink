@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BadgeCheck, Bookmark, Home, Search, ShieldCheck, UserRound } from 'lucide-react'
+import { BadgeCheck, Bookmark, Home, LogOut, Menu, Search, ShieldCheck, UserRound } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const navItems = [
@@ -62,10 +62,26 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
       </header>
 
       <nav className="cl-student-mobile-nav" aria-label="Student mobile navigation">
-        {navItems.slice(0, 5).map(({ href, label, icon: Icon }) => {
-          const active = href === '/student' ? pathname === '/student' : pathname.startsWith(href)
-          return <Link key={href} href={href} className={active ? 'active' : ''}><Icon size={18}/><span>{label}</span></Link>
-        })}
+        <div className="cl-student-mobile-scroll">
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const active = href === '/student' ? pathname === '/student' : pathname.startsWith(href)
+            return <Link key={href} href={href} className={active ? 'active' : ''}><Icon size={18}/><span>{label}</span></Link>
+          })}
+        </div>
+        <details className="cl-student-mobile-more">
+          <summary aria-label="Open student account actions"><Menu size={18}/><span>Account</span></summary>
+          <div className="cl-student-mobile-sheet">
+            <div className="cl-student-mobile-sheet-head">
+              <span className="cl-student-avatar">{initial}</span>
+              <div><strong>{firstName || 'Student'}</strong><small>{schoolName || 'Campus Link account'}</small></div>
+            </div>
+            <Link href="/onboarding/student"><UserRound size={16}/> Profile & verification</Link>
+            <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
+            <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
+            <div className="cl-student-mobile-theme"><ThemeToggle compact /></div>
+            <form action="/auth/signout" method="post"><button type="submit"><LogOut size={16}/> Sign out</button></form>
+          </div>
+        </details>
       </nav>
     </>
   )
