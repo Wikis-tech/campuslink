@@ -38,9 +38,17 @@ export function PwaInstallPrompt() {
   const [installing, setInstalling] = useState(false)
 
   const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/admin-login-campus')
+  const isAppRoute =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/dashboard' ||
+    pathname.startsWith('/student') ||
+    pathname.startsWith('/vendor-v2') ||
+    pathname.startsWith('/onboarding') ||
+    pathname.startsWith('/verify')
 
   useEffect(() => {
-    if (isAdminRoute || isStandaloneMode()) return
+    if (isAdminRoute || !isAppRoute || isStandaloneMode()) return
 
     let revealTimer: number | undefined
 
@@ -75,9 +83,9 @@ export function PwaInstallPrompt() {
       window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
       window.removeEventListener('appinstalled', onAppInstalled)
     }
-  }, [isAdminRoute])
+  }, [isAdminRoute, isAppRoute])
 
-  if (isAdminRoute || !visible || (!installEvent && !showIosHelp)) return null
+  if (isAdminRoute || !isAppRoute || !visible || (!installEvent && !showIosHelp)) return null
 
   const dismiss = () => {
     window.localStorage.setItem(DISMISS_KEY, String(Date.now()))
@@ -109,7 +117,7 @@ export function PwaInstallPrompt() {
       </button>
 
       <div className="cl-pwa-install-mark" aria-hidden="true">
-        <Image src="/pwa-icon.svg" alt="" width={42} height={42} priority />
+        <Image src="/brand/app-icon/192" alt="" width={42} height={42} priority />
       </div>
 
       <div className="cl-pwa-install-copy">
