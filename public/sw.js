@@ -7,7 +7,7 @@
 const VERSION = 'phase7b-v1'
 const STATIC_CACHE = `campuslink-static-${VERSION}`
 const OFFLINE_CACHE = `campuslink-offline-${VERSION}`
-const OFFLINE_URL = '/offline'
+const OFFLINE_URL = '/offline.html'
 
 const PROTECTED_PREFIXES = [
   '/admin',
