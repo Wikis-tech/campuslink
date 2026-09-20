@@ -1,12 +1,16 @@
 import type { MetadataRoute } from 'next'
+import { getPlatformBranding } from '@/lib/platform-branding'
 
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const branding = await getPlatformBranding()
+  const revision = branding.revision || 1
+
   return {
     id: '/',
     name: 'Campus Link',
     short_name: 'CampusLink',
     description: 'Discover trusted campus vendors, products and services around your school.',
-    start_url: '/',
+    start_url: '/app?source=pwa',
     scope: '/',
     display: 'standalone',
     orientation: 'any',
@@ -17,22 +21,16 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ['education', 'business', 'shopping', 'lifestyle'],
     icons: [
       {
-        src: '/pwa/icon/192',
+        src: `/brand/app-icon/192?v=${revision}`,
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/pwa/icon/512',
+        src: `/brand/app-icon/512?v=${revision}`,
         sizes: '512x512',
         type: 'image/png',
-        purpose: 'any',
-      },
-      {
-        src: '/pwa-icon-maskable.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
-        purpose: 'maskable',
+        purpose: 'any maskable',
       },
     ],
   }
