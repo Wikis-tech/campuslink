@@ -101,9 +101,9 @@ export async function updatePlatformBranding(formData: FormData) {
 
   if (!uploaded.length) fail('Choose at least one image to update.')
 
-  const patch: Record<string, string | number | Date> = {
+  const patch: Record<string, string | number> = {
     updated_by: context.userId,
-    updated_at: new Date(),
+    updated_at: new Date().toISOString(),
     revision: Number(current?.revision || 1) + 1,
   }
   for (const item of uploaded) patch[item.field] = item.publicUrl
