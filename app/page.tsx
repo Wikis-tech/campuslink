@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import './landing-legacy.css'
+import { createAdminClient } from '@/lib/supabase/admin'
 import {
   ArrowRight,
   Award,
@@ -32,28 +33,111 @@ import {
   Wrench,
 } from 'lucide-react'
 
-const categories = [
-  [Scissors, 'Beauty & Grooming', '42 vendors'],
-  [Smartphone, 'Tech & Gadgets', '38 vendors'],
-  [BookOpen, 'Academic Support', '55 vendors'],
-  [Utensils, 'Food & Catering', '61 vendors'],
-  [Shirt, 'Fashion & Tailoring', '34 vendors'],
-  [Printer, 'Printing & Stationery', '28 vendors'],
-  [Wrench, 'Repairs & Maintenance', '22 vendors'],
-  [Camera, 'Photography', '19 vendors'],
-  [GraduationCap, 'Tutoring', '47 vendors'],
-  [WashingMachine, 'Laundry Services', '15 vendors'],
-  [Car, 'Transport & Logistics', '12 vendors'],
-  [PartyPopper, 'Events & Décor', '18 vendors'],
-] as const
+const categoryIcons = [Scissors, Smartphone, BookOpen, Utensils, Shirt, Printer, Wrench, Camera, GraduationCap, WashingMachine, Car, PartyPopper] as const
 
-const vendorSamples = [
-  ['Campus Fix', 'Tech & Gadgets', 'Phone and laptop diagnostics, repairs and accessories.', 'Main Campus', 'From ₦3,000', '4.9'],
-  ['Glow Studio', 'Beauty & Grooming', 'Braids, natural hair styling and beauty services for students.', 'Student Area', 'From ₦2,500', '4.8'],
-  ['Scholar Hub', 'Academic Support', 'Tutoring and academic support across core undergraduate courses.', 'Near Campus', 'From ₦2,000', '4.7'],
-] as const
+function iconForCategory(name: string, index: number) {
+  const value = name.toLowerCase()
+  if (value.includes('beauty') || value.includes('hair') || value.includes('barb')) return Scissors
+  if (value.includes('tech') || value.includes('phone') || value.includes('gadget')) return Smartphone
+  if (value.includes('academic') || value.includes('book')) return BookOpen
+  if (value.includes('food') || value.includes('cater')) return Utensils
+  if (value.includes('fashion') || value.includes('cloth') || value.includes('tailor')) return Shirt
+  if (value.includes('print') || value.includes('stationery')) return Printer
+  if (value.includes('repair') || value.includes('maintenance')) return Wrench
+  if (value.includes('photo') || value.includes('video')) return Camera
+  if (value.includes('tutor') || value.includes('education')) return GraduationCap
+  if (value.includes('laundry')) return WashingMachine
+  if (value.includes('transport') || value.includes('logistic')) return Car
+  if (value.includes('event') || value.includes('decor')) return PartyPopper
+  return categoryIcons[index % categoryIcons.length]
+}
 
-export default function HomePage() {
+function vendorIsPublic(vendor: any) {
+  if (vendor.marketplace_status === 'active') return true
+  return vendor.marketplace_status === 'suspended' && vendor.suspended_until && new Date(vendor.suspended_until) <= new Date()
+}
+
+async function getLandingData() {
+  try {
+    const admin = createAdminClient()
+    const [{ data: rawVendors }, { data: categories }, { data: institutionLinks }] = await Promise.all([
+      admin
+        .from('vendor_profiles')
+        .select('id,business_name,slug,description,location_text,logo_url,cover_url,average_rating,review_count,verification_status,marketplace_status,suspended_until')
+        .eq('verification_status', 'approved'),
+      admin.from('categories').select('id,name,slug').eq('is_active', true).order('name'),
+      admin.from('vendor_institutions').select('vendor_id,institution_id').eq('status', 'approved'),
+    ])
+
+    const approvedCampusVendors = new Set((institutionLinks || []).map((row:any) => row.vendor_id))
+    const vendors = (rawVendors || []).filter((vendor:any) => approvedCampusVendors.has(vendor.id) && vendorIsPublic(vendor))
+    const vendorIds = vendors.map((vendor:any) => vendor.id)
+
+    const [{ data: products }, { data: services }] = vendorIds.length
+      ? await Promise.all([
+          admin.from('vendor_products').select('id,vendor_id,category_id,name,price_ngn,pricing_type,cover_image_url').in('vendor_id', vendorIds).eq('is_active', true),
+          admin.from('vendor_services').select('id,vendor_id,category_id,name,price_from').in('vendor_id', vendorIds).eq('is_active', true),
+        ])
+      : [{ data: [] as any[] }, { data: [] as any[] }] as any
+
+    const vendorsByCategory = new Map<string, Set<string>>()
+    for (const item of [...(products || []), ...(services || [])]) {
+      if (!item.category_id) continue
+      const set = vendorsByCategory.get(item.category_id) || new Set<string>()
+      set.add(item.vendor_id)
+      vendorsByCategory.set(item.category_id, set)
+    }
+
+    const categoryRows = (categories || []).map((category:any, index:number) => ({
+      ...category,
+      count: vendorsByCategory.get(category.id)?.size || 0,
+      Icon: iconForCategory(category.name, index),
+    }))
+
+    const productByVendor = new Map<string, any[]>()
+    const serviceByVendor = new Map<string, any[]>()
+    for (const item of products || []) {
+      const list = productByVendor.get(item.vendor_id) || []
+      list.push(item)
+      productByVendor.set(item.vendor_id, list)
+    }
+    for (const item of services || []) {
+      const list = serviceByVendor.get(item.vendor_id) || []
+      list.push(item)
+      serviceByVendor.set(item.vendor_id, list)
+    }
+
+    const featured = [...vendors]
+      .sort((a:any,b:any) => Number(b.average_rating || 0) - Number(a.average_rating || 0) || Number(b.review_count || 0) - Number(a.review_count || 0))
+      .slice(0, 6)
+      .map((vendor:any) => {
+        const vendorProducts = productByVendor.get(vendor.id) || []
+        const vendorServices = serviceByVendor.get(vendor.id) || []
+        const prices = [
+          ...vendorProducts.filter((x:any) => x.pricing_type !== 'contact' && x.price_ngn).map((x:any) => Number(x.price_ngn)),
+          ...vendorServices.filter((x:any) => x.price_from).map((x:any) => Number(x.price_from)),
+        ].filter((x:number) => Number.isFinite(x) && x > 0)
+        return {
+          ...vendor,
+          startingPrice: prices.length ? Math.min(...prices) : null,
+          listingCount: vendorProducts.length + vendorServices.length,
+        }
+      })
+
+    return {
+      categories: categoryRows,
+      featured,
+      vendorCount: vendors.length,
+      productCount: (products || []).length,
+      serviceCount: (services || []).length,
+    }
+  } catch {
+    return { categories: [] as any[], featured: [] as any[], vendorCount: 0, productCount: 0, serviceCount: 0 }
+  }
+}
+
+export default async function HomePage() {
+  const landing = await getLandingData()
   return (
     <main className="legacy-home">
       <header className="site-header scrolled" id="siteHeader">
@@ -102,13 +186,13 @@ export default function HomePage() {
       <section className="stats-strip">
         <div className="container">
           <div className="stats-inner">
-            <div className="stat-pill"><ShieldCheck /><div><strong className="stat-num">Verified</strong><span>Vendor identity review</span></div></div>
+            <div className="stat-pill"><ShieldCheck /><div><strong className="stat-num">{landing.vendorCount}</strong><span>Approved vendors currently public</span></div></div>
             <div className="strip-divider" />
-            <div className="stat-pill"><GraduationCap /><div><strong className="stat-num">Campus-first</strong><span>School-specific discovery</span></div></div>
+            <div className="stat-pill"><Store /><div><strong className="stat-num">{landing.productCount}</strong><span>Active products</span></div></div>
+            <div className="strip-divider" />
+            <div className="stat-pill"><Wrench /><div><strong className="stat-num">{landing.serviceCount}</strong><span>Active services</span></div></div>
             <div className="strip-divider" />
             <div className="stat-pill"><Compass /><div><strong className="stat-num">Free</strong><span>Student browsing & contact</span></div></div>
-            <div className="strip-divider" />
-            <div className="stat-pill"><PhoneCall /><div><strong className="stat-num">Direct</strong><span>WhatsApp vendor contact</span></div></div>
           </div>
         </div>
       </section>
@@ -119,7 +203,10 @@ export default function HomePage() {
           <h2 className="section-headline">Browse by Category</h2>
           <p className="section-sub">Discover verified service providers across every campus need.</p>
           <div className="categories-grid">
-            {categories.map(([Icon, name, count]) => <Link href="/register" className="cat-card" key={name}><div className="cat-icon"><Icon /></div><div className="cat-name">{name}</div><div className="cat-count">{count}</div></Link>)}
+            {landing.categories.length ? landing.categories.map((category:any) => {
+              const Icon = category.Icon
+              return <Link href="/register" className="cat-card" key={category.id}><div className="cat-icon"><Icon /></div><div className="cat-name">{category.name}</div><div className="cat-count">{category.count} active vendor{category.count === 1 ? '' : 's'}</div></Link>
+            }) : <div className="landing-empty-state">Categories will appear here as Campus Link activates real campus listings.</div>}
           </div>
         </div>
       </section>
@@ -128,7 +215,7 @@ export default function HomePage() {
         <div className="container">
           <div className="featured-header"><div><div className="section-label"><div className="label-line" /><span>Handpicked</span><div className="label-line" /></div><h2 className="section-headline">Featured Vendors</h2><p className="section-sub">Top-rated, verified service providers trusted by your peers.</p></div><Link href="/register" className="btn btn-outline-primary">View All <ArrowRight size={16} /></Link></div>
           <div className="vendors-grid">
-            {vendorSamples.map(([name, category, desc, location, price, rating]) => <article className="vendor-card" key={name}><div className="vendor-card-img legacy-vendor-placeholder"><div className="vendor-badge"><ShieldCheck size={14} /> Verified</div><div className="vendor-logo"><span>{name.slice(0, 2).toUpperCase()}</span></div></div><div className="vendor-card-body"><div className="vendor-card-header"><div><div className="vendor-name">{name}</div><span className="vendor-cat">{category}</span></div><div className="vendor-rating"><span className="stars">★★★★★</span><span className="rating-val">{rating}</span></div></div><p className="vendor-desc">{desc}</p><div className="vendor-meta"><div className="vendor-meta-item"><Tag size={14} /> {location}</div><div className="vendor-meta-item"><Tag size={14} /> {price}</div></div><div className="vendor-actions"><Link href="/register" className="btn btn-sm btn-outline">View</Link></div></div></article>)}
+            {landing.featured.length ? landing.featured.map((vendor:any) => <article className="vendor-card" key={vendor.id}><div className="vendor-card-img legacy-vendor-placeholder">{vendor.cover_url ? <img src={vendor.cover_url} alt="" className="landing-vendor-cover"/> : null}<div className="vendor-badge"><ShieldCheck size={14} /> Verified</div><div className="vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt="" /> : <span>{vendor.business_name.slice(0, 2).toUpperCase()}</span>}</div></div><div className="vendor-card-body"><div className="vendor-card-header"><div><div className="vendor-name">{vendor.business_name}</div><span className="vendor-cat">{vendor.listingCount} active listing{vendor.listingCount === 1 ? '' : 's'}</span></div><div className="vendor-rating"><span className="stars">★★★★★</span><span className="rating-val">{Number(vendor.average_rating || 0).toFixed(1)}</span></div></div><p className="vendor-desc">{vendor.description || 'Approved Campus Link vendor.'}</p><div className="vendor-meta">{vendor.location_text ? <div className="vendor-meta-item"><Tag size={14} /> {vendor.location_text}</div> : null}<div className="vendor-meta-item"><Tag size={14} /> {vendor.startingPrice ? `From ₦${vendor.startingPrice.toLocaleString()}` : 'Contact for pricing'}</div></div><div className="vendor-actions"><Link href={`/share/vendor/${encodeURIComponent(vendor.slug)}`} className="btn btn-sm btn-outline">View vendor</Link></div></div></article>) : <div className="landing-empty-state">Approved vendors will appear here automatically as Campus Link grows.</div>}
           </div>
         </div>
       </section>
