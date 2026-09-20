@@ -43,7 +43,8 @@ export const metadata: Metadata = {
   description: 'Discover trusted campus vendors, products and services around your school.',
   manifest: '/manifest.webmanifest',
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    icon: [{ url: '/brand/favicon', type: 'image/png' }],
+    apple: [{ url: '/brand/app-icon/180', type: 'image/png', sizes: '180x180' }],
   },
   appleWebApp: {
     capable: true,
