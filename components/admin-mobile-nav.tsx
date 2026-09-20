@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Building2, CalendarRange, GraduationCap, Home, Menu, ShieldAlert, ShieldCheck, ShoppingBag, Store, UserCog } from 'lucide-react'
+import { Building2, CalendarRange, GraduationCap, Home, Menu, Palette, ShieldAlert, ShieldCheck, ShoppingBag, Store, UserCog } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const nav = [
@@ -16,7 +16,7 @@ const nav = [
   { href:'/admin-v2/admins', label:'Admins', icon:UserCog },
 ]
 
-export function AdminMobileNav({ email, role }: { email: string; role: string }) {
+export function AdminMobileNav({ email, role, isSuperAdmin = false }: { email: string; role: string; isSuperAdmin?: boolean }) {
   const pathname = usePathname()
   const initial = (email || 'A').slice(0,1).toUpperCase()
   return <>
@@ -35,7 +35,7 @@ export function AdminMobileNav({ email, role }: { email: string; role: string })
       </div>
     </header>
     <nav className="admin-mobile-bottom-nav" aria-label="Admin mobile navigation">
-      <div>{nav.map(({href,label,icon:Icon})=>{
+      <div>{[...nav, ...(isSuperAdmin ? [{ href:'/admin-v2/branding', label:'Branding', icon:Palette }] : [])].map(({href,label,icon:Icon})=>{
         const active=href==='/admin-v2'?pathname===href:pathname.startsWith(href)
         return <Link href={href} key={href} className={active?'active':''}><Icon size={18}/><span>{label}</span></Link>
       })}</div>
