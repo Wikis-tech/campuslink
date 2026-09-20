@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { ThemeFloatingControl } from '@/components/theme-floating-control'
 import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
+import { getPlatformBranding } from '@/lib/platform-branding'
 import { PwaServiceWorker } from '@/components/pwa-service-worker'
 import './globals.css'
 import './auth.css'
@@ -35,26 +36,50 @@ import './pwa-foundation.css'
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', display: 'swap' })
 const sora = Sora({ subsets: ['latin'], variable: '--font-sora', display: 'swap' })
 
-export const metadata: Metadata = {
-  applicationName: 'Campus Link',
-  title: {
-    default: 'Campus Link',
-    template: '%s · Campus Link',
-  },
-  description: 'Discover trusted campus vendors, products and services around your school.',
-  manifest: '/manifest.webmanifest',
-  icons: {
-    icon: [{ url: '/brand/favicon', type: 'image/png' }],
-    apple: [{ url: '/brand/app-icon/180', type: 'image/png', sizes: '180x180' }],
-  },
-  appleWebApp: {
-    capable: true,
-    title: 'Campus Link',
-    statusBarStyle: 'black-translucent',
-  },
-  other: {
-    'mobile-web-app-capable': 'yes',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const branding = await getPlatformBranding()
+  const revision = branding.revision || 1
+  const base = new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng')
+  const ogImage = new URL(`/api/og/site?v=${revision}`, base).toString()
+
+  return {
+    metadataBase: base,
+    applicationName: 'Campus Link',
+    title: {
+      default: 'Campus Link',
+      template: '%s · Campus Link',
+    },
+    description: 'Discover trusted campus vendors, products and services around your school.',
+    alternates: { canonical: '/' },
+    manifest: '/manifest.webmanifest',
+    icons: {
+      icon: [{ url: `/brand/favicon?v=${revision}`, type: 'image/png' }],
+      shortcut: [{ url: `/brand/favicon?v=${revision}`, type: 'image/png' }],
+      apple: [{ url: `/brand/app-icon/180?v=${revision}`, type: 'image/png', sizes: '180x180' }],
+    },
+    openGraph: {
+      type: 'website',
+      siteName: 'Campus Link',
+      title: 'Campus Link — Trusted campus discovery',
+      description: 'Discover verified Vendors, Products and Services approved for your university community.',
+      url: '/',
+      images: [{ url: ogImage, width: 1200, height: 630, alt: 'Campus Link — trusted campus discovery' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Campus Link — Trusted campus discovery',
+      description: 'Discover verified Vendors, Products and Services approved for your university community.',
+      images: [ogImage],
+    },
+    appleWebApp: {
+      capable: true,
+      title: 'Campus Link',
+      statusBarStyle: 'black-translucent',
+    },
+    other: {
+      'mobile-web-app-capable': 'yes',
+    },
+  }
 }
 
 export const viewport: Viewport = {
