@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { ThemeFloatingControl } from '@/components/theme-floating-control'
 import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
+import { PwaServiceWorker } from '@/components/pwa-service-worker'
 import './globals.css'
 import './auth.css'
 import './phase45.css'
@@ -81,7 +82,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className={`${dmSans.variable} ${sora.variable}`}>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaInstallPrompt /><ThemeFloatingControl /></body>
+      <body className={`${dmSans.variable} ${sora.variable}`}>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaServiceWorker /><PwaInstallPrompt /><ThemeFloatingControl /></body>
     </html>
   )
 }
