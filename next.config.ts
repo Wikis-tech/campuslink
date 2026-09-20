@@ -53,6 +53,13 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/offline.html',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-cache' },
+        ],
+      },
+      {
         source: '/student/:path*',
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
