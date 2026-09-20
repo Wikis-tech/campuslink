@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, ShieldAlert, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
+import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, Palette, ShieldAlert, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AdminMobileNav } from '@/components/admin-mobile-nav'
 import { AdminSessionGuard } from '@/components/admin-session-guard'
@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <main className="admin-app admin-fiverr-app">
       <AdminSessionGuard/>
-      <AdminMobileNav email={email} role={roleLabel}/>
+      <AdminMobileNav email={email} role={roleLabel} isSuperAdmin={context.globalRole === 'super_admin'}/>
       <div className="admin-shell">
         <aside className="admin-sidebar admin-fiverr-sidebar">
           <Link href="/admin-v2" className="admin-brand">Campus<span>Link</span> Admin</Link>
@@ -43,6 +43,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin-v2/categories"><FolderKanban /> Categories</Link>
             <Link href="/admin-v2/admins"><UserCog /> Admins</Link>
             <Link href="/admin-v2/audit"><BarChart3 /> Audit</Link>
+            {context.globalRole === 'super_admin' ? <Link href="/admin-v2/branding"><Palette /> Branding</Link> : null}
           </nav>
           <div className="admin-sidebar-foot">
             <div className="admin-security-note"><ShieldCheck size={15}/> Auto sign-out after 20 minutes idle</div>
