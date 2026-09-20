@@ -6,6 +6,7 @@ import { GlobalLoadingFeedback } from '@/components/global-loading-feedback'
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
 import { getPlatformBranding } from '@/lib/platform-branding'
 import { PwaServiceWorker } from '@/components/pwa-service-worker'
+import { PwaShellController } from '@/components/pwa-shell-controller'
 import './globals.css'
 import './auth.css'
 import './phase45.css'
@@ -108,7 +109,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className={`${dmSans.variable} ${sora.variable}`}>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaServiceWorker /><PwaInstallPrompt /><ThemeFloatingControl /></body>
+      <body className={`${dmSans.variable} ${sora.variable}`}>{children}<Suspense fallback={null}><GlobalLoadingFeedback/></Suspense><PwaServiceWorker /><PwaShellController /><PwaInstallPrompt /><ThemeFloatingControl /></body>
     </html>
   )
 }
