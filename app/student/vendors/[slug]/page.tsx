@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { checkPhase5gReadiness } from '@/lib/phase5g-readiness'
 import { VendorAnalyticsBeacon } from '@/components/vendor-analytics-beacon'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
+import { VendorShareButton } from '@/components/vendor-share-button'
 import { reportVendor, submitReview, toggleSavedVendor } from '../../actions'
 
 const reportCategories = [
@@ -76,7 +77,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
               <div className="phase5g-meta"><span><Star size={14} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span>{vendor.location_text ? <span><MapPin size={14}/> {vendor.location_text}</span> : null}</div>
               <p>{vendor.description || 'Verified Campus Link vendor.'}</p>
             </div>
-            <div className="phase5g-profile-actions"><a className="btn btn-primary" href={`/student/vendors/${vendor.slug}/contact`}><MessageCircle size={17}/> WhatsApp vendor</a><form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="return_to" value={returnTo}/><button className="btn btn-ghost" type="submit"><Bookmark size={17} fill={saved ? 'currentColor' : 'none'}/> {saved ? 'Saved' : 'Save vendor'}</button></form></div>
+            <div className="phase5g-profile-actions"><a className="btn btn-primary" href={`/student/vendors/${vendor.slug}/contact`}><MessageCircle size={17}/> WhatsApp vendor</a><form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="return_to" value={returnTo}/><button className="btn btn-ghost" type="submit"><Bookmark size={17} fill={saved ? 'currentColor' : 'none'}/> {saved ? 'Saved' : 'Save vendor'}</button></form><VendorShareButton slug={vendor.slug} businessName={vendor.business_name}/></div>
           </div>
         </div>
       </section>
