@@ -32,7 +32,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         src: `/brand/app-icon/512?v=${revision}`,
         sizes: '512x512',
         type: 'image/png',
-        purpose: 'any maskable',
+        purpose: 'maskable',
       },
     ],
   }
