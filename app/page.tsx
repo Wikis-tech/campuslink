@@ -59,7 +59,7 @@ export default function HomePage() {
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
           <Link href="/" className="logo">
-            <div className="logo-mark"><img src="https://raw.githubusercontent.com/Wikis-tech/campuslink/master/assets/images/campuslink-logo-white.png" alt="Campuslink Logo" width="36" height="36" /></div>
+            <div className="logo-mark"><img src="/brand/logo" alt="Campuslink Logo" width="36" height="36" /></div>
             <span className="logo-text">Campus<strong>link</strong></span>
           </Link>
 
@@ -207,7 +207,7 @@ export default function HomePage() {
               <Link href="/" className="cl-public-footer-logo" aria-label="Campus Link home">
                 <span className="cl-public-footer-logo-mark">
                   <img
-                    src="https://raw.githubusercontent.com/Wikis-tech/campuslink/master/assets/images/campuslink-logo-white.png"
+                    src="/brand/logo"
                     alt=""
                     width="32"
                     height="32"
