@@ -138,8 +138,29 @@ async function getLandingData() {
 
 export default async function HomePage() {
   const landing = await getLandingData()
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng').replace(/\/$/, '')
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Campus Link',
+    alternateName: 'CampusLink',
+    url: baseUrl,
+    description: 'Discover trusted campus vendors, products and services around your school.',
+    inLanguage: 'en',
+  }
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Campus Link',
+    url: baseUrl,
+    logo: `${baseUrl}/brand/logo`,
+    description: 'Campus-specific discovery platform connecting students with approved vendors, products and services.',
+  }
+  const jsonLd = JSON.stringify([websiteJsonLd, organizationJsonLd]).replace(/</g, '\\u003c')
+
   return (
     <main className="legacy-home">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
           <Link href="/" className="logo">

@@ -98,9 +98,40 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
   const { vendor, institutions, products, services } = result
   const initial = vendor.business_name?.slice(0, 1)?.toUpperCase() || 'V'
   const campusNames = institutions.map((item) => item.name).join(', ')
+  const canonicalUrl = `${BASE_URL}/share/vendor/${encodeURIComponent(vendor.slug)}`
+  const vendorJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: vendor.business_name,
+    url: canonicalUrl,
+    description: cleanDescription(vendor.description),
+    image: vendor.logo_url || vendor.cover_url || `${BASE_URL}/brand/logo`,
+    areaServed: institutions.map((institution) => ({
+      '@type': 'CollegeOrUniversity',
+      name: institution.name,
+    })),
+    ...(Number(vendor.review_count || 0) > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: Number(vendor.average_rating || 0),
+            reviewCount: Number(vendor.review_count || 0),
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Campus Link',
+      url: BASE_URL,
+    },
+  }
+  const jsonLd = JSON.stringify(vendorJsonLd).replace(/</g, '\\u003c')
 
   return (
     <main className="cl-share-vendor-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <header className="cl-share-topbar">
         <Link href="/" className="cl-share-brand">
           <img src="/brand/logo" alt="" width="34" height="34" />

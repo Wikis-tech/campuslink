@@ -60,6 +60,33 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/login',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
+        source: '/register',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
+        source: '/app',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
+        source: '/pwa/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+        ],
+      },
+      {
         source: '/student/:path*',
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
