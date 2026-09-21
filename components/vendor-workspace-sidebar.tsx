@@ -79,7 +79,10 @@ export function VendorWorkspaceSidebar(_: { storefrontHref?: string }) {
         </button>
         {mobileMoreOpen ? <div className="v5e-mobile-sheet" id="vendor-mobile-more-sheet" role="dialog" aria-label="Vendor account actions">
           <Link href="/vendor-v2/profile"><Store size={17}/> Business profile</Link>
-          <div className="v5e-mobile-theme"><ThemeToggle compact/></div>
+          <div className="v5e-mobile-appearance">
+            <span>Appearance<small>Light · Dark · System</small></span>
+            <ThemeToggle />
+          </div>
           <form action="/auth/signout" method="post"><button type="submit"><LogOut size={17}/> Sign out</button></form>
         </div> : null}
       </div>

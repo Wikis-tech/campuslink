@@ -237,12 +237,17 @@ html[data-theme='dark'] .cl-offline-icon{background:#112d53;color:#8eb8f5}
 
 /* Phase 7C PWA UX, mobile ergonomics and rendering performance */
 html[data-pwa-mode="standalone"]{
-  overscroll-behavior-y:none;
+  min-height:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
   background:var(--v3-page,#f7f8fb);
 }
 html[data-pwa-mode="standalone"] body{
   min-height:100dvh;
-  overscroll-behavior-y:none;
+  height:auto;
+  overflow:visible;
+  overscroll-behavior-y:auto;
   -webkit-touch-callout:none;
 }
 html[data-pwa-mode="standalone"] button,
@@ -276,16 +281,15 @@ html[data-pwa-mode="standalone"] select{
 }
 
 @media(max-width:820px){
-  html,body{max-width:100%;overflow-x:clip;overflow-y:auto;height:auto;min-height:100%}
-  body{padding-bottom:env(safe-area-inset-bottom);min-height:100dvh}
-  html{scroll-padding-bottom:calc(136px + env(safe-area-inset-bottom))}
+  html{max-width:100%;min-height:100%;height:auto;overflow-x:hidden;overflow-y:auto;scroll-padding-bottom:calc(152px + env(safe-area-inset-bottom))}
+  body{max-width:100%;min-height:100dvh;height:auto;overflow:visible;padding-bottom:env(safe-area-inset-bottom)}
   input,select,textarea{font-size:16px}
   button,a,summary{-webkit-tap-highlight-color:transparent}
   .cl-fv-page,.v5e-vendor-page{min-height:100dvh}
   .cl-fv-shell{padding-bottom:calc(98px + env(safe-area-inset-bottom))}
   .cl-student-mobile-nav,.v5e-mobile-bottom-nav{
-    transform:translateZ(0);
-    will-change:transform;
+    transform:none;
+    will-change:auto;
   }
   .cl-student-mobile-scroll,.v5e-mobile-scroll{
     scroll-behavior:smooth;
@@ -302,4 +306,25 @@ html[data-pwa-mode="standalone"] select{
 
 @media(prefers-reduced-motion:reduce){
   .cl-student-mobile-scroll,.v5e-mobile-scroll{scroll-behavior:auto}
+}
+
+/* Phase 7C mobile scroll reliability: one document scroller, no transformed
+   fixed-navigation containing block, and explicit touch axes for horizontal rails. */
+@media(max-width:820px){
+  .cl-student-mobile-scroll,
+  .v5e-mobile-scroll,
+  .cl-fv-categories,
+  .cl-student-categories,
+  .cl-fv-popular{
+    touch-action:pan-x;
+    -webkit-overflow-scrolling:touch;
+  }
+  .cl-student-page,
+  .cl-fv-page,
+  .v5e-vendor-page,
+  .v5e-vendor-main,
+  main{
+    overflow-y:visible;
+    touch-action:auto;
+  }
 }

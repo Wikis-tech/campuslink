@@ -31,3 +31,35 @@
 
 @media(max-width:760px){.cl-student-page,.cl-fv-page{min-height:100dvh;overflow:visible}.cl-student-shell{padding-bottom:calc(132px + env(safe-area-inset-bottom))}.cl-student-mobile-nav{touch-action:manipulation}.cl-student-mobile-sheet{z-index:2;max-height:min(68dvh,520px);overflow-y:auto;overscroll-behavior:contain}.cl-student-mobile-sheet a,.cl-student-mobile-sheet button{min-height:44px}.cl-vendor-grid-fiverr{gap:12px}}
 @media(max-width:380px){.cl-gig-grid{gap:10px}.cl-gig-title{font-size:12px}.cl-gig-seller{font-size:10px}.cl-gig-rating,.cl-gig-price{font-size:11px}}
+
+@media(max-width:760px){
+  .cl-student-mobile-nav{z-index:120}
+  .cl-student-mobile-more{position:static}
+  .cl-student-mobile-sheet{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:calc(88px + env(safe-area-inset-bottom));
+    width:auto;
+    max-height:min(70dvh,560px);
+    z-index:140;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    padding:12px;
+  }
+  .cl-student-mobile-sheet-head{position:sticky;top:-12px;z-index:1;background:var(--v3-surface,#fff);padding-top:12px}
+  .cl-student-mobile-appearance{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px;
+    border-top:1px solid var(--v3-line,#e6e9ee);
+    border-bottom:1px solid var(--v3-line,#e6e9ee);
+    color:var(--v3-ink,#101828);
+  }
+  .cl-student-mobile-appearance>span{display:grid;gap:2px;font-size:13px;font-weight:800}
+  .cl-student-mobile-appearance small{font-size:10px;font-weight:600;color:var(--v3-muted,#667085)}
+  .cl-student-mobile-sheet form button{color:#b42318}
+}

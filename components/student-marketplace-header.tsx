@@ -115,7 +115,10 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
             <Link href="/onboarding/student"><UserRound size={16}/> Profile & verification</Link>
             <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
             <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
-            <div className="cl-student-mobile-theme"><ThemeToggle compact /></div>
+            <div className="cl-student-mobile-appearance">
+              <span>Appearance<small>Light · Dark · System</small></span>
+              <ThemeToggle />
+            </div>
             <form action="/auth/signout" method="post"><button type="submit"><LogOut size={16}/> Sign out</button></form>
           </div> : null}
         </div>
