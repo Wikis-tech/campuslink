@@ -1,20 +1,21 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { BadgeCheck, MapPin, MessageCircle, Package, ShieldCheck, Star, Wrench } from 'lucide-react'
+import { BadgeCheck, MessageCircle, Package, ShieldCheck, Star, Wrench } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getCanonicalOrigin, sanitizePublicSeoText } from '@/lib/seo-privacy'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng'
+const BASE_URL = getCanonicalOrigin()
 
 function cleanDescription(value: string | null | undefined) {
-  return (value || 'Verified Campus Link vendor.').replace(/\s+/g, ' ').trim().slice(0, 180)
+  return sanitizePublicSeoText(value || 'Verified Campus Link vendor.', 180) || 'Verified Campus Link vendor.'
 }
 
 async function getShareVendor(slug: string) {
   const admin = createAdminClient()
   const { data: vendor } = await admin
     .from('vendor_profiles')
-    .select('id,business_name,slug,description,location_text,logo_url,cover_url,average_rating,review_count,verification_status,marketplace_status,suspended_until,created_at')
+    .select('id,business_name,slug,description,logo_url,cover_url,average_rating,review_count,verification_status,marketplace_status,suspended_until,created_at')
     .eq('slug', slug)
     .eq('verification_status', 'approved')
     .maybeSingle()
@@ -33,7 +34,9 @@ async function getShareVendor(slug: string) {
     .eq('vendor_id', vendor.id)
     .eq('status', 'approved')
 
-  const institutionIds = (links || []).map((row) => row.institution_id)
+  if (!links?.length) return null
+
+  const institutionIds = links.map((row) => row.institution_id)
   const { data: institutions } = institutionIds.length
     ? await admin.from('institutions').select('id,name').in('id', institutionIds)
     : { data: [] as Array<{ id: string; name: string }> }
@@ -86,6 +89,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title,
       description,
       images: [image],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': 160,
+        'max-video-preview': 0,
+      },
     },
   }
 }
@@ -153,9 +167,8 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
               <h1>{vendor.business_name}</h1>
               <div className="cl-share-meta">
                 <span><Star size={15} fill="currentColor" /> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0} reviews)</span>
-                {vendor.location_text ? <span><MapPin size={15} /> {vendor.location_text}</span> : null}
               </div>
-              <p>{vendor.description || 'Verified Campus Link vendor.'}</p>
+              <p>{cleanDescription(vendor.description)}</p>
               {campusNames ? <div className="cl-share-campus"><BadgeCheck size={16} /> Approved for {campusNames}</div> : null}
             </div>
           </div>
@@ -178,7 +191,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
             <div className="cl-share-list">
               {products.map((product) => (
                 <div className="v3-surface cl-share-item" key={product.id}>
-                  <strong>{product.name}</strong>
+                  <strong>{sanitizePublicSeoText(product.name, 80) || 'Product'}</strong>
                   <span>{product.pricing_type === 'contact' ? 'Ask for price' : `${product.pricing_type === 'from' ? 'From ' : ''}₦${Number(product.price_ngn || 0).toLocaleString()}`}</span>
                 </div>
               ))}
@@ -192,7 +205,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
             <div className="cl-share-list">
               {services.map((service) => (
                 <div className="v3-surface cl-share-item" key={service.id}>
-                  <strong>{service.name}</strong>
+                  <strong>{sanitizePublicSeoText(service.name, 80) || 'Service'}</strong>
                   <span>{service.price_from ? `From ₦${Number(service.price_from).toLocaleString()}` : 'Ask vendor'}</span>
                 </div>
               ))}

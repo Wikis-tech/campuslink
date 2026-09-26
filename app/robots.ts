@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
+import { getCanonicalOrigin } from '@/lib/seo-privacy'
 
-const BASE_URL = (process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng').replace(/\/$/, '')
+const BASE_URL = getCanonicalOrigin()
 
 export default function robots(): MetadataRoute.Robots {
   return {

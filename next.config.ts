@@ -28,6 +28,16 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.campuslink.name.ng' }],
+        destination: 'https://campuslink.name.ng/:path*',
+        permanent: true,
+      },
+    ]
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '4.4mb',
@@ -126,6 +136,18 @@ const nextConfig: NextConfig = {
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
           { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+        ],
+      },
+      {
+        source: '/share/vendor/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store, max-age=0' },
         ],
       },
       {

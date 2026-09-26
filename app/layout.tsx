@@ -7,6 +7,7 @@ import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
 import { getPlatformBranding } from '@/lib/platform-branding'
 import { PwaServiceWorker } from '@/components/pwa-service-worker'
 import { PwaShellController } from '@/components/pwa-shell-controller'
+import { getCanonicalOrigin } from '@/lib/seo-privacy'
 import './globals.css'
 import './auth.css'
 import './phase45.css'
@@ -41,7 +42,7 @@ const sora = Sora({ subsets: ['latin'], variable: '--font-sora', display: 'swap'
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getPlatformBranding()
   const revision = branding.revision || 1
-  const base = new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng')
+  const base = new URL(getCanonicalOrigin())
   const ogImage = new URL(`/api/og/site?v=${revision}`, base).toString()
 
   return {

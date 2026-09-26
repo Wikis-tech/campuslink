@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getCanonicalOrigin } from '@/lib/seo-privacy'
 
-const BASE_URL = (process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng').replace(/\/$/, '')
+const BASE_URL = getCanonicalOrigin()
 
 function vendorIsPublic(vendor: {
   marketplace_status: string
