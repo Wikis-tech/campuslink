@@ -33,7 +33,7 @@ requireText('lib/paystack.ts', "createHmac('sha512'", 'Paystack webhook signatur
 requireText('lib/paystack.ts', 'timingSafeEqual', 'Paystack webhook verification must remain timing safe')
 requireText('app/api/paystack/webhook/route.ts', 'reconcileSuccessfulPaystackPayment', 'signed webhook must still reconcile against Paystack/server ledger')
 requireText('lib/file-validation.ts', 'sniffUploadedFile', 'uploads must remain content-signature checked')
-requireText('components/admin-mfa-gate.tsx', 'aal2', 'Admin MFA gate must continue requiring AAL2')
+requireText('app/admin-v2/lib.ts', "currentLevel !== 'aal2'", 'Admin control plane must continue requiring AAL2')
 requireText('app/share/vendor/[slug]/page.tsx', "eq('status', 'approved')", 'public Vendor SEO must require campus approval')
 requireText('app/share/vendor/[slug]/page.tsx', "robots: {", 'public Vendor SEO must explicitly define crawler policy')
 
