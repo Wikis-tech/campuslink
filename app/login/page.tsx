@@ -7,7 +7,7 @@ import { AuthBackdrop } from '@/components/AuthBackdrop'
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; notice?: string; email?: string }>
 }) {
   const { error, notice, email = '' } = await searchParams
 

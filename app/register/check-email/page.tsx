@@ -5,7 +5,7 @@ import { verifyEmailCode, resendEmailCode } from './actions'
 export default async function CheckEmailPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string; error?: string; sent?: string }>
+  searchParams: Promise<{ email?: string; error?: string; sent?: string; notice?: string }>
 }) {
   const { email = '', error, sent, notice } = await searchParams
 
