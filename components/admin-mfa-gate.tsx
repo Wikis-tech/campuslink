@@ -62,7 +62,7 @@ export function AdminMfaGate() {
       if (challenge.error) throw challenge.error
       const verified = await supabase.auth.mfa.verify({ factorId, challengeId: challenge.data.id, code: code.trim() })
       if (verified.error) throw verified.error
-      window.location.replace('/admin-v2')
+      window.location.replace('/control-center')
     } catch (err:any) {
       setError(err?.message || 'That authenticator code could not be verified.')
       setBusy(false)
