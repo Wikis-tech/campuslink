@@ -11,7 +11,7 @@ const FAVICON_MAX = 1 * 1024 * 1024
 const APP_ICON_MAX = 5 * 1024 * 1024
 
 function fail(message: string): never {
-  redirect('/admin-v2/branding?error=' + encodeURIComponent(message))
+  redirect('/control-center/branding?error=' + encodeURIComponent(message))
 }
 
 async function requireSuperAdmin() {
@@ -140,6 +140,6 @@ export async function updatePlatformBranding(formData: FormData) {
   })
 
   revalidatePath('/', 'layout')
-  revalidatePath('/admin-v2/branding')
-  redirect('/admin-v2/branding?saved=1')
+  revalidatePath('/control-center/branding')
+  redirect('/control-center/branding?saved=1')
 }

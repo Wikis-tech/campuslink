@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { requireAdminContext } from '../lib'
 
 function back(message: string, type: 'ok' | 'error' = 'ok'): never {
-  redirect(`/admin-v2/campus-intelligence?${type}=${encodeURIComponent(message)}`)
+  redirect(`/control-center/campus-intelligence?${type}=${encodeURIComponent(message)}`)
 }
 
 function slugify(value: string) {
@@ -34,7 +34,7 @@ export async function createCampusLocation(formData: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.from('campus_locations').insert({ institution_id: institutionId, name, slug: slugify(name), location_type: locationType, description, created_by: context.userId })
   if (error) back(`Could not add location: ${error.message}`, 'error')
-  revalidatePath('/admin-v2/campus-intelligence')
+  revalidatePath('/control-center/campus-intelligence')
   revalidatePath('/vendor-v2/availability')
   back('Campus location added.')
 }
@@ -48,7 +48,7 @@ export async function toggleCampusLocation(formData: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.from('campus_locations').update({ is_active: !isActive, updated_at: new Date().toISOString() }).eq('id', id).eq('institution_id', institutionId)
   if (error) back(`Could not update location: ${error.message}`, 'error')
-  revalidatePath('/admin-v2/campus-intelligence')
+  revalidatePath('/control-center/campus-intelligence')
   revalidatePath('/student/discover')
   revalidatePath('/vendor-v2/availability')
   back(isActive ? 'Campus location hidden.' : 'Campus location restored.')
@@ -69,7 +69,7 @@ export async function createCampusEvent(formData: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.from('campus_calendar_events').insert({ institution_id: institutionId, event_type: eventType, title, description, starts_on: startsOn, ends_on: endsOn, is_published: true, created_by: context.userId })
   if (error) back(`Could not add campus date: ${error.message}`, 'error')
-  revalidatePath('/admin-v2/campus-intelligence')
+  revalidatePath('/control-center/campus-intelligence')
   revalidatePath('/vendor-v2/availability')
   revalidatePath('/student')
   back('Campus calendar date published.')
@@ -83,7 +83,7 @@ export async function deleteCampusEvent(formData: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.from('campus_calendar_events').delete().eq('id', id).eq('institution_id', institutionId)
   if (error) back(`Could not remove campus date: ${error.message}`, 'error')
-  revalidatePath('/admin-v2/campus-intelligence')
+  revalidatePath('/control-center/campus-intelligence')
   revalidatePath('/vendor-v2/availability')
   back('Campus calendar date removed.')
 }

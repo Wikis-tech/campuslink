@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 function fail(message: string): never {
-  redirect(`/admin-v2/admins?error=${encodeURIComponent(message)}`)
+  redirect(`/control-center/admins?error=${encodeURIComponent(message)}`)
 }
 
 export async function createAdminAccount(formData: FormData) {
@@ -60,6 +60,6 @@ export async function createAdminAccount(formData: FormData) {
     fail(`The account was not kept because role assignment failed: ${assignment.error.message}`)
   }
 
-  revalidatePath('/admin-v2/admins')
-  redirect('/admin-v2/admins?success=Admin%20login%20created%20successfully')
+  revalidatePath('/control-center/admins')
+  redirect('/control-center/admins?success=Admin%20login%20created%20successfully')
 }

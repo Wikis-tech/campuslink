@@ -36,7 +36,7 @@ export async function createInstitution(formData: FormData) {
     .map((item) => item.trim().toLowerCase().replace(/^@/, ''))
     .filter(Boolean)
 
-  if (name.length < 4 || !slug) message('/admin-v2/schools', 'error', 'Enter a valid school name.')
+  if (name.length < 4 || !slug) message('/control-center/schools', 'error', 'Enter a valid school name.')
 
   const { error } = await supabase.rpc('admin_create_institution', {
     school_name: name,
@@ -50,11 +50,11 @@ export async function createInstitution(formData: FormData) {
     school_instructions: instructions || null,
   })
 
-  if (error) message('/admin-v2/schools', 'error', error.message)
-  revalidatePath('/admin-v2')
-  revalidatePath('/admin-v2/schools')
+  if (error) message('/control-center/schools', 'error', error.message)
+  revalidatePath('/control-center')
+  revalidatePath('/control-center/schools')
   revalidatePath('/onboarding/student')
-  message('/admin-v2/schools', 'success', `${name} was added and is now available for onboarding.`)
+  message('/control-center/schools', 'success', `${name} was added and is now available for onboarding.`)
 }
 
 export async function setInstitutionActive(formData: FormData) {
@@ -62,10 +62,10 @@ export async function setInstitutionActive(formData: FormData) {
   const id = text(formData, 'institution_id', 80)
   const active = text(formData, 'active', 10) === 'true'
   const { error } = await supabase.rpc('admin_set_institution_active', { target_id: id, active })
-  if (error) message('/admin-v2/schools', 'error', error.message)
-  revalidatePath('/admin-v2/schools')
+  if (error) message('/control-center/schools', 'error', error.message)
+  revalidatePath('/control-center/schools')
   revalidatePath('/onboarding/student')
-  message('/admin-v2/schools', 'success', active ? 'School restored.' : 'School archived. Existing records were preserved.')
+  message('/control-center/schools', 'success', active ? 'School restored.' : 'School archived. Existing records were preserved.')
 }
 
 export async function reviewStudent(formData: FormData) {
@@ -74,10 +74,10 @@ export async function reviewStudent(formData: FormData) {
   const decision = text(formData, 'decision', 20)
   const note = text(formData, 'note', 800)
   const { error } = await supabase.rpc('admin_review_student', { target_student: studentId, decision, note: note || null })
-  if (error) message('/admin-v2/students', 'error', error.message)
-  revalidatePath('/admin-v2/students')
+  if (error) message('/control-center/students', 'error', error.message)
+  revalidatePath('/control-center/students')
   revalidatePath('/student')
-  message('/admin-v2/students', 'success', decision === 'approve' ? 'Student verified.' : 'Student verification rejected.')
+  message('/control-center/students', 'success', decision === 'approve' ? 'Student verified.' : 'Student verification rejected.')
 }
 
 export async function reviewVendorIdentity(formData: FormData) {
@@ -86,10 +86,10 @@ export async function reviewVendorIdentity(formData: FormData) {
   const decision = text(formData, 'decision', 20)
   const note = text(formData, 'note', 800)
   const { error } = await supabase.rpc('admin_review_vendor_identity', { target_vendor: vendorId, decision, note: note || null })
-  if (error) message('/admin-v2/vendors', 'error', error.message)
-  revalidatePath('/admin-v2/vendors')
+  if (error) message('/control-center/vendors', 'error', error.message)
+  revalidatePath('/control-center/vendors')
   revalidatePath('/vendor-v2')
-  message('/admin-v2/vendors', 'success', `Vendor identity ${decision === 'approve' ? 'approved' : decision + 'ed'}.`)
+  message('/control-center/vendors', 'success', `Vendor identity ${decision === 'approve' ? 'approved' : decision + 'ed'}.`)
 }
 
 export async function reviewVendorCampus(formData: FormData) {
@@ -104,11 +104,11 @@ export async function reviewVendorCampus(formData: FormData) {
     decision,
     note: note || null,
   })
-  if (error) message('/admin-v2/vendors', 'error', error.message)
-  revalidatePath('/admin-v2/vendors')
+  if (error) message('/control-center/vendors', 'error', error.message)
+  revalidatePath('/control-center/vendors')
   revalidatePath('/student')
   revalidatePath('/student/discover')
-  message('/admin-v2/vendors', 'success', `Campus access ${decision === 'approve' ? 'approved' : decision + 'ed'}.`)
+  message('/control-center/vendors', 'success', `Campus access ${decision === 'approve' ? 'approved' : decision + 'ed'}.`)
 }
 
 export async function updateComplaint(formData: FormData) {
@@ -116,9 +116,9 @@ export async function updateComplaint(formData: FormData) {
   const complaintId = text(formData, 'complaint_id', 80)
   const nextStatus = text(formData, 'status', 30)
   const { error } = await supabase.rpc('admin_update_complaint', { complaint_id: complaintId, next_status: nextStatus })
-  if (error) message('/admin-v2/reports', 'error', error.message)
-  revalidatePath('/admin-v2/reports')
-  message('/admin-v2/reports', 'success', `Report moved to ${nextStatus}.`)
+  if (error) message('/control-center/reports', 'error', error.message)
+  revalidatePath('/control-center/reports')
+  message('/control-center/reports', 'success', `Report moved to ${nextStatus}.`)
 }
 
 export async function assignSchoolAdmin(formData: FormData) {
@@ -126,28 +126,28 @@ export async function assignSchoolAdmin(formData: FormData) {
   const email = text(formData, 'email', 254).toLowerCase()
   const institutionId = text(formData, 'institution_id', 80)
   const role = text(formData, 'role', 40)
-  if (!email.includes('@')) message('/admin-v2/admins', 'error', 'Enter a valid Campus Link account email.')
+  if (!email.includes('@')) message('/control-center/admins', 'error', 'Enter a valid Campus Link account email.')
 
   const { error } = await supabase.rpc('admin_assign_school_admin_by_email', {
     target_email: email,
     target_institution: institutionId,
     assignment_role: role,
   })
-  if (error) message('/admin-v2/admins', 'error', error.message)
-  revalidatePath('/admin-v2/admins')
-  message('/admin-v2/admins', 'success', 'School admin assignment saved.')
+  if (error) message('/control-center/admins', 'error', error.message)
+  revalidatePath('/control-center/admins')
+  message('/control-center/admins', 'success', 'School admin assignment saved.')
 }
 
 export async function assignGlobalAdmin(formData: FormData) {
   const supabase = await createClient()
   const email = text(formData, 'email', 254).toLowerCase()
   const role = text(formData, 'role', 50)
-  if (!email.includes('@')) message('/admin-v2/admins', 'error', 'Enter a valid Campus Link account email.')
+  if (!email.includes('@')) message('/control-center/admins', 'error', 'Enter a valid Campus Link account email.')
 
   const { error } = await supabase.rpc('admin_assign_global_role_by_email', { target_email: email, target_role: role })
-  if (error) message('/admin-v2/admins', 'error', error.message)
-  revalidatePath('/admin-v2/admins')
-  message('/admin-v2/admins', 'success', 'Global admin role saved.')
+  if (error) message('/control-center/admins', 'error', error.message)
+  revalidatePath('/control-center/admins')
+  message('/control-center/admins', 'success', 'Global admin role saved.')
 }
 
 export async function saveCategory(formData: FormData) {
@@ -158,7 +158,7 @@ export async function saveCategory(formData: FormData) {
   const description = text(formData, 'description', 500)
   const icon = text(formData, 'icon', 80)
   const active = text(formData, 'active', 10) !== 'false'
-  if (name.length < 2 || !slug) message('/admin-v2/categories', 'error', 'Enter a valid category name.')
+  if (name.length < 2 || !slug) message('/control-center/categories', 'error', 'Enter a valid category name.')
 
   const { error } = await supabase.rpc('admin_upsert_category', {
     category_id: id || null,
@@ -168,10 +168,10 @@ export async function saveCategory(formData: FormData) {
     category_icon: icon || null,
     category_active: active,
   })
-  if (error) message('/admin-v2/categories', 'error', error.message)
-  revalidatePath('/admin-v2/categories')
+  if (error) message('/control-center/categories', 'error', error.message)
+  revalidatePath('/control-center/categories')
   revalidatePath('/student/discover')
-  message('/admin-v2/categories', 'success', id ? 'Category updated.' : 'Category created.')
+  message('/control-center/categories', 'success', id ? 'Category updated.' : 'Category created.')
 }
 
 export async function moderateReview(formData: FormData) {
@@ -179,10 +179,10 @@ export async function moderateReview(formData: FormData) {
   const reviewId = text(formData, 'review_id', 80)
   const nextStatus = text(formData, 'status', 20)
   const { error } = await supabase.rpc('admin_moderate_review', { review_id: reviewId, next_status: nextStatus })
-  if (error) message('/admin-v2/reviews', 'error', error.message)
-  revalidatePath('/admin-v2/reviews')
+  if (error) message('/control-center/reviews', 'error', error.message)
+  revalidatePath('/control-center/reviews')
   revalidatePath('/student/discover')
-  message('/admin-v2/reviews', 'success', `Review marked ${nextStatus}.`)
+  message('/control-center/reviews', 'success', `Review marked ${nextStatus}.`)
 }
 
 export async function processSchoolRequest(formData: FormData) {
@@ -190,8 +190,8 @@ export async function processSchoolRequest(formData: FormData) {
   const requestId = text(formData, 'request_id', 80)
   const decision = text(formData, 'decision', 20)
   const { error } = await supabase.rpc('admin_process_school_request', { request_id: requestId, decision })
-  if (error) message('/admin-v2/schools', 'error', error.message)
-  revalidatePath('/admin-v2/schools')
+  if (error) message('/control-center/schools', 'error', error.message)
+  revalidatePath('/control-center/schools')
   revalidatePath('/onboarding/student')
-  message('/admin-v2/schools', 'success', decision === 'approve' ? 'School request approved and added to onboarding.' : 'School request rejected.')
+  message('/control-center/schools', 'success', decision === 'approve' ? 'School request approved and added to onboarding.' : 'School request rejected.')
 }
