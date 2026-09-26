@@ -9,7 +9,7 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ error?: string }>
 }) {
-  const { error } = await searchParams
+  const { error, notice, email = '' } = await searchParams
 
   return (
     <main className="auth-scene">
@@ -34,11 +34,12 @@ export default async function LoginPage({
           </div>
 
           {error ? <div className="auth-error">{error}</div> : null}
+          {notice ? <div className="auth-success">{notice}</div> : null}
 
           <form action={login} className="auth-form modern-auth-form">
             <label>
               Email address
-              <input name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
+              <input name="email" type="email" autoComplete="email" placeholder="you@example.com" defaultValue={email} required />
             </label>
             <label>
               Password
