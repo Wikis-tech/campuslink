@@ -28,19 +28,23 @@ export async function requireAdminContext(): Promise<AdminContext> {
   const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
   if (aalError || aal?.currentLevel !== 'aal2') redirect('/admin-login-campus/mfa')
 
-  const [{ data: globalAdmin }, { data: schoolAssignments }] = await Promise.all([
-    supabase.from('admin_memberships').select('role,is_active').eq('user_id', user.id).eq('is_active', true).maybeSingle(),
-    supabase.from('institution_admin_assignments').select('institution_id,role,is_active').eq('user_id', user.id).eq('is_active', true),
-  ])
-
-  const assignments = schoolAssignments || []
-  if (!globalAdmin && assignments.length === 0) notFound()
+  // Membership was already established with the server-only Admin client.
+  // Do not re-read membership through the browser session here: those tables
+  // intentionally have restrictive RLS and a refreshed route request can
+  // otherwise turn a valid AAL2 Admin navigation into a false 404.
+  //
+  // Security is still enforced by BOTH:
+  // 1) a real active Admin membership from the server-only lookup above; and
+  // 2) the signed-in user's AAL2 MFA session.
+  // Individual Admin data queries continue to use the signed-in Supabase
+  // client, so their RLS/school-scope policies remain in force.
+  const assignments = scopedMemberships || []
 
   return {
     userId: user.id,
-    globalRole: globalAdmin?.role || null,
+    globalRole: globalMembership?.role || null,
     schoolAssignments: assignments,
-    isGlobalAdmin: Boolean(globalAdmin),
+    isGlobalAdmin: Boolean(globalMembership),
   }
 }
 
