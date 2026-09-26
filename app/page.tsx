@@ -33,6 +33,9 @@ import {
   Wrench,
 } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const categoryIcons = [Scissors, Smartphone, BookOpen, Utensils, Shirt, Printer, Wrench, Camera, GraduationCap, WashingMachine, Car, PartyPopper] as const
 
 function iconForCategory(name: string, index: number) {

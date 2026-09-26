@@ -328,3 +328,109 @@ html[data-pwa-mode="standalone"] select{
     touch-action:auto;
   }
 }
+
+
+/* PWA launch moment — intentionally brief, lightweight and app-only. */
+.cl-pwa-launch{
+  min-height:100svh;
+  display:grid;
+  place-content:center;
+  justify-items:center;
+  gap:22px;
+  padding:32px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(30,169,82,.12),transparent 26%),
+    radial-gradient(circle at 50% 48%,rgba(11,61,145,.16),transparent 44%),
+    #f8fbff;
+  color:#10213a;
+  text-align:center;
+}
+.cl-pwa-launch-orbit{
+  position:relative;
+  width:132px;
+  height:132px;
+  display:grid;
+  place-items:center;
+}
+.cl-pwa-launch-logo{
+  position:relative;
+  z-index:2;
+  width:92px;
+  height:92px;
+  display:grid;
+  place-items:center;
+  border-radius:26px;
+  background:rgba(255,255,255,.94);
+  box-shadow:0 20px 54px rgba(8,45,106,.18);
+  animation:clPwaLogoArrive .58s cubic-bezier(.22,.8,.28,1) both;
+}
+.cl-pwa-launch-logo img{width:76px;height:76px;object-fit:contain}
+.cl-pwa-launch-ring{
+  position:absolute;
+  inset:8px;
+  border:1.5px solid rgba(11,61,145,.22);
+  border-top-color:#0b3d91;
+  border-radius:50%;
+  animation:clPwaOrbit 1.55s linear infinite;
+}
+.cl-pwa-launch-ring-two{
+  inset:0;
+  border-color:rgba(30,169,82,.16);
+  border-bottom-color:#1ea952;
+  animation-duration:2.1s;
+  animation-direction:reverse;
+}
+.cl-pwa-launch-copy strong{
+  display:block;
+  font:800 1.45rem/1 var(--font-sora),sans-serif;
+  letter-spacing:-.04em;
+}
+.cl-pwa-launch-copy strong span{color:#1ea952}
+.cl-pwa-launch-copy small{
+  display:block;
+  margin-top:8px;
+  color:#667085;
+  font-size:.76rem;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+.cl-pwa-launch-progress{
+  width:92px;
+  height:3px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(11,61,145,.10);
+}
+.cl-pwa-launch-progress span{
+  display:block;
+  width:42%;
+  height:100%;
+  border-radius:inherit;
+  background:#0b3d91;
+  animation:clPwaProgress .72s ease-in-out infinite alternate;
+}
+html[data-theme='dark'] .cl-pwa-launch{
+  background:
+    radial-gradient(circle at 50% 38%,rgba(30,169,82,.11),transparent 27%),
+    radial-gradient(circle at 50% 48%,rgba(11,61,145,.24),transparent 46%),
+    #071425;
+  color:#f3f7fc;
+}
+html[data-theme='dark'] .cl-pwa-launch-logo{
+  background:#0c203b;
+  box-shadow:0 24px 62px rgba(0,0,0,.34);
+}
+html[data-theme='dark'] .cl-pwa-launch-copy small{color:#9fb0c5}
+@keyframes clPwaOrbit{to{transform:rotate(360deg)}}
+@keyframes clPwaLogoArrive{
+  from{opacity:0;transform:scale(.82)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes clPwaProgress{
+  from{transform:translateX(-85%)}
+  to{transform:translateX(150%)}
+}
+@media(prefers-reduced-motion:reduce){
+  .cl-pwa-launch-ring,.cl-pwa-launch-logo,.cl-pwa-launch-progress span{animation:none}
+}
