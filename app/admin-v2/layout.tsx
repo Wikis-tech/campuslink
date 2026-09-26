@@ -28,7 +28,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="admin-sidebar-tools">
             <div className="admin-profile-card"><span className="admin-profile-avatar">{email.slice(0,1).toUpperCase()}</span><div><strong>{email}</strong><small>{roleLabel}</small></div></div>
             <div className="admin-role"><strong>{roleLabel}</strong>{context.isGlobalAdmin ? 'Global control-plane access' : `${context.schoolAssignments.length} school assignment${context.schoolAssignments.length === 1 ? '' : 's'}`}</div>
-            <ThemeToggle compact />
+            <ThemeToggle />
           </div>
           <nav className="admin-nav">
             <Link prefetch={false} href="/control-center"><LayoutDashboard /> Overview</Link>
