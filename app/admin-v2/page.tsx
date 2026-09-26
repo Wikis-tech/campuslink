@@ -52,19 +52,19 @@ export default async function AdminDashboard() {
         <AdminOverviewChart students={studentCount} vendors={vendorCount} schools={schoolCount} reports={reportCount}/>
         <section className="admin-priority-card cl-editorial-surface">
           <div className="admin-priority-head"><div><span>Priority queue</span><strong>What needs attention now</strong></div><Activity size={20}/></div>
-          <Link href="/admin-v2/students" className="priority-row"><div className="priority-icon blue"><GraduationCap/></div><div><strong>Student verification</strong><span>Review student identity and school evidence.</span></div><b>{studentQueue}</b><ArrowUpRight/></Link>
-          <Link href="/admin-v2/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>Vendor verification</strong><span>Review identity before campus visibility.</span></div><b>{vendorQueue}</b><ArrowUpRight/></Link>
-          <Link href="/admin-v2/reports" className="priority-row"><div className="priority-icon amber"><LifeBuoy/></div><div><strong>Safety reports</strong><span>Investigate complaints and suspicious activity.</span></div><b>{reportCount}</b><ArrowUpRight/></Link>
+          <Link href="/control-center/students" className="priority-row"><div className="priority-icon blue"><GraduationCap/></div><div><strong>Student verification</strong><span>Review student identity and school evidence.</span></div><b>{studentQueue}</b><ArrowUpRight/></Link>
+          <Link href="/control-center/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>Vendor verification</strong><span>Review identity before campus visibility.</span></div><b>{vendorQueue}</b><ArrowUpRight/></Link>
+          <Link href="/control-center/reports" className="priority-row"><div className="priority-icon amber"><LifeBuoy/></div><div><strong>Safety reports</strong><span>Investigate complaints and suspicious activity.</span></div><b>{reportCount}</b><ArrowUpRight/></Link>
         </section>
       </section>
 
       <section className="admin-section modern-admin-section">
         <div className="admin-section-head"><div><h2>Operations shortcuts</h2><p>Move directly into the areas that keep Campus Link organised and trustworthy.</p></div><UsersRound size={20}/></div>
         <div className="admin-section-body queue-grid modern-queue-grid">
-          <Link href="/admin-v2/schools" className="queue-card"><Building2/><h3>School management</h3><p>Add institutions, configure verification rules and archive schools without breaking historical records.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link>
-          <Link href="/admin-v2/students" className="queue-card"><GraduationCap/><h3>Students</h3><p>Review verification evidence, statuses and campus membership from one place.</p><span className="queue-link">Review students <ArrowUpRight size={14}/></span></Link>
-          <Link href="/admin-v2/vendors" className="queue-card"><Store/><h3>Vendors</h3><p>Separate global identity approval from school-specific vendor visibility.</p><span className="queue-link">Manage vendors <ArrowUpRight size={14}/></span></Link>
-          <Link href="/admin-v2/reports" className="queue-card"><LifeBuoy/><h3>Trust & safety</h3><p>Follow complaints through a clear moderation lifecycle and preserve accountability.</p><span className="queue-link">Open reports <ArrowUpRight size={14}/></span></Link>
+          <Link href="/control-center/schools" className="queue-card"><Building2/><h3>School management</h3><p>Add institutions, configure verification rules and archive schools without breaking historical records.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link>
+          <Link href="/control-center/students" className="queue-card"><GraduationCap/><h3>Students</h3><p>Review verification evidence, statuses and campus membership from one place.</p><span className="queue-link">Review students <ArrowUpRight size={14}/></span></Link>
+          <Link href="/control-center/vendors" className="queue-card"><Store/><h3>Vendors</h3><p>Separate global identity approval from school-specific vendor visibility.</p><span className="queue-link">Manage vendors <ArrowUpRight size={14}/></span></Link>
+          <Link href="/control-center/reports" className="queue-card"><LifeBuoy/><h3>Trust & safety</h3><p>Follow complaints through a clear moderation lifecycle and preserve accountability.</p><span className="queue-link">Open reports <ArrowUpRight size={14}/></span></Link>
         </div>
       </section>
     </>
