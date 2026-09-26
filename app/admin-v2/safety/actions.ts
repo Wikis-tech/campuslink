@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 function text(fd: FormData, key: string, max = 2000) { return String(fd.get(key) || '').trim().slice(0,max) }
-function done(type:'ok'|'error', message:string): never { redirect(`/admin-v2/safety?${type}=${encodeURIComponent(message)}`) }
+function done(type:'ok'|'error', message:string): never { redirect(`/control-center/safety?${type}=${encodeURIComponent(message)}`) }
 
 export async function updateSafetyCase(formData: FormData) {
   const complaintId = text(formData,'complaint_id',80)
@@ -22,8 +22,8 @@ export async function updateSafetyCase(formData: FormData) {
     resolution: resolution || null,
   })
   if (error) done('error', error.message || 'Could not update the safety case.')
-  revalidatePath('/admin-v2/safety')
-  revalidatePath('/admin-v2/reports')
+  revalidatePath('/control-center/safety')
+  revalidatePath('/control-center/reports')
   done('ok', `Safety case moved to ${status}.`)
 }
 
@@ -44,8 +44,8 @@ export async function setVendorSafetyStatus(formData: FormData) {
     note: note || null,
   })
   if (error) done('error', error.message || 'Could not update Vendor safety status.')
-  revalidatePath('/admin-v2/safety')
-  revalidatePath('/admin-v2/vendors')
+  revalidatePath('/control-center/safety')
+  revalidatePath('/control-center/vendors')
   revalidatePath('/student')
   revalidatePath('/student/discover')
   done('ok', `Vendor marketplace status changed to ${status.replaceAll('_',' ')}.`)
@@ -58,7 +58,7 @@ export async function moderateVendorResponse(formData: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.rpc('admin_moderate_vendor_response', { target_review: reviewId, next_status: status })
   if (error) done('error', error.message || 'Could not moderate this Vendor response.')
-  revalidatePath('/admin-v2/safety')
-  revalidatePath('/admin-v2/reviews')
+  revalidatePath('/control-center/safety')
+  revalidatePath('/control-center/reviews')
   done('ok', `Vendor response marked ${status}.`)
 }

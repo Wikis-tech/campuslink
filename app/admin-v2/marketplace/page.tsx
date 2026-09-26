@@ -78,7 +78,7 @@ export default async function AdminMarketplacePage() {
             <td><span className="admin-name">{approved.length}</span><span className="admin-sub">Campus approval active.</span></td>
             <td><span className="admin-name"><BadgeCheck size={13}/> {visible.length}</span><span className="admin-sub">Pass all Student visibility gates.</span></td>
             <td><span className="admin-name">{campusSafety} safety holds</span><span className="admin-sub">{campusReports} open/reviewing reports</span></td>
-            <td><div className="admin-actions"><Link className="admin-action primary" href="/admin-v2/vendors"><Store size={13}/> Vendors</Link><Link className="admin-action" href="/admin-v2/reports"><AlertTriangle size={13}/> Reports</Link></div></td>
+            <td><div className="admin-actions"><Link className="admin-action primary" href="/control-center/vendors"><Store size={13}/> Vendors</Link><Link className="admin-action" href="/control-center/reports"><AlertTriangle size={13}/> Reports</Link></div></td>
           </tr>
         })}
         {!institutions?.length ? <tr><td colSpan={5}><div className="empty-admin">No institutions are available in your current Admin scope.</div></td></tr> : null}
