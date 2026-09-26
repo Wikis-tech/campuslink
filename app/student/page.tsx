@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BookOpen, Bookmark, Camera, ChevronRight, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
+import { BadgeCheck, BookOpen, Bookmark, Camera, ChevronRight, Globe2, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
@@ -38,12 +38,13 @@ export default async function StudentDashboard() {
 
   if (!profile || profile.account_type !== 'student') redirect('/dashboard')
 
-  const [institutionResult, savedResult, reviewResult, contactResult, categoryResult, smartResult] = await Promise.all([
+  const [institutionResult, savedResult, reviewResult, contactResult, categoryResult, verificationResult, smartResult] = await Promise.all([
     profile.institution_id ? supabase.from('institutions').select('name,city,state').eq('id', profile.institution_id).maybeSingle() : Promise.resolve({ data: null }),
     supabase.from('saved_vendors').select('vendor_id', { count: 'exact' }).eq('student_id', userId),
     supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('student_id', userId),
     supabase.from('contact_events').select('id', { count: 'exact', head: true }).eq('student_id', userId),
     supabase.from('categories').select('id,name,slug').eq('is_active', true).order('name').limit(12),
+    supabase.from('student_verifications').select('status,submitted_at,review_note').eq('student_id', userId).maybeSingle(),
     profile.institution_id
       ? supabase.rpc('student_smart_search', {
           target_institution: profile.institution_id,
@@ -59,6 +60,10 @@ export default async function StudentDashboard() {
   const location = [institution?.city, institution?.state].filter(Boolean).join(', ')
   const status = profile.student_verification_status || 'pending'
   const setupComplete = Boolean(profile.onboarding_completed_at)
+  const verification = verificationResult.data
+  const hasVerificationSubmission = Boolean(verification)
+  const verificationPending = ['pending','under_review'].includes(verification?.status || '')
+  const verificationRejected = verification?.status === 'rejected'
   const savedCount = savedResult.count ?? savedResult.data?.length ?? 0
   const reviewCount = reviewResult.count || 0
   const contactCount = contactResult.count || 0
@@ -121,6 +126,17 @@ export default async function StudentDashboard() {
       <StudentMarketplaceHeader firstName={profile.first_name} schoolName={school} />
 
       <div className="cl-fv-shell">
+        {status !== 'verified' ? <section className="verification-banner soft" aria-live="polite">
+          <div>
+            <span className="verification-icon"><BadgeCheck size={20}/></span>
+            <div>
+              <strong>{verificationPending ? 'Your Student verification is under review.' : verificationRejected ? 'Your Student verification needs attention.' : 'Verify your studentship when you are ready.'}</strong>
+              <p>{verificationPending ? 'You can keep browsing Campus Link while Admin reviews your submission. We will not ask you to submit it again unless a new submission is required.' : verificationRejected ? (verification?.review_note || 'You can continue using Campus Link and resubmit your Student evidence when convenient.') : 'Verification is optional for browsing. It unlocks trust-sensitive actions such as publishing reviews and strengthens your Student identity on Campus Link.'}</p>
+            </div>
+          </div>
+          {!hasVerificationSubmission || verificationRejected ? <Link className="verification-link" href="/onboarding/student">{verificationRejected ? 'Review & resubmit' : 'Verify studentship'} <ChevronRight size={15}/></Link> : null}
+        </section> : null}
+
         <section className="cl-fv-welcome">
           <div className="cl-fv-welcome-main">
             <div className="cl-fv-overline"><MapPin size={15}/> {school ? `${school}${location ? ` · ${location}` : ''}` : 'Set your campus to personalize discovery'}</div>
@@ -191,6 +207,14 @@ export default async function StudentDashboard() {
         <section className="cl-fv-section">
           <div className="cl-fv-section-head"><div><h2>Trusted vendors on your campus</h2><p>Open a storefront to compare products, services, portfolio proof, reviews and contact options.</p></div><Link href="/student/discover">View all vendors</Link></div>
           {featuredVendors.length ? <div className="cl-fv-vendor-row">{featuredVendors.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="cl-fv-vendor" key={vendor.id}><span className="cl-fv-vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}<ShieldCheck size={13}/></strong><p>{vendor.description || 'Approved Campus Link vendor.'}</p><div className="cl-fv-vendor-meta"><span><Star size={12} fill="currentColor"/> <b>{Number(vendor.average_rating || 0).toFixed(1)}</b> ({vendor.review_count || 0})</span><span>View storefront</span></div></div></Link>)}</div> : <div className="cl-fv-empty"><strong>Your campus marketplace is still growing.</strong><p>Campus Link only surfaces vendors after identity verification and campus approval.</p></div>}
+        </section>
+
+        <section className="v3-surface" style={{margin:'26px 0',padding:'22px',display:'flex',justifyContent:'space-between',gap:18,alignItems:'center',flexWrap:'wrap'}}>
+          <div style={{display:'flex',gap:14,alignItems:'flex-start',maxWidth:760}}>
+            <span className="verification-icon" style={{background:'var(--v3-soft, #eef4ff)',color:'var(--v3-primary, #0b3d91)'}}><Globe2 size={20}/></span>
+            <div><strong style={{display:'block',fontSize:'1.05rem'}}>Explore vendors from other campuses</strong><p style={{margin:'5px 0 0',color:'var(--v3-muted, #667085)',lineHeight:1.55}}>Your own campus stays the priority. If you need more options, you can browse approved Vendors from other schools without changing your campus or weakening campus-approval rules.</p></div>
+          </div>
+          <Link href="/student/explore-campuses" className="btn btn-ghost">Explore other campuses <ChevronRight size={16}/></Link>
         </section>
 
         <section className="cl-fv-bottom">

@@ -17,12 +17,19 @@ export default async function StudentOnboardingPage({
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('account_type,first_name,last_name,phone,institution_id,course_of_study,study_level,school_email,onboarding_completed_at')
+    .select('account_type,first_name,last_name,phone,institution_id,course_of_study,study_level,school_email,onboarding_completed_at,student_verification_status')
     .eq('id', userId)
     .single()
 
   if (profile?.account_type === 'vendor') redirect('/onboarding/vendor')
-  if (profile?.onboarding_completed_at) redirect('/student')
+
+  const { data: existingVerification } = await supabase
+    .from('student_verifications')
+    .select('status')
+    .eq('student_id', userId)
+    .maybeSingle()
+
+  if (profile?.onboarding_completed_at && existingVerification && ['pending','under_review','verified'].includes(existingVerification.status)) redirect('/student')
 
   const { data: institutions } = await supabase
     .from('institutions')

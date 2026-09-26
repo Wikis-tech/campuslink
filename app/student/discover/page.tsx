@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Bookmark, Clock3, MapPin, Package, Search, ShieldCheck, SlidersHorizontal, Star, Wrench } from 'lucide-react'
+import { Bookmark, Clock3, Globe2, MapPin, Package, Search, ShieldCheck, SlidersHorizontal, Star, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
 import { getVendorAvailability } from '@/lib/phase5f'
@@ -253,7 +253,9 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
               </div>
             </Link>
           })}</div>
-        </section> : showListings ? <div className="empty-state"><Search size={34}/><h2>No matching listings yet</h2><p>Try a shorter phrase, another category or turn off “Available now”. Smart search already checks close spellings, Vendor names and related listing text.</p><div className="service-tags" style={{justifyContent:'center'}}>{suggestedCategories.map((item:any) => <Link className="service-tag" key={item.id} href={`/student/discover?category=${encodeURIComponent(item.slug)}`}>{item.name}</Link>)}</div></div> : null}
+        </section> : showListings ? <div className="empty-state"><Search size={34}/><h2>No matching listings yet</h2><p>Try a shorter phrase, another category or turn off “Available now”. Smart search already checks close spellings, Vendor names and related listing text.</p><div className="service-tags" style={{justifyContent:'center'}}>{suggestedCategories.map((item:any) => <Link className="service-tag" key={item.id} href={`/student/discover?category=${encodeURIComponent(item.slug)}`}>{item.name}</Link>)}</div><Link href={`/student/explore-campuses?q=${encodeURIComponent(params.q || '')}`} className="btn btn-ghost" style={{marginTop:18,display:'inline-flex',alignItems:'center',gap:8}}><Globe2 size={16}/> Explore other campuses</Link></div> : null}
+
+        {(q || category) && <section className="v3-surface" style={{marginTop:20,padding:'18px 20px',display:'flex',justifyContent:'space-between',gap:16,alignItems:'center',flexWrap:'wrap'}}><div><strong>Need more options?</strong><p style={{margin:'4px 0 0',color:'var(--v3-muted, #667085)'}}>Your campus stays first, but you can also browse safe, approved Vendors from other Campus Link schools.</p></div><Link href={`/student/explore-campuses?q=${encodeURIComponent(params.q || '')}`} className="btn btn-ghost"><Globe2 size={16}/> Explore other campuses</Link></section>}
 
         {showVendors && filteredVendors.length ? <section className="cl-student-section"><div className="cl-student-section-head"><div><h2>{q ? 'Relevant Vendor storefronts' : 'Trusted Vendor storefronts'}</h2><p>Vendor ranking uses search relevance, reputation and current availability. Subscription tier is deliberately excluded.</p></div></div><div className="cl-vendor-grid-fiverr">{filteredVendors.slice(0,12).map((vendor) => {
           const vendorServices = servicesByVendor.get(vendor.id) || []
