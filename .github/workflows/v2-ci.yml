@@ -1,10 +1,15 @@
-name: Campus Link V2 CI
+name: Campus Link Release Gate
 
 on:
   push:
-    branches: [campuslink-v2-supabase]
+    branches:
+      - campuslink-ui-v3-experiment
+      - campuslink-v2-supabase
   pull_request:
-    branches: [master]
+    branches:
+      - campuslink-ui-v3-experiment
+      - master
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,11 +17,11 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_test
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: https://campuslink.name.ng
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,12 +30,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: package.json
 
-      - name: Install dependencies
+      - name: Install pinned dependencies
         run: npm install --no-audit --no-fund
+
+      - name: Phase 7F release invariants
+        run: npm run check:phase7f
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Production dependency audit
+        run: npm audit --audit-level=high --omit=dev
 
       - name: Production build
         run: npm run build
