@@ -7,7 +7,7 @@ export default async function CheckEmailPage({
 }: {
   searchParams: Promise<{ email?: string; error?: string; sent?: string }>
 }) {
-  const { email = '', error, sent } = await searchParams
+  const { email = '', error, sent, notice } = await searchParams
 
   return (
     <main className="auth-shell">
@@ -19,6 +19,7 @@ export default async function CheckEmailPage({
         </p>
 
         {error ? <div className="auth-error">{error}</div> : null}
+        {notice ? <div className="auth-success">{notice}</div> : null}
         {sent ? <div className="auth-success">A fresh verification email has been sent.</div> : null}
 
         <form action={verifyEmailCode} className="auth-form otp-form">

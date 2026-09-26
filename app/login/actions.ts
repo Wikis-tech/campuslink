@@ -16,6 +16,10 @@ export async function login(formData: FormData) {
   const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error || !authData.user) {
+    const normalized = (error?.message || '').toLowerCase()
+    if (normalized.includes('email not confirmed') || normalized.includes('email_not_confirmed')) {
+      redirect(`/register/check-email?email=${encodeURIComponent(email)}&notice=${encodeURIComponent('This account exists, but the email still needs verification. Enter the code from your email or request a fresh one.')}`)
+    }
     redirect('/login?error=Invalid%20email%20or%20password')
   }
 

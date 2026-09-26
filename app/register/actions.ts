@@ -19,7 +19,7 @@ export async function register(formData: FormData) {
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.signUp({
+  const { data: signupData, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -43,6 +43,14 @@ export async function register(formData: FormData) {
       redirect('/register?error=We%20could%20not%20send%20the%20verification%20email.%20Please%20try%20again%20in%20a%20moment')
     }
     redirect('/register?error=We%20could%20not%20create%20your%20account.%20Please%20try%20again')
+  }
+
+  // With email confirmation enabled, Supabase intentionally returns an obfuscated
+  // user for duplicate sign-ups to reduce email-enumeration risk. That response has
+  // no identities. Treat it as an existing/pending account instead of pretending a
+  // fresh verification email was sent.
+  if (signupData.user && Array.isArray(signupData.user.identities) && signupData.user.identities.length === 0) {
+    redirect(`/login?notice=${encodeURIComponent('An account already exists or is awaiting email verification. Sign in with this email; if verification is still required, we will guide you to it.')}&email=${encodeURIComponent(email)}`)
   }
 
   redirect(`/register/check-email?email=${encodeURIComponent(email)}`)

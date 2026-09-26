@@ -59,23 +59,23 @@ export async function completeVendorOnboarding(formData: FormData) {
   const verificationDocument = formData.get('verification_document')
 
   if (!businessName || description.length < 20 || !whatsapp || !locationText || !institutionId || !categoryId || !serviceName) {
-    redirect('/onboarding/vendor?error=Please%20complete%20all%20required%20fields%20and%20use%20a%20clear%20business%20description')
+    redirect('/onboarding/vendor?error=Please%20complete%20all%20required%20fields%20and%20use%20a%20clear%20business%20description#vendor-onboarding-feedback')
   }
 
   if (!/^[+0-9 ()-]{7,30}$/.test(whatsapp)) {
-    redirect('/onboarding/vendor?error=Enter%20a%20valid%20WhatsApp%20number')
+    redirect('/onboarding/vendor?error=Enter%20a%20valid%20WhatsApp%20number#vendor-onboarding-feedback')
   }
 
   if (businessEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(businessEmail)) {
-    redirect('/onboarding/vendor?error=Enter%20a%20valid%20business%20email')
+    redirect('/onboarding/vendor?error=Enter%20a%20valid%20business%20email#vendor-onboarding-feedback')
   }
 
   if (!validOptionalUrl(websiteUrl)) {
-    redirect('/onboarding/vendor?error=Website%20must%20start%20with%20http%3A%2F%2F%20or%20https%3A%2F%2F')
+    redirect('/onboarding/vendor?error=Website%20must%20start%20with%20http%3A%2F%2F%20or%20https%3A%2F%2F#vendor-onboarding-feedback')
   }
 
   if (!['student_vendor', 'community_vendor', 'registered_business'].includes(vendorType)) {
-    redirect('/onboarding/vendor?error=Choose%20a%20valid%20vendor%20type')
+    redirect('/onboarding/vendor?error=Choose%20a%20valid%20vendor%20type#vendor-onboarding-feedback')
   }
 
   const [{ data: institution }, { data: category }] = await Promise.all([
@@ -84,34 +84,36 @@ export async function completeVendorOnboarding(formData: FormData) {
   ])
 
   if (!institution || !category) {
-    redirect('/onboarding/vendor?error=Select%20a%20valid%20school%20and%20service%20category')
+    redirect('/onboarding/vendor?error=Select%20a%20valid%20school%20and%20service%20category#vendor-onboarding-feedback')
   }
 
   if (!(verificationDocument instanceof File) || verificationDocument.size === 0) {
-    redirect('/onboarding/vendor?error=Upload%20a%20verification%20document%20before%20submitting')
+    redirect('/onboarding/vendor?error=Upload%20a%20verification%20document%20before%20submitting#vendor-onboarding-feedback')
   }
 
   if (verificationDocument.size > MAX_DOCUMENT_BYTES || !ALLOWED_DOCUMENT_TYPES.has(verificationDocument.type)) {
-    redirect('/onboarding/vendor?error=Verification%20document%20must%20be%20PDF%2C%20JPG%2C%20PNG%20or%20WEBP%20and%20under%205MB')
+    redirect('/onboarding/vendor?error=Verification%20document%20must%20be%20PDF%2C%20JPG%2C%20PNG%20or%20WEBP%20and%20under%205MB#vendor-onboarding-feedback')
   }
   let detectedExtension: string
   try {
     detectedExtension = await assertSafeVerificationUpload(verificationDocument)
   } catch {
-    redirect('/onboarding/vendor?error=Verification%20document%20content%20does%20not%20match%20its%20declared%20file%20type')
+    redirect('/onboarding/vendor?error=Verification%20document%20content%20does%20not%20match%20its%20declared%20file%20type#vendor-onboarding-feedback')
   }
 
   const allowedDocTypes = vendorType === 'student_vendor'
     ? ['student_id', 'government_id', 'portfolio_evidence']
-    : ['government_id', 'cac_document', 'proof_of_address', 'business_certificate', 'portfolio_evidence']
+    : vendorType === 'registered_business'
+      ? ['student_id', 'government_id', 'cac_document', 'proof_of_address', 'business_certificate', 'portfolio_evidence']
+      : ['government_id', 'proof_of_address', 'business_certificate', 'portfolio_evidence']
 
   if (!allowedDocTypes.includes(documentType)) {
-    redirect('/onboarding/vendor?error=Choose%20a%20verification%20document%20appropriate%20for%20your%20vendor%20type')
+    redirect('/onboarding/vendor?error=Choose%20a%20verification%20document%20appropriate%20for%20your%20vendor%20type#vendor-onboarding-feedback')
   }
 
   const priceFrom = priceFromRaw ? Number(priceFromRaw.replace(/,/g, '')) : null
   if (priceFrom !== null && (!Number.isFinite(priceFrom) || priceFrom < 0 || priceFrom > 100000000)) {
-    redirect('/onboarding/vendor?error=Enter%20a%20valid%20starting%20price')
+    redirect('/onboarding/vendor?error=Enter%20a%20valid%20starting%20price#vendor-onboarding-feedback')
   }
 
   // Upload first. If any database step fails, the private object is removed before returning an error.
@@ -120,7 +122,7 @@ export async function completeVendorOnboarding(formData: FormData) {
     .from('verification-documents')
     .upload(storagePath, verificationDocument, { contentType: verificationDocument.type, upsert: false })
 
-  if (uploadError) redirect('/onboarding/vendor?error=We%20could%20not%20upload%20your%20verification%20document')
+  if (uploadError) redirect('/onboarding/vendor?error=We%20could%20not%20upload%20your%20verification%20document#vendor-onboarding-feedback')
 
   const cleanupUpload = async () => {
     await supabase.storage.from('verification-documents').remove([storagePath])
@@ -143,7 +145,7 @@ export async function completeVendorOnboarding(formData: FormData) {
 
   if (vendorError) {
     await cleanupUpload()
-    redirect('/onboarding/vendor?error=We%20could%20not%20save%20your%20business%20profile')
+    redirect('/onboarding/vendor?error=We%20could%20not%20save%20your%20business%20profile#vendor-onboarding-feedback')
   }
 
   const { error: schoolError } = await supabase.from('vendor_institutions').upsert({
@@ -158,7 +160,7 @@ export async function completeVendorOnboarding(formData: FormData) {
 
   if (schoolError) {
     await cleanupUpload()
-    redirect('/onboarding/vendor?error=We%20could%20not%20save%20your%20school%20selection')
+    redirect('/onboarding/vendor?error=We%20could%20not%20save%20your%20school%20selection#vendor-onboarding-feedback')
   }
 
   const { data: existingService } = await supabase
@@ -181,7 +183,7 @@ export async function completeVendorOnboarding(formData: FormData) {
 
     if (serviceError) {
       await cleanupUpload()
-      redirect('/onboarding/vendor?error=Your%20profile%20was%20saved%20but%20the%20service%20could%20not%20be%20added')
+      redirect('/onboarding/vendor?error=Your%20profile%20was%20saved%20but%20the%20service%20could%20not%20be%20added#vendor-onboarding-feedback')
     }
   }
 
@@ -195,7 +197,7 @@ export async function completeVendorOnboarding(formData: FormData) {
 
   if (documentError) {
     await cleanupUpload()
-    redirect('/onboarding/vendor?error=We%20could%20not%20create%20the%20verification%20record')
+    redirect('/onboarding/vendor?error=We%20could%20not%20create%20the%20verification%20record#vendor-onboarding-feedback')
   }
 
   const now = new Date().toISOString()
@@ -207,7 +209,7 @@ export async function completeVendorOnboarding(formData: FormData) {
   if (completionError) {
     if (documentRow?.id) await supabase.from('vendor_documents').delete().eq('id', documentRow.id).eq('vendor_id', userId)
     await cleanupUpload()
-    redirect('/onboarding/vendor?error=Your%20submission%20could%20not%20be%20finalised.%20Please%20try%20again')
+    redirect('/onboarding/vendor?error=Your%20submission%20could%20not%20be%20finalised.%20Please%20try%20again#vendor-onboarding-feedback')
   }
 
   redirect('/vendor-v2?onboarding=complete')

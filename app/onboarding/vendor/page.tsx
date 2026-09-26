@@ -58,7 +58,7 @@ export default async function VendorOnboardingPage({
             <p>Only approved vendors appear in discovery. Your verification documents stay private.</p>
           </div>
 
-          {params.error ? <div className="auth-error">{params.error}</div> : null}
+          {params.error ? <div id="vendor-onboarding-feedback" className="auth-error" role="alert" aria-live="assertive">{params.error}</div> : null}
 
           <form action={completeVendorOnboarding} className="onboarding-form">
             <div className="form-grid-2">
@@ -147,13 +147,14 @@ export default async function VendorOnboardingPage({
                 <label htmlFor="document_type">Verification evidence</label>
                 <select id="document_type" name="document_type" required defaultValue="">
                   <option value="" disabled>Select document type</option>
-                  <option value="student_id">Student ID</option>
+                  <option value="student_id">Student ID — student vendor or student-owned registered business</option>
                   <option value="government_id">Government ID</option>
-                  <option value="cac_document">CAC document</option>
+                  <option value="cac_document">CAC document — registered business</option>
                   <option value="proof_of_address">Proof of address</option>
                   <option value="business_certificate">Business certificate</option>
                   <option value="portfolio_evidence">Portfolio / service evidence</option>
                 </select>
+                <small>Student vendors can use a Student ID. A registered business owned or operated by a student may also use the owner's Student ID for identity evidence; CAC/business documents remain stronger business evidence.</small>
               </div>
               <div className="upload-box compact-upload">
                 <div><ShieldCheck size={20} /><strong>Upload evidence</strong></div>
@@ -164,6 +165,7 @@ export default async function VendorOnboardingPage({
 
             <div className="onboarding-note">Submitting does not instantly publish your business. A Campus Link admin reviews your identity/business evidence and your selected campus before approval.</div>
             <button className="btn btn-primary onboarding-submit" type="submit">Submit vendor profile for review</button>
+            <small className="onboarding-submit-note">If anything needs attention, Campus Link will return you directly to the message above instead of leaving you at the bottom of the form.</small>
           </form>
         </section>
       </section>
