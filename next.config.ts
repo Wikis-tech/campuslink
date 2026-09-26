@@ -28,16 +28,6 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.campuslink.name.ng' }],
-        destination: 'https://campuslink.name.ng/:path*',
-        permanent: true,
-      },
-    ]
-  },
   experimental: {
     serverActions: {
       bodySizeLimit: '4.4mb',

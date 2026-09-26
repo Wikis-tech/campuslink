@@ -28,7 +28,7 @@ requireAll('next.config.ts',
   'private route families must remain excluded from indexing')
 requireText('next.config.ts', "Strict-Transport-Security", 'HSTS must remain enabled')
 requireText('next.config.ts', "Content-Security-Policy", 'CSP must remain enabled')
-requireText('lib/seo-privacy.ts', "https://campuslink.name.ng", 'canonical production origin must remain explicit')
+requireText('lib/seo-privacy.ts', "https://www.campuslink.name.ng", 'canonical production origin must match the Vercel primary www host')
 requireText('lib/paystack.ts', "createHmac('sha512'", 'Paystack webhook signatures must remain HMAC-SHA512 verified')
 requireText('lib/paystack.ts', 'timingSafeEqual', 'Paystack webhook verification must remain timing safe')
 requireText('app/api/paystack/webhook/route.ts', 'reconcileSuccessfulPaystackPayment', 'signed webhook must still reconcile against Paystack/server ledger')

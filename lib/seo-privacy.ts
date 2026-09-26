@@ -1,4 +1,4 @@
-const DEFAULT_CANONICAL_ORIGIN = 'https://campuslink.name.ng'
+const DEFAULT_CANONICAL_ORIGIN = 'https://www.campuslink.name.ng'
 
 export function getCanonicalOrigin() {
   const configured = process.env.NEXT_PUBLIC_APP_URL?.trim() || DEFAULT_CANONICAL_ORIGIN
@@ -6,8 +6,8 @@ export function getCanonicalOrigin() {
   try {
     const url = new URL(configured)
     url.protocol = 'https:'
-    if (url.hostname.toLowerCase() === 'www.campuslink.name.ng') {
-      url.hostname = 'campuslink.name.ng'
+    if (url.hostname.toLowerCase() === 'campuslink.name.ng') {
+      url.hostname = 'www.campuslink.name.ng'
     }
     url.pathname = ''
     url.search = ''
