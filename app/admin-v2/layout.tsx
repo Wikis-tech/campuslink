@@ -24,26 +24,26 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AdminMobileNav email={email} role={roleLabel} isSuperAdmin={context.globalRole === 'super_admin'}/>
       <div className="admin-shell">
         <aside className="admin-sidebar admin-fiverr-sidebar">
-          <Link href="/admin-v2" className="admin-brand">Campus<span>Link</span> Admin</Link>
+          <Link prefetch={false} href="/control-center" className="admin-brand">Campus<span>Link</span> Admin</Link>
           <div className="admin-sidebar-tools">
             <div className="admin-profile-card"><span className="admin-profile-avatar">{email.slice(0,1).toUpperCase()}</span><div><strong>{email}</strong><small>{roleLabel}</small></div></div>
             <div className="admin-role"><strong>{roleLabel}</strong>{context.isGlobalAdmin ? 'Global control-plane access' : `${context.schoolAssignments.length} school assignment${context.schoolAssignments.length === 1 ? '' : 's'}`}</div>
             <ThemeToggle compact />
           </div>
           <nav className="admin-nav">
-            <Link href="/admin-v2"><LayoutDashboard /> Overview</Link>
-            <Link href="/admin-v2/marketplace"><ShoppingBag /> Marketplace</Link>
-            <Link href="/admin-v2/campus-intelligence"><CalendarRange /> Campus Intelligence</Link>
-            <Link href="/admin-v2/safety"><ShieldAlert /> Trust & Safety</Link>
-            <Link href="/admin-v2/schools"><Building2 /> Schools</Link>
-            <Link href="/admin-v2/students"><GraduationCap /> Students</Link>
-            <Link href="/admin-v2/vendors"><Store /> Vendors</Link>
-            <Link href="/admin-v2/reviews"><MessageSquareText /> Reviews</Link>
-            <Link href="/admin-v2/reports"><LifeBuoy /> Reports</Link>
-            <Link href="/admin-v2/categories"><FolderKanban /> Categories</Link>
-            <Link href="/admin-v2/admins"><UserCog /> Admins</Link>
-            <Link href="/admin-v2/audit"><BarChart3 /> Audit</Link>
-            {context.globalRole === 'super_admin' ? <Link href="/admin-v2/branding"><Palette /> Branding</Link> : null}
+            <Link prefetch={false} href="/control-center"><LayoutDashboard /> Overview</Link>
+            <Link prefetch={false} href="/control-center/marketplace"><ShoppingBag /> Marketplace</Link>
+            <Link prefetch={false} href="/control-center/campus-intelligence"><CalendarRange /> Campus Intelligence</Link>
+            <Link prefetch={false} href="/control-center/safety"><ShieldAlert /> Trust & Safety</Link>
+            <Link prefetch={false} href="/control-center/schools"><Building2 /> Schools</Link>
+            <Link prefetch={false} href="/control-center/students"><GraduationCap /> Students</Link>
+            <Link prefetch={false} href="/control-center/vendors"><Store /> Vendors</Link>
+            <Link prefetch={false} href="/control-center/reviews"><MessageSquareText /> Reviews</Link>
+            <Link prefetch={false} href="/control-center/reports"><LifeBuoy /> Reports</Link>
+            <Link prefetch={false} href="/control-center/categories"><FolderKanban /> Categories</Link>
+            <Link prefetch={false} href="/control-center/admins"><UserCog /> Admins</Link>
+            <Link prefetch={false} href="/control-center/audit"><BarChart3 /> Audit</Link>
+            {context.globalRole === 'super_admin' ? <Link prefetch={false} href="/control-center/branding"><Palette /> Branding</Link> : null}
           </nav>
           <div className="admin-sidebar-foot">
             <div className="admin-security-note"><ShieldCheck size={15}/> Auto sign-out after 20 minutes idle</div>

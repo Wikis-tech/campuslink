@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '4.4mb',
     },
   },
+  async rewrites() {
+    return [
+      { source: '/control-center', destination: '/admin-v2' },
+      { source: '/control-center/:path*', destination: '/admin-v2/:path*' },
+    ]
+  },
   async headers() {
     return [
       {

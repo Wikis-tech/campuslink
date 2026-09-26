@@ -17,7 +17,7 @@ export default async function AdminMfaPage() {
   if (!globalAdmin && !(schoolRoles || []).length) notFound()
 
   const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
-  if (aal?.currentLevel === 'aal2') redirect('/admin-v2')
+  if (aal?.currentLevel === 'aal2') redirect('/control-center')
 
   return <main className="admin-login-page">
     <section className="admin-login-card">
