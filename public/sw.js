@@ -4,7 +4,7 @@
  * - Only cache versioned Next.js static assets plus a generic offline page.
  * - Logout purges all Campus Link caches.
  */
-const VERSION = 'phase7c-v2'
+const VERSION = 'phase7c-v3'
 const STATIC_CACHE = `campuslink-static-${VERSION}`
 const OFFLINE_CACHE = `campuslink-offline-${VERSION}`
 const OFFLINE_URL = '/offline.html'
@@ -12,6 +12,7 @@ const OFFLINE_URL = '/offline.html'
 const PROTECTED_PREFIXES = [
   '/admin',
   '/admin-v2',
+  '/control-center',
   '/admin-login-campus',
   '/student',
   '/vendor-v2',

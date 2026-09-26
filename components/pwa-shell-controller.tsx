@@ -45,6 +45,8 @@ export function PwaShellController() {
       pathname.startsWith('/admin/') ||
       pathname === '/admin-v2' ||
       pathname.startsWith('/admin-v2/') ||
+      pathname === '/control-center' ||
+      pathname.startsWith('/control-center/') ||
       pathname === '/admin-login-campus' ||
       pathname.startsWith('/admin-login-campus/')
 
