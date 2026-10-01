@@ -59,7 +59,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
 
   return <main className="cl-student-page">
     <VendorAnalyticsBeacon vendorId={vendor.id} event="profile_view"/>
-    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name}/>
+    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell phase5g-storefront">
       {!phase5g.ready ? <div className="notice error">Some advanced trust, review and reporting features are temporarily unavailable while Campus Link completes a safety-system update. You can still browse this Vendor.</div> : null}
       {notices.error ? <div className="notice error">{notices.error}</div> : null}
