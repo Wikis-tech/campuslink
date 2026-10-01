@@ -8,9 +8,13 @@ export default async function AdminDashboard() {
   const context = await requireAdminContext()
   const supabase = await createClient()
 
-  const [students, vendors, pendingStudents, pendingVendors, schools, reports] = await Promise.all([
+  const [students, onboardedStudents, verifiedStudents, vendorAccounts, vendorProfiles, completedVendorProfiles, pendingStudents, pendingVendors, schools, reports] = await Promise.all([
     supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'student'),
+    supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'student').not('onboarding_completed_at', 'is', null),
+    supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'student').eq('student_verification_status', 'verified'),
+    supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'vendor'),
     supabase.from('vendor_profiles').select('id', { count: 'exact', head: true }),
+    supabase.from('vendor_profiles').select('id', { count: 'exact', head: true }).not('onboarding_completed_at', 'is', null),
     supabase.from('student_verifications').select('student_id', { count: 'exact', head: true }).in('status', ['pending','under_review']),
     supabase.from('vendor_profiles').select('id', { count: 'exact', head: true }).in('verification_status', ['pending','under_review']),
     supabase.from('institutions').select('id', { count: 'exact', head: true }).eq('is_active', true),
@@ -20,7 +24,14 @@ export default async function AdminDashboard() {
   const role = context.globalRole || context.schoolAssignments[0]?.role || 'admin'
   const scoped = !context.isGlobalAdmin
   const studentCount = students.count || 0
-  const vendorCount = vendors.count || 0
+  const studentOnboardedCount = onboardedStudents.count || 0
+  const studentVerifiedCount = verifiedStudents.count || 0
+  const studentIncompleteCount = Math.max(0, studentCount - studentOnboardedCount)
+  const vendorAccountCount = vendorAccounts.count || 0
+  const vendorProfileCount = vendorProfiles.count || 0
+  const vendorCompletedCount = completedVendorProfiles.count || 0
+  const vendorIncompleteCount = context.isGlobalAdmin ? Math.max(0, vendorAccountCount - vendorProfileCount) : 0
+  const vendorCount = context.isGlobalAdmin ? vendorAccountCount : vendorProfileCount
   const schoolCount = schools.count || 0
   const reportCount = reports.count || 0
   const studentQueue = pendingStudents.count || 0
@@ -43,9 +54,17 @@ export default async function AdminDashboard() {
 
       <section className="cl-data-rail admin-data-rail" aria-label="Campus Link operational summary">
         <div className="brand"><span>Students in scope</span><strong>{studentCount}</strong><small>Registered student accounts</small></div>
-        <div className="accent"><span>Vendors in scope</span><strong>{vendorCount}</strong><small>Businesses currently managed</small></div>
+        <div className="accent"><span>Vendors in scope</span><strong>{vendorCount}</strong><small>{context.isGlobalAdmin ? 'Registered Vendor accounts' : 'Vendor profiles visible to your school scope'}</small></div>
         <div><span>Active schools</span><strong>{schoolCount}</strong><small>Available in onboarding</small></div>
         <div><span>Open reports</span><strong>{reportCount}</strong><small>Cases requiring attention</small></div>
+      </section>
+
+      <section className="admin-section modern-admin-section">
+        <div className="admin-section-head"><div><h2>Registration health</h2><p>Account totals and completed onboarding are shown separately so unfinished registration is never mistaken for failed verification.</p></div><UsersRound size={20}/></div>
+        <div className="admin-grid">
+          <article className="admin-stat"><span>Student journey</span><strong>{studentOnboardedCount} / {studentCount}</strong><small>{studentVerifiedCount} verified · {studentIncompleteCount} incomplete onboarding.</small></article>
+          <article className="admin-stat"><span>Vendor journey</span><strong>{vendorCompletedCount} / {context.isGlobalAdmin ? vendorAccountCount : vendorProfileCount}</strong><small>{context.isGlobalAdmin ? `${vendorProfileCount} business profiles · ${vendorIncompleteCount} accounts without a profile.` : 'Completed Vendor profiles in your current school scope.'}</small></article>
+        </div>
       </section>
 
       <section className="admin-overview-grid">
