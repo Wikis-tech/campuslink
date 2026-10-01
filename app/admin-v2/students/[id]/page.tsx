@@ -24,6 +24,8 @@ export default async function AdminStudentDetailPage({ params }: { params: Promi
   const vendorIds = Array.from(new Set([...(reviews || []).map((row) => row.vendor_id), ...(reports || []).map((row) => row.vendor_id), ...(contacts || []).map((row) => row.vendor_id), ...(saved || []).map((row) => row.vendor_id)].filter(Boolean))) as string[]
   const { data: vendors } = vendorIds.length ? await supabase.from('vendor_profiles').select('id,business_name').in('id', vendorIds) : { data: [] as any[] }
   const vendorMap = new Map((vendors || []).map((vendor) => [vendor.id, vendor.business_name]))
+  const uniqueVendorsContacted = new Set((contacts || []).map((contact) => contact.vendor_id).filter(Boolean)).size
+  const contactActions = contacts?.length || 0
   const fullName = [student.first_name, student.last_name].filter(Boolean).join(' ') || 'Student'
 
   return <>
@@ -31,7 +33,7 @@ export default async function AdminStudentDetailPage({ params }: { params: Promi
 
     <section className="admin-grid">
       <article className="admin-stat"><span>Verification</span><strong>{student.student_verification_status?.replaceAll('_',' ') || 'pending'}</strong><small>{verification?.verification_method?.replaceAll('_',' ') || 'No verification method yet'}.</small></article>
-      <article className="admin-stat"><span>Contacts started</span><strong>{contacts?.length || 0}</strong><small>Latest marketplace contact events in view.</small></article>
+      <article className="admin-stat"><span>Vendors contacted</span><strong>{uniqueVendorsContacted}</strong><small>{contactActions} contact action{contactActions === 1 ? '' : 's'} recorded in the latest activity window.</small></article>
       <article className="admin-stat"><span>Saved vendors</span><strong>{saved?.length || 0}</strong><small>Current shortlist records visible to Admin scope.</small></article>
       <article className="admin-stat"><span>Reviews / reports</span><strong>{reviews?.length || 0} / {reports?.length || 0}</strong><small>Marketplace reputation and safety contributions.</small></article>
     </section>
