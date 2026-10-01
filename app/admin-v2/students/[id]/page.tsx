@@ -6,8 +6,9 @@ import { requireAdminContext } from '../../lib'
 
 export default async function AdminStudentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  await requireAdminContext()
+  const context = await requireAdminContext()
   const supabase = await createClient()
+  const canViewContactActivity = context.globalRole === 'super_admin' || ['operations_admin','analyst'].includes(context.globalRole || '')
 
   const { data: student } = await supabase.from('profiles').select('id,first_name,last_name,phone,institution_id,course_of_study,study_level,student_verification_status,onboarding_completed_at,created_at').eq('id', id).eq('account_type', 'student').maybeSingle()
   if (!student) notFound()
@@ -17,7 +18,9 @@ export default async function AdminStudentDetailPage({ params }: { params: Promi
     supabase.from('student_verifications').select('status,verification_method,matric_number,school_email,submitted_at,review_note').eq('student_id', id).maybeSingle(),
     supabase.from('reviews').select('id,vendor_id,rating,comment,status,created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('complaints').select('id,vendor_id,title,status,created_at').eq('reporter_id', id).order('created_at', { ascending: false }).limit(30),
-    supabase.from('contact_events').select('id,vendor_id,channel,created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(100),
+    canViewContactActivity
+      ? supabase.from('contact_events').select('id,vendor_id,channel,created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(100)
+      : Promise.resolve({ data: [] as any[] }),
     supabase.from('saved_vendors').select('vendor_id,created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(100),
   ])
 
@@ -33,7 +36,7 @@ export default async function AdminStudentDetailPage({ params }: { params: Promi
 
     <section className="admin-grid">
       <article className="admin-stat"><span>Verification</span><strong>{student.student_verification_status?.replaceAll('_',' ') || 'pending'}</strong><small>{verification?.verification_method?.replaceAll('_',' ') || 'No verification method yet'}.</small></article>
-      <article className="admin-stat"><span>Vendors contacted</span><strong>{uniqueVendorsContacted}</strong><small>{contactActions} contact action{contactActions === 1 ? '' : 's'} recorded in the latest activity window.</small></article>
+      <article className="admin-stat"><span>Vendors contacted</span>{canViewContactActivity ? <><strong>{uniqueVendorsContacted}</strong><small>{contactActions} contact action{contactActions === 1 ? '' : 's'} recorded in the latest activity window.</small></> : <><strong>Restricted</strong><small>Contact-event history is limited to platform operations/analytics roles.</small></>}</article>
       <article className="admin-stat"><span>Saved vendors</span><strong>{saved?.length || 0}</strong><small>Current shortlist records visible to Admin scope.</small></article>
       <article className="admin-stat"><span>Reviews / reports</span><strong>{reviews?.length || 0} / {reports?.length || 0}</strong><small>Marketplace reputation and safety contributions.</small></article>
     </section>
