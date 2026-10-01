@@ -6,15 +6,26 @@ import { BadgeCheck, Bookmark, Home, LogOut, Menu, Search, ShieldCheck, UserRoun
 import { useEffect, useRef, useState } from 'react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
-const navItems = [
+const baseNavItems = [
   { href: '/student', label: 'Home', icon: Home },
   { href: '/student/discover', label: 'Discover', icon: Search },
   { href: '/student/saved', label: 'Saved', icon: Bookmark },
   { href: '/student/safety', label: 'Safety', icon: ShieldCheck },
-  { href: '/onboarding/student', label: 'Verification', icon: BadgeCheck },
 ]
 
-export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?: string | null; schoolName?: string | null }) {
+export function StudentMarketplaceHeader({
+  firstName,
+  schoolName,
+  verificationStatus,
+}: {
+  firstName?: string | null
+  schoolName?: string | null
+  verificationStatus?: string | null
+}) {
+  const isVerified = verificationStatus === 'verified'
+  const navItems = isVerified
+    ? baseNavItems
+    : [...baseNavItems, { href: '/onboarding/student', label: 'Verification', icon: BadgeCheck }]
   const pathname = usePathname()
   const initial = (firstName || 'S').slice(0, 1).toUpperCase()
   const [mobileAccountOpen, setMobileAccountOpen] = useState(false)
@@ -58,7 +69,7 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
           </form>
 
           <div className="cl-student-account-tools">
-            <Link href="/onboarding/student" className="cl-student-campus-pill" title={schoolName || 'Complete your campus profile'}>
+            <Link href={isVerified ? '/student/profile' : '/onboarding/student'} className="cl-student-campus-pill" title={schoolName || 'Complete your campus profile'}>
               <ShieldCheck size={15} />
               <span>{schoolName || 'Set campus'}</span>
             </Link>
@@ -69,7 +80,7 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
                 <span className="cl-student-account-copy"><strong>{firstName || 'Student'}</strong><small>Student account</small></span>
               </summary>
               <div className="cl-student-account-popover">
-                <Link href="/onboarding/student"><UserRound size={16}/> Profile & verification</Link>
+                <Link href={isVerified ? '/student/profile' : '/onboarding/student'}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
                 <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
                 <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
                 <form action="/auth/signout" method="post"><button type="submit">Sign out</button></form>
@@ -112,7 +123,7 @@ export function StudentMarketplaceHeader({ firstName, schoolName }: { firstName?
               <span className="cl-student-avatar">{initial}</span>
               <div><strong>{firstName || 'Student'}</strong><small>{schoolName || 'Campus Link account'}</small></div>
             </div>
-            <Link href="/onboarding/student"><UserRound size={16}/> Profile & verification</Link>
+            <Link href={isVerified ? '/student/profile' : '/onboarding/student'}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
             <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
             <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
             <div className="cl-student-mobile-appearance">
