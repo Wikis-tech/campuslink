@@ -32,7 +32,7 @@ export default async function AdminDashboard() {
   const vendorCompletedCount = completedVendorProfiles.count || 0
   const vendorIncompleteCount = context.isGlobalAdmin ? Math.max(0, vendorAccountCount - vendorProfileCount) : 0
   const vendorCount = context.isGlobalAdmin ? vendorAccountCount : vendorProfileCount
-  const schoolCount = schools.count || 0
+  const schoolCount = context.isGlobalAdmin ? (schools.count || 0) : context.schoolAssignments.length
   const reportCount = reports.count || 0
   const studentQueue = pendingStudents.count || 0
   const vendorQueue = pendingVendors.count || 0
@@ -55,7 +55,7 @@ export default async function AdminDashboard() {
       <section className="cl-data-rail admin-data-rail" aria-label="Campus Link operational summary">
         <div className="brand"><span>Students in scope</span><strong>{studentCount}</strong><small>Registered student accounts</small></div>
         <div className="accent"><span>Vendors in scope</span><strong>{vendorCount}</strong><small>{context.isGlobalAdmin ? 'Registered Vendor accounts' : 'Vendor profiles visible to your school scope'}</small></div>
-        <div><span>Active schools</span><strong>{schoolCount}</strong><small>Available in onboarding</small></div>
+        <div><span>{context.isGlobalAdmin ? 'Active schools' : 'Assigned school'}</span><strong>{schoolCount}</strong><small>{context.isGlobalAdmin ? 'Available in onboarding' : 'Your current Admin school scope'}</small></div>
         <div><span>Open reports</span><strong>{reportCount}</strong><small>Cases requiring attention</small></div>
       </section>
 
@@ -72,7 +72,7 @@ export default async function AdminDashboard() {
         <section className="admin-priority-card cl-editorial-surface">
           <div className="admin-priority-head"><div><span>Priority queue</span><strong>What needs attention now</strong></div><Activity size={20}/></div>
           <Link href="/control-center/students" className="priority-row"><div className="priority-icon blue"><GraduationCap/></div><div><strong>Student verification</strong><span>Review student identity and school evidence.</span></div><b>{studentQueue}</b><ArrowUpRight/></Link>
-          <Link href="/control-center/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>Vendor verification</strong><span>Review identity before campus visibility.</span></div><b>{vendorQueue}</b><ArrowUpRight/></Link>
+          <Link href="/control-center/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>{context.isGlobalAdmin ? 'Vendor verification' : 'Vendor campus access'}</strong><span>{context.isGlobalAdmin ? 'Review identity before campus visibility.' : 'Review Vendor access requests for your assigned school.'}</span></div><b>{vendorQueue}</b><ArrowUpRight/></Link>
           <Link href="/control-center/reports" className="priority-row"><div className="priority-icon amber"><LifeBuoy/></div><div><strong>Safety reports</strong><span>Investigate complaints and suspicious activity.</span></div><b>{reportCount}</b><ArrowUpRight/></Link>
         </section>
       </section>
@@ -80,7 +80,7 @@ export default async function AdminDashboard() {
       <section className="admin-section modern-admin-section">
         <div className="admin-section-head"><div><h2>Operations shortcuts</h2><p>Move directly into the areas that keep Campus Link organised and trustworthy.</p></div><UsersRound size={20}/></div>
         <div className="admin-section-body queue-grid modern-queue-grid">
-          <Link href="/control-center/schools" className="queue-card"><Building2/><h3>School management</h3><p>Add institutions, configure verification rules and archive schools without breaking historical records.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link>
+          {context.isGlobalAdmin ? <Link href="/control-center/schools" className="queue-card"><Building2/><h3>School management</h3><p>Add institutions, configure verification rules and archive schools without breaking historical records.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link> : <Link href="/control-center/campus-intelligence" className="queue-card"><Building2/><h3>Your school operations</h3><p>Manage campus locations, dates and operational context only for your assigned school.</p><span className="queue-link">Open campus intelligence <ArrowUpRight size={14}/></span></Link>}
           <Link href="/control-center/students" className="queue-card"><GraduationCap/><h3>Students</h3><p>Review verification evidence, statuses and campus membership from one place.</p><span className="queue-link">Review students <ArrowUpRight size={14}/></span></Link>
           <Link href="/control-center/vendors" className="queue-card"><Store/><h3>Vendors</h3><p>Separate global identity approval from school-specific vendor visibility.</p><span className="queue-link">Manage vendors <ArrowUpRight size={14}/></span></Link>
           <Link href="/control-center/reports" className="queue-card"><LifeBuoy/><h3>Trust & safety</h3><p>Follow complaints through a clear moderation lifecycle and preserve accountability.</p><span className="queue-link">Open reports <ArrowUpRight size={14}/></span></Link>
