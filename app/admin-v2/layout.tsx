@@ -18,10 +18,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       ? context.schoolAssignments[0].role.replaceAll('_', ' ')
       : 'school admin'
 
+  const role = context.globalRole
+  const isSchoolAdmin = !context.isGlobalAdmin
+  const canSeeMarketplace = isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(role || '')
+  const canSeeCampusIntelligence = isSchoolAdmin || ['super_admin','operations_admin','content_admin'].includes(role || '')
+  const canSeeSafety = isSchoolAdmin || ['super_admin','operations_admin','support_admin','verification_admin'].includes(role || '')
+  const canSeeStudents = isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(role || '')
+  const canSeeVendors = isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(role || '')
+  const canSeeReviews = isSchoolAdmin || ['super_admin','operations_admin','support_admin','content_admin','analyst'].includes(role || '')
+  const canSeeReports = isSchoolAdmin || ['super_admin','operations_admin','support_admin','analyst'].includes(role || '')
+  const canSeeSchools = ['super_admin','operations_admin','content_admin'].includes(role || '')
+  const canSeeCategories = ['super_admin','operations_admin','content_admin'].includes(role || '')
+  const canSeeAdmins = ['super_admin','operations_admin'].includes(role || '')
+  const canSeeAudit = context.isGlobalAdmin
+
   return (
     <main className="admin-app admin-fiverr-app">
       <AdminSessionGuard/>
-      <AdminMobileNav email={email} role={roleLabel} isSuperAdmin={context.globalRole === 'super_admin'}/>
+      <AdminMobileNav email={email} role={roleLabel} globalRole={context.globalRole} isGlobalAdmin={context.isGlobalAdmin}/>
       <div className="admin-shell">
         <aside className="admin-sidebar admin-fiverr-sidebar">
           <Link prefetch={false} href="/control-center" className="admin-brand">Campus<span>Link</span> Admin</Link>
@@ -32,17 +46,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <nav className="admin-nav">
             <Link prefetch={false} href="/control-center"><LayoutDashboard /> Overview</Link>
-            <Link prefetch={false} href="/control-center/marketplace"><ShoppingBag /> Marketplace</Link>
-            <Link prefetch={false} href="/control-center/campus-intelligence"><CalendarRange /> Campus Intelligence</Link>
-            <Link prefetch={false} href="/control-center/safety"><ShieldAlert /> Trust & Safety</Link>
-            <Link prefetch={false} href="/control-center/schools"><Building2 /> Schools</Link>
-            <Link prefetch={false} href="/control-center/students"><GraduationCap /> Students</Link>
-            <Link prefetch={false} href="/control-center/vendors"><Store /> Vendors</Link>
-            <Link prefetch={false} href="/control-center/reviews"><MessageSquareText /> Reviews</Link>
-            <Link prefetch={false} href="/control-center/reports"><LifeBuoy /> Reports</Link>
-            <Link prefetch={false} href="/control-center/categories"><FolderKanban /> Categories</Link>
-            <Link prefetch={false} href="/control-center/admins"><UserCog /> Admins</Link>
-            <Link prefetch={false} href="/control-center/audit"><BarChart3 /> Audit</Link>
+            {canSeeMarketplace ? <Link prefetch={false} href="/control-center/marketplace"><ShoppingBag /> Marketplace</Link> : null}
+            {canSeeCampusIntelligence ? <Link prefetch={false} href="/control-center/campus-intelligence"><CalendarRange /> Campus Intelligence</Link> : null}
+            {canSeeSafety ? <Link prefetch={false} href="/control-center/safety"><ShieldAlert /> Trust & Safety</Link> : null}
+            {canSeeSchools ? <Link prefetch={false} href="/control-center/schools"><Building2 /> Schools</Link> : null}
+            {canSeeStudents ? <Link prefetch={false} href="/control-center/students"><GraduationCap /> Students</Link> : null}
+            {canSeeVendors ? <Link prefetch={false} href="/control-center/vendors"><Store /> Vendors</Link> : null}
+            {canSeeReviews ? <Link prefetch={false} href="/control-center/reviews"><MessageSquareText /> Reviews</Link> : null}
+            {canSeeReports ? <Link prefetch={false} href="/control-center/reports"><LifeBuoy /> Reports</Link> : null}
+            {canSeeCategories ? <Link prefetch={false} href="/control-center/categories"><FolderKanban /> Categories</Link> : null}
+            {canSeeAdmins ? <Link prefetch={false} href="/control-center/admins"><UserCog /> Admins</Link> : null}
+            {canSeeAudit ? <Link prefetch={false} href="/control-center/audit"><BarChart3 /> Audit</Link> : null}
             {context.globalRole === 'super_admin' ? <Link prefetch={false} href="/control-center/branding"><Palette /> Branding</Link> : null}
           </nav>
           <div className="admin-sidebar-foot">
