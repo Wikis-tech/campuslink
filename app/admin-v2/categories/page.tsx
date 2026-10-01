@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { FolderKanban, Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdminContext } from '../lib'
@@ -8,6 +9,7 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
   const context = await requireAdminContext()
   const supabase = await createClient()
   const canManage = ['super_admin','operations_admin','content_admin'].includes(context.globalRole || '')
+  if (!canManage) notFound()
   const { data: categories } = await supabase.from('categories').select('id,name,slug,description,icon,is_active,created_at').order('name')
 
   return <>
