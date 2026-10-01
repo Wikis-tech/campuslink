@@ -24,10 +24,11 @@ export default async function VendorDashboard() {
   if (!vendor) redirect('/onboarding/vendor')
 
   const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
-  const [{ data: campus }, contactResult, saveResult, serviceResult, productResult, portfolioResult, { data: entitlementRows }, { data: analyticsRows }] = await Promise.all([
+  const [{ data: campus }, contactResult, saveResult, reviewResult, serviceResult, productResult, portfolioResult, { data: entitlementRows }, { data: analyticsRows }] = await Promise.all([
     supabase.from('vendor_institutions').select('status,institution_id').eq('vendor_id', userId).eq('is_primary', true).maybeSingle(),
-    supabase.from('contact_events').select('id', { count: 'exact', head: true }).eq('vendor_id', userId),
+    supabase.from('contact_events').select('student_id').eq('vendor_id', userId),
     supabase.from('saved_vendors').select('vendor_id', { count: 'exact', head: true }).eq('vendor_id', userId),
+    supabase.from('reviews').select('rating', { count: 'exact' }).eq('vendor_id', userId).eq('status', 'published'),
     supabase.from('vendor_services').select('id', { count: 'exact', head: true }).eq('vendor_id', userId).eq('is_active', true),
     supabase.from('vendor_products').select('id,price_ngn,pricing_type', { count: 'exact' }).eq('vendor_id', userId).eq('is_active', true),
     supabase.from('vendor_portfolio_items').select('id', { count: 'exact', head: true }).eq('vendor_id', userId).eq('is_active', true),
@@ -53,6 +54,11 @@ export default async function VendorDashboard() {
   const productLimit = Number(entitlement?.entitlements?.product_limit || 5)
   const portfolioLimit = Number(entitlement?.entitlements?.portfolio_limit || 6)
   const productCount = productResult.count ?? productResult.data?.length ?? 0
+  const uniqueContactCount = new Set((contactResult.data || []).map((row:any) => row.student_id).filter(Boolean)).size
+  const publishedReviewCount = reviewResult.count ?? reviewResult.data?.length ?? 0
+  const lifetimeRating = publishedReviewCount
+    ? (reviewResult.data || []).reduce((sum:number, row:any) => sum + Number(row.rating || 0), 0) / publishedReviewCount
+    : 0
   const productsWithoutPrice = (productResult.data || []).filter((p:any) => p.pricing_type !== 'contact' && !p.price_ngn).length
   const analytics = (analyticsRows || []).reduce((acc:any,row:any)=>({
     impressions:acc.impressions+Number(row.search_impressions||0),
@@ -127,7 +133,7 @@ export default async function VendorDashboard() {
 
             <article className="v5e-card">
               <div className="v5e-card-head"><div><span className="v5e-section-label">Student response</span><h2>Lifetime signals</h2></div></div>
-              <div className="v5e-kpis v5e-kpis-two"><div><span>Contacts</span><strong>{contactResult.count || 0}</strong></div><div><span>Saves</span><strong>{saveResult.count || 0}</strong></div><div><span>Rating</span><strong>{Number(vendor.average_rating || 0).toFixed(1)}</strong></div><div><span>Reviews</span><strong>{vendor.review_count || 0}</strong></div></div>
+              <div className="v5e-kpis v5e-kpis-two"><div><span>Unique contacts</span><strong>{uniqueContactCount}</strong></div><div><span>Saves</span><strong>{saveResult.count || 0}</strong></div><div><span>Rating</span><strong>{lifetimeRating.toFixed(1)}</strong></div><div><span>Reviews</span><strong>{publishedReviewCount}</strong></div></div>
             </article>
 
             <article className="v5e-card">
