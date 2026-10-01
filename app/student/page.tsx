@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BadgeCheck, BookOpen, Bookmark, Camera, ChevronRight, Globe2, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, Wrench } from 'lucide-react'
+import { BadgeCheck, BookOpen, Bookmark, Camera, ChevronRight, Globe2, Laptop, MapPin, MessageCircle, Package, Search, Scissors, Shapes, ShieldCheck, Shirt, Sparkles, Star, UtensilsCrossed, UserRound, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
@@ -123,7 +123,7 @@ export default async function StudentDashboard() {
 
   return (
     <main className="cl-fv-page">
-      <StudentMarketplaceHeader firstName={profile.first_name} schoolName={school} />
+      <StudentMarketplaceHeader firstName={profile.first_name} schoolName={school} verificationStatus={profile.student_verification_status} />
 
       <div className="cl-fv-shell">
         {status !== 'verified' ? <section className="verification-banner soft" aria-live="polite">
@@ -219,7 +219,7 @@ export default async function StudentDashboard() {
 
         <section className="cl-fv-bottom">
           <div className="cl-fv-bottom-card"><h3>Your activity</h3><p>Useful account signals without turning the Student experience into a dashboard.</p><div className="cl-fv-stats"><div><small>Saved</small><strong>{savedCount}</strong></div><div><small>Contacts</small><strong>{contactCount}</strong></div><div><small>Reviews</small><strong>{reviewCount}</strong></div><div><small>Verification</small><strong style={{fontSize:13,textTransform:'capitalize'}}>{status.replaceAll('_',' ')}</strong></div></div></div>
-          <div className="cl-fv-bottom-card"><h3>Account & safety</h3><p>Manage the parts of Campus Link that protect your identity and marketplace experience.</p><div className="cl-fv-links"><Link href="/student/saved"><span><Bookmark size={16}/> Saved vendors</span><ChevronRight size={16}/></Link><Link href="/student/discover"><span><Search size={16}/> Discover marketplace</span><ChevronRight size={16}/></Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><span><BadgeCheck size={16}/> Complete verification</span><ChevronRight size={16}/></Link> : <Link href="/onboarding/student"><span><ShieldCheck size={16}/> Review verified profile</span><ChevronRight size={16}/></Link>}</div></div>
+          <div className="cl-fv-bottom-card"><h3>Account & safety</h3><p>Manage the parts of Campus Link that protect your identity and marketplace experience.</p><div className="cl-fv-links"><Link href="/student/saved"><span><Bookmark size={16}/> Saved vendors</span><ChevronRight size={16}/></Link><Link href="/student/discover"><span><Search size={16}/> Discover marketplace</span><ChevronRight size={16}/></Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><span><BadgeCheck size={16}/> Complete verification</span><ChevronRight size={16}/></Link> : <Link href="/student/profile"><span><UserRound size={16}/> Profile</span><ChevronRight size={16}/></Link>}</div></div>
         </section>
       </div>
     </main>
