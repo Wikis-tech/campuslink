@@ -24,7 +24,6 @@ import {
   ShieldCheck,
   Shirt,
   Smartphone,
-  Sparkles,
   Star,
   Store,
   Tag,
@@ -180,8 +179,6 @@ export default async function HomePage() {
             <Link href="/register" className="nav-link nav-vendor-btn"><Store size={15} /> Register</Link>
             <Link href="/login" className="nav-link nav-login-btn">Login</Link>
           </nav>
-
-          <div className="header-school-logo"><img src="https://raw.githubusercontent.com/Wikis-tech/campuslink/master/assets/images/Uat%20logo.png" alt="University Logo" width="40" height="40" /></div>
         </div>
       </header>
 
@@ -223,7 +220,6 @@ export default async function HomePage() {
 
       <section className="section categories-section" id="categories">
         <div className="container">
-          <div className="section-label"><div className="label-line" /><span>Explore</span><div className="label-line" /></div>
           <h2 className="section-headline">Browse by Category</h2>
           <p className="section-sub">Discover verified service providers across every campus need.</p>
           <div className="categories-grid">
@@ -237,7 +233,7 @@ export default async function HomePage() {
 
       <section className="section featured-section" id="featured">
         <div className="container">
-          <div className="featured-header"><div><div className="section-label"><div className="label-line" /><span>Handpicked</span><div className="label-line" /></div><h2 className="section-headline">Featured Vendors</h2><p className="section-sub">Top-rated, verified service providers trusted by your peers.</p></div><Link href="/register" className="btn btn-outline-primary">View All <ArrowRight size={16} /></Link></div>
+          <div className="featured-header"><div><h2 className="section-headline">Featured Vendors</h2><p className="section-sub">Top-rated, verified service providers trusted by your peers.</p></div><Link href="/register" className="btn btn-outline-primary">View All <ArrowRight size={16} /></Link></div>
           <div className="vendors-grid">
             {landing.featured.length ? landing.featured.map((vendor:any) => <article className="vendor-card" key={vendor.id}><div className="vendor-card-img legacy-vendor-placeholder">{vendor.cover_url ? <img src={vendor.cover_url} alt="" className="landing-vendor-cover"/> : null}<div className="vendor-badge"><ShieldCheck size={14} /> Verified</div><div className="vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt="" /> : <span>{vendor.business_name.slice(0, 2).toUpperCase()}</span>}</div></div><div className="vendor-card-body"><div className="vendor-card-header"><div><div className="vendor-name">{vendor.business_name}</div><span className="vendor-cat">{vendor.listingCount} active listing{vendor.listingCount === 1 ? '' : 's'}</span></div><div className="vendor-rating"><span className="stars">★★★★★</span><span className="rating-val">{Number(vendor.average_rating || 0).toFixed(1)}</span></div></div><p className="vendor-desc">{vendor.description || 'Approved Campus Link vendor.'}</p><div className="vendor-meta">{vendor.location_text ? <div className="vendor-meta-item"><Tag size={14} /> {vendor.location_text}</div> : null}<div className="vendor-meta-item"><Tag size={14} /> {vendor.startingPrice ? `From ₦${vendor.startingPrice.toLocaleString()}` : 'Contact for pricing'}</div></div><div className="vendor-actions"><Link href={`/share/vendor/${encodeURIComponent(vendor.slug)}`} className="btn btn-sm btn-outline">View vendor</Link></div></div></article>) : <div className="landing-empty-state">Approved vendors will appear here automatically as Campus Link grows.</div>}
           </div>
@@ -246,7 +242,6 @@ export default async function HomePage() {
 
       <section className="section how-section" id="how">
         <div className="container">
-          <div className="section-label"><div className="label-line" /><span>Simple Process</span><div className="label-line" /></div>
           <h2 className="section-headline">How Campuslink Works</h2>
           <div className="steps-timeline">
             <div className="step-item"><div className="step-connector-line" /><div className="step-dot"><span>01</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><Search /></div><h3>Browse Vendors</h3><p>Search by category, name, price range, or rating. Filter to find the right service provider for your need.</p></div></div>
@@ -264,7 +259,6 @@ export default async function HomePage() {
         <div className="container">
           <div className="trust-grid">
             <div className="trust-content">
-              <div className="section-label light"><div className="label-line light" /><span>Your Safety First</span><div className="label-line light" /></div>
               <h2 className="section-headline light">Built on Trust &amp; Transparency</h2>
               <p className="section-sub light">Vendor verification and campus approval are trust decisions. Paid plans only unlock business tools and never buy a verification badge.</p>
               <div className="trust-feats">
@@ -284,7 +278,7 @@ export default async function HomePage() {
 
       <section className="cl-pricing-section" id="pricing">
         <div className="cl-pricing-wrap">
-          <div className="cl-pricing-head"><span className="cl-pricing-kicker"><Sparkles size={15}/> Vendor pricing</span><h2>Start free. Pay only when growth tools become useful.</h2><p>Campus Link keeps student access free and keeps trust separate from payment. Vendors can build a real campus presence before deciding whether Pro is worth it.</p></div>
+          <div className="cl-pricing-head"><h2>Start free. Pay only when growth tools become useful.</h2><p>Campus Link keeps student access free and keeps trust separate from payment. Vendors can build a real campus presence before deciding whether Pro is worth it.</p></div>
           <div className="cl-pricing-grid">
             <article className="cl-price-card">
               <div className="plan-top"><div className="plan-name">Free</div><span className="plan-badge">Useful by default</span></div>
@@ -308,7 +302,7 @@ export default async function HomePage() {
       </section>
 
       <section className="section vendor-cta-section" id="vendor-cta">
-        <div className="container"><div className="vcta-card"><div className="vcta-inner"><div className="vcta-text"><div className="section-label light"><div className="label-line light" /><span>For Service Providers</span><div className="label-line light" /></div><h2>Build trust first. <br />Grow from there.</h2><p>Create a useful vendor profile for free. When you need more capacity and business insights, Pro is there — without changing your verification status.</p></div><div className="vcta-actions"><Link href="/register" className="btn btn-vcta-primary"><Store size={16} /> Register as Vendor</Link><a href="#pricing" className="btn btn-vcta-ghost">Compare Free & Pro <ArrowRight size={16} /></a></div></div></div></div>
+        <div className="container"><div className="vcta-card"><div className="vcta-inner"><div className="vcta-text"><h2>Build trust first. <br />Grow from there.</h2><p>Create a useful vendor profile for free. When you need more capacity and business insights, Pro is there — without changing your verification status.</p></div><div className="vcta-actions"><Link href="/register" className="btn btn-vcta-primary"><Store size={16} /> Register as Vendor</Link><a href="#pricing" className="btn btn-vcta-ghost">Compare Free & Pro <ArrowRight size={16} /></a></div></div></div></div>
       </section>
 
       <footer className="cl-public-footer">
