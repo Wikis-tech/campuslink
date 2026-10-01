@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { Building2, Globe2, MailCheck, Plus, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { canManageSchools, requireAdminContext } from '../lib'
@@ -8,6 +9,7 @@ export default async function SchoolsAdminPage({ searchParams }: { searchParams:
   const context = await requireAdminContext()
   const supabase = await createClient()
   const manageable = canManageSchools(context.globalRole)
+  if (!manageable) notFound()
 
   const [{ data: schools }, { data: requests }] = await Promise.all([
     supabase.from('institutions').select('id,name,slug,city,state,country,email_domain,is_active,verification_mode,allowed_student_email_domains,verification_instructions').order('name'),
