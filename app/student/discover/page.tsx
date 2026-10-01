@@ -36,7 +36,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('first_name,account_type,institution_id,onboarding_completed_at')
+    .select('first_name,account_type,institution_id,onboarding_completed_at,student_verification_status')
     .eq('id', userId)
     .single()
 
@@ -199,11 +199,10 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
 
   return (
     <main className="cl-student-page">
-      <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name}/>
+      <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name} verificationStatus={profile.student_verification_status}/>
       <section className="cl-student-shell">
         <div className="student-head">
           <div>
-            <div className="cl-safety-note"><Search size={14}/> Phase 5H smart discovery</div>
             <h1>{q ? `Results for “${params.q}”` : 'Explore your campus marketplace.'}</h1>
             <p>Search across Vendor names, Products, Services, categories and descriptions. Results stay restricted to approved businesses for your campus.</p>
           </div>
