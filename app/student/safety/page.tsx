@@ -15,7 +15,7 @@ export default async function StudentSafetyPage() {
   const userId = claimsData?.claims?.sub
   if (!userId) redirect('/login')
 
-  const { data: profile } = await supabase.from('profiles').select('first_name,account_type,institution_id,onboarding_completed_at').eq('id', userId).maybeSingle()
+  const { data: profile } = await supabase.from('profiles').select('first_name,account_type,institution_id,onboarding_completed_at,student_verification_status').eq('id', userId).maybeSingle()
   if (!profile || profile.account_type !== 'student') redirect('/dashboard')
   if (!profile.onboarding_completed_at || !profile.institution_id) redirect('/onboarding/student')
 
@@ -33,10 +33,10 @@ export default async function StudentSafetyPage() {
   const vendorMap = new Map((vendors || []).map((v:any)=>[v.id,v]))
 
   return <main className="cl-student-page">
-    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name}/>
+    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell phase5g-safety-page">
       {!readiness.ready ? <div className="notice error">Some advanced trust features are temporarily unavailable while Campus Link finishes a safety-system update. Safety guidance remains available.</div> : null}
-      <header className="phase5g-safety-hero"><span><ShieldCheck size={16}/> Campus Link Safety Centre</span><h1>Trade around campus with more confidence.</h1><p>Campus Link helps you identify approved businesses, understand trust signals and report concerns privately. Campus Link does not process the payment between you and a Vendor.</p></header>
+      <header className="phase5g-safety-hero"><h1>Trade around campus with more confidence.</h1><p>Campus Link helps you identify approved businesses, understand trust signals and report concerns privately. Campus Link does not process the payment between you and a Vendor.</p></header>
 
       <section className="phase5g-safety-grid">
         <article className="v3-surface phase5g-safety-card"><BadgeCheck/><h2>Check trust signals</h2><p>Look for identity verification, campus approval, account standing and verified-contact reviews. Paid plans never buy these trust indicators.</p></article>
