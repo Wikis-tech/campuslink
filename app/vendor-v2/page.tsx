@@ -7,6 +7,7 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
 import { VendorWorkspaceSidebar } from '@/components/vendor-workspace-sidebar'
+import { calculateVendorStorefrontHealth } from '@/lib/vendor-storefront-health'
 
 export default async function VendorDashboard() {
   const supabase = await createClient()
@@ -68,19 +69,19 @@ export default async function VendorDashboard() {
   }),{impressions:0,views:0,contacts:0,saves:0})
 
   const activeServiceCount = serviceResult.count || 0
-  const activeListingCount = productCount + activeServiceCount
-  const healthFactors = [
-    { key: 'logo', ready: Boolean(vendor.logo_url), weight: 15, improvement: 'Add a business logo.' },
-    { key: 'cover', ready: Boolean(vendor.cover_url), weight: 10, improvement: 'Add a cover image.' },
-    { key: 'description', ready: Boolean(vendor.description && vendor.description.trim().length >= 40), weight: 15, improvement: 'Strengthen your business description so students quickly understand what you offer.' },
-    { key: 'contact', ready: Boolean(vendor.whatsapp_number || vendor.business_email), weight: 10, improvement: 'Add a reliable contact method.' },
-    { key: 'catalog', ready: activeListingCount > 0, weight: 15, improvement: 'Add at least one active product or service.' },
-    { key: 'listingDepth', ready: activeListingCount >= 2, weight: 10, improvement: 'Add another active listing so students have more to compare.' },
-    { key: 'pricing', ready: productsWithoutPrice === 0, weight: 10, improvement: 'Add clear pricing or choose contact-for-price on every active product.' },
-    { key: 'portfolio', ready: (portfolioResult.count || 0) > 0, weight: 15, improvement: 'Add at least one proof-of-work portfolio item.' },
-  ]
-  const healthScore = healthFactors.reduce((score, factor) => score + (factor.ready ? factor.weight : 0), 0)
-  const healthImprovements = healthFactors.filter((factor) => !factor.ready).map((factor) => factor.improvement)
+  const storefrontHealth = calculateVendorStorefrontHealth({
+    logoUrl: vendor.logo_url,
+    coverUrl: vendor.cover_url,
+    description: vendor.description,
+    whatsappNumber: vendor.whatsapp_number,
+    businessEmail: vendor.business_email,
+    activeProductCount: productCount,
+    activeServiceCount,
+    productsWithoutPrice,
+    activePortfolioCount: portfolioResult.count || 0,
+  })
+  const healthScore = storefrontHealth.score
+  const healthImprovements = storefrontHealth.improvements
 
   const tasks = [
     !setupComplete ? { icon:<BadgeCheck size={17}/>, title:'Finish business setup', copy:'Complete your business details and verification evidence.', href:'/onboarding/vendor' } : null,
@@ -135,7 +136,7 @@ export default async function VendorDashboard() {
           <aside>
             <article className="v5e-card">
               <div className="v5e-card-head"><div><span className="v5e-section-label">Business health</span><h2>Improve your presence</h2></div><span className="v5e-card-note">Not a trust score</span></div>
-              <div className="v5e-health-score"><div className="v5e-health-ring" style={{'--score':healthScore} as React.CSSProperties}><strong>{healthScore}%</strong></div><div className="v5e-health-copy"><strong>{healthScore>=85?'Strong setup':healthScore>=60?'Good foundation':'Needs attention'}</strong><small>Storefront completeness, active listings, pricing and portfolio coverage.</small></div></div>
+              <div className="v5e-health-score"><div className="v5e-health-ring" style={{'--score':healthScore} as React.CSSProperties}><strong>{healthScore}%</strong></div><div className="v5e-health-copy"><strong>{storefrontHealth.label}</strong><small>Storefront completeness, active listings, pricing and portfolio coverage.</small></div></div>
               {healthImprovements.length ? <div className="v5e-health-improvement"><strong>{healthImprovements.length} improvement{healthImprovements.length === 1 ? '' : 's'} remaining</strong><small>{healthImprovements[0]}</small></div> : null}
               <div className="v5e-mini-links"><Link href="/vendor-v2/profile">Improve profile <span>→</span></Link><Link href="/vendor-v2/analytics">View performance <span>→</span></Link></div>
             </article>
