@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { KeyRound, ShieldCheck, UserCog, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { canManageAdmins, requireAdminContext } from '../lib'
@@ -9,6 +10,7 @@ export default async function AdminsManagementPage({ searchParams }: { searchPar
   const context = await requireAdminContext()
   const supabase = await createClient()
   const manageable = canManageAdmins(context.globalRole)
+  if (!manageable) notFound()
 
   const [{ data: schools }, { data: schoolAssignments }, { data: globalAdmins }] = await Promise.all([
     supabase.from('institutions').select('id,name,is_active').order('name'),
