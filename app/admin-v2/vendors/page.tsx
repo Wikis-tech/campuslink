@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Building2, FileCheck2, ShieldCheck, Store } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { canReviewVendorIdentity, requireAdminContext } from '../lib'
 import { reviewVendorCampus, reviewVendorIdentity } from '../actions'
 
@@ -9,8 +10,9 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
   const context = await requireAdminContext()
   const supabase = await createClient()
   const canIdentity = canReviewVendorIdentity(context.globalRole)
+  const canViewIncompleteVendorAccounts = ['super_admin','operations_admin'].includes(context.globalRole || '')
 
-  const { data: vendorAccounts } = context.isGlobalAdmin
+  const { data: vendorAccounts } = canViewIncompleteVendorAccounts
     ? await supabase.from('profiles')
         .select('id,first_name,last_name,created_at')
         .eq('account_type', 'vendor')
@@ -62,7 +64,15 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
     const safetyAllowed = vendor.marketplace_status === 'active' || Boolean(suspensionExpired)
     return Boolean(vendor.onboarding_completed_at) && vendor.verification_status === 'approved' && campusApprovedIds.has(vendor.id) && safetyAllowed
   }).map((vendor) => vendor.id))
-  const registeredVendorCount = context.isGlobalAdmin ? (vendorAccounts?.length || 0) : (vendors?.length || 0)
+  const registeredVendorCount = canViewIncompleteVendorAccounts ? (vendorAccounts?.length || 0) : (vendors?.length || 0)
+  const authEmailMap = new Map<string,string>()
+  if (canViewIncompleteVendorAccounts && incompleteVendorAccounts.length) {
+    const adminClient = createAdminClient()
+    const { data: authUsers } = await adminClient.auth.admin.listUsers({ page: 1, perPage: 1000 })
+    for (const user of authUsers?.users || []) {
+      if (user.email) authEmailMap.set(user.id, user.email)
+    }
+  }
 
   return <>
     <header className="admin-topbar"><div><span className="admin-pill"><Store size={15}/> Vendor trust</span><h1>Vendors</h1><p>Vendor identity and campus approval are deliberately separate. Open Vendor 360 for connected storefront, reputation and safety context.</p></div></header>
@@ -83,7 +93,7 @@ export default async function VendorsAdminPage({ searchParams }: { searchParams:
       <article className="admin-stat"><span>Student-visible</span><strong>{studentVisibleIds.size}</strong><small>Passes onboarding, identity, campus and safety gates.</small></article>
     </div></section>
 
-    {context.isGlobalAdmin ? <section className="admin-section"><div className="admin-section-head"><div><h2>Incomplete Vendor registrations</h2><p>Vendor accounts that exist but have not created a business profile yet. Keep these separate from verification failures.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Account</th><th>Joined</th><th>State</th></tr></thead><tbody>{incompleteVendorAccounts.map((account:any)=><tr key={account.id}><td><span className="admin-name">{[account.first_name,account.last_name].filter(Boolean).join(' ') || 'Vendor account'}</span><span className="admin-sub">{account.id}</span></td><td>{account.created_at ? new Date(account.created_at).toLocaleString() : '—'}</td><td><span className="status-badge status-reviewing">onboarding incomplete</span></td></tr>)}{!incompleteVendorAccounts.length?<tr><td colSpan={3}><div className="empty-admin">No incomplete Vendor registrations.</div></td></tr>:null}</tbody></table></div></section> : null}
+    {canViewIncompleteVendorAccounts ? <section className="admin-section"><div className="admin-section-head"><div><h2>Incomplete Vendor registrations</h2><p>Vendor accounts that exist but have not created a business profile yet. Keep these separate from verification failures.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Account</th><th>Email</th><th>Joined</th><th>State</th></tr></thead><tbody>{incompleteVendorAccounts.map((account:any)=><tr key={account.id}><td><span className="admin-name">{[account.first_name,account.last_name].filter(Boolean).join(' ') || 'Vendor account'}</span><span className="admin-sub">{account.id}</span></td><td>{authEmailMap.get(account.id) ? <a className="admin-link" href={`mailto:${authEmailMap.get(account.id)}`}>{authEmailMap.get(account.id)}</a> : 'Email unavailable'}</td><td>{account.created_at ? new Date(account.created_at).toLocaleString() : '—'}</td><td><span className="status-badge status-reviewing">onboarding incomplete</span></td></tr>)}{!incompleteVendorAccounts.length?<tr><td colSpan={4}><div className="empty-admin">No incomplete Vendor registrations.</div></td></tr>:null}</tbody></table></div></section> : null}
 
     <section className="admin-section"><div className="admin-section-head"><div><h2>Vendor review board</h2><p>School admins can manage only campus access. Global verification admins control vendor identity.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Vendor</th><th>Identity</th><th>Campus access</th><th>Evidence</th><th>Actions</th></tr></thead><tbody>
       {(vendors || []).map((vendor) => {
