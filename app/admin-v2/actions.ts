@@ -127,6 +127,7 @@ export async function assignSchoolAdmin(formData: FormData) {
   const institutionId = text(formData, 'institution_id', 80)
   const role = text(formData, 'role', 40)
   if (!email.includes('@')) message('/control-center/admins', 'error', 'Enter a valid Campus Link account email.')
+  if (role !== 'school_admin') message('/control-center/admins', 'error', 'School-scoped accounts use the School Admin role.')
 
   const { error } = await supabase.rpc('admin_assign_school_admin_by_email', {
     target_email: email,
