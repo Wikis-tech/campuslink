@@ -12,7 +12,7 @@ export default async function StudentServicePage({ params }: { params: Promise<{
   const user = userData.user
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase.from('profiles').select('first_name,account_type,institution_id,onboarding_completed_at').eq('id', user.id).maybeSingle()
+  const { data: profile } = await supabase.from('profiles').select('first_name,account_type,institution_id,onboarding_completed_at,student_verification_status').eq('id', user.id).maybeSingle()
   if (!profile || profile.account_type !== 'student') redirect('/dashboard')
   if (!profile.institution_id || !profile.onboarding_completed_at) redirect('/onboarding/student')
 
@@ -38,7 +38,7 @@ export default async function StudentServicePage({ params }: { params: Promise<{
 
   return <main className="cl-student-page">
     <VendorAnalyticsBeacon vendorId={vendor.id} event="service_view" serviceId={service.id}/>
-    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name}/>
+    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell">
       <Link href="/student/discover" style={{color:'var(--v3-ink)',textDecoration:'none',fontWeight:800,display:'inline-flex',gap:7,alignItems:'center',marginBottom:18}}><ArrowLeft size={16}/> Back to search</Link>
       <div className="v3-split">
