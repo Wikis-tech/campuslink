@@ -16,7 +16,7 @@ function slugify(value: string) {
 async function ensureInstitutionAccess(institutionId: string) {
   const context = await requireAdminContext()
   if (context.isGlobalAdmin) return context
-  if (!context.schoolAssignments.some((item) => item.institution_id === institutionId && ['school_admin','school_support'].includes(item.role))) {
+  if (!context.schoolAssignments.some((item) => item.institution_id === institutionId && item.role === 'school_admin')) {
     back('You do not have permission to manage that campus.', 'error')
   }
   return context
