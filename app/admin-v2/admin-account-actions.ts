@@ -18,6 +18,9 @@ export async function createAdminAccount(formData: FormData) {
 
   if (!email.includes('@')) fail('Enter a valid admin email address.')
   if (password.length < 12) fail('Admin passwords must be at least 12 characters.')
+  const globalRoles = new Set(['super_admin','operations_admin','verification_admin','support_admin','finance_admin','content_admin','analyst'])
+  if (scope === 'school' && role !== 'school_admin') fail('School-scoped accounts use the School Admin role.')
+  if (scope === 'global' && !globalRoles.has(role)) fail('Choose a valid global admin role.')
 
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
