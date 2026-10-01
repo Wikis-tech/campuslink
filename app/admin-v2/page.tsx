@@ -8,7 +8,7 @@ export default async function AdminDashboard() {
   const context = await requireAdminContext()
   const supabase = await createClient()
 
-  const [students, onboardedStudents, verifiedStudents, vendorAccounts, vendorProfiles, completedVendorProfiles, pendingStudents, pendingVendors, schools, reports] = await Promise.all([
+  const [students, onboardedStudents, verifiedStudents, vendorAccounts, vendorProfiles, completedVendorProfiles, pendingStudents, pendingVendors, pendingCampusVendors, schools, reports] = await Promise.all([
     supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'student'),
     supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'student').not('onboarding_completed_at', 'is', null),
     supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'student').eq('student_verification_status', 'verified'),
@@ -17,6 +17,7 @@ export default async function AdminDashboard() {
     supabase.from('vendor_profiles').select('id', { count: 'exact', head: true }).not('onboarding_completed_at', 'is', null),
     supabase.from('student_verifications').select('student_id', { count: 'exact', head: true }).in('status', ['pending','under_review']),
     supabase.from('vendor_profiles').select('id', { count: 'exact', head: true }).in('verification_status', ['pending','under_review']),
+    supabase.from('vendor_institutions').select('vendor_id', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('institutions').select('id', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('complaints').select('id', { count: 'exact', head: true }).in('status', ['open','reviewing']),
   ])
@@ -35,7 +36,7 @@ export default async function AdminDashboard() {
   const schoolCount = context.isGlobalAdmin ? (schools.count || 0) : context.schoolAssignments.length
   const reportCount = reports.count || 0
   const studentQueue = pendingStudents.count || 0
-  const vendorQueue = pendingVendors.count || 0
+  const vendorQueue = context.isGlobalAdmin ? (pendingVendors.count || 0) : (pendingCampusVendors.count || 0)
 
   return (
     <>
