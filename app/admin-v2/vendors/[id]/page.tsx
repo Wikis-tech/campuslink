@@ -10,7 +10,7 @@ export default async function AdminVendorDetailPage({ params }: { params: Promis
   await requireAdminContext()
   const supabase = await createClient()
 
-  const { data: vendor } = await supabase.from('vendor_profiles').select('id,business_name,slug,description,logo_url,cover_url,business_email,whatsapp_number,location_text,verification_status,marketplace_status,risk_report_count,suspended_until,suspension_reason,onboarding_completed_at,created_at').eq('id', id).maybeSingle()
+  const { data: vendor } = await supabase.from('vendor_profiles').select('id,business_name,slug,description,logo_url,cover_url,business_email,whatsapp_number,location_text,verification_status,marketplace_status,risk_report_count,suspended_until,suspension_reason,average_rating,review_count,onboarding_completed_at,created_at').eq('id', id).maybeSingle()
   if (!vendor) notFound()
 
   const [{ data: campusLinks }, { data: products }, { data: services }, { data: portfolio }, { data: reviews }, { data: reports }] = await Promise.all([
@@ -27,11 +27,8 @@ export default async function AdminVendorDetailPage({ params }: { params: Promis
   const schoolMap = new Map((institutions || []).map((school) => [school.id, school.name]))
   const visibleCampusCount = (campusLinks || []).filter((link) => link.status === 'approved').length
   const safetyBlocked = ['under_review','suspended'].includes(vendor.marketplace_status)
-  const publishedReviews = (reviews || []).filter((review) => review.status === 'published')
-  const publishedReviewCount = publishedReviews.length
-  const publishedRating = publishedReviewCount
-    ? publishedReviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / publishedReviewCount
-    : 0
+  const publishedReviewCount = Number(vendor.review_count || 0)
+  const publishedRating = Number(vendor.average_rating || 0)
   const activeProducts = (products || []).filter((item) => item.is_active)
   const activeServices = (services || []).filter((item) => item.is_active)
   const activePortfolio = (portfolio || []).filter((item) => item.is_active)
