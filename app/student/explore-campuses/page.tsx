@@ -22,7 +22,7 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('first_name,account_type,institution_id')
+    .select('first_name,account_type,institution_id,student_verification_status')
     .eq('id', userId)
     .maybeSingle()
 
@@ -79,7 +79,7 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
   const ownSchool = (schools || []).find((school) => school.id === profile.institution_id)
 
   return <main className="cl-student-page">
-    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={ownSchool?.name || null}/>
+    <StudentMarketplaceHeader firstName={profile.first_name} schoolName={ownSchool?.name || null} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell">
       <div className="student-head">
         <div><div className="cl-safety-note"><Globe2 size={14}/> Cross-campus discovery</div><h1>Explore other Campus Link schools.</h1><p>Your own campus remains the default marketplace. This view lets you browse public storefront information from Vendors approved at other schools without changing your campus membership.</p></div>
