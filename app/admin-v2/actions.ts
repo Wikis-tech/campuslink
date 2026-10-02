@@ -165,20 +165,23 @@ export async function updateComplaint(formData: FormData) {
 
 export async function assignSchoolAdmin(formData: FormData) {
   const supabase = await createClient()
+  const returnToRaw = text(formData, 'return_to', 240)
+  const returnTo = returnToRaw.startsWith('/control-center') ? returnToRaw : '/control-center/admins'
   const email = text(formData, 'email', 254).toLowerCase()
   const institutionId = text(formData, 'institution_id', 80)
   const role = text(formData, 'role', 40)
-  if (!email.includes('@')) message('/control-center/admins', 'error', 'Enter a valid Campus Link account email.')
-  if (role !== 'school_admin') message('/control-center/admins', 'error', 'School-scoped accounts use the School Admin role.')
+  if (!email.includes('@')) message(returnTo, 'error', 'Enter a valid Campus Link account email.')
+  if (role !== 'school_admin') message(returnTo, 'error', 'School-scoped accounts use the School Admin role.')
 
   const { error } = await supabase.rpc('admin_assign_school_admin_by_email', {
     target_email: email,
     target_institution: institutionId,
     assignment_role: role,
   })
-  if (error) message('/control-center/admins', 'error', error.message)
+  if (error) message(returnTo, 'error', error.message)
   revalidatePath('/control-center/admins')
-  message('/control-center/admins', 'success', 'School admin assignment saved.')
+  revalidatePath(returnTo.split('?')[0])
+  message(returnTo, 'success', 'School admin assignment saved.')
 }
 
 export async function assignGlobalAdmin(formData: FormData) {
