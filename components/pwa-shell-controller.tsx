@@ -48,7 +48,9 @@ export function PwaShellController() {
       pathname === '/control-center' ||
       pathname.startsWith('/control-center/') ||
       pathname === '/admin-login-campus' ||
-      pathname.startsWith('/admin-login-campus/')
+      pathname.startsWith('/admin-login-campus/') ||
+      pathname === '/admin-invite' ||
+      pathname.startsWith('/admin-invite/')
 
     if (isAdminPath || pathname === '/' || !isAllowedAppPath(pathname)) {
       router.replace('/app?source=pwa')
