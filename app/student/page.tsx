@@ -4,6 +4,7 @@ import { BadgeCheck, BookOpen, Bookmark, Camera, ChevronRight, Globe2, Laptop, M
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
 import { StudentMarketplaceHeader } from '@/components/student-marketplace-header'
+import { DashboardNotifications } from '@/components/dashboard-notifications'
 
 function CategoryIcon({ name }: { name: string }) {
   const value = name.toLowerCase()
@@ -126,6 +127,7 @@ export default async function StudentDashboard() {
       <StudentMarketplaceHeader firstName={profile.first_name} schoolName={school} verificationStatus={profile.student_verification_status} />
 
       <div className="cl-fv-shell">
+        <DashboardNotifications />
         {status !== 'verified' ? <section className="verification-banner soft" aria-live="polite">
           <div>
             <span className="verification-icon"><BadgeCheck size={20}/></span>
