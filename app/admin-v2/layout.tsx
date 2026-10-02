@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, MessageSquareText, Palette, ShieldAlert, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
+import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, Mail, MessageSquareText, Palette, ShieldAlert, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AdminMobileNav } from '@/components/admin-mobile-nav'
 import { AdminSessionGuard } from '@/components/admin-session-guard'
@@ -31,6 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const canSeeCategories = ['super_admin','operations_admin','content_admin'].includes(role || '')
   const canSeeAdmins = ['super_admin','operations_admin'].includes(role || '')
   const canSeeAudit = context.isGlobalAdmin
+  const canSeeCommunications = isSchoolAdmin || ['super_admin','operations_admin','content_admin','verification_admin'].includes(role || '')
 
   return (
     <main className="admin-app admin-fiverr-app">
@@ -54,6 +55,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {canSeeVendors ? <Link prefetch={false} href="/control-center/vendors"><Store /> Vendors</Link> : null}
             {canSeeReviews ? <Link prefetch={false} href="/control-center/reviews"><MessageSquareText /> Reviews</Link> : null}
             {canSeeReports ? <Link prefetch={false} href="/control-center/reports"><LifeBuoy /> Reports</Link> : null}
+            {canSeeCommunications ? <Link prefetch={false} href="/control-center/communications"><Mail /> Communications</Link> : null}
             {canSeeCategories ? <Link prefetch={false} href="/control-center/categories"><FolderKanban /> Categories</Link> : null}
             {canSeeAdmins ? <Link prefetch={false} href="/control-center/admins"><UserCog /> Admins</Link> : null}
             {canSeeAudit ? <Link prefetch={false} href="/control-center/audit"><BarChart3 /> Audit</Link> : null}
