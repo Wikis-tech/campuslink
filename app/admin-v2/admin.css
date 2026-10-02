@@ -54,3 +54,32 @@
 [data-theme="dark"] .admin-branding-form label{background:#101f34;border-color:#253651}
 [data-theme="dark"] .admin-branding-form input[type=file]{background:#0a1728;border-color:#2a3e5c;color:#d8e4f4}
 [data-theme="dark"] .admin-branding-page>.admin-section-head{border-color:#24354e}
+
+
+/* Phase 2 intelligence + School 360 */
+.intelligence-command{border-color:#dce6f2;background:linear-gradient(180deg,#fff,#fbfdff)}
+.intelligence-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.intelligence-group{border:1px solid #e4e9f0;border-radius:18px;background:#fff;overflow:hidden}
+.intelligence-group-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:14px 15px;border-bottom:1px solid #edf0f4}
+.intelligence-group-head>svg{width:18px}.intelligence-group-head strong,.intelligence-group-head small{display:block}.intelligence-group-head strong{font-size:.84rem}.intelligence-group-head small{margin-top:2px;color:#7a8492;font-size:.7rem}.intelligence-group-head b{font:800 1.05rem Sora,sans-serif}
+.intelligence-group-head.urgent{background:#fff5f3;color:#b42318}.intelligence-group-head.attention{background:#fff9eb;color:#9a6700}.intelligence-group-head.info{background:#eef5ff;color:#0b3d91}
+.intelligence-task{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:13px 15px;border-bottom:1px solid #f0f2f5;transition:background .18s ease,transform .18s ease}
+.intelligence-task:last-child{border-bottom:0}.intelligence-task:hover{background:#f8fbff;transform:translateX(2px)}.intelligence-task strong,.intelligence-task span{display:block}.intelligence-task strong{font-size:.8rem;color:#172033}.intelligence-task span{margin-top:3px;color:#6b7280;font-size:.72rem;line-height:1.4}.intelligence-task>svg{width:15px;color:#98a2b3}
+.intelligence-clear{display:flex;align-items:center;gap:8px;padding:13px 15px;color:#287a48;font-size:.75rem;background:#fbfefc}
+.admin-filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid #edf0f4;background:#fafcff}
+.admin-filter-bar a{padding:7px 10px;border:1px solid #dfe5ee;border-radius:999px;background:#fff;color:#586273;font-size:.72rem;font-weight:800}
+.admin-filter-bar a.active{background:#0b3d91;border-color:#0b3d91;color:#fff}
+.admin-filter-form{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(240px,1.2fr) auto auto;gap:10px;align-items:end;margin-top:14px}
+.setup-step-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.setup-step{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #e3e8ef;border-radius:15px;background:#fafbfc}
+.setup-step>span{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#edf1f5;color:#667085;font-weight:900;font-size:.8rem}.setup-step.active>span{background:#e9f7ef;color:#167a3d}
+.setup-step strong,.setup-step small{display:block}.setup-step strong{font-size:.78rem}.setup-step small{margin-top:2px;color:#7b8492;font-size:.68rem;line-height:1.35}
+.school-create-form{gap:18px}.admin-form-section{padding:16px;border:1px solid #e5eaf1;border-radius:17px;background:#fbfcfe}.admin-form-section-title{display:flex;gap:9px;align-items:flex-start;margin-bottom:13px}.admin-form-section-title>svg{margin-top:1px;color:#0b3d91}.admin-form-section-title strong,.admin-form-section-title span{display:block}.admin-form-section-title strong{font-size:.85rem}.admin-form-section-title span{margin-top:2px;color:#7a8492;font-size:.72rem}
+.readiness-badge{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:.72rem;font-weight:900}.readiness-badge.ready{background:#eaf8ef;color:#167a3d}.readiness-badge.needs{background:#fff5df;color:#9a6700}
+.readiness-checklist{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.readiness-checklist>div{display:flex;gap:10px;align-items:flex-start;padding:13px;border:1px solid #e5eaf1;border-radius:15px;background:#fff}.readiness-checklist>div>svg{flex:none;margin-top:1px}.readiness-checklist strong,.readiness-checklist span{display:block}.readiness-checklist strong{font-size:.78rem}.readiness-checklist span{margin-top:3px;color:#7a8492;font-size:.7rem;line-height:1.4}.readiness-checklist .done>svg{color:#1ea952}.readiness-checklist .todo>svg{color:#d58a00}.readiness-checklist .recommended>svg{color:#0b3d91}
+.school360-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.school360-grid>.admin-section{margin-top:18px}
+.school360-detail-list{display:grid;gap:0}.school360-detail-list>div{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #eef1f5}.school360-detail-list>div:last-child{border-bottom:0}.school360-detail-list span{color:#758091;font-size:.75rem}.school360-detail-list strong{text-align:right;font-size:.78rem;color:#172033;max-width:64%}
+.school360-mini-list{display:grid;gap:8px;margin-top:14px}.school360-mini-list>div:not(.admin-note){display:flex;justify-content:space-between;gap:12px;padding:10px 11px;border:1px solid #e7ebf1;border-radius:12px;background:#fafbfc}.school360-mini-list strong{font-size:.76rem}.school360-mini-list span{font-size:.7rem;color:#7a8492;text-transform:capitalize}
+@media(max-width:1180px){.intelligence-groups{grid-template-columns:1fr}.readiness-checklist{grid-template-columns:1fr 1fr}.setup-step-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:820px){.admin-filter-form{grid-template-columns:1fr}.school360-grid{grid-template-columns:1fr}.readiness-checklist,.setup-step-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.intelligence-task{transition:none!important;transform:none!important}}
