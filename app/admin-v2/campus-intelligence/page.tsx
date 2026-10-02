@@ -1,4 +1,5 @@
 import { CalendarDays, MapPinned, Plus, School, ToggleLeft, Trash2 } from 'lucide-react'
+import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { eventTypeLabel } from '@/lib/phase5f'
 import { requireAdminContext } from '../lib'
@@ -7,6 +8,7 @@ import { createCampusEvent, createCampusLocation, deleteCampusEvent, toggleCampu
 export default async function CampusIntelligenceAdminPage({ searchParams }: { searchParams: Promise<{ campus?: string; ok?: string; error?: string }> }) {
   const params = await searchParams
   const context = await requireAdminContext()
+  if (context.isGlobalAdmin && !['super_admin','operations_admin','content_admin'].includes(context.globalRole || '')) notFound()
   const supabase = await createClient()
 
   let institutionQuery = supabase.from('institutions').select('id,name,city,state,is_active').order('name')
