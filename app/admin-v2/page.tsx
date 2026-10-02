@@ -108,6 +108,8 @@ export default async function AdminDashboard() {
 
   const canReviewVendorIdentity = ['super_admin','operations_admin','verification_admin'].includes(context.globalRole || '')
   const canSeeGlobalIncompleteVendors = ['super_admin','operations_admin'].includes(context.globalRole || '')
+  const canManageSchoolSetup = ['super_admin','operations_admin','content_admin'].includes(context.globalRole || '')
+  const schoolSetupActionable = canManageSchoolSetup || !context.isGlobalAdmin
   let vendorRemindableCount = 0
   if (canSeeGlobalIncompleteVendors && vendorIncompleteCount) {
     const [{ data: vendorProfileIds }, { data: recentReminderRows }, { data: vendorProfileAccounts }] = await Promise.all([
@@ -126,7 +128,7 @@ export default async function AdminDashboard() {
     studentQueue.length +
     (canReviewVendorIdentity ? vendorIdentityQueue.length : 0) +
     campusQueue.length +
-    schoolsNeedingSetup.length
+    (schoolSetupActionable ? schoolsNeedingSetup.length : 0)
 
   const oldestStudent = studentQueue.find((item) => item.submitted_at)?.submitted_at || null
   const oldestVendor = vendorIdentityQueue.map((item) => item.verification_submitted_at || item.created_at).filter(Boolean).sort()[0] || null
@@ -171,7 +173,7 @@ export default async function AdminDashboard() {
             <Link href="/control-center/students?status=awaiting" className="intelligence-task"><div><strong>{studentQueue.length} Student verification{studentQueue.length === 1 ? '' : 's'} waiting</strong><span>{oldestStudent ? 'Oldest waiting: ' + waitingAge(oldestStudent) : 'No Student verification is waiting.'}</span></div><ArrowUpRight/></Link>
             {canReviewVendorIdentity ? <Link href="/control-center/vendors?status=awaiting_identity" className="intelligence-task"><div><strong>{vendorIdentityQueue.length} Vendor identity request{vendorIdentityQueue.length === 1 ? '' : 's'}</strong><span>{oldestVendor ? 'Oldest waiting: ' + waitingAge(oldestVendor) : 'No identity request is waiting.'}</span></div><ArrowUpRight/></Link> : null}
             <Link href="/control-center/vendors?status=awaiting_campus" className="intelligence-task"><div><strong>{campusQueue.length} Campus Vendor approval{campusQueue.length === 1 ? '' : 's'}</strong><span>{campusQueue.length ? 'Across ' + campusSchools + ' school' + (campusSchools === 1 ? '' : 's') + (oldestCampus ? ' · oldest ' + waitingAge(oldestCampus) : '') : 'No Campus Vendor approval is waiting.'}</span></div><ArrowUpRight/></Link>
-            {schoolsNeedingSetup.length ? <Link href={context.isGlobalAdmin ? '/control-center/schools?readiness=needs_setup' : '/control-center/schools/' + schoolsNeedingSetup[0].school.id} className="intelligence-task"><div><strong>{schoolsNeedingSetup.length} school setup{schoolsNeedingSetup.length === 1 ? '' : 's'} incomplete</strong><span>{schoolsNeedingSetup[0].school.name}: {schoolsNeedingSetup[0].readiness.blockingIssues[0]}</span></div><ArrowUpRight/></Link> : <div className="intelligence-clear"><Building2 size={16}/> Core setup is ready for every school in your scope.</div>}
+            {schoolSetupActionable ? (schoolsNeedingSetup.length ? <Link href={context.isGlobalAdmin ? '/control-center/schools?readiness=needs_setup' : '/control-center/schools/' + schoolsNeedingSetup[0].school.id} className="intelligence-task"><div><strong>{schoolsNeedingSetup.length} school setup{schoolsNeedingSetup.length === 1 ? '' : 's'} incomplete</strong><span>{schoolsNeedingSetup[0].school.name}: {schoolsNeedingSetup[0].readiness.blockingIssues[0]}</span></div><ArrowUpRight/></Link> : <div className="intelligence-clear"><Building2 size={16}/> Core setup is ready for every school in your scope.</div>) : null}
           </div>
 
           <div className="intelligence-group">
@@ -189,14 +191,14 @@ export default async function AdminDashboard() {
           <div className="admin-priority-head"><div><span>Registration health</span><strong>Where users are in the journey</strong></div><UsersRound size={20}/></div>
           <Link href="/control-center/students" className="priority-row"><div className="priority-icon blue"><GraduationCap/></div><div><strong>Students</strong><span>{studentOnboardedCount} onboarded · {studentVerifiedCount} verified · {studentIncompleteCount} incomplete.</span></div><b>{studentOnboardedCount}/{studentCount}</b><ArrowUpRight/></Link>
           <Link href="/control-center/vendors" className="priority-row"><div className="priority-icon green"><Store/></div><div><strong>Vendors</strong><span>{context.isGlobalAdmin ? vendorProfileCount + ' profiles from ' + vendorAccountCount + ' accounts.' : vendorCompletedCount + ' completed profiles in your scope.'}</span></div><b>{vendorCompletedCount}/{context.isGlobalAdmin ? vendorAccountCount : vendorProfileCount}</b><ArrowUpRight/></Link>
-          <Link href={context.isGlobalAdmin ? '/control-center/schools' : schools[0] ? '/control-center/schools/' + schools[0].id : '/control-center'} className="priority-row"><div className="priority-icon amber"><Building2/></div><div><strong>School readiness</strong><span>{schoolsNeedingSetup.length ? schoolsNeedingSetup.length + ' need setup work.' : 'All core school setup requirements are complete.'}</span></div><b>{schoolCount-schoolsNeedingSetup.length}/{schoolCount}</b><ArrowUpRight/></Link>
+          {schoolSetupActionable ? <Link href={context.isGlobalAdmin ? '/control-center/schools' : schools[0] ? '/control-center/schools/' + schools[0].id : '/control-center'} className="priority-row"><div className="priority-icon amber"><Building2/></div><div><strong>School readiness</strong><span>{schoolsNeedingSetup.length ? schoolsNeedingSetup.length + ' need setup work.' : 'All core school setup requirements are complete.'}</span></div><b>{schoolCount-schoolsNeedingSetup.length}/{schoolCount}</b><ArrowUpRight/></Link> : null}
         </section>
       </section>
 
       <section className="admin-section modern-admin-section">
         <div className="admin-section-head"><div><h2>Operations shortcuts</h2><p>Go directly to the work area instead of hunting through the control centre.</p></div><UsersRound size={20}/></div>
         <div className="admin-section-body queue-grid modern-queue-grid">
-          {context.isGlobalAdmin ? <Link href="/control-center/schools" className="queue-card"><Building2/><h3>School management</h3><p>Review readiness, create schools and open School 360.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link> : schools[0] ? <Link href={'/control-center/schools/' + schools[0].id} className="queue-card"><Building2/><h3>Your School 360</h3><p>See Students, Vendors, readiness, Campus Intelligence and trust state for your assigned institution.</p><span className="queue-link">Open School 360 <ArrowUpRight size={14}/></span></Link> : <Link href="/control-center/campus-intelligence" className="queue-card"><Building2/><h3>Your school operations</h3><p>Manage operational campus context for your assigned scope.</p><span className="queue-link">Open campus intelligence <ArrowUpRight size={14}/></span></Link>}
+          {canManageSchoolSetup ? <Link href="/control-center/schools" className="queue-card"><Building2/><h3>School management</h3><p>Review readiness, create schools and open School 360.</p><span className="queue-link">Manage schools <ArrowUpRight size={14}/></span></Link> : !context.isGlobalAdmin && schools[0] ? <Link href={'/control-center/schools/' + schools[0].id} className="queue-card"><Building2/><h3>Your School 360</h3><p>See Students, Vendors, readiness, Campus Intelligence and trust state for your assigned institution.</p><span className="queue-link">Open School 360 <ArrowUpRight size={14}/></span></Link> : null}
           <Link href="/control-center/students" className="queue-card"><GraduationCap/><h3>Students</h3><p>Filter registrations, onboarding state and verification work from one page.</p><span className="queue-link">Manage students <ArrowUpRight size={14}/></span></Link>
           <Link href="/control-center/vendors" className="queue-card"><Store/><h3>Vendors</h3><p>Separate incomplete setup, identity, Campus approval and marketplace visibility.</p><span className="queue-link">Manage vendors <ArrowUpRight size={14}/></span></Link>
           <Link href="/control-center/safety" className="queue-card"><LifeBuoy/><h3>Trust & safety</h3><p>Put serious cases first while keeping evidence and decisions connected.</p><span className="queue-link">Open safety centre <ArrowUpRight size={14}/></span></Link>
