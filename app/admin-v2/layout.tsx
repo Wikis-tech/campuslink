@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const isSchoolAdmin = !context.isGlobalAdmin
   const canSeeMarketplace = isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(role || '')
   const canSeeCampusIntelligence = isSchoolAdmin || ['super_admin','operations_admin','content_admin'].includes(role || '')
-  const canSeeSafety = isSchoolAdmin || ['super_admin','operations_admin','support_admin','verification_admin'].includes(role || '')
+  const canSeeSafety = isSchoolAdmin || ['super_admin','operations_admin','support_admin'].includes(role || '')
   const canSeeStudents = isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(role || '')
   const canSeeVendors = isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(role || '')
   const canSeeReviews = isSchoolAdmin || ['super_admin','operations_admin','support_admin','content_admin','analyst'].includes(role || '')
@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const canSeeSchools = ['super_admin','operations_admin','content_admin'].includes(role || '')
   const canSeeCategories = ['super_admin','operations_admin','content_admin'].includes(role || '')
   const canSeeAdmins = ['super_admin','operations_admin'].includes(role || '')
-  const canSeeAudit = context.isGlobalAdmin
+  const canSeeAudit = ['super_admin','operations_admin','analyst'].includes(role || '')
   const canSeeCommunications = isSchoolAdmin || ['super_admin','operations_admin','content_admin','verification_admin'].includes(role || '')
 
   return (
