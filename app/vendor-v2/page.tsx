@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
 import { VendorWorkspaceSidebar } from '@/components/vendor-workspace-sidebar'
 import { calculateVendorStorefrontHealth } from '@/lib/vendor-storefront-health'
+import { DashboardNotifications } from '@/components/dashboard-notifications'
 
 export default async function VendorDashboard() {
   const supabase = await createClient()
@@ -105,6 +106,8 @@ export default async function VendorDashboard() {
         </header>
 
         {marketplace !== 'active' && !suspensionExpired ? <div className="v5e-alert"><strong>Marketplace visibility paused.</strong> Safety review is separate from your paid plan. You can still manage your business while the case is reviewed.</div> : null}
+
+        <DashboardNotifications />
 
         <section className="v5e-statusbar">
           <div><span>Marketplace</span><strong>{discoverable ? 'Live' : marketplace.replace('_',' ')}</strong></div>
