@@ -106,9 +106,9 @@ async function resolveReminderRecipients(
     const { data, error } = await admin.from('profiles')
       .select('id,first_name,last_name,institution_id,onboarding_completed_at')
       .eq('account_type','student')
-      .is('onboarding_completed_at', null)
     if (error) throw error
     return (data || [])
+      .filter((row) => !row.onboarding_completed_at || !row.institution_id)
       .filter((row) => globalAllowed || (row.institution_id && schoolIds.has(row.institution_id)))
       .filter((row) => !targetUserId || row.id === targetUserId)
       .map((row) => ({
@@ -124,16 +124,16 @@ async function resolveReminderRecipients(
       .select('id,first_name,last_name,institution_id,onboarding_completed_at,student_verification_status')
       .eq('account_type','student')
       .not('onboarding_completed_at','is',null)
-      .neq('student_verification_status','verified')
     if (error) throw error
-    const ids = (students || []).map((row) => row.id)
+    const verificationCandidates = (students || []).filter((row) => row.student_verification_status !== 'verified')
+    const ids = verificationCandidates.map((row) => row.id)
     const { data: verificationRows, error: verificationError } = ids.length
       ? await admin.from('student_verifications').select('student_id,status').in('student_id', ids)
       : { data: [] as any[], error: null }
     if (verificationError) throw verificationError
     const verificationMap = new Map((verificationRows || []).map((row) => [row.student_id,row.status]))
     const canGlobal = ['super_admin','operations_admin','verification_admin'].includes(context.globalRole || '')
-    return (students || [])
+    return verificationCandidates
       .filter((row) => {
         const state = verificationMap.get(row.id)
         return !state || state === 'rejected'
@@ -384,7 +384,7 @@ export async function sendAnnouncement(formData: FormData) {
     for (const row of data || []) recipients.set(row.id,{userId:row.id,name:[row.first_name,row.last_name].filter(Boolean).join(' ')||'Student',institutionId:row.institution_id||null,accountType:'student'})
   }
   if (audience === 'school_vendors' || audience === 'school_all') {
-    const { data: links } = await admin.from('vendor_institutions').select('vendor_id').eq('institution_id',institutionId!)
+    const { data: links } = await admin.from('vendor_institutions').select('vendor_id').eq('institution_id',institutionId!).neq('status','rejected')
     const ids = Array.from(new Set((links || []).map((row) => row.vendor_id)))
     if (ids.length) {
       const { data } = await admin.from('profiles').select('id,first_name,last_name,institution_id').eq('account_type','vendor').in('id',ids)
