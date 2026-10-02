@@ -3,6 +3,7 @@ import { Activity, AlertTriangle, ArrowUpRight, BellRing, Building2, CircleAlert
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { AdminOverviewChart } from '@/components/dashboard-charts'
+import { DashboardNotifications } from '@/components/dashboard-notifications'
 import { calculateSchoolReadiness, dayGreeting, waitingAge } from '@/lib/admin-phase2'
 import { requireAdminContext } from './lib'
 
@@ -153,6 +154,8 @@ export default async function AdminDashboard() {
         <div><span>{context.isGlobalAdmin ? 'Active schools' : 'Assigned school'}</span><strong>{schoolCount}</strong><small>{schoolsNeedingSetup.length ? schoolsNeedingSetup.length + ' need setup attention' : 'Core school setup looks ready'}</small></div>
         <div><span>Open reports</span><strong>{reportCount}</strong><small>{criticalReports.length ? criticalReports.length + ' high / critical' : 'No high-severity cases'}</small></div>
       </section>
+
+      <DashboardNotifications />
 
       <section className="admin-section intelligence-command">
         <div className="admin-section-head"><div><span className="admin-eyebrow">Live operational intelligence</span><h2>What needs attention today?</h2><p>Generated from current CampusLink records. No invented AI scoring and no hidden priority model.</p></div><Activity size={20}/></div>
