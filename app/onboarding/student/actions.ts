@@ -62,7 +62,7 @@ export async function completeStudentOnboarding(formData: FormData) {
 
   const { data: institution } = await supabase
     .from('institutions')
-    .select('id,email_domain,is_active')
+    .select('id,email_domain,allowed_student_email_domains,verification_mode,is_active')
     .eq('id', institutionId)
     .eq('is_active', true)
     .maybeSingle()
@@ -71,12 +71,31 @@ export async function completeStudentOnboarding(formData: FormData) {
     redirect('/onboarding/student?error=Please%20select%20a%20valid%20school')
   }
 
+  const verificationMode = institution.verification_mode || 'hybrid'
+  if (verificationMode === 'institution_email' && verificationMethod !== 'school_email') {
+    redirect('/onboarding/student?error=This%20school%20currently%20requires%20institution%20email%20verification')
+  }
+  if (verificationMode === 'manual' && verificationMethod !== 'student_id') {
+    redirect('/onboarding/student?error=This%20school%20currently%20uses%20manual%20student%20evidence%20verification')
+  }
+
   if (verificationMethod === 'school_email') {
     if (!schoolEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(schoolEmail)) {
       redirect('/onboarding/student?error=Enter%20a%20valid%20school%20email')
     }
-    if (institution.email_domain && !schoolEmail.endsWith(`@${institution.email_domain.toLowerCase()}`)) {
-      redirect('/onboarding/student?error=That%20email%20does%20not%20match%20the%20selected%20school')
+
+    const allowedDomains = Array.from(new Set([
+      institution.email_domain,
+      ...((institution.allowed_student_email_domains || []) as string[]),
+    ].map((domain) => String(domain || '').trim().toLowerCase().replace(/^@/, '')).filter(Boolean)))
+
+    if (!allowedDomains.length) {
+      redirect('/onboarding/student?error=This%20school%20has%20not%20finished%20its%20email%20verification%20setup')
+    }
+
+    const emailDomain = schoolEmail.split('@').pop()?.toLowerCase() || ''
+    if (!allowedDomains.includes(emailDomain)) {
+      redirect('/onboarding/student?error=That%20email%20domain%20is%20not%20approved%20for%20the%20selected%20school')
     }
   }
 
