@@ -194,8 +194,8 @@ export default async function School360Page({
               <div className="admin-field"><label>State</label><input name="state" defaultValue={school.state || ''}/></div>
               <div className="admin-field"><label>Country</label><input name="country" defaultValue={school.country || 'Nigeria'}/></div>
               <div className="admin-field"><label>Verification mode</label><select name="verification_mode" defaultValue={school.verification_mode}><option value="hybrid">Hybrid: email or document</option><option value="institution_email">Institution email</option><option value="manual">Manual evidence</option></select></div>
-              <div className="admin-field"><label>Primary Student email domain</label><input name="email_domain" defaultValue={school.email_domain || ''}/></div>
-              <div className="admin-field"><label>Allowed email domains</label><input name="allowed_student_email_domains" defaultValue={(school.allowed_student_email_domains || []).join(', ')}/></div>
+              <div className="admin-field"><label>Primary Student email domain</label><small className="admin-sub">The school's main/canonical Student email domain. It is always accepted.</small><input name="email_domain" defaultValue={school.email_domain || ''}/></div>
+              <div className="admin-field"><label>Allowed email domains</label><small className="admin-sub">Additional approved Student email domains or aliases. Separate multiple domains with commas.</small><input name="allowed_student_email_domains" defaultValue={(school.allowed_student_email_domains || []).join(', ')}/></div>
             </div>
             <div className="admin-field"><label>Verification instructions</label><textarea name="verification_instructions" rows={3} defaultValue={school.verification_instructions || ''}/></div>
             <button className="admin-action primary" type="submit">Save school setup</button>
