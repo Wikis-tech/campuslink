@@ -5,8 +5,11 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdminContext } from '../lib'
 
-function back(message: string, type: 'ok' | 'error' = 'ok'): never {
-  redirect(`/control-center/campus-intelligence?${type}=${encodeURIComponent(message)}`)
+function back(message: string, type: 'ok' | 'error' = 'ok', returnTo = '/control-center/campus-intelligence'): never {
+  const safePath = returnTo.startsWith('/control-center') ? returnTo : '/control-center/campus-intelligence'
+  const key = safePath.includes('/schools/') ? (type === 'ok' ? 'success' : 'error') : type
+  const join = safePath.includes('?') ? '&' : '?'
+  redirect(`${safePath}${join}${key}=${encodeURIComponent(message)}`)
 }
 
 function slugify(value: string) {
@@ -24,19 +27,21 @@ async function ensureInstitutionAccess(institutionId: string) {
 
 export async function createCampusLocation(formData: FormData) {
   const institutionId = String(formData.get('institution_id') || '')
+  const returnTo = String(formData.get('return_to') || '/control-center/campus-intelligence')
   const name = String(formData.get('name') || '').trim()
   const locationType = String(formData.get('location_type') || 'landmark')
   const description = String(formData.get('description') || '').trim().slice(0, 240) || null
-  if (!institutionId || name.length < 2) back('Choose a campus and enter a valid location name.', 'error')
+  if (!institutionId || name.length < 2) back('Choose a campus and enter a valid location name.', 'error', returnTo)
   const context = await ensureInstitutionAccess(institutionId)
   const allowedTypes = new Set(['gate','hostel','faculty','student_centre','library','landmark','off_campus','other'])
-  if (!allowedTypes.has(locationType)) back('Invalid location type.', 'error')
+  if (!allowedTypes.has(locationType)) back('Invalid location type.', 'error', returnTo)
   const supabase = await createClient()
   const { error } = await supabase.from('campus_locations').insert({ institution_id: institutionId, name, slug: slugify(name), location_type: locationType, description, created_by: context.userId })
-  if (error) back(`Could not add location: ${error.message}`, 'error')
+  if (error) back(`Could not add location: ${error.message}`, 'error', returnTo)
   revalidatePath('/control-center/campus-intelligence')
   revalidatePath('/vendor-v2/availability')
-  back('Campus location added.')
+  revalidatePath(returnTo.split('?')[0])
+  back('Campus location added.', 'ok', returnTo)
 }
 
 export async function toggleCampusLocation(formData: FormData) {
