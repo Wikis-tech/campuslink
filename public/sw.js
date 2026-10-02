@@ -14,6 +14,7 @@ const PROTECTED_PREFIXES = [
   '/admin-v2',
   '/control-center',
   '/admin-login-campus',
+  '/admin-invite',
   '/student',
   '/vendor-v2',
   '/dashboard',
