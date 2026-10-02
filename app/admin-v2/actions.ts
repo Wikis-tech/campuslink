@@ -235,9 +235,11 @@ export async function processSchoolRequest(formData: FormData) {
   const supabase = await createClient()
   const requestId = text(formData, 'request_id', 80)
   const decision = text(formData, 'decision', 20)
-  const { error } = await supabase.rpc('admin_process_school_request', { request_id: requestId, decision })
+  const { data: createdSchoolId, error } = await supabase.rpc('admin_process_school_request', { request_id: requestId, decision })
   if (error) message('/control-center/schools', 'error', error.message)
+  revalidatePath('/control-center')
   revalidatePath('/control-center/schools')
   revalidatePath('/onboarding/student')
+  if (decision === 'approve' && createdSchoolId) redirect('/control-center/schools/' + createdSchoolId + '?setup=created')
   message('/control-center/schools', 'success', decision === 'approve' ? 'School request approved and added to onboarding.' : 'School request rejected.')
 }
