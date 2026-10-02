@@ -57,7 +57,7 @@ export default async function School360Page({
     supabase.from('vendor_products').select('id,vendor_id,is_active').in('vendor_id',vendorIds).eq('is_active',true),
     supabase.from('vendor_services').select('id,vendor_id,is_active').in('vendor_id',vendorIds).eq('is_active',true),
     supabase.from('contact_events').select('id,vendor_id,created_at').eq('institution_id',id).gte('created_at',new Date(Date.now()-7*86400000).toISOString()),
-    supabase.from('complaints').select('id,vendor_id,status,severity,created_at').in('vendor_id',vendorIds).in('status',['open','reviewing']),
+    supabase.from('complaints').select('id,reporter_id,vendor_id,status,severity,created_at').in('vendor_id',vendorIds).in('status',['open','reviewing']),
   ]) : [{data:[] as any[]},{data:[] as any[]},{data:[] as any[]},{data:[] as any[]},{data:[] as any[]}]
 
   const vendorMap = new Map((vendors || []).map((vendor) => [vendor.id,vendor]))
@@ -86,8 +86,11 @@ export default async function School360Page({
   })
 
   const pendingStudentReviews = verifications.filter((item) => ['pending','under_review'].includes(item.status)).length
-  const openReports = reports || []
+  const openReports = (reports || []).filter((item) => studentIds.has(item.reporter_id))
   const criticalReports = openReports.filter((item) => ['high','critical'].includes(item.severity || '')).length
+  const visibleVendorIds = new Set(studentVisible.map((link) => link.vendor_id))
+  const visibleProductCount = (products || []).filter((item) => visibleVendorIds.has(item.vendor_id)).length
+  const visibleServiceCount = (services || []).filter((item) => visibleVendorIds.has(item.vendor_id)).length
   const onboardedStudents = students.filter((item) => Boolean(item.onboarding_completed_at)).length
   const verifiedStudents = students.filter((item) => item.student_verification_status === 'verified').length
   const incompleteStudents = students.filter((item) => !item.onboarding_completed_at).length
@@ -154,8 +157,8 @@ export default async function School360Page({
           <div className="admin-section-head"><div><h2>Marketplace</h2><p>Current discoverable inventory and Student response.</p></div><Store size={19}/></div>
           <div className="admin-section-body school360-detail-list">
             <div><span>Active Vendor links</span><strong>{approvedLinks.length}</strong></div>
-            <div><span>Active products</span><strong>{products?.length || 0}</strong></div>
-            <div><span>Active services</span><strong>{services?.length || 0}</strong></div>
+            <div><span>Active products</span><strong>{visibleProductCount}</strong></div>
+            <div><span>Active services</span><strong>{visibleServiceCount}</strong></div>
             <div><span>Contacts in last 7 days</span><strong>{contacts?.length || 0}</strong></div>
           </div>
         </section>
