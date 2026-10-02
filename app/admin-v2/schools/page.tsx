@@ -98,8 +98,8 @@ export default async function SchoolsAdminPage({
               <div className="admin-form-section-title"><ShieldCheck size={17}/><div><strong>Step 2 — Student verification</strong><span>Choose how Students from this institution can prove membership.</span></div></div>
               <div className="admin-form-grid">
                 <div className="admin-field"><label>Verification mode</label><select name="verification_mode" defaultValue="hybrid"><option value="hybrid">Hybrid: email or document</option><option value="institution_email">Institution email</option><option value="manual">Manual evidence</option></select></div>
-                <div className="admin-field"><label>Primary Student email domain</label><input name="email_domain" placeholder="student.unilag.edu.ng"/></div>
-                <div className="admin-field"><label>Allowed email domains</label><input name="allowed_student_email_domains" placeholder="student.school.edu.ng, school.edu.ng"/></div>
+                <div className="admin-field"><label>Primary Student email domain</label><small className="admin-sub">The school's main/canonical Student email domain. It is always accepted.</small><input name="email_domain" placeholder="student.unilag.edu.ng"/></div>
+                <div className="admin-field"><label>Allowed email domains</label><small className="admin-sub">Additional approved Student email domains or aliases. Separate multiple domains with commas.</small><input name="allowed_student_email_domains" placeholder="student.school.edu.ng, school.edu.ng"/></div>
               </div>
               <div className="admin-field"><label>Manual verification instructions</label><textarea name="verification_instructions" rows={3} placeholder="Explain what evidence Students can use when email verification is unavailable."/></div>
             </div>
