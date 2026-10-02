@@ -96,8 +96,8 @@ export async function sendCampusLinkEmail(input: CampusLinkEmail): Promise<Campu
     return { ok: false, reason: 'not_configured', error: 'RESEND_API_KEY is not configured on the server.' }
   }
 
-  const rendered = renderCampusLinkEmail(input)
   try {
+    const templateId = process.env.RESEND_ALERT_TEMPLATE_ID || 'campuslink-admin-alert-v1'
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -108,9 +108,17 @@ export async function sendCampusLinkEmail(input: CampusLinkEmail): Promise<Campu
       body: JSON.stringify({
         from: FROM,
         to: [input.to],
-        subject: input.subject,
-        html: rendered.html,
-        text: rendered.text,
+        template: {
+          id: templateId,
+          variables: {
+            RECIPIENT_NAME: input.recipientName?.trim() || 'there',
+            ALERT_SUBJECT: input.subject,
+            ALERT_TITLE: input.title,
+            ALERT_BODY: input.body,
+            CTA_LABEL: input.ctaLabel || 'Open CampusLink',
+            CTA_URL: absoluteUrl(input.ctaUrl) || 'https://campuslink.name.ng',
+          },
+        },
         tags: [
           { name: 'product', value: 'campuslink' },
           { name: 'channel', value: 'admin-alert' },
