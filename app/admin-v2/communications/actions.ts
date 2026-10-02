@@ -20,9 +20,14 @@ function clean(value: FormDataEntryValue | null, max = 1200) {
   return String(value || '').trim().slice(0, max)
 }
 
+function safeReturnPath(path: string) {
+  return path.startsWith('/control-center') ? path : '/control-center/communications'
+}
+
 function back(path: string, kind: 'success' | 'error', value: string): never {
-  const join = path.includes('?') ? '&' : '?'
-  redirect(`${path}${join}${kind}=${encodeURIComponent(value)}`)
+  const safePath = safeReturnPath(path)
+  const join = safePath.includes('?') ? '&' : '?'
+  redirect(`${safePath}${join}${kind}=${encodeURIComponent(value)}`)
 }
 
 function assignedSchoolIds(context: Awaited<ReturnType<typeof requireAdminContext>>) {
@@ -156,6 +161,7 @@ async function deliver(
   ctaLabel: string | null,
   ctaUrl: string | null,
   reminderKey?: string,
+  createdBy?: string,
 ) {
   const admin = createAdminClient()
 
@@ -187,7 +193,7 @@ async function deliver(
     type: reminderKey ? 'reminder' : 'announcement',
     action_url: ctaUrl,
     source: 'admin',
-    created_by: null,
+    created_by: createdBy || null,
     metadata: { communication_id: communicationId, reminder_key: reminderKey || null },
   }).select('id').single()
 
@@ -287,6 +293,7 @@ export async function sendOperationalReminder(formData: FormData) {
       definition.ctaLabel,
       definition.ctaUrl,
       reminderType,
+      context.userId,
     )
     dashboardSent += result.dashboard
     emailSent += result.emailSent
@@ -326,10 +333,23 @@ export async function sendAnnouncement(formData: FormData) {
   const title = clean(formData.get('title'), 160)
   const body = clean(formData.get('body'), 1800)
   const ctaLabel = clean(formData.get('cta_label'), 60) || null
-  const ctaUrl = clean(formData.get('cta_url'), 300) || null
+  let ctaUrl = clean(formData.get('cta_url'), 300) || null
 
   if (subject.length < 3 || title.length < 3 || body.length < 5) {
     back('/control-center/communications', 'error', 'Subject, notification title and message are required.')
+  }
+
+  if (ctaUrl) {
+    const isRelative = ctaUrl.startsWith('/')
+    const isCampusLinkUrl = /^https:\/\/(www\.)?campuslink\.name\.ng(?:\/|$)/i.test(ctaUrl)
+    if (!isRelative && !isCampusLinkUrl) {
+      back('/control-center/communications', 'error', 'Announcement links must stay inside CampusLink for account safety.')
+    }
+    if (isRelative && !ctaUrl.startsWith('//')) {
+      ctaUrl = ctaUrl
+    } else if (!isCampusLinkUrl) {
+      back('/control-center/communications', 'error', 'Choose a valid CampusLink link.')
+    }
   }
 
   const isGlobalAudience = ['all_students','all_vendors','all_users'].includes(audience)
@@ -394,7 +414,7 @@ export async function sendAnnouncement(formData: FormData) {
   let emailSent = 0
   let emailFailed = 0
   for (const recipient of recipientList) {
-    const result = await deliver(communication.id,recipient,emails.get(recipient.userId),subject,title,body,ctaLabel,ctaUrl)
+    const result = await deliver(communication.id,recipient,emails.get(recipient.userId),subject,title,body,ctaLabel,ctaUrl,undefined,context.userId)
     dashboardSent += result.dashboard
     emailSent += result.emailSent
     emailFailed += result.emailFailed
