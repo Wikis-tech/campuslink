@@ -19,7 +19,8 @@ export default async function School360Page({
   const query = await searchParams
   const context = await requireAdminContext()
   const assigned = context.schoolAssignments.some((item) => item.is_active && item.institution_id === id)
-  if (!context.isGlobalAdmin && !assigned) notFound()
+  const globalSchoolAccess = canManageSchools(context.globalRole)
+  if (!globalSchoolAccess && !assigned) notFound()
 
   const supabase = await createClient()
   const admin = createAdminClient()
