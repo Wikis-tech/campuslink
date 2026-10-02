@@ -175,6 +175,13 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/admin-invite/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
         source: '/admin-v2/:path*',
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
