@@ -10,7 +10,7 @@ const categoryLabel: Record<string,string> = { fraud_scam:'Fraud / scam', harass
 export default async function AdminSafetyPage({ searchParams }: { searchParams: Promise<{ ok?: string; error?: string }> }) {
   const params = await searchParams
   const context = await requireAdminContext()
-  const canControlMarketplace = ['super_admin','operations_admin','support_admin','verification_admin'].includes(context.globalRole || '')
+  const canControlMarketplace = ['super_admin','operations_admin','support_admin'].includes(context.globalRole || '')
   const supabase = await createClient()
   const readiness = await checkPhase5gReadiness(supabase)
 
