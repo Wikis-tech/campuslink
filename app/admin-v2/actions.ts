@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { canManageSchools, requireAdminContext } from './lib'
 
 function text(formData: FormData, key: string, max = 500) {
   return String(formData.get(key) || '').trim().slice(0, max)
@@ -38,7 +39,7 @@ export async function createInstitution(formData: FormData) {
 
   if (name.length < 4 || !slug) message('/control-center/schools', 'error', 'Enter a valid school name.')
 
-  const { error } = await supabase.rpc('admin_create_institution', {
+  const { data: newInstitutionId, error } = await supabase.rpc('admin_create_institution', {
     school_name: name,
     school_slug: slug,
     school_city: city || null,
@@ -54,7 +55,48 @@ export async function createInstitution(formData: FormData) {
   revalidatePath('/control-center')
   revalidatePath('/control-center/schools')
   revalidatePath('/onboarding/student')
+  if (newInstitutionId) redirect(`/control-center/schools/${newInstitutionId}?setup=created`)
   message('/control-center/schools', 'success', `${name} was added and is now available for onboarding.`)
+}
+
+export async function updateInstitutionSetup(formData: FormData) {
+  const context = await requireAdminContext()
+  if (!canManageSchools(context.globalRole)) message('/control-center', 'error', 'You do not have permission to change school setup.')
+
+  const id = text(formData, 'institution_id', 80)
+  const name = text(formData, 'name', 180)
+  const city = text(formData, 'city', 100)
+  const state = text(formData, 'state', 100)
+  const country = text(formData, 'country', 100) || 'Nigeria'
+  const emailDomain = text(formData, 'email_domain', 180).toLowerCase().replace(/^@/, '')
+  const mode = text(formData, 'verification_mode', 40) || 'hybrid'
+  const instructions = text(formData, 'verification_instructions', 1200)
+  const domains = text(formData, 'allowed_student_email_domains', 800)
+    .split(',')
+    .map((item) => item.trim().toLowerCase().replace(/^@/, ''))
+    .filter(Boolean)
+
+  if (!id || name.length < 4) message('/control-center/schools', 'error', 'Enter a valid school name.')
+  if (!['hybrid','institution_email','manual'].includes(mode)) message('/control-center/schools/' + id, 'error', 'Choose a valid verification mode.')
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('institutions').update({
+    name,
+    city: city || null,
+    state: state || null,
+    country,
+    email_domain: emailDomain || null,
+    verification_mode: mode,
+    allowed_student_email_domains: domains,
+    verification_instructions: instructions || null,
+  }).eq('id', id)
+
+  if (error) message('/control-center/schools/' + id, 'error', error.message)
+  revalidatePath('/control-center')
+  revalidatePath('/control-center/schools')
+  revalidatePath('/control-center/schools/' + id)
+  revalidatePath('/onboarding/student')
+  message('/control-center/schools/' + id, 'success', 'School setup updated.')
 }
 
 export async function setInstitutionActive(formData: FormData) {
