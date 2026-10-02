@@ -7,6 +7,8 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get('token_hash')
   const type = searchParams.get('type') as EmailOtpType | null
   const code = searchParams.get('code')
+  const requestedNext = searchParams.get('next')
+  const next = requestedNext && requestedNext.startsWith('/') && !requestedNext.startsWith('//') ? requestedNext : '/dashboard'
   const supabase = await createClient()
 
   let error: Error | null = null
@@ -25,5 +27,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=Confirmation%20link%20is%20invalid%20or%20expired', request.url))
   }
 
-  return NextResponse.redirect(new URL('/dashboard', request.url))
+  return NextResponse.redirect(new URL(next, request.url))
 }
