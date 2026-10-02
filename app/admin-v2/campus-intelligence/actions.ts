@@ -18,11 +18,11 @@ function slugify(value: string) {
 
 async function ensureInstitutionAccess(institutionId: string) {
   const context = await requireAdminContext()
-  if (context.isGlobalAdmin) return context
-  if (!context.schoolAssignments.some((item) => item.institution_id === institutionId && item.role === 'school_admin')) {
-    back('You do not have permission to manage that campus.', 'error')
+  if (context.isGlobalAdmin && ['super_admin','operations_admin','content_admin'].includes(context.globalRole || '')) return context
+  if (!context.isGlobalAdmin && context.schoolAssignments.some((item) => item.is_active && item.institution_id === institutionId && item.role === 'school_admin')) {
+    return context
   }
-  return context
+  back('You do not have permission to manage that campus.', 'error')
 }
 
 export async function createCampusLocation(formData: FormData) {
