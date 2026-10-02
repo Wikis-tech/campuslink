@@ -205,6 +205,7 @@ export default async function School360Page({
           <div className="admin-section-body">
             <form action={createCampusLocation} className="admin-form">
               <input type="hidden" name="institution_id" value={school.id}/>
+              <input type="hidden" name="return_to" value={'/control-center/schools/' + school.id}/>
               <div className="admin-form-grid">
                 <div className="admin-field"><label>Location name</label><input name="name" required minLength={2} placeholder="Main Gate"/></div>
                 <div className="admin-field"><label>Type</label><select name="location_type" defaultValue="gate"><option value="gate">Gate</option><option value="hostel">Hostel</option><option value="faculty">Faculty</option><option value="student_centre">Student centre</option><option value="library">Library</option><option value="landmark">Landmark</option><option value="off_campus">Off-campus area</option><option value="other">Other</option></select></div>
@@ -222,6 +223,7 @@ export default async function School360Page({
             <div className="school360-mini-list">{schoolAdmins.map((assignment) => <div key={assignment.user_id}><strong>{canResolveAdminEmails ? adminEmailMap.get(assignment.user_id) || 'School Admin' : assignment.user_id === context.userId ? 'You' : 'School Admin'}</strong><span>{assignment.role.replaceAll('_',' ')}</span></div>)}{!schoolAdmins.length ? <div className="admin-note">No School Admin is assigned yet. This is recommended but does not expose the school publicly as “verified”.</div> : null}</div>
             {canAssignAdmin ? <form action={assignSchoolAdmin} className="admin-form" style={{marginTop:16}}>
               <input type="hidden" name="institution_id" value={school.id}/>
+              <input type="hidden" name="return_to" value={'/control-center/schools/' + school.id}/>
               <input type="hidden" name="role" value="school_admin"/>
               <div className="admin-field"><label>CampusLink account email</label><input type="email" name="email" required placeholder="schooladmin@example.edu.ng"/></div>
               <button className="admin-action primary" type="submit">Assign School Admin</button>
