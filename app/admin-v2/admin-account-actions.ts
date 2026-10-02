@@ -76,10 +76,12 @@ export async function inviteAdminAccount(formData: FormData) {
     fail('The invitation was not kept because role assignment failed: ' + assignment.error.message)
   }
 
-  const inviteUrl = 'https://campuslink.name.ng/auth/confirm?token_hash='
+  // Do not consume the Supabase one-time token on the first GET.
+  // Email/security scanners often prefetch links. The accept page only
+  // verifies the token after the human clicks the confirmation button.
+  const inviteUrl = 'https://campuslink.name.ng/admin-invite/accept?token_hash='
     + encodeURIComponent(tokenHash)
-    + '&type=invite&next='
-    + encodeURIComponent('/admin-invite/setup')
+    + '&type=invite'
 
   const emailResult = await sendCampusLinkEmail({
     to: email,
@@ -186,4 +188,74 @@ export async function setGlobalAdminAccess(formData: FormData) {
   })
 
   success(active ? 'Global Admin access enabled.' : 'Global Admin access disabled. Audit history was preserved.')
+}
+
+
+export async function resendAdminSetup(formData: FormData) {
+  const context = await requireAdminContext()
+  const userId = String(formData.get('user_id') || '').trim()
+  const scope = String(formData.get('scope') || '').trim()
+
+  if (!userId || !['school','global'].includes(scope)) fail('Missing administrator setup target.')
+  if (!['super_admin','operations_admin'].includes(context.globalRole || '')) {
+    fail('You do not have permission to send administrator setup links.')
+  }
+  if (scope === 'global' && context.globalRole !== 'super_admin') {
+    fail('Only Super Admin can send setup links to global administrators.')
+  }
+
+  const admin = createAdminClient()
+
+  if (scope === 'global') {
+    const { data: membership } = await admin.from('admin_memberships')
+      .select('user_id,is_active,role')
+      .eq('user_id',userId)
+      .maybeSingle()
+    if (!membership?.is_active) fail('That global administrator is not currently active.')
+  } else {
+    const { data: assignments } = await admin.from('institution_admin_assignments')
+      .select('user_id,is_active')
+      .eq('user_id',userId)
+      .eq('is_active',true)
+      .limit(1)
+    if (!(assignments || []).length) fail('That School Admin has no active school assignment.')
+  }
+
+  const { data: userData, error: userError } = await admin.auth.admin.getUserById(userId)
+  const email = userData?.user?.email?.trim().toLowerCase()
+  if (userError || !email) fail('Could not resolve the administrator email address.')
+
+  const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
+    type: 'recovery',
+    email,
+    options: { redirectTo: 'https://campuslink.name.ng/admin-invite/setup' },
+  })
+  const tokenHash = linkData?.properties?.hashed_token
+  if (linkError || !tokenHash) fail(linkError?.message || 'Could not create a fresh administrator setup link.')
+
+  const setupUrl = 'https://campuslink.name.ng/admin-invite/accept?token_hash='
+    + encodeURIComponent(tokenHash)
+    + '&type=recovery'
+
+  const emailResult = await sendCampusLinkEmail({
+    to: email,
+    recipientName: 'Administrator',
+    subject: 'Complete your CampusLink Admin setup',
+    title: 'Continue your secure Admin setup',
+    body: 'A fresh secure setup link was requested for your CampusLink administrator account. Open the link, confirm the setup, choose your password, and complete authenticator MFA before entering the Admin workspace. If you did not expect this message, contact the CampusLink Super Admin.',
+    ctaLabel: 'Continue Admin setup',
+    ctaUrl: setupUrl,
+    idempotencyKey: 'campuslink-admin-setup-' + userId + '-' + tokenHash.slice(0,16),
+  })
+  if (!emailResult.ok) fail('Could not send the administrator setup email: ' + emailResult.error)
+
+  await admin.from('audit_logs').insert({
+    actor_id: context.userId,
+    action: 'admin.setup_link_sent',
+    entity_type: scope === 'global' ? 'admin_membership' : 'institution_admin_assignment',
+    entity_id: userId,
+    metadata: { email, scope, email_provider_id: emailResult.id },
+  })
+
+  success('A fresh secure Admin setup link was sent.')
 }
