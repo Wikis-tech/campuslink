@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Building2, CalendarRange, GraduationCap, Home, Menu, Palette, ShieldAlert, ShieldCheck, ShoppingBag, Store, UserCog } from 'lucide-react'
+import { Building2, CalendarRange, GraduationCap, Home, Mail, Menu, Palette, ShieldAlert, ShieldCheck, ShoppingBag, Store, UserCog } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const nav = [
@@ -12,6 +12,7 @@ const nav = [
   { href:'/control-center/safety', label:'Safety', icon:ShieldAlert },
   { href:'/control-center/students', label:'Students', icon:GraduationCap },
   { href:'/control-center/vendors', label:'Vendors', icon:Store },
+  { href:'/control-center/communications', label:'Alerts', icon:Mail },
   { href:'/control-center/schools', label:'Schools', icon:Building2 },
   { href:'/control-center/admins', label:'Admins', icon:UserCog },
 ]
@@ -27,8 +28,10 @@ export function AdminMobileNav({ email, role, globalRole, isGlobalAdmin = false 
     if (item.href === '/control-center/safety') return isSchoolAdmin || ['super_admin','operations_admin','support_admin','verification_admin'].includes(globalRole || '')
     if (item.href === '/control-center/students' || item.href === '/control-center/vendors') return isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(globalRole || '')
     if (item.href === '/control-center/marketplace') return isSchoolAdmin || ['super_admin','operations_admin','verification_admin','support_admin','analyst'].includes(globalRole || '')
+    if (item.href === '/control-center/communications') return isSchoolAdmin || ['super_admin','operations_admin','content_admin','verification_admin'].includes(globalRole || '')
     return true
   })
+  const canSeeReports = isSchoolAdmin || ['super_admin','operations_admin','support_admin','analyst'].includes(globalRole || '')
   return <>
     <header className="admin-mobile-topbar">
       <Link href="/control-center" className="admin-mobile-brand">Campus<span>Link</span> Admin</Link>
@@ -49,7 +52,7 @@ export function AdminMobileNav({ email, role, globalRole, isGlobalAdmin = false 
         const active=href==='/control-center'?pathname===href:pathname.startsWith(href)
         return <Link prefetch={false} href={href} key={href} className={active?'active':''}><Icon size={18}/><span>{label}</span></Link>
       })}</div>
-      <Link prefetch={false} href="/control-center/reports" className={pathname.startsWith('/control-center/reports')?'active':''}><Menu size={18}/><span>More</span></Link>
+      {canSeeReports ? <Link prefetch={false} href="/control-center/reports" className={pathname.startsWith('/control-center/reports')?'active':''}><Menu size={18}/><span>More</span></Link> : null}
     </nav>
   </>
 }
