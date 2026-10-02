@@ -17,6 +17,7 @@ export async function markNotificationRead(formData: FormData) {
 
   revalidatePath('/student')
   revalidatePath('/vendor-v2')
+  revalidatePath('/control-center')
 }
 
 export async function markAllNotificationsRead() {
@@ -31,4 +32,5 @@ export async function markAllNotificationsRead() {
 
   revalidatePath('/student')
   revalidatePath('/vendor-v2')
+  revalidatePath('/control-center')
 }
