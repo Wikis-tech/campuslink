@@ -52,7 +52,10 @@ export function PwaShellController() {
       pathname === '/admin-invite' ||
       pathname.startsWith('/admin-invite/')
 
-    if (isAdminPath || pathname === '/' || !isAllowedAppPath(pathname)) {
+    // Admin/security routes must remain on their requested URL even when the
+    // operating system opens the link inside the installed PWA window.
+    // Only non-admin routes outside the Student/Vendor app shell are redirected.
+    if (!isAdminPath && (pathname === '/' || !isAllowedAppPath(pathname))) {
       router.replace('/app?source=pwa')
     }
   }, [pathname, router])
