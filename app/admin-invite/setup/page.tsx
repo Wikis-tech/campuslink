@@ -21,9 +21,9 @@ export default async function AdminInviteSetupPage({ searchParams }: { searchPar
   return <main className="admin-login-page">
     <section className="admin-login-card">
       <div className="admin-login-mark"><ShieldCheck size={24}/></div>
-      <span>CampusLink Admin Invitation</span>
+      <span>Kampivo Admin Invitation</span>
       <h1>Create your administrator password</h1>
-      <p>Your Admin role has already been assigned. Choose your own strong password; nobody at CampusLink needs to know it. MFA setup follows immediately after this step.</p>
+      <p>Your Admin role has already been assigned. Choose your own strong password; nobody at Kampivo needs to know it. MFA setup follows immediately after this step.</p>
       {params.error ? <div className="admin-login-error">{params.error}</div> : null}
       <form action={completeAdminInvite} className="admin-login-form">
         <label>New password<input name="password" type="password" minLength={14} autoComplete="new-password" required/></label>
@@ -31,7 +31,7 @@ export default async function AdminInviteSetupPage({ searchParams }: { searchPar
         <div className="admin-login-note"><KeyRound size={15}/> Minimum 14 characters with uppercase, lowercase, a number and a symbol.</div>
         <button type="submit">Save password & set up MFA</button>
       </form>
-      <small>This setup page is available only to an authenticated invite with an active CampusLink Admin assignment.</small>
+      <small>This setup page is available only to an authenticated invite with an active Kampivo Admin assignment.</small>
     </section>
   </main>
 }
