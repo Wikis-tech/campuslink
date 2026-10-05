@@ -106,7 +106,7 @@ export default async function StudentsAdminPage({
 
     <section className="admin-grid">
       <article className="admin-stat"><span>Registered Students</span><strong>{registeredStudents}</strong><small>Student accounts visible in your Admin scope.</small></article>
-      <article className="admin-stat"><span>Onboarded</span><strong>{onboardedStudents}</strong><small>Completed CampusLink onboarding.</small></article>
+      <article className="admin-stat"><span>Onboarded</span><strong>{onboardedStudents}</strong><small>Completed Kampivo onboarding.</small></article>
       <article className="admin-stat"><span>Verified</span><strong>{verifiedStudents}</strong><small>Completed Student verification.</small></article>
       <article className="admin-stat"><span>Needs action</span><strong>{incompleteStudents.length + awaitingStudents.length + rejectedStudents.length}</strong><small>{incompleteStudents.length} incomplete · {awaitingStudents.length} awaiting · {rejectedStudents.length} rejected.</small></article>
     </section>
