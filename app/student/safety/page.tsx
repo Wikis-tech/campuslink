@@ -35,19 +35,19 @@ export default async function StudentSafetyPage() {
   return <main className="cl-student-page">
     <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell phase5g-safety-page">
-      {!readiness.ready ? <div className="notice error">Some advanced trust features are temporarily unavailable while Campus Link finishes a safety-system update. Safety guidance remains available.</div> : null}
-      <header className="phase5g-safety-hero"><h1>Trade around campus with more confidence.</h1><p>Campus Link helps you identify approved businesses, understand trust signals and report concerns privately. Campus Link does not process the payment between you and a Vendor.</p></header>
+      {!readiness.ready ? <div className="notice error">Some advanced trust features are temporarily unavailable while Kampivo finishes a safety-system update. Safety guidance remains available.</div> : null}
+      <header className="phase5g-safety-hero"><h1>Trade around campus with more confidence.</h1><p>Kampivo helps you identify approved businesses, understand trust signals and report concerns privately. Kampivo does not process the payment between you and a Vendor.</p></header>
 
       <section className="phase5g-safety-grid">
         <article className="v3-surface phase5g-safety-card"><BadgeCheck/><h2>Check trust signals</h2><p>Look for identity verification, campus approval, account standing and verified-contact reviews. Paid plans never buy these trust indicators.</p></article>
         <article className="v3-surface phase5g-safety-card"><UsersRound/><h2>Meet safely</h2><p>For in-person exchanges, prefer public campus areas and tell someone where you are going when the situation calls for it.</p></article>
         <article className="v3-surface phase5g-safety-card"><LockKeyhole/><h2>Protect your money</h2><p>Confirm the item, service, price and Vendor details before paying. Be cautious when someone pressures you to pay unusually fast or outside agreed terms.</p></article>
-        <article className="v3-surface phase5g-safety-card"><Handshake/><h2>Keep useful records</h2><p>Keep relevant messages, receipts and transaction evidence. They can help Campus Link Admin understand a report later.</p></article>
+        <article className="v3-surface phase5g-safety-card"><Handshake/><h2>Keep useful records</h2><p>Keep relevant messages, receipts and transaction evidence. They can help Kampivo Admin understand a report later.</p></article>
       </section>
 
-      <section className="v3-surface phase5g-safety-warning"><AlertTriangle size={20}/><div><strong>Something feels unsafe?</strong><p>Do not continue an interaction just because a Vendor is listed on Campus Link. Stop the interaction when needed and report the concern from the Vendor profile. For immediate physical danger, contact the appropriate local or campus emergency authority.</p></div></section>
+      <section className="v3-surface phase5g-safety-warning"><AlertTriangle size={20}/><div><strong>Something feels unsafe?</strong><p>Do not continue an interaction just because a Vendor is listed on Kampivo. Stop the interaction when needed and report the concern from the Vendor profile. For immediate physical danger, contact the appropriate local or campus emergency authority.</p></div></section>
 
-      <section className="cl-student-section"><div className="cl-student-section-head"><div><h2>Your reports</h2><p>Reports are private to you and authorized Campus Link Admins. Vendors do not receive your investigation notes.</p></div></div>
+      <section className="cl-student-section"><div className="cl-student-section-head"><div><h2>Your reports</h2><p>Reports are private to you and authorized Kampivo Admins. Vendors do not receive your investigation notes.</p></div></div>
         <div className="phase5g-report-history">{(reports || []).map((report:any)=>{ const vendor=vendorMap.get(report.vendor_id); return <article className="v3-surface" key={report.id}><div><span className={`phase5g-case-status ${report.status}`}>{report.status}</span><strong>{report.title}</strong><small>{categoryLabel[report.category] || 'Other'} · {new Date(report.created_at).toLocaleDateString('en-NG')}</small></div>{vendor ? <Link href={`/student/vendors/${vendor.slug}`}>{vendor.business_name}</Link> : <span>Vendor unavailable</span>}</article> })}{!reports?.length ? <div className="v3-surface phase5g-empty"><Flag size={20}/><strong>No reports submitted</strong><p>If you ever need to report a Vendor, use the private report form on that Vendor's profile.</p></div> : null}</div>
       </section>
     </section>
