@@ -60,7 +60,7 @@ export default async function StudentServicePage({ params }: { params: Promise<{
             <a href={phoneHref} className="btn btn-ghost"><Phone size={17}/> Call vendor</a>
             <Link href={`/student/vendors/${vendor.slug}`} className="btn btn-ghost">View full storefront</Link>
           </div>
-          <p style={{fontSize:12,color:'var(--v3-muted)',marginTop:18}}>Campus Link does not process the service transaction. Agree scope, price and fulfilment directly with the vendor.</p>
+          <p style={{fontSize:12,color:'var(--v3-muted)',marginTop:18}}>Kampivo does not process the service transaction. Agree scope, price and fulfilment directly with the vendor.</p>
         </section>
       </div>
     </section>
