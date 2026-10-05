@@ -34,7 +34,7 @@ export function AdminMfaGate() {
         return
       }
 
-      const enrolled = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Campus Link Admin' })
+      const enrolled = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Kampivo Admin' })
       if (cancelled) return
       if (enrolled.error) {
         setError(enrolled.error.message || 'Could not start authenticator setup.')
@@ -71,12 +71,12 @@ export function AdminMfaGate() {
 
   return <>
     <div className="admin-login-mark"><ShieldCheck size={24}/></div>
-    <span>CampusLink Admin Security</span>
+    <span>Kampivo Admin Security</span>
     <h1>{mode === 'enroll' ? 'Protect this administrator account' : 'Verify your authenticator'}</h1>
     {mode === 'loading' ? <p>Checking administrator security…</p> : null}
     {mode === 'enroll' ? <>
-      <p>Scan this QR code with Google Authenticator, Microsoft Authenticator, 1Password, Authy or another TOTP app. This second factor is required for every Campus Link administrator.</p>
-      {qr ? <img src={qr} alt="Campus Link authenticator QR code" style={{width:220,height:220,maxWidth:'100%',margin:'12px auto',display:'block',background:'#fff',padding:10,borderRadius:12}}/> : null}
+      <p>Scan this QR code with Google Authenticator, Microsoft Authenticator, 1Password, Authy or another TOTP app. This second factor is required for every Kampivo administrator.</p>
+      {qr ? <img src={qr} alt="Kampivo authenticator QR code" style={{width:220,height:220,maxWidth:'100%',margin:'12px auto',display:'block',background:'#fff',padding:10,borderRadius:12}}/> : null}
       {secret ? <details><summary>Cannot scan the QR code?</summary><p style={{wordBreak:'break-all'}}>{secret}</p></details> : null}
     </> : mode === 'challenge' ? <p>Enter the current 6-digit code from the authenticator linked to this administrator account.</p> : null}
     {mode !== 'loading' ? <div className="admin-login-form">
@@ -84,6 +84,6 @@ export function AdminMfaGate() {
       {error ? <div className="admin-login-error">{error}</div> : null}
       <button type="button" disabled={busy} onClick={verify}>{busy ? 'Verifying…' : mode === 'enroll' ? 'Enable MFA & continue' : 'Verify & continue'}</button>
     </div> : null}
-    <small>Password access alone cannot open the Campus Link administration control plane.</small>
+    <small>Password access alone cannot open the Kampivo administration control plane.</small>
   </>
 }
