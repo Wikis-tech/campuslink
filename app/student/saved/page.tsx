@@ -74,7 +74,7 @@ export default async function SavedVendorsPage() {
             </Link>
             <div className="vendor-card-actions" style={{padding:'0 15px 15px'}}><form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="return_to" value="/student/saved"/><button className="save-btn saved" aria-label="Remove saved vendor"><Bookmark size={16} fill="currentColor"/> Remove</button></form></div>
           </article>
-        })}</div> : <div className="empty-state"><Bookmark size={34}/><h2>No available saved vendors</h2><p>Save a useful campus vendor to build your shortlist. If a previously saved vendor loses campus approval or enters safety review, Campus Link hides them from this list until they are eligible again.</p><p style={{marginTop:16}}><Link className="view-btn" href="/student/discover">Discover vendors</Link></p></div>}
+        })}</div> : <div className="empty-state"><Bookmark size={34}/><h2>No available saved vendors</h2><p>Save a useful campus vendor to build your shortlist. If a previously saved vendor loses campus approval or enters safety review, Kampivo hides them from this list until they are eligible again.</p><p style={{marginTop:16}}><Link className="view-btn" href="/student/discover">Discover vendors</Link></p></div>}
       </section>
     </main>
   )
