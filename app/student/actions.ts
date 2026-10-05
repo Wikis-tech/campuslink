@@ -127,7 +127,7 @@ export async function reportVendor(formData: FormData) {
   if (error) {
     const duplicate = error.code === '23505' || /already|duplicate/i.test(error.message || '')
     const message = duplicate
-      ? 'You already have an open report for this vendor. Campus Link is reviewing it.'
+      ? 'You already have an open report for this vendor. Kampivo is reviewing it.'
       : error.message || 'We could not submit your report'
     redirect(`${returnTo}?error=${encodeURIComponent(message)}`)
   }
