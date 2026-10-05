@@ -41,7 +41,7 @@ export function StudentActivityChart({
       <div className="chart-heading">
         <div>
           <span>Your activity</span>
-          <strong>Campus Link at a glance</strong>
+          <strong>Kampivo at a glance</strong>
         </div>
         <small>Live account data</small>
       </div>
