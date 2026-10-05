@@ -170,7 +170,7 @@ export async function assignSchoolAdmin(formData: FormData) {
   const email = text(formData, 'email', 254).toLowerCase()
   const institutionId = text(formData, 'institution_id', 80)
   const role = text(formData, 'role', 40)
-  if (!email.includes('@')) message(returnTo, 'error', 'Enter a valid Campus Link account email.')
+  if (!email.includes('@')) message(returnTo, 'error', 'Enter a valid Kampivo account email.')
   if (role !== 'school_admin') message(returnTo, 'error', 'School-scoped accounts use the School Admin role.')
 
   const { error } = await supabase.rpc('admin_assign_school_admin_by_email', {
@@ -188,7 +188,7 @@ export async function assignGlobalAdmin(formData: FormData) {
   const supabase = await createClient()
   const email = text(formData, 'email', 254).toLowerCase()
   const role = text(formData, 'role', 50)
-  if (!email.includes('@')) message('/control-center/admins', 'error', 'Enter a valid Campus Link account email.')
+  if (!email.includes('@')) message('/control-center/admins', 'error', 'Enter a valid Kampivo account email.')
 
   const { error } = await supabase.rpc('admin_assign_global_role_by_email', { target_email: email, target_role: role })
   if (error) message('/control-center/admins', 'error', error.message)
