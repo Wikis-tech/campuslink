@@ -13,9 +13,9 @@ export default async function AdminInviteAcceptPage({
   return <main className="admin-login-page">
     <section className="admin-login-card">
       <div className="admin-login-mark"><ShieldCheck size={24}/></div>
-      <span>CampusLink Secure Admin Setup</span>
+      <span>Kampivo Secure Admin Setup</span>
       <h1>Confirm administrator setup</h1>
-      <p>For security, CampusLink does not activate one-time Admin links just because an email client or security scanner opened them. Confirm below to continue.</p>
+      <p>For security, Kampivo does not activate one-time Admin links just because an email client or security scanner opened them. Confirm below to continue.</p>
       {params.error ? <div className="admin-login-error">{params.error}</div> : null}
       {tokenHash ? <form action={acceptAdminToken} className="admin-login-form">
         <input type="hidden" name="token_hash" value={tokenHash}/>
