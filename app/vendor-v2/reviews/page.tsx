@@ -23,7 +23,7 @@ export default async function VendorReviewsPage({ searchParams }: { searchParams
     return <main className="v5e-vendor-page">
       <VendorWorkspaceSidebar/>
       <section className="v5e-vendor-main phase5g-workspace">
-        <header className="v5e-vendor-header phase5g-header"><div><small className="v5e-eyebrow">Reputation</small><h1>Reviews & responses</h1><p>Your review tools are temporarily unavailable while Campus Link completes a trust-system database update.</p></div></header>
+        <header className="v5e-vendor-header phase5g-header"><div><small className="v5e-eyebrow">Reputation</small><h1>Reviews & responses</h1><p>Your review tools are temporarily unavailable while Kampivo completes a trust-system database update.</p></div></header>
         <div className="notice error"><strong>Review tools are not ready yet.</strong> No review data has been lost. Please try again after the system update is completed.</div>
       </section>
     </main>
@@ -50,18 +50,18 @@ export default async function VendorReviewsPage({ searchParams }: { searchParams
 
       <section className="phase5g-summary-grid">
         <article className="v5e-card"><span className="v5e-section-label">Rating</span><h2>{rating.toFixed(1)} <Star size={18} fill="currentColor"/></h2><p>{vendor?.review_count || 0} published reviews</p></article>
-        <article className="v5e-card"><span className="v5e-section-label">Verified-contact reviews</span><h2>{verifiedContactCount}</h2><p>Reviews backed by a Campus Link contact event.</p></article>
+        <article className="v5e-card"><span className="v5e-section-label">Verified-contact reviews</span><h2>{verifiedContactCount}</h2><p>Reviews backed by a Kampivo contact event.</p></article>
         <article className="v5e-card"><span className="v5e-section-label">Needs a response</span><h2>{unanswered}</h2><p>Reply where useful. Avoid arguments or personal information.</p></article>
       </section>
 
       <section className="v5e-card phase5g-panel">
         <div className="v5e-card-head"><div><span className="v5e-section-label"><ShieldCheck size={14}/> Reputation principles</span><h2>Respond professionally, not defensively</h2></div></div>
-        <div className="phase5g-principles"><span><BadgeCheck size={16}/> Reviews stay Student-owned.</span><span><MessageSquareReply size={16}/> Your response appears underneath the review.</span><span><ShieldCheck size={16}/> Campus Link Admin can hide abusive responses without changing the Student review.</span></div>
+        <div className="phase5g-principles"><span><BadgeCheck size={16}/> Reviews stay Student-owned.</span><span><MessageSquareReply size={16}/> Your response appears underneath the review.</span><span><ShieldCheck size={16}/> Kampivo Admin can hide abusive responses without changing the Student review.</span></div>
       </section>
 
       <section className="phase5g-review-list">
         {(reviews || []).map((review:any) => <article className="v5e-card phase5g-review-card" key={review.id}>
-          <div className="phase5g-review-top"><div><strong className="phase5g-stars">{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</strong><span>{new Date(review.created_at).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</span></div>{review.contact_verified_at ? <span className="phase5g-verified"><BadgeCheck size={15}/> Contacted through Campus Link</span> : <span className="phase5g-neutral">Verified Student</span>}</div>
+          <div className="phase5g-review-top"><div><strong className="phase5g-stars">{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</strong><span>{new Date(review.created_at).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</span></div>{review.contact_verified_at ? <span className="phase5g-verified"><BadgeCheck size={15}/> Contacted through Kampivo</span> : <span className="phase5g-neutral">Verified Student</span>}</div>
           <p className="phase5g-review-copy">{review.comment || 'Rating only.'}</p>
           {review.vendor_response && review.vendor_response_status === 'published' ? <div className="phase5g-response"><strong>Your public response</strong><p>{review.vendor_response}</p></div> : null}
           <form action={respondToReview} className="phase5g-response-form"><input type="hidden" name="review_id" value={review.id}/><label>{review.vendor_response ? 'Update your response' : 'Respond to this review'}<textarea name="response" maxLength={1000} defaultValue={review.vendor_response || ''} placeholder="Thank the Student, clarify facts if needed, and keep personal details private." required/></label><button className="btn btn-primary" type="submit">{review.vendor_response ? 'Update response' : 'Publish response'}</button></form>
