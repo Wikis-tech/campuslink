@@ -31,7 +31,7 @@ export default async function VendorProfileSettingsPage({
           <div>
             <small className="v5e-eyebrow">Business profile</small>
             <h1>Shape what Students see.</h1>
-            <p>Your logo, cover image and business details appear on your public Campus Link profile.</p>
+            <p>Your logo, cover image and business details appear on your public Kampivo profile.</p>
           </div>
         </header>
 
