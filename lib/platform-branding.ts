@@ -12,9 +12,9 @@ export type PlatformBranding = {
 }
 
 export const DEFAULT_WEBSITE_LOGO =
-  'https://raw.githubusercontent.com/Wikis-tech/campuslink/master/assets/images/campuslink-logo-white.png'
+  '/kampivo-logo.svg'
 
-export const DEFAULT_FAVICON = '/default-icon.svg'
+export const DEFAULT_FAVICON = '/kampivo-app-icon.svg'
 
 export const getPlatformBranding = cache(async (): Promise<PlatformBranding> => {
   try {
@@ -25,11 +25,14 @@ export const getPlatformBranding = cache(async (): Promise<PlatformBranding> => 
       .eq('id', 1)
       .maybeSingle()
 
+    const storedRevision = Number(data?.revision || 1)
+    const legacyCampusLinkBranding = storedRevision <= 3
+
     return {
-      website_logo_url: data?.website_logo_url || null,
-      favicon_url: data?.favicon_url || null,
-      app_icon_url: data?.app_icon_url || null,
-      revision: Number(data?.revision || 1),
+      website_logo_url: legacyCampusLinkBranding ? null : (data?.website_logo_url || null),
+      favicon_url: legacyCampusLinkBranding ? null : (data?.favicon_url || null),
+      app_icon_url: legacyCampusLinkBranding ? null : (data?.app_icon_url || null),
+      revision: legacyCampusLinkBranding ? 4 : storedRevision,
       updated_at: data?.updated_at || null,
     }
   } catch {
