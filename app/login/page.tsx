@@ -20,17 +20,17 @@ export default async function LoginPage({
           <div className="auth-story-copy">
             <span className="auth-kicker"><ShieldCheck size={16} /> Welcome back</span>
             <h1>Welcome back to your campus network.</h1>
-            <p>Sign in to continue to your Campus Link account.</p>
+            <p>Sign in to continue to your Kampivo account.</p>
             
           </div>
-          <Link className="auth-back-link" href="/"><ArrowLeft size={16} /> Back to Campus Link</Link>
+          <Link className="auth-back-link" href="/"><ArrowLeft size={16} /> Back to Kampivo</Link>
         </section>
 
         <section className="auth-glass-panel reveal-scale">
           <div className="auth-panel-head">
             <span className="auth-kicker dark">Welcome back</span>
             <h2>Student / Vendor sign in</h2>
-            <p>Use the email and password attached to your Campus Link account.</p>
+            <p>Use the email and password attached to your Kampivo account.</p>
           </div>
 
           {error ? <div className="auth-error">{error}</div> : null}
@@ -48,7 +48,7 @@ export default async function LoginPage({
             <button className="btn btn-primary auth-primary-action" type="submit">Sign in</button>
           </form>
 
-          <p className="auth-foot">New to Campus Link? <Link href="/register">Create an account</Link></p>
+          <p className="auth-foot">New to Kampivo? <Link href="/register">Create an account</Link></p>
         </section>
       </div>
     </main>
