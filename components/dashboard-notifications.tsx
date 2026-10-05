@@ -20,9 +20,9 @@ export async function DashboardNotifications() {
   const unread = rows.filter((row) => !row.read_at)
 
   return (
-    <section className={styles.wrap} aria-label="CampusLink notifications">
+    <section className={styles.wrap} aria-label="Kampivo notifications">
       <div className={styles.head}>
-        <div className={styles.title}><span className={styles.icon}><BellRing size={17}/></span><div><small>CampusLink updates</small><strong>{unread.length ? `${unread.length} new notification${unread.length === 1 ? '' : 's'}` : 'Recent notifications'}</strong></div></div>
+        <div className={styles.title}><span className={styles.icon}><BellRing size={17}/></span><div><small>Kampivo updates</small><strong>{unread.length ? `${unread.length} new notification${unread.length === 1 ? '' : 's'}` : 'Recent notifications'}</strong></div></div>
         {unread.length ? <form action={markAllNotificationsRead}><button className={styles.markAll} type="submit"><Check size={14}/> Mark all read</button></form> : null}
       </div>
       <div className={styles.list}>
