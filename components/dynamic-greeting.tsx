@@ -151,7 +151,7 @@ export function DynamicCampusContext({ school, vendorCount = 0, sessionSeed }: C
     const options = [
       'Around your campus',
       'Your local view',
-      'Nearby on Campus Link',
+      'Nearby on Kampivo',
       'Your campus area',
       'Serving your school',
       'Campus around you'
