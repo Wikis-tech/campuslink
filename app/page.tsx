@@ -144,19 +144,19 @@ export default async function HomePage() {
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Campus Link',
-    alternateName: 'CampusLink',
+    name: 'Kampivo',
+    alternateName: 'Kampivo',
     url: baseUrl,
-    description: 'Discover trusted campus vendors, products and services around your school.',
+    description: 'Find trusted services and vendors around your campus.',
     inLanguage: 'en',
   }
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Campus Link',
+    name: 'Kampivo',
     url: baseUrl,
     logo: `${baseUrl}/brand/logo`,
-    description: 'Campus-specific discovery platform connecting students with approved vendors, products and services.',
+    description: 'The trusted discovery and marketplace platform for campus communities.',
   }
   const jsonLd = JSON.stringify([websiteJsonLd, organizationJsonLd]).replace(/</g, '\\u003c')
 
@@ -166,8 +166,8 @@ export default async function HomePage() {
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
           <Link href="/" className="logo">
-            <div className="logo-mark"><img src="/brand/logo" alt="Campuslink Logo" width="36" height="36" /></div>
-            <span className="logo-text">Campus<strong>link</strong></span>
+            <div className="logo-mark"><img src="/kampivo-app-icon.svg" alt="Kampivo" width="36" height="36" /></div>
+            <span className="logo-text">Kampiv<strong>o</strong></span>
           </Link>
 
           <nav className="main-nav" id="mainNav">
@@ -186,8 +186,8 @@ export default async function HomePage() {
         <div className="hero-bg-shapes"><div className="shape shape-1" /><div className="shape shape-2" /><div className="shape shape-3" /></div>
 
         <div className="container hero-content">
-          <h1 className="hero-headline animate-slide-up">Find trusted campus<br />services <em>instantly.</em></h1>
-          <p className="hero-sub animate-fade-up delay-2">Campuslink connects students and campus community members with verified, reviewed service providers within your university — safely, transparently, and at no cost to browse.</p>
+          <h1 className="hero-headline animate-slide-up">Find trusted services<br />and vendors <em>around your campus.</em></h1>
+          <p className="hero-sub animate-fade-up delay-2">Discover verified vendors, products, services and opportunities available within your institution — all in one trusted campus platform.</p>
 
           <div className="hero-search animate-fade-up delay-3">
             <div className="search-wrap">
@@ -226,7 +226,7 @@ export default async function HomePage() {
             {landing.categories.length ? landing.categories.map((category:any) => {
               const Icon = category.Icon
               return <Link href="/register" className="cat-card" key={category.id}><div className="cat-icon"><Icon /></div><div className="cat-name">{category.name}</div><div className="cat-count">{category.count} active vendor{category.count === 1 ? '' : 's'}</div></Link>
-            }) : <div className="landing-empty-state">Categories will appear here as Campus Link activates real campus listings.</div>}
+            }) : <div className="landing-empty-state">Categories will appear here as Kampivo activates real campus listings.</div>}
           </div>
         </div>
       </section>
@@ -235,7 +235,7 @@ export default async function HomePage() {
         <div className="container">
           <div className="featured-header"><div><h2 className="section-headline">Featured Vendors</h2><p className="section-sub">Top-rated, verified service providers trusted by your peers.</p></div><Link href="/register" className="btn btn-outline-primary">View All <ArrowRight size={16} /></Link></div>
           <div className="vendors-grid">
-            {landing.featured.length ? landing.featured.map((vendor:any) => <article className="vendor-card" key={vendor.id}><div className="vendor-card-img legacy-vendor-placeholder">{vendor.cover_url ? <img src={vendor.cover_url} alt="" className="landing-vendor-cover"/> : null}<div className="vendor-badge"><ShieldCheck size={14} /> Verified</div><div className="vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt="" /> : <span>{vendor.business_name.slice(0, 2).toUpperCase()}</span>}</div></div><div className="vendor-card-body"><div className="vendor-card-header"><div><div className="vendor-name">{vendor.business_name}</div><span className="vendor-cat">{vendor.listingCount} active listing{vendor.listingCount === 1 ? '' : 's'}</span></div><div className="vendor-rating"><span className="stars">★★★★★</span><span className="rating-val">{Number(vendor.average_rating || 0).toFixed(1)}</span></div></div><p className="vendor-desc">{vendor.description || 'Approved Campus Link vendor.'}</p><div className="vendor-meta">{vendor.location_text ? <div className="vendor-meta-item"><Tag size={14} /> {vendor.location_text}</div> : null}<div className="vendor-meta-item"><Tag size={14} /> {vendor.startingPrice ? `From ₦${vendor.startingPrice.toLocaleString()}` : 'Contact for pricing'}</div></div><div className="vendor-actions"><Link href={`/share/vendor/${encodeURIComponent(vendor.slug)}`} className="btn btn-sm btn-outline">View vendor</Link></div></div></article>) : <div className="landing-empty-state">Approved vendors will appear here automatically as Campus Link grows.</div>}
+            {landing.featured.length ? landing.featured.map((vendor:any) => <article className="vendor-card" key={vendor.id}><div className="vendor-card-img legacy-vendor-placeholder">{vendor.cover_url ? <img src={vendor.cover_url} alt="" className="landing-vendor-cover"/> : null}<div className="vendor-badge"><ShieldCheck size={14} /> Verified</div><div className="vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt="" /> : <span>{vendor.business_name.slice(0, 2).toUpperCase()}</span>}</div></div><div className="vendor-card-body"><div className="vendor-card-header"><div><div className="vendor-name">{vendor.business_name}</div><span className="vendor-cat">{vendor.listingCount} active listing{vendor.listingCount === 1 ? '' : 's'}</span></div><div className="vendor-rating"><span className="stars">★★★★★</span><span className="rating-val">{Number(vendor.average_rating || 0).toFixed(1)}</span></div></div><p className="vendor-desc">{vendor.description || 'Approved Kampivo vendor.'}</p><div className="vendor-meta">{vendor.location_text ? <div className="vendor-meta-item"><Tag size={14} /> {vendor.location_text}</div> : null}<div className="vendor-meta-item"><Tag size={14} /> {vendor.startingPrice ? `From ₦${vendor.startingPrice.toLocaleString()}` : 'Contact for pricing'}</div></div><div className="vendor-actions"><Link href={`/share/vendor/${encodeURIComponent(vendor.slug)}`} className="btn btn-sm btn-outline">View vendor</Link></div></div></article>) : <div className="landing-empty-state">Approved vendors will appear here automatically as Kampivo grows.</div>}
           </div>
         </div>
       </section>
@@ -264,7 +264,7 @@ export default async function HomePage() {
               <div className="trust-feats">
                 <div className="trust-feat-item"><div className="tfi-icon"><ShieldCheck /></div><div><h4>Identity Verification</h4><p>Vendors are reviewed before they can become discoverable to students.</p></div></div>
                 <div className="trust-feat-item"><div className="tfi-icon"><Lock /></div><div><h4>Payment Never Buys Trust</h4><p>Free and Pro affect vendor tools only. Campus approval and verification remain separate.</p></div></div>
-                <div className="trust-feat-item"><div className="tfi-icon"><Gavel /></div><div><h4>Complaint Resolution</h4><p>Reports and reviews give Campus Link a documented safety trail for moderation and investigations.</p></div></div>
+                <div className="trust-feat-item"><div className="tfi-icon"><Gavel /></div><div><h4>Complaint Resolution</h4><p>Reports and reviews give Kampivo a documented safety trail for moderation and investigations.</p></div></div>
               </div>
             </div>
             <div className="trust-cards-col">
@@ -278,7 +278,7 @@ export default async function HomePage() {
 
       <section className="cl-pricing-section" id="pricing">
         <div className="cl-pricing-wrap">
-          <div className="cl-pricing-head"><h2>Start free. Pay only when growth tools become useful.</h2><p>Campus Link keeps student access free and keeps trust separate from payment. Vendors can build a real campus presence before deciding whether Pro is worth it.</p></div>
+          <div className="cl-pricing-head"><h2>Start free. Pay only when growth tools become useful.</h2><p>Kampivo keeps student access free and keeps trust separate from payment. Vendors can build a real campus presence before deciding whether Pro is worth it.</p></div>
           <div className="cl-pricing-grid">
             <article className="cl-price-card">
               <div className="plan-top"><div className="plan-name">Free</div><span className="plan-badge">Useful by default</span></div>
@@ -309,7 +309,7 @@ export default async function HomePage() {
         <div className="container cl-public-footer-inner">
           <div className="cl-public-footer-grid">
             <div className="cl-public-footer-brand">
-              <Link href="/" className="cl-public-footer-logo" aria-label="Campus Link home">
+              <Link href="/" className="cl-public-footer-logo" aria-label="Kampivo home">
                 <span className="cl-public-footer-logo-mark">
                   <img
                     src="/brand/logo"
@@ -321,8 +321,8 @@ export default async function HomePage() {
                 <span>Campus<strong>Link</strong></span>
               </Link>
               <p>Trusted campus discovery for students, vendors and university communities.</p>
-              <p>Campus Link helps people discover and assess approved vendors. Transactions remain directly between students and vendors.</p>
-              <a className="cl-public-footer-contact" href="mailto:campuslinkd@gmail.com">campuslinkd@gmail.com</a>
+              <p>Kampivo helps students discover trusted services, vendors, products and opportunities within their campus community. Transactions remain directly between students and vendors.</p>
+              <a className="cl-public-footer-contact" href="mailto:campuslinkd@gmail.com">Email support</a>
             </div>
 
             <div className="cl-public-footer-col">
@@ -342,7 +342,7 @@ export default async function HomePage() {
             </div>
 
             <div className="cl-public-footer-col">
-              <h4>Campus Link</h4>
+              <h4>Kampivo</h4>
               <Link href="/register">Student Sign Up</Link>
               <Link href="/login">Sign In</Link>
               <a href="#pricing">Pricing</a>
@@ -353,8 +353,8 @@ export default async function HomePage() {
           <div className="cl-public-footer-divider" />
 
           <div className="cl-public-footer-bottom">
-            <p>© 2026 Campus Link. All rights reserved.</p>
-            <div className="cl-public-footer-principles" aria-label="Campus Link principles">
+            <p>© 2026 Kampivo. All rights reserved.</p>
+            <div className="cl-public-footer-principles" aria-label="Kampivo principles">
               <span>Students browse free</span>
               <span>Trust is not for sale</span>
               <span>Direct vendor contact</span>
