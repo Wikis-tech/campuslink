@@ -93,7 +93,7 @@ export default async function VendorDashboard() {
     productCount === 0 ? { icon:<Package size={17}/>, title:'Add your first product', copy:'Show a real item students can open and ask about.', href:'/vendor-v2/products' } : null,
     (portfolioResult.count || 0) === 0 ? { icon:<ImagePlus size={17}/>, title:'Add proof of work', copy:'Portfolio examples help students judge quality before contacting you.', href:'/vendor-v2/portfolio' } : null,
     productsWithoutPrice > 0 ? { icon:<CircleDollarSign size={17}/>, title:`Add pricing to ${productsWithoutPrice} product${productsWithoutPrice===1?'':'s'}`, copy:'Clear prices reduce unnecessary back-and-forth.', href:'/vendor-v2/products' } : null,
-    marketplace !== 'active' && !suspensionExpired ? { icon:<ShieldAlert size={17}/>, title:'Marketplace safety review', copy:'Your public visibility is paused while Campus Link reviews the account.', href:'/vendor-v2' } : null,
+    marketplace !== 'active' && !suspensionExpired ? { icon:<ShieldAlert size={17}/>, title:'Marketplace safety review', copy:'Your public visibility is paused while Kampivo reviews the account.', href:'/vendor-v2' } : null,
   ].filter(Boolean) as {icon:React.ReactNode;title:string;copy:string;href:string}[]
 
   return (
