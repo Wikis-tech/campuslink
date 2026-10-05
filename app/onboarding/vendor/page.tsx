@@ -163,9 +163,9 @@ export default async function VendorOnboardingPage({
               </div>
             </div>
 
-            <div className="onboarding-note">Submitting does not instantly publish your business. A Campus Link admin reviews your identity/business evidence and your selected campus before approval.</div>
+            <div className="onboarding-note">Submitting does not instantly publish your business. A Kampivo admin reviews your identity/business evidence and your selected campus before approval.</div>
             <button className="btn btn-primary onboarding-submit" type="submit">Submit vendor profile for review</button>
-            <small className="onboarding-submit-note">If anything needs attention, Campus Link will return you directly to the message above instead of leaving you at the bottom of the form.</small>
+            <small className="onboarding-submit-note">If anything needs attention, Kampivo will return you directly to the message above instead of leaving you at the bottom of the form.</small>
           </form>
         </section>
       </section>
