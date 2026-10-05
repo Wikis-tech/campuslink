@@ -45,7 +45,7 @@ export default async function StudentOnboardingPage({
         <aside className="onboarding-aside">
           <Link href="/" className="brand">Campus<span>Link</span></Link>
           <div className="step-kicker">Student verification · optional for browsing</div>
-          <h1>Make Campus Link yours.</h1>
+          <h1>Make Kampivo yours.</h1>
           <p>Tell us where you study so we can show you vendors who are actually relevant to your campus.</p>
           <div className="trust-stack">
             <div><GraduationCap size={18} /><span>Campus-specific discovery</span></div>
@@ -66,7 +66,7 @@ export default async function StudentOnboardingPage({
           </div>
 
           {params.error ? <div className="auth-error">{params.error}</div> : null}
-          {params.school_request === 'sent' ? <div className="auth-success">School request sent. You can keep using Campus Link while an admin reviews it.</div> : null}
+          {params.school_request === 'sent' ? <div className="auth-success">School request sent. You can keep using Kampivo while an admin reviews it.</div> : null}
 
           {!hasSchools ? (
             <div className="auth-success" style={{marginBottom:18}}>
@@ -83,7 +83,7 @@ export default async function StudentOnboardingPage({
                   <option key={school.id} value={school.id}>{school.name}{school.city ? ` — ${school.city}` : ''}</option>
                 ))}
               </select>
-              <small>{hasSchools ? 'Only active institutions approved by Campus Link appear here.' : 'Use “My school is not listed” below or return when an admin has added your school.'}</small>
+              <small>{hasSchools ? 'Only active institutions approved by Kampivo appear here.' : 'Use “My school is not listed” below or return when an admin has added your school.'}</small>
             </div>
 
             <div className="form-grid-2">
