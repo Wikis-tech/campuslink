@@ -41,7 +41,7 @@ export default async function VendorAvailabilityPage({ searchParams }: { searchP
       {params.error ? <div className="notice error">{params.error}</div> : null}
 
       <section className="phase5f-summary-grid">
-        <article className="v5e-card"><span className="v5e-section-label">Current status</span><h2 className={`phase5f-live ${liveState.code}`}>{liveState.label}</h2><p>{liveState.detail || 'Campus Link is using your saved schedule.'}</p></article>
+        <article className="v5e-card"><span className="v5e-section-label">Current status</span><h2 className={`phase5f-live ${liveState.code}`}>{liveState.label}</h2><p>{liveState.detail || 'Kampivo is using your saved schedule.'}</p></article>
         <article className="v5e-card"><span className="v5e-section-label">Primary campus</span><h2>{institution?.name || 'Campus not set'}</h2><p>{campus?.status === 'approved' ? 'Approved campus' : `Campus status: ${campus?.status || 'not set'}`}</p></article>
         <article className="v5e-card"><span className="v5e-section-label">Service areas</span><h2>{selectedSet.size}</h2><p>{selectedSet.size ? 'Campus locations selected' : 'Choose where students can find you'}</p></article>
       </section>
