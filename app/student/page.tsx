@@ -133,7 +133,7 @@ export default async function StudentDashboard() {
             <span className="verification-icon"><BadgeCheck size={20}/></span>
             <div>
               <strong>{verificationPending ? 'Your Student verification is under review.' : verificationRejected ? 'Your Student verification needs attention.' : 'Verify your studentship when you are ready.'}</strong>
-              <p>{verificationPending ? 'You can keep browsing Campus Link while Admin reviews your submission. We will not ask you to submit it again unless a new submission is required.' : verificationRejected ? (verification?.review_note || 'You can continue using Campus Link and resubmit your Student evidence when convenient.') : 'Verification is optional for browsing. It unlocks trust-sensitive actions such as publishing reviews and strengthens your Student identity on Campus Link.'}</p>
+              <p>{verificationPending ? 'You can keep browsing Kampivo while Admin reviews your submission. We will not ask you to submit it again unless a new submission is required.' : verificationRejected ? (verification?.review_note || 'You can continue using Kampivo and resubmit your Student evidence when convenient.') : 'Verification is optional for browsing. It unlocks trust-sensitive actions such as publishing reviews and strengthens your Student identity on Kampivo.'}</p>
             </div>
           </div>
           {!hasVerificationSubmission || verificationRejected ? <Link className="verification-link" href="/onboarding/student">{verificationRejected ? 'Review & resubmit' : 'Verify studentship'} <ChevronRight size={15}/></Link> : null}
@@ -147,7 +147,7 @@ export default async function StudentDashboard() {
 
             <form className="cl-fv-search" action="/student/discover" method="get">
               <Search size={20}/>
-              <input name="q" placeholder="What are you looking for today?" aria-label="Search Campus Link marketplace" />
+              <input name="q" placeholder="What are you looking for today?" aria-label="Search Kampivo marketplace" />
               <button type="submit">Search</button>
             </form>
 
@@ -159,7 +159,7 @@ export default async function StudentDashboard() {
 
           <aside className="cl-fv-campus">
             <div>
-              <div className="cl-fv-campus-top"><div><small>Your campus</small><h2>{school || 'Complete your campus profile'}</h2><p>{school ? `${vendors.length} approved vendor${vendors.length === 1 ? '' : 's'} are currently visible to students at your institution.` : 'Campus Link keeps discovery tied to your institution so results stay useful and local.'}</p></div><span className="cl-fv-campus-icon"><ShieldCheck size={21}/></span></div>
+              <div className="cl-fv-campus-top"><div><small>Your campus</small><h2>{school || 'Complete your campus profile'}</h2><p>{school ? `${vendors.length} approved vendor${vendors.length === 1 ? '' : 's'} are currently visible to students at your institution.` : 'Kampivo keeps discovery tied to your institution so results stay useful and local.'}</p></div><span className="cl-fv-campus-icon"><ShieldCheck size={21}/></span></div>
               <div className="cl-fv-campus-stats"><div><strong>{vendors.length}</strong><span>Approved vendors</span></div><div><strong>{products.length + services.length}</strong><span>Active listings loaded</span></div></div>
             </div>
             <div className="cl-fv-campus-trust"><ShieldCheck size={16}/> Every visible vendor must pass identity verification and campus approval. Paid plans do not purchase trust.</div>
@@ -208,7 +208,7 @@ export default async function StudentDashboard() {
 
         <section className="cl-fv-section">
           <div className="cl-fv-section-head"><div><h2>Trusted vendors on your campus</h2><p>Open a storefront to compare products, services, portfolio proof, reviews and contact options.</p></div><Link href="/student/discover">View all vendors</Link></div>
-          {featuredVendors.length ? <div className="cl-fv-vendor-row">{featuredVendors.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="cl-fv-vendor" key={vendor.id}><span className="cl-fv-vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}<ShieldCheck size={13}/></strong><p>{vendor.description || 'Approved Campus Link vendor.'}</p><div className="cl-fv-vendor-meta"><span><Star size={12} fill="currentColor"/> <b>{Number(vendor.average_rating || 0).toFixed(1)}</b> ({vendor.review_count || 0})</span><span>View storefront</span></div></div></Link>)}</div> : <div className="cl-fv-empty"><strong>Your campus marketplace is still growing.</strong><p>Campus Link only surfaces vendors after identity verification and campus approval.</p></div>}
+          {featuredVendors.length ? <div className="cl-fv-vendor-row">{featuredVendors.map((vendor) => <Link href={`/student/vendors/${vendor.slug}`} className="cl-fv-vendor" key={vendor.id}><span className="cl-fv-vendor-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}<ShieldCheck size={13}/></strong><p>{vendor.description || 'Approved Kampivo vendor.'}</p><div className="cl-fv-vendor-meta"><span><Star size={12} fill="currentColor"/> <b>{Number(vendor.average_rating || 0).toFixed(1)}</b> ({vendor.review_count || 0})</span><span>View storefront</span></div></div></Link>)}</div> : <div className="cl-fv-empty"><strong>Your campus marketplace is still growing.</strong><p>Kampivo only surfaces vendors after identity verification and campus approval.</p></div>}
         </section>
 
         <section className="v3-surface" style={{margin:'26px 0',padding:'22px',display:'flex',justifyContent:'space-between',gap:18,alignItems:'center',flexWrap:'wrap'}}>
@@ -221,7 +221,7 @@ export default async function StudentDashboard() {
 
         <section className="cl-fv-bottom">
           <div className="cl-fv-bottom-card"><h3>Your activity</h3><p>Useful account signals without turning the Student experience into a dashboard.</p><div className={`cl-fv-stats${status === 'verified' ? ' verified-student' : ''}`}><div><small>Saved</small><strong>{savedCount}</strong></div><div><small>Contacts</small><strong>{contactCount}</strong></div><div><small>Reviews</small><strong>{reviewCount}</strong></div>{status !== 'verified' ? <div><small>Verification</small><strong style={{fontSize:13,textTransform:'capitalize'}}>{status.replaceAll('_',' ')}</strong></div> : null}</div></div>
-          <div className="cl-fv-bottom-card"><h3>Account & safety</h3><p>Manage the parts of Campus Link that protect your identity and marketplace experience.</p><div className="cl-fv-links"><Link href="/student/saved"><span><Bookmark size={16}/> Saved vendors</span><ChevronRight size={16}/></Link><Link href="/student/discover"><span><Search size={16}/> Discover marketplace</span><ChevronRight size={16}/></Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><span><BadgeCheck size={16}/> Complete verification</span><ChevronRight size={16}/></Link> : <Link href="/student/profile"><span><UserRound size={16}/> Profile</span><ChevronRight size={16}/></Link>}</div></div>
+          <div className="cl-fv-bottom-card"><h3>Account & safety</h3><p>Manage the parts of Kampivo that protect your identity and marketplace experience.</p><div className="cl-fv-links"><Link href="/student/saved"><span><Bookmark size={16}/> Saved vendors</span><ChevronRight size={16}/></Link><Link href="/student/discover"><span><Search size={16}/> Discover marketplace</span><ChevronRight size={16}/></Link>{!setupComplete || status !== 'verified' ? <Link href="/onboarding/student"><span><BadgeCheck size={16}/> Complete verification</span><ChevronRight size={16}/></Link> : <Link href="/student/profile"><span><UserRound size={16}/> Profile</span><ChevronRight size={16}/></Link>}</div></div>
         </section>
       </div>
     </main>
