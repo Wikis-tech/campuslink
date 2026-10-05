@@ -60,7 +60,7 @@ export default async function StudentProductPage({ params }: { params: Promise<{
             <a href={phoneHref} className="btn btn-ghost"><Phone size={17}/> Call vendor</a>
             <Link href={`/student/vendors/${vendor.slug}`} className="btn btn-ghost">View full storefront</Link>
           </div>
-          <p style={{fontSize:12,color:'var(--v3-muted)',marginTop:18}}>Campus Link helps you discover and contact approved vendors. Payment and fulfilment remain directly between you and the vendor.</p>
+          <p style={{fontSize:12,color:'var(--v3-muted)',marginTop:18}}>Kampivo helps you discover and contact approved vendors. Payment and fulfilment remain directly between you and the vendor.</p>
         </section>
       </div>
     </section>
