@@ -165,8 +165,7 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
-          <Link href="/" className="logo">
-            <div className="logo-mark"><img src="/kampivo-app-icon.svg" alt="Kampivo" width="36" height="36" /></div>
+          <Link href="/" className="logo logo-text-only" aria-label="Kampivo home">
             <span className="logo-text">Kampiv<strong>o</strong></span>
           </Link>
 
@@ -242,15 +241,15 @@ export default async function HomePage() {
 
       <section className="section how-section" id="how">
         <div className="container">
-          <h2 className="section-headline">How Campuslink Works</h2>
+          <h2 className="section-headline">How Kampivo Works</h2>
           <div className="steps-timeline">
             <div className="step-item"><div className="step-connector-line" /><div className="step-dot"><span>01</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><Search /></div><h3>Browse Vendors</h3><p>Search by category, name, price range, or rating. Filter to find the right service provider for your need.</p></div></div>
             <div className="step-item right"><div className="step-dot"><span>02</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><PhoneCall /></div><h3>Contact Directly</h3><p>Reach vendors instantly via phone call or WhatsApp. No in-app messaging — communication stays direct and personal.</p></div><div className="step-connector-line" /></div>
-            <div className="step-item"><div className="step-connector-line" /><div className="step-dot"><span>03</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><Handshake /></div><h3>Complete Offline</h3><p>Negotiate, agree, and complete your transaction directly with the vendor. Campuslink does not process student-to-vendor payments.</p></div></div>
+            <div className="step-item"><div className="step-connector-line" /><div className="step-dot"><span>03</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><Handshake /></div><h3>Complete Offline</h3><p>Negotiate, agree, and complete your transaction directly with the vendor. Kampivo does not process student-to-vendor payments.</p></div></div>
             <div className="step-item right"><div className="step-dot"><span>04</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><Star /></div><h3>Leave a Review</h3><p>Rate your experience and help fellow students make better decisions. Reviews remain subject to moderation.</p></div><div className="step-connector-line" /></div>
             <div className="step-item"><div className="step-dot"><span>05</span></div><div className="step-content glass-card"><div className="step-icon-wrap"><Flag /></div><h3>Report Issues</h3><p>Encountered a problem? Submit a complaint and our admin team can investigate the vendor account and evidence.</p></div></div>
           </div>
-          <div className="disclaimer-pill"><Info /><p>Campuslink operates as a digital directory only. We do not provide services, process student-to-vendor payments, or facilitate in-app messaging.</p></div>
+          <div className="disclaimer-pill"><Info /><p>Kampivo operates as a digital directory only. We do not provide services, process student-to-vendor payments, or facilitate in-app messaging.</p></div>
         </div>
       </section>
 
@@ -302,23 +301,15 @@ export default async function HomePage() {
       </section>
 
       <section className="section vendor-cta-section" id="vendor-cta">
-        <div className="container"><div className="vcta-card"><div className="vcta-inner"><div className="vcta-text"><h2>Build trust first. <br />Grow from there.</h2><p>Create a useful vendor profile for free. When you need more capacity and business insights, Pro is there — without changing your verification status.</p></div><div className="vcta-actions"><Link href="/register" className="btn btn-vcta-primary"><Store size={16} /> Register as Vendor</Link><a href="#pricing" className="btn btn-vcta-ghost">Compare Free & Pro <ArrowRight size={16} /></a></div></div></div></div>
+        <div className="container"><div className="vcta-card"><div className="vcta-inner"><div className="vcta-text"><h2 className="vcta-heading">Build trust first. <br />Grow from there.</h2><p>Create a useful vendor profile for free. When you need more capacity and business insights, Pro is there — without changing your verification status.</p></div><div className="vcta-actions"><Link href="/register" className="btn btn-vcta-primary"><Store size={16} /> Register as Vendor</Link><a href="#pricing" className="btn btn-vcta-ghost">Compare Free & Pro <ArrowRight size={16} /></a></div></div></div></div>
       </section>
 
       <footer className="cl-public-footer">
         <div className="container cl-public-footer-inner">
           <div className="cl-public-footer-grid">
             <div className="cl-public-footer-brand">
-              <Link href="/" className="cl-public-footer-logo" aria-label="Kampivo home">
-                <span className="cl-public-footer-logo-mark">
-                  <img
-                    src="/brand/logo"
-                    alt=""
-                    width="32"
-                    height="32"
-                  />
-                </span>
-                <span>Campus<strong>Link</strong></span>
+              <Link href="/" className="cl-public-footer-logo cl-public-footer-logo-text-only" aria-label="Kampivo home">
+                <span>Kampiv<strong>o</strong></span>
               </Link>
               <p>Trusted campus discovery for students, vendors and university communities.</p>
               <p>Kampivo helps students discover trusted services, vendors, products and opportunities within their campus community. Transactions remain directly between students and vendors.</p>
