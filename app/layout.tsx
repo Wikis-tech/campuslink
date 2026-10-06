@@ -70,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Campus Link — Trusted campus discovery',
+      title: 'Kampivo — Your campus. Trusted.',
       description: 'Discover verified Vendors, Products and Services approved for your university community.',
       images: [ogImage],
     },
