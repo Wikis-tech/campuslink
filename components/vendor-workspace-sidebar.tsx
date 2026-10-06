@@ -54,7 +54,7 @@ export function VendorWorkspaceSidebar(_: { storefrontHref?: string }) {
 
   return <>
     <aside className="v5e-sidebar v5e-sidebar-shared">
-      <Link href="/vendor-v2" className="v3-brand">Campus<span>Link</span></Link>
+      <Link href="/vendor-v2" className="v3-brand">Kampiv<span>o</span></Link>
       <nav aria-label="Vendor workspace">{items.map((item) => renderItem(item))}</nav>
       <div className="v5e-side-footer">
         <ThemeToggle compact/>
