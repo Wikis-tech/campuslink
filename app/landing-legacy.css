@@ -1577,3 +1577,152 @@ html[data-theme='dark'] .landing-empty-state{
   height:100%;
   object-fit:cover;
 }
+
+
+/* ============================================================
+   KAMPIVO — LANDING PAGE VISUAL POLISH
+   Preserve the original landing layout while fixing brand-transition
+   contrast issues and keeping temporary generated logos off the page.
+   ============================================================ */
+.legacy-home{
+  color:#1f2937;
+  background:#f8f9fa;
+}
+.legacy-home .logo-text-only{
+  gap:0;
+}
+.legacy-home .logo-text-only .logo-text{
+  display:inline-flex;
+  align-items:center;
+  font-family:var(--font-head);
+  font-size:1.2rem;
+  font-weight:500;
+  line-height:1;
+  color:var(--primary);
+}
+.legacy-home .logo-text-only .logo-text strong{
+  color:var(--kampivo-orange);
+  font-weight:800;
+}
+
+/* Keep the hero composition centred and visually balanced at wide viewports. */
+.legacy-home .hero-content{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding-left:20px;
+  padding-right:20px;
+  text-align:center;
+}
+.legacy-home .hero-headline{
+  max-width:980px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.legacy-home .hero-sub{
+  max-width:660px;
+}
+.legacy-home .hero-search,
+.legacy-home .hero-actions,
+.legacy-home .hero-trust{
+  margin-left:auto;
+  margin-right:auto;
+}
+.legacy-home .hero-actions,
+.legacy-home .hero-trust{
+  justify-content:center;
+}
+
+/* Force light-section typography to remain readable regardless of inherited state. */
+.legacy-home .categories-section,
+.legacy-home .featured-section,
+.legacy-home .how-section,
+.legacy-home .cl-pricing-section,
+.legacy-home .vendor-cta-section{
+  color:#1f2937;
+}
+.legacy-home .section-headline,
+.legacy-home .step-content h3,
+.legacy-home .vendor-name,
+.legacy-home .plan-name,
+.legacy-home .cl-pricing-head h2{
+  color:#1f2937;
+}
+.legacy-home .section-sub,
+.legacy-home .step-content p,
+.legacy-home .vendor-desc,
+.legacy-home .vendor-meta-item,
+.legacy-home .plan-copy,
+.legacy-home .plan-price span,
+.legacy-home .plan-note,
+.legacy-home .cl-pricing-head p{
+  color:#6b7280;
+}
+.legacy-home .cl-price-card,
+.legacy-home .cl-price-card.pro{
+  color:#1f2937;
+  background:#fff;
+}
+.legacy-home .cl-price-card li,
+.legacy-home .cl-price-card.pro li{
+  color:#1f2937;
+}
+.legacy-home .cl-price-card.pro .plan-copy{
+  color:#667085;
+}
+.legacy-home .cl-price-card.pro .plan-note{
+  color:#667085;
+  background:#f7f9fc;
+}
+
+/* Dark sections need explicit light typography. */
+.legacy-home .trust-section,
+.legacy-home .trust-section .section-headline.light,
+.legacy-home .trust-section .trust-feat-item h4,
+.legacy-home .trust-section .tc-card strong,
+.legacy-home .trust-section .tcc-stat{
+  color:#fff;
+}
+.legacy-home .trust-section .section-sub.light,
+.legacy-home .trust-section .trust-feat-item p,
+.legacy-home .trust-section .tc-card span,
+.legacy-home .trust-section .tc-card p{
+  color:rgba(255,255,255,.74);
+}
+.legacy-home .vcta-heading{
+  margin:0 0 14px;
+  color:#fff;
+  font-family:var(--font-head);
+  font-size:clamp(1.9rem,3.4vw,2.9rem);
+  font-weight:800;
+  line-height:1.12;
+  letter-spacing:-.025em;
+}
+.legacy-home .vcta-text p{
+  color:rgba(255,255,255,.80);
+}
+.legacy-home .btn-vcta-ghost{
+  color:#fff;
+}
+
+/* Text-only footer branding until the final user-supplied logo is uploaded. */
+.legacy-home .cl-public-footer-logo-text-only{
+  gap:0;
+  color:#fff;
+}
+.legacy-home .cl-public-footer-logo-text-only strong{
+  color:var(--kampivo-orange);
+}
+.legacy-home .cl-public-footer-brand p{
+  color:#b8c6d9;
+}
+
+@media(max-width:768px){
+  .legacy-home .hero-content{
+    padding-left:20px;
+    padding-right:20px;
+  }
+  .legacy-home .hero-headline{
+    max-width:100%;
+  }
+}
