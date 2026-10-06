@@ -101,7 +101,7 @@ export async function sendCampusLinkEmail(input: CampusLinkEmail): Promise<Campu
   }
 
   try {
-    const templateId = process.env.RESEND_ALERT_TEMPLATE_ID || 'campuslink-admin-alert-v1'
+    const templateId = process.env.RESEND_ALERT_TEMPLATE_ID || 'kampivo-admin-alert'
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
