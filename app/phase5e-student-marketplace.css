@@ -5,7 +5,7 @@
 .cl-student-page{min-height:100vh;background:var(--v3-page,#f7f8f5);color:var(--v3-ink,#101828)}
 .cl-student-header{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--v3-surface,#fff) 95%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid var(--v3-line,#e6e9ee)}
 .cl-student-header-row{width:min(1280px,calc(100% - 36px));margin:auto;min-height:72px;display:grid;grid-template-columns:auto minmax(300px,1fr) auto;align-items:center;gap:22px}
-.cl-student-brand{font-size:22px;font-weight:950;letter-spacing:-.045em;text-decoration:none;color:var(--v3-ink,#101828);white-space:nowrap}.cl-student-brand span{color:var(--v3-green,#1ea952)}
+.cl-student-brand{font-size:22px;font-weight:950;letter-spacing:-.045em;text-decoration:none;color:var(--v3-ink,#101828);white-space:nowrap}.cl-student-brand span{color:#ff7a00}
 .cl-student-global-search{display:flex;align-items:center;gap:10px;height:44px;border:1px solid var(--v3-line,#e6e9ee);border-radius:10px;background:var(--v3-surface,#fff);padding-left:14px;box-shadow:0 1px 2px rgba(16,24,40,.03)}
 .cl-student-global-search:focus-within{border-color:color-mix(in srgb,var(--v3-green,#1ea952) 65%,var(--v3-line));box-shadow:0 0 0 3px color-mix(in srgb,var(--v3-green,#1ea952) 12%,transparent)}
 .cl-student-global-search svg{color:var(--v3-muted,#667085);flex:none}.cl-student-global-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:var(--v3-ink,#101828);font:inherit;font-size:14px}.cl-student-global-search button{height:100%;border:0;border-left:1px solid var(--v3-line,#e6e9ee);background:var(--v3-ink,#101828);color:#fff;padding:0 18px;font-weight:850;cursor:pointer;border-radius:0 9px 9px 0}
