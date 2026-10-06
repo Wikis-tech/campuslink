@@ -4,6 +4,14 @@ import { createClient } from '@/lib/supabase/server'
 import { markAllNotificationsRead, markNotificationRead } from '@/app/actions/notifications'
 import styles from './dashboard-notifications.module.css'
 
+function presentBrandCopy(value: string | null | undefined) {
+  if (!value) return ''
+  return value
+    .replaceAll('CampusLink', 'Kampivo')
+    .replaceAll('Campus Link', 'Kampivo')
+    .replaceAll('Campuslink', 'Kampivo')
+}
+
 export async function DashboardNotifications() {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
@@ -30,8 +38,8 @@ export async function DashboardNotifications() {
           <article key={item.id} className={item.read_at ? styles.item : `${styles.item} ${styles.unread}`}>
             <span className={styles.mail}><Mail size={15}/></span>
             <div className={styles.copy}>
-              <strong>{item.title}</strong>
-              <p>{item.body}</p>
+              <strong>{presentBrandCopy(item.title)}</strong>
+              <p>{presentBrandCopy(item.body)}</p>
               <small>{new Date(item.created_at).toLocaleString()}</small>
             </div>
             <div className={styles.actions}>
