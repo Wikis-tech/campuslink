@@ -59,7 +59,7 @@ export function StudentMarketplaceHeader({
       <header className="cl-student-header">
         <div className="cl-student-header-row">
           <Link href="/student" className="cl-student-brand" aria-label="Kampivo student home">
-            Campus<span>Link</span>
+            Kampiv<span>o</span>
           </Link>
 
           <form className="cl-student-global-search" action="/student/discover" method="get">
