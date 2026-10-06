@@ -22,8 +22,8 @@ export function PwaLaunchSplash({ destination }: { destination: string }) {
         </div>
       </div>
       <div className="cl-pwa-launch-copy">
-        <strong>Campus<span>Link</span></strong>
-        <small>Connecting your campus</small>
+        <strong>Kampiv<span>o</span></strong>
+        <small>Your campus. Trusted.</small>
       </div>
       <div className="cl-pwa-launch-progress" aria-hidden="true"><span /></div>
     </main>
