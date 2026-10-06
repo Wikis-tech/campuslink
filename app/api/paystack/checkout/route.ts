@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     const body = await request.json().catch(() => ({})) as { planSlug?: string }
     const planSlug = String(body.planSlug || '')
-    if (!ALLOWED_PLANS.has(planSlug)) return NextResponse.json({ error: 'Choose a valid Campus Link Pro plan.' }, { status: 400 })
+    if (!ALLOWED_PLANS.has(planSlug)) return NextResponse.json({ error: 'Choose a valid Kampivo Pro plan.' }, { status: 400 })
 
     const admin = createAdminClient()
     const { data: plan } = await admin.from('subscription_plans')
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     const { data: currentSub } = await admin.from('subscriptions').select('id,status').eq('vendor_id', user.id)
       .in('status', ['active','attention','non_renewing']).limit(1).maybeSingle()
-    if (currentSub) return NextResponse.json({ error: 'You already have an active Campus Link Pro subscription.' }, { status: 409 })
+    if (currentSub) return NextResponse.json({ error: 'You already have an active Kampivo Pro subscription.' }, { status: 409 })
 
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
     const { count: recentAttempts } = await admin.from('payments').select('id', { count: 'exact', head: true })

@@ -2,10 +2,10 @@ import { getPlatformBranding } from '@/lib/platform-branding'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(request: Request) {
   const branding = await getPlatformBranding()
   if (!branding.favicon_url) {
-    return Response.redirect(new URL('/default-icon.svg', process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng'), 307)
+    return Response.redirect(new URL('/kampivo-app-icon.svg', request.url), 307)
   }
 
   try {
@@ -18,6 +18,6 @@ export async function GET() {
       },
     })
   } catch {
-    return Response.redirect(new URL('/default-icon.svg', process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng'), 307)
+    return Response.redirect(new URL('/kampivo-app-icon.svg', request.url), 307)
   }
 }

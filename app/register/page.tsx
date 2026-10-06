@@ -18,7 +18,7 @@ export default async function RegisterPage({
         <section className="auth-story reveal-up">
           <Brand light />
           <div className="auth-story-copy">
-            <span className="auth-kicker"><ShieldCheck size={16} /> Join Campus Link</span>
+            <span className="auth-kicker"><ShieldCheck size={16} /> Join Kampivo</span>
             <h1>One campus network. Two ways to join.</h1>
             <p>Students discover trusted services. Vendors build verified visibility around the campuses they genuinely serve.</p>
             <div className="auth-story-points">
@@ -27,7 +27,7 @@ export default async function RegisterPage({
               <span><BadgeCheck size={17} /> Private verification evidence</span>
             </div>
           </div>
-          <Link className="auth-back-link" href="/"><ArrowLeft size={16} /> Back to Campus Link</Link>
+          <Link className="auth-back-link" href="/"><ArrowLeft size={16} /> Back to Kampivo</Link>
         </section>
 
         <section className="auth-glass-panel reveal-scale">

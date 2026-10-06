@@ -78,7 +78,7 @@ export default async function CommunicationsPage({
         <div>
           <span className="admin-pill"><Mail size={15}/> Communications</span>
           <h1>Alerts & dashboard messages</h1>
-          <p>Send useful CampusLink reminders and announcements through official email and in-app notifications without exposing user email addresses unnecessarily.</p>
+          <p>Send useful Kampivo reminders and announcements through official email and in-app notifications without exposing user email addresses unnecessarily.</p>
         </div>
       </header>
 
@@ -86,7 +86,7 @@ export default async function CommunicationsPage({
       {params.error ? <div className="admin-error">{params.error}</div> : null}
 
       <section className="admin-grid">
-        <article className="admin-stat"><span>Official sender</span><strong style={{fontSize:16}}>notifications@campuslink.name.ng</strong><small>CampusLink Alerts transactional sender.</small></article>
+        <article className="admin-stat"><span>Official sender</span><strong style={{fontSize:16}}>notifications@campuslink.name.ng</strong><small>Kampivo Alerts transactional sender.</small></article>
         <article className="admin-stat"><span>Email channel</span><strong>{emailConfigured ? 'Ready' : 'Needs key'}</strong><small>{emailConfigured ? 'RESEND_API_KEY is available to the server.' : 'Dashboard notifications work, but Vercel still needs RESEND_API_KEY for email delivery.'}</small></article>
         <article className="admin-stat"><span>Dashboard delivery</span><strong>Active</strong><small>Students and Vendors see recent Admin messages when they sign in.</small></article>
         <article className="admin-stat"><span>Anti-spam</span><strong>24h</strong><small>The same operational reminder cannot be sent to the same account more than once per day.</small></article>
@@ -117,7 +117,7 @@ export default async function CommunicationsPage({
       </section>
 
       {canAnnounce ? <section className="admin-section">
-        <div className="admin-section-head"><div><h2>Send an announcement</h2><p>Use this for genuine CampusLink updates. Every send is written to the communication log and Admin audit trail.</p></div><Send size={20}/></div>
+        <div className="admin-section-head"><div><h2>Send an announcement</h2><p>Use this for genuine Kampivo updates. Every send is written to the communication log and Admin audit trail.</p></div><Send size={20}/></div>
         <div className="admin-section-body">
           <form action={sendAnnouncement} className="admin-form">
             <div className="admin-form-grid">
@@ -128,12 +128,12 @@ export default async function CommunicationsPage({
                 <option value="school_all">Students + Vendors in one school</option>
               </select></div>
               <div className="admin-field"><label>School</label><select name="institution_id" defaultValue={isSchoolAdmin && schools.length === 1 ? schools[0].id : ''}><option value="">Choose for school audience</option>{schools.map((school)=><option key={school.id} value={school.id}>{school.name}</option>)}</select></div>
-              <div className="admin-field"><label>Email subject</label><input name="subject" maxLength={160} required placeholder="CampusLink update"/></div>
+              <div className="admin-field"><label>Email subject</label><input name="subject" maxLength={160} required placeholder="Kampivo update"/></div>
               <div className="admin-field"><label>Dashboard title</label><input name="title" maxLength={160} required placeholder="What users should notice"/></div>
             </div>
             <div className="admin-field"><label>Message</label><textarea name="body" rows={5} maxLength={1800} required placeholder="Write a clear, useful update. Avoid sensitive personal information."/></div>
             <div className="admin-form-grid">
-              <div className="admin-field"><label>Button label <span style={{fontWeight:500}}>(optional)</span></label><input name="cta_label" maxLength={60} placeholder="Open CampusLink"/></div>
+              <div className="admin-field"><label>Button label <span style={{fontWeight:500}}>(optional)</span></label><input name="cta_label" maxLength={60} placeholder="Open Kampivo"/></div>
               <div className="admin-field"><label>Button link <span style={{fontWeight:500}}>(optional)</span></label><input name="cta_url" maxLength={300} placeholder="/student or https://..."/></div>
             </div>
             <div className="admin-note"><Mail size={16}/> Delivery is email + dashboard notification. School Admins can only target their assigned school. Platform-wide sends are limited to Super Admin, Operations Admin and Content Admin.</div>

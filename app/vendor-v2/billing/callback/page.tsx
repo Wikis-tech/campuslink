@@ -44,13 +44,13 @@ export default async function BillingCallbackPage({ searchParams }: { searchPara
     <main className="phase5c-confirm-shell">
       <section className={`phase5c-confirm-card ${success ? 'success' : failed ? 'error' : 'pending'}`}>
         <div className="phase5c-confirm-icon">{success ? <CheckCircle2/> : failed ? <XCircle/> : <Clock3/>}</div>
-        <span className="phase5c-confirm-kicker">Campus Link billing</span>
-        <h1>{success ? 'Campus Link Pro is active.' : failed ? 'Payment was not completed.' : 'Payment confirmation is still in progress.'}</h1>
+        <span className="phase5c-confirm-kicker">Kampivo billing</span>
+        <h1>{success ? 'Kampivo Pro is active.' : failed ? 'Payment was not completed.' : 'Payment confirmation is still in progress.'}</h1>
         <p>{success ? 'Your payment was verified directly with Paystack and your Pro business tools have been enabled. Verification and campus approval are still governed separately.' : failed ? 'No Pro access has been granted. You can safely return to Plans & growth and try again.' : 'We could not finish the secure confirmation yet. Return to Plans & growth in a moment; Paystack webhooks can also complete the update automatically.'}</p>
         <div className="phase5c-reference"><span>Reference</span><strong>{reference}</strong></div>
         <div className="phase5c-security-note"><ShieldCheck size={18}/><span>Payment can unlock business tools, but it can never buy verification or campus approval.</span></div>
         <div className="phase5c-confirm-actions"><Link href="/vendor-v2/growth" className="btn btn-primary">View my plan</Link><Link href="/vendor-v2" className="btn btn-ghost">Vendor dashboard</Link></div>
-        <small><LockKeyhole size={14}/> Campus Link does not store raw card numbers or CVVs.</small>
+        <small><LockKeyhole size={14}/> Kampivo does not store raw card numbers or CVVs.</small>
       </section>
     </main>
   )

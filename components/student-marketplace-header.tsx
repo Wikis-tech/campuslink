@@ -58,13 +58,13 @@ export function StudentMarketplaceHeader({
     <>
       <header className="cl-student-header">
         <div className="cl-student-header-row">
-          <Link href="/student" className="cl-student-brand" aria-label="Campus Link student home">
+          <Link href="/student" className="cl-student-brand" aria-label="Kampivo student home">
             Campus<span>Link</span>
           </Link>
 
           <form className="cl-student-global-search" action="/student/discover" method="get">
             <Search size={18} aria-hidden="true" />
-            <input name="q" aria-label="Search Campus Link" placeholder="What service or product are you looking for?" />
+            <input name="q" aria-label="Search Kampivo" placeholder="What service or product are you looking for?" />
             <button type="submit">Search</button>
           </form>
 
@@ -121,7 +121,7 @@ export function StudentMarketplaceHeader({
           {mobileAccountOpen ? <div className="cl-student-mobile-sheet" id="student-mobile-account-sheet" role="dialog" aria-label="Student account actions">
             <div className="cl-student-mobile-sheet-head">
               <span className="cl-student-avatar">{initial}</span>
-              <div><strong>{firstName || 'Student'}</strong><small>{schoolName || 'Campus Link account'}</small></div>
+              <div><strong>{firstName || 'Student'}</strong><small>{schoolName || 'Kampivo account'}</small></div>
             </div>
             <Link href={isVerified ? '/student/profile' : '/onboarding/student'}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
             <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>

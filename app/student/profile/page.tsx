@@ -41,7 +41,7 @@ export default async function StudentProfilePage() {
         <section className="v3-surface" style={{padding:24,marginTop:20}}>
           <div style={{display:'flex',gap:16,alignItems:'center',marginBottom:24,flexWrap:'wrap'}}>
             <span className="cl-student-avatar" style={{width:54,height:54,fontSize:20}}>{(profile.first_name || 'S').slice(0,1).toUpperCase()}</span>
-            <div><h2 style={{margin:0}}>{fullName}</h2><p style={{margin:'5px 0 0',color:'var(--v3-muted, #667085)'}}>{institution?.name || 'Campus Link Student'}</p></div>
+            <div><h2 style={{margin:0}}>{fullName}</h2><p style={{margin:'5px 0 0',color:'var(--v3-muted, #667085)'}}>{institution?.name || 'Kampivo Student'}</p></div>
             <span style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:7,color:'var(--v3-success, #16a34a)',fontWeight:700}}><ShieldCheck size={17}/> Verified</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:14}}>
@@ -54,7 +54,7 @@ export default async function StudentProfilePage() {
         </section>
 
         <section className="v3-surface" style={{padding:20,marginTop:18,display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,flexWrap:'wrap'}}>
-          <div><strong>Verification complete.</strong><p style={{margin:'5px 0 0',color:'var(--v3-muted, #667085)'}}>Campus Link keeps your verification evidence private. You will only be asked to verify again if an authorized Admin explicitly requires a new submission.</p></div>
+          <div><strong>Verification complete.</strong><p style={{margin:'5px 0 0',color:'var(--v3-muted, #667085)'}}>Kampivo keeps your verification evidence private. You will only be asked to verify again if an authorized Admin explicitly requires a new submission.</p></div>
           <Link href="/student" className="btn btn-ghost">Back to home</Link>
         </section>
       </section>

@@ -139,9 +139,9 @@ export default async function AdminDashboard() {
     <>
       <header className="admin-hero phase45-admin-hero reveal-admin">
         <div className="admin-hero-copy">
-          <div className="admin-hero-label"><ShieldCheck size={16}/> CampusLink Intelligence Centre</div>
+          <div className="admin-hero-label"><ShieldCheck size={16}/> Kampivo Intelligence Centre</div>
           <h1>{greeting}, {displayName}.</h1>
-          <p>{attentionCount ? attentionCount + ' operational item' + (attentionCount === 1 ? '' : 's') + ' need attention in your current scope.' : 'Nothing urgent is waiting in your current scope. CampusLink is operationally clear.'}</p>
+          <p>{attentionCount ? attentionCount + ' operational item' + (attentionCount === 1 ? '' : 's') + ' need attention in your current scope.' : 'Nothing urgent is waiting in your current scope. Kampivo is operationally clear.'}</p>
         </div>
         <div className="admin-hero-side">
           <span>Signed in as</span>
@@ -150,7 +150,7 @@ export default async function AdminDashboard() {
         </div>
       </header>
 
-      <section className="cl-data-rail admin-data-rail" aria-label="CampusLink operational summary">
+      <section className="cl-data-rail admin-data-rail" aria-label="Kampivo operational summary">
         <div className="brand"><span>Students in scope</span><strong>{studentCount}</strong><small>{studentVerifiedCount} verified · {studentIncompleteCount} incomplete</small></div>
         <div className="accent"><span>Vendors in scope</span><strong>{vendorCount}</strong><small>{vendorCompletedCount} completed business setup</small></div>
         <div><span>{context.isGlobalAdmin ? 'Active schools' : 'Assigned school'}</span><strong>{schoolCount}</strong><small>{schoolsNeedingSetup.length ? schoolsNeedingSetup.length + ' need setup attention' : 'Core school setup looks ready'}</small></div>
@@ -160,7 +160,7 @@ export default async function AdminDashboard() {
       <DashboardNotifications />
 
       <section className="admin-section intelligence-command">
-        <div className="admin-section-head"><div><span className="admin-eyebrow">Live operational intelligence</span><h2>What needs attention today?</h2><p>Generated from current CampusLink records. No invented AI scoring and no hidden priority model.</p></div><Activity size={20}/></div>
+        <div className="admin-section-head"><div><span className="admin-eyebrow">Live operational intelligence</span><h2>What needs attention today?</h2><p>Generated from current Kampivo records. No invented AI scoring and no hidden priority model.</p></div><Activity size={20}/></div>
         <div className="admin-section-body intelligence-groups">
           <div className="intelligence-group">
             <div className="intelligence-group-head urgent"><AlertTriangle size={17}/><div><strong>Urgent</strong><small>Safety and visibility risks first.</small></div><b>{urgentCount}</b></div>

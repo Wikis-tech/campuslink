@@ -124,7 +124,7 @@ export default async function School360Page({
 
       <section className="admin-section school-readiness-card">
         <div className="admin-section-head">
-          <div><span className="admin-eyebrow">School readiness</span><h2>{readiness.status === 'ready' ? 'Ready for CampusLink' : 'Needs setup — ' + readiness.blockingIssues.length + ' item' + (readiness.blockingIssues.length === 1 ? '' : 's')}</h2><p>Readiness checks only operational prerequisites. It is not a public “verified school” badge.</p></div>
+          <div><span className="admin-eyebrow">School readiness</span><h2>{readiness.status === 'ready' ? 'Ready for Kampivo' : 'Needs setup — ' + readiness.blockingIssues.length + ' item' + (readiness.blockingIssues.length === 1 ? '' : 's')}</h2><p>Readiness checks only operational prerequisites. It is not a public “verified school” badge.</p></div>
           <span className={'readiness-badge ' + (readiness.status === 'ready' ? 'ready' : 'needs')}>{readiness.status === 'ready' ? 'Ready' : 'Needs setup'}</span>
         </div>
         <div className="admin-section-body readiness-checklist">
@@ -229,7 +229,7 @@ export default async function School360Page({
               <input type="hidden" name="institution_id" value={school.id}/>
               <input type="hidden" name="return_to" value={'/control-center/schools/' + school.id}/>
               <input type="hidden" name="role" value="school_admin"/>
-              <div className="admin-field"><label>CampusLink account email</label><input type="email" name="email" required placeholder="schooladmin@example.edu.ng"/></div>
+              <div className="admin-field"><label>Kampivo account email</label><input type="email" name="email" required placeholder="schooladmin@example.edu.ng"/></div>
               <button className="admin-action primary" type="submit">Assign School Admin</button>
             </form> : null}
           </div>

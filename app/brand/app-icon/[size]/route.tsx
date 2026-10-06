@@ -39,27 +39,16 @@ export async function GET(
     )
   }
 
-  const scale = size / 512
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          background: 'linear-gradient(145deg, #0B3D91, #082D6A)',
-          borderRadius: Math.round(112 * scale),
-        }}
-      >
-        <div style={{ position: 'relative', width: Math.round(260 * scale), height: Math.round(260 * scale), display: 'flex' }}>
-          <div style={{ position: 'absolute', left: 0, top: 0, width: Math.round(224 * scale), height: Math.round(64 * scale), background: '#ffffff', borderRadius: Math.max(2, Math.round(8 * scale)) }} />
-          <div style={{ position: 'absolute', left: 0, top: 0, width: Math.round(64 * scale), height: Math.round(224 * scale), background: '#ffffff', borderRadius: Math.max(2, Math.round(8 * scale)) }} />
-          <div style={{ position: 'absolute', left: 0, top: Math.round(96 * scale), width: Math.round(192 * scale), height: Math.round(64 * scale), background: '#ffffff', borderRadius: Math.max(2, Math.round(8 * scale)) }} />
-          <div style={{ position: 'absolute', right: 0, bottom: 0, width: Math.round(112 * scale), height: Math.round(112 * scale), background: '#1EA952', borderRadius: 999 }} />
-        </div>
+      <div style={{ width: '100%', height: '100%', display: 'flex', background: '#082D6A' }}>
+        <img
+          src={new URL('/kampivo-app-icon.svg', _request.url).toString()}
+          alt=""
+          width={size}
+          height={size}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </div>
     ),
     {

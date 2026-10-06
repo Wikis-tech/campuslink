@@ -73,7 +73,7 @@ export default async function SchoolsAdminPage({
       </section>
 
       <section className="admin-section">
-        <div className="admin-section-head"><div><span className="admin-eyebrow">Easy Add School</span><h2>Four-step setup</h2><p>Create the institution first, then CampusLink takes you directly to School 360 to finish Campus setup and Administration.</p></div><Plus size={20}/></div>
+        <div className="admin-section-head"><div><span className="admin-eyebrow">Easy Add School</span><h2>Four-step setup</h2><p>Create the institution first, then Kampivo takes you directly to School 360 to finish Campus setup and Administration.</p></div><Plus size={20}/></div>
         <div className="admin-section-body">
           <div className="setup-step-grid">
             <div className="setup-step active"><span>1</span><div><strong>School details</strong><small>Name and location.</small></div></div>
@@ -104,7 +104,7 @@ export default async function SchoolsAdminPage({
               <div className="admin-field"><label>Manual verification instructions</label><textarea name="verification_instructions" rows={3} placeholder="Explain what evidence Students can use when email verification is unavailable."/></div>
             </div>
 
-            <div className="admin-note"><CheckCircle2 size={16}/> After creation, CampusLink opens School 360 so you can add Campus locations and assign a School Admin. Archiving later never deletes historical Students, Vendors, reviews or reports.</div>
+            <div className="admin-note"><CheckCircle2 size={16}/> After creation, Kampivo opens School 360 so you can add Campus locations and assign a School Admin. Archiving later never deletes historical Students, Vendors, reviews or reports.</div>
             <div><button className="admin-action primary" type="submit">Create school & continue setup</button></div>
           </form>
         </div>

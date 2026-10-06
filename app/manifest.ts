@@ -9,9 +9,9 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
 
   return {
     id: '/',
-    name: 'Campus Link',
-    short_name: 'CampusLink',
-    description: 'Discover trusted campus vendors, products and services around your school.',
+    name: 'Kampivo',
+    short_name: 'Kampivo',
+    description: 'Find trusted services and vendors around your campus.',
     start_url: '/app?source=pwa',
     scope: '/',
     display: 'standalone',

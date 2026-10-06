@@ -47,12 +47,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: base,
-    applicationName: 'Campus Link',
+    applicationName: 'Kampivo',
     title: {
-      default: 'Campus Link',
-      template: '%s · Campus Link',
+      default: 'Kampivo',
+      template: '%s · Kampivo',
     },
-    description: 'Discover trusted campus vendors, products and services around your school.',
+    description: 'Find trusted services and vendors around your campus.',
     alternates: { canonical: '/' },
     manifest: '/manifest.webmanifest',
     icons: {
@@ -62,21 +62,21 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: 'website',
-      siteName: 'Campus Link',
-      title: 'Campus Link — Trusted campus discovery',
-      description: 'Discover verified Vendors, Products and Services approved for your university community.',
+      siteName: 'Kampivo',
+      title: 'Kampivo — Your campus. Trusted.',
+      description: 'Discover verified vendors, products, services and opportunities available within your institution.',
       url: '/',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: 'Campus Link — trusted campus discovery' }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: 'Kampivo — Your campus. Trusted.' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Campus Link — Trusted campus discovery',
+      title: 'Kampivo — Your campus. Trusted.',
       description: 'Discover verified Vendors, Products and Services approved for your university community.',
       images: [ogImage],
     },
     appleWebApp: {
       capable: true,
-      title: 'Campus Link',
+      title: 'Kampivo',
       statusBarStyle: 'black-translucent',
     },
     other: {

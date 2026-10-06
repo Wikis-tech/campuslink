@@ -31,7 +31,7 @@ export function PaystackCheckoutButton({ planSlug, label }: { planSlug: 'pro-mon
       <button className="phase5c-checkout-button" type="button" onClick={startCheckout} disabled={loading}>
         {loading ? <LoaderCircle className="phase5c-spin" size={17}/> : <LockKeyhole size={17}/>} {loading ? 'Opening secure checkout…' : label} {!loading ? <ArrowRight size={16}/> : null}
       </button>
-      {error ? <p className="phase5c-checkout-error" role="alert">{error}</p> : <small className="phase5c-checkout-note">Secure Paystack checkout · Campus Link never stores your card details.</small>}
+      {error ? <p className="phase5c-checkout-error" role="alert">{error}</p> : <small className="phase5c-checkout-note">Secure Paystack checkout · Kampivo never stores your card details.</small>}
     </div>
   )
 }

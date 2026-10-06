@@ -28,7 +28,7 @@ export default async function VendorProductsPage({ searchParams }: { searchParam
     <VendorWorkspaceSidebar storefrontHref={vendor?.slug ? `/student/vendors/${vendor.slug}` : undefined}/>
     <section className="v5e-content vendor-section-content">
       <header className="v5e-topbar vendor-section-header">
-        <div><span className="v5e-section-label">Product catalogue</span><h1>Show students what you sell.</h1><p>Keep products visual, clear and easy to contact you about. Campus Link helps students discover; the transaction still stays between you and the student.</p></div>
+        <div><span className="v5e-section-label">Product catalogue</span><h1>Show students what you sell.</h1><p>Keep products visual, clear and easy to contact you about. Kampivo helps students discover; the transaction still stays between you and the student.</p></div>
         <div className="vendor-plan-pill"><span>{tier} plan</span><strong>{activeCount} / {productLimit}</strong><small>active products</small></div>
       </header>
       {params.success?<div className="notice success">{params.success}</div>:null}

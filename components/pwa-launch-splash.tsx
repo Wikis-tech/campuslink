@@ -13,7 +13,7 @@ export function PwaLaunchSplash({ destination }: { destination: string }) {
   }, [destination, router])
 
   return (
-    <main className="cl-pwa-launch" aria-label="Opening Campus Link">
+    <main className="cl-pwa-launch" aria-label="Opening Kampivo">
       <div className="cl-pwa-launch-orbit" aria-hidden="true">
         <span className="cl-pwa-launch-ring" />
         <span className="cl-pwa-launch-ring cl-pwa-launch-ring-two" />

@@ -50,23 +50,23 @@ async function authEmailMap() {
 
 function reminderDefinition(type: string) {
   if (type === 'student_onboarding_incomplete') return {
-    subject: 'Complete your CampusLink Student setup',
-    title: 'Complete your CampusLink setup',
-    body: 'You started creating your CampusLink Student account, but your campus setup is still incomplete. Complete the remaining steps so you can use the verified campus marketplace experience.',
+    subject: 'Complete your Kampivo Student setup',
+    title: 'Complete your Kampivo setup',
+    body: 'You started creating your Kampivo Student account, but your campus setup is still incomplete. Complete the remaining steps so you can use the verified campus marketplace experience.',
     ctaLabel: 'Complete Student setup',
     ctaUrl: '/onboarding/student',
   }
   if (type === 'student_verification_incomplete') return {
-    subject: 'Complete your CampusLink Student verification',
+    subject: 'Complete your Kampivo Student verification',
     title: 'Complete your Student verification',
-    body: 'Your Student account setup is complete, but CampusLink still needs your verification details. Finish verification so your account can receive verified Student privileges.',
+    body: 'Your Student account setup is complete, but Kampivo still needs your verification details. Finish verification so your account can receive verified Student privileges.',
     ctaLabel: 'Complete verification',
     ctaUrl: '/onboarding/student',
   }
   if (type === 'vendor_onboarding_incomplete') return {
-    subject: 'Complete your CampusLink Vendor registration',
+    subject: 'Complete your Kampivo Vendor registration',
     title: 'Finish setting up your Vendor account',
-    body: 'You started a CampusLink Vendor account, but your business profile is not complete yet. Finish setup so identity review and campus approval can continue.',
+    body: 'You started a Kampivo Vendor account, but your business profile is not complete yet. Finish setup so identity review and campus approval can continue.',
     ctaLabel: 'Complete Vendor setup',
     ctaUrl: '/onboarding/vendor',
   }
@@ -343,12 +343,12 @@ export async function sendAnnouncement(formData: FormData) {
     const isRelative = ctaUrl.startsWith('/')
     const isCampusLinkUrl = /^https:\/\/(www\.)?campuslink\.name\.ng(?:\/|$)/i.test(ctaUrl)
     if (!isRelative && !isCampusLinkUrl) {
-      back('/control-center/communications', 'error', 'Announcement links must stay inside CampusLink for account safety.')
+      back('/control-center/communications', 'error', 'Announcement links must stay inside Kampivo for account safety.')
     }
     if (isRelative && !ctaUrl.startsWith('//')) {
       ctaUrl = ctaUrl
     } else if (!isCampusLinkUrl) {
-      back('/control-center/communications', 'error', 'Choose a valid CampusLink link.')
+      back('/control-center/communications', 'error', 'Choose a valid Kampivo link.')
     }
   }
 

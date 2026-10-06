@@ -26,7 +26,7 @@ export default async function BrandingPage({
         <div>
           <span className="admin-eyebrow">Super Admin only</span>
           <h1>Branding &amp; App Identity</h1>
-          <p>Update the Campus Link website logo, browser favicon and installable PWA icon from one secure place.</p>
+          <p>Update the Kampivo website logo, browser favicon and installable PWA icon from one secure place.</p>
         </div>
         <Palette size={24} />
       </header>
@@ -38,19 +38,19 @@ export default async function BrandingPage({
         <article className="admin-brand-preview">
           <div className="admin-brand-preview-icon"><ImageIcon /></div>
           <span>Website logo</span>
-          <div className="admin-brand-image-preview logo-preview"><img src="/brand/logo" alt="Current Campus Link website logo" /></div>
-          <small>Used across login, registration and shared Campus Link branding.</small>
+          <div className="admin-brand-image-preview logo-preview"><img src="/brand/logo" alt="Current Kampivo website logo" /></div>
+          <small>Used across login, registration and shared Kampivo branding.</small>
         </article>
         <article className="admin-brand-preview">
           <div className="admin-brand-preview-icon"><ShieldCheck /></div>
           <span>Browser favicon</span>
-          <div className="admin-brand-image-preview square-preview"><img src="/brand/favicon" alt="Current Campus Link favicon" /></div>
+          <div className="admin-brand-image-preview square-preview"><img src="/brand/favicon" alt="Current Kampivo favicon" /></div>
           <small>PNG recommended. Shown in browser tabs and bookmarks.</small>
         </article>
         <article className="admin-brand-preview">
           <div className="admin-brand-preview-icon"><MonitorSmartphone /></div>
           <span>PWA app icon</span>
-          <div className="admin-brand-image-preview square-preview"><img src="/brand/app-icon/192" alt="Current Campus Link PWA icon" /></div>
+          <div className="admin-brand-image-preview square-preview"><img src="/brand/app-icon/192" alt="Current Kampivo PWA icon" /></div>
           <small>Upload a square 512×512 PNG for the best Android and iPhone result.</small>
         </article>
       </section>
@@ -85,7 +85,7 @@ export default async function BrandingPage({
         <button type="submit" className="admin-primary-button">Save branding</button>
       </form>
 
-      <p className="admin-branding-updated">Last updated: {branding?.updated_at ? new Date(branding.updated_at).toLocaleString() : 'Using Campus Link defaults'}</p>
+      <p className="admin-branding-updated">Last updated: {branding?.updated_at ? new Date(branding.updated_at).toLocaleString() : 'Using Kampivo defaults'}</p>
     </div>
   )
 }

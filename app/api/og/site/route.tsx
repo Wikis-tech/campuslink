@@ -13,7 +13,7 @@ export async function GET() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
           <img src={`${BASE_URL}/brand/logo`} width="82" height="82" style={{ objectFit: 'contain' }} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: 34, fontWeight: 900 }}>Campus Link</span>
+            <span style={{ fontSize: 34, fontWeight: 900 }}>Kampivo</span>
             <span style={{ marginTop: 5, fontSize: 20, color: '#AFC3DD' }}>Trusted campus discovery</span>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { getCanonicalOrigin, sanitizePublicSeoText } from '@/lib/seo-privacy'
 const BASE_URL = getCanonicalOrigin()
 
 function cleanDescription(value: string | null | undefined) {
-  return sanitizePublicSeoText(value || 'Verified Campus Link vendor.', 180) || 'Verified Campus Link vendor.'
+  return sanitizePublicSeoText(value || 'Verified Kampivo vendor.', 180) || 'Verified Kampivo vendor.'
 }
 
 async function getShareVendor(slug: string) {
@@ -64,10 +64,10 @@ async function getShareVendor(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const result = await getShareVendor(slug)
-  if (!result) return { title: 'Vendor not available · Campus Link', robots: { index: false, follow: false } }
+  if (!result) return { title: 'Vendor not available · Kampivo', robots: { index: false, follow: false } }
 
   const { vendor } = result
-  const title = `${vendor.business_name} · Campus Link`
+  const title = `${vendor.business_name} · Kampivo`
   const description = cleanDescription(vendor.description)
   const url = `${BASE_URL}/share/vendor/${encodeURIComponent(vendor.slug)}`
   const image = `${BASE_URL}/api/og/vendor/${encodeURIComponent(vendor.slug)}`
@@ -78,11 +78,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alternates: { canonical: url },
     openGraph: {
       type: 'website',
-      siteName: 'Campus Link',
+      siteName: 'Kampivo',
       title,
       description,
       url,
-      images: [{ url: image, width: 1200, height: 630, alt: `${vendor.business_name} on Campus Link` }],
+      images: [{ url: image, width: 1200, height: 630, alt: `${vendor.business_name} on Kampivo` }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -137,7 +137,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
       : {}),
     isPartOf: {
       '@type': 'WebSite',
-      name: 'Campus Link',
+      name: 'Kampivo',
       url: BASE_URL,
     },
   }
@@ -153,7 +153,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
         </Link>
         <div className="cl-share-top-actions">
           <Link href="/login" className="btn btn-ghost">Sign in</Link>
-          <Link href="/register" className="btn btn-primary">Join Campus Link</Link>
+          <Link href="/register" className="btn btn-primary">Join Kampivo</Link>
         </div>
       </header>
 
@@ -163,7 +163,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
           <div className="cl-share-profile">
             <div className="cl-share-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt="" /> : initial}</div>
             <div className="cl-share-copy">
-              <span className="cl-share-verified"><ShieldCheck size={15} /> Verified Campus Link vendor</span>
+              <span className="cl-share-verified"><ShieldCheck size={15} /> Verified Kampivo vendor</span>
               <h1>{vendor.business_name}</h1>
               <div className="cl-share-meta">
                 <span><Star size={15} fill="currentColor" /> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0} reviews)</span>
@@ -176,7 +176,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
 
         <section className="cl-share-intro v3-surface">
           <div>
-            <span className="cl-share-eyebrow">Shared from Campus Link</span>
+            <span className="cl-share-eyebrow">Shared from Kampivo</span>
             <h2>Want to contact this vendor?</h2>
             <p>Sign in as a Student to view the full trusted profile, current campus availability, reviews and direct contact options.</p>
           </div>
@@ -201,7 +201,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
 
         {services.length ? (
           <section className="cl-share-section">
-            <div className="cl-share-section-head"><Wrench size={18} /><div><h2>Services</h2><p>A preview of services listed on Campus Link.</p></div></div>
+            <div className="cl-share-section-head"><Wrench size={18} /><div><h2>Services</h2><p>A preview of services listed on Kampivo.</p></div></div>
             <div className="cl-share-list">
               {services.map((service) => (
                 <div className="v3-surface cl-share-item" key={service.id}>
@@ -214,7 +214,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
         ) : null}
 
         <p className="cl-share-safety-note">
-          <ShieldCheck size={15} /> Campus Link helps Students discover and assess approved Vendors. Transactions are completed directly between Students and Vendors.
+          <ShieldCheck size={15} /> Kampivo helps Students discover and assess approved Vendors. Transactions are completed directly between Students and Vendors.
         </p>
       </section>
     </main>

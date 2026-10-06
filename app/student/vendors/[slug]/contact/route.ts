@@ -23,7 +23,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const raw=vendor.whatsapp_number||''; if(!raw) return NextResponse.redirect(new URL(`/student/vendors/${slug}?error=This%20vendor%20has%20not%20added%20a%20contact%20number`,request.url))
 
   const { error: contactError } = await supabase.rpc('student_record_contact_event', { target_vendor: vendor.id, contact_channel: channel })
-  if (contactError) console.error('Campus Link contact evidence was not recorded', { code: contactError.code })
+  if (contactError) console.error('Kampivo contact evidence was not recorded', { code: contactError.code })
 
   await supabase.rpc('record_vendor_analytics_event', {
     target_vendor: vendor.id,
@@ -35,6 +35,6 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const phone=raw.replace(/\D/g,'').replace(/^0/,'234')
   if(channel==='phone') return NextResponse.redirect(`tel:+${phone}`)
   const contextText=item?` about “${item}”`:' about your products or services'
-  const message=encodeURIComponent(`Hi ${vendor.business_name}, I found you on Campus Link and would like to ask${contextText}.`)
+  const message=encodeURIComponent(`Hi ${vendor.business_name}, I found you on Kampivo and would like to ask${contextText}.`)
   return NextResponse.redirect(`https://wa.me/${phone}?text=${message}`)
 }

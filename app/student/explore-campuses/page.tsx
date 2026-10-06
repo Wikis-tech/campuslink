@@ -82,7 +82,7 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
     <StudentMarketplaceHeader firstName={profile.first_name} schoolName={ownSchool?.name || null} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell">
       <div className="student-head">
-        <div><div className="cl-safety-note"><Globe2 size={14}/> Cross-campus discovery</div><h1>Explore other Campus Link schools.</h1><p>Your own campus remains the default marketplace. This view lets you browse public storefront information from Vendors approved at other schools without changing your campus membership.</p></div>
+        <div><div className="cl-safety-note"><Globe2 size={14}/> Cross-campus discovery</div><h1>Explore other Kampivo schools.</h1><p>Your own campus remains the default marketplace. This view lets you browse public storefront information from Vendors approved at other schools without changing your campus membership.</p></div>
         <span className="campus-chip"><ShieldCheck size={16}/> Read-only cross-campus view</span>
       </div>
 
@@ -104,7 +104,7 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
               <div className="cl-vendor-tile-cover">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : null}</div>
               <div className="cl-vendor-tile-body">
                 <div className="cl-vendor-tile-top"><span className="cl-vendor-tile-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt=""/> : vendor.business_name.slice(0,1)}</span><div><strong>{vendor.business_name}</strong><div className="cl-safety-note"><ShieldCheck size={13}/> Approved Vendor</div></div></div>
-                <p>{vendor.description || 'Verified Campus Link vendor.'}</p>
+                <p>{vendor.description || 'Verified Kampivo vendor.'}</p>
                 <div className="phase5f-area-tags">{campuses.slice(0,3).map((school) => <span key={school.id}><Building2 size={11}/>{school.name}</span>)}</div>
                 {vendor.location_text ? <div className="cl-safety-note"><MapPin size={12}/>{vendor.location_text}</div> : null}
                 <div className="cl-vendor-meta"><span><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span><span className="verified">View public storefront</span></div>
@@ -112,7 +112,7 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
             </Link>
           </article>
         })}</div>
-      </section> : <div className="empty-state"><Globe2 size={34}/><h2>No matching cross-campus Vendors yet</h2><p>Try another search or choose all campuses. Campus Link only shows identity-approved Vendors with an active campus approval and no active safety hold.</p></div>}
+      </section> : <div className="empty-state"><Globe2 size={34}/><h2>No matching cross-campus Vendors yet</h2><p>Try another search or choose all campuses. Kampivo only shows identity-approved Vendors with an active campus approval and no active safety hold.</p></div>}
     </section>
   </main>
 }

@@ -90,7 +90,7 @@ export async function reconcileSuccessfulPaystackPayment(reference: string, expe
 
   if (subscriptionError) throw subscriptionError
   if (!subscription || subscription.vendor_id !== payment.vendor_id) {
-    throw new Error('Campus Link subscription mismatch')
+    throw new Error('Kampivo subscription mismatch')
   }
 
   const { data: plan, error: planError } = await admin
@@ -100,7 +100,7 @@ export async function reconcileSuccessfulPaystackPayment(reference: string, expe
     .maybeSingle()
 
   if (planError) throw planError
-  if (!plan || plan.tier !== 'pro' || !plan.is_active) throw new Error('Invalid Campus Link Pro plan')
+  if (!plan || plan.tier !== 'pro' || !plan.is_active) throw new Error('Invalid Kampivo Pro plan')
 
   const txPlanCode = tx?.plan?.plan_code || tx?.plan_code || null
   if (txPlanCode && plan.paystack_plan_code && String(txPlanCode) !== String(plan.paystack_plan_code)) {

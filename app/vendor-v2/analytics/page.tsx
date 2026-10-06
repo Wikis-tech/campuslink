@@ -67,7 +67,7 @@ export default async function VendorAnalyticsPage({ searchParams }: { searchPara
         <div className="v5e-range">{[7,30,90].map((value)=><Link key={value} className={days===value?'active':''} aria-disabled={value>maxDays} href={value<=maxDays?`/vendor-v2/analytics?range=${value}`:'#'}>{value}D{value>maxDays?<span> Pro</span>:null}</Link>)}</div>
       </header>
 
-      <section className="analytics-insight-strip"><Sparkles size={18}/><div><span>Campus Link insight</span><strong>{insight}</strong></div></section>
+      <section className="analytics-insight-strip"><Sparkles size={18}/><div><span>Kampivo insight</span><strong>{insight}</strong></div></section>
 
       <section className="analytics-metric-strip">
         <article><div><Search size={17}/><span>Impressions</span></div><strong>{totals.impressions.toLocaleString()}</strong><small>Appeared in student discovery</small></article>
@@ -97,7 +97,7 @@ export default async function VendorAnalyticsPage({ searchParams }: { searchPara
       <section className="analytics-bottom-grid">
         <article className="v5e-panel">
           <div className="v5e-panel-head"><div><small>Listing performance</small><h2>What students are responding to</h2></div><span>{(listings||[]).length} tracked</span></div>
-          {sortedListings.length ? <div className="analytics-listings">{sortedListings.slice(0,8).map((item:any,index:number)=><div className="analytics-listing-row" key={`${item.listing_type}-${item.listing_id}`}><span className="analytics-rank">{index+1}</span><div><strong>{item.listing_name}</strong><small>{item.listing_type}</small></div><div><strong>{Number(item.views||0).toLocaleString()}</strong><small>views</small></div><div><strong>{Number(item.contacts||0).toLocaleString()}</strong><small>contacts</small></div></div>)}</div> : <div className="v5e-empty compact"><Sparkles size={24}/><strong>No listing activity yet.</strong><p>Add products and services, then share your storefront and let Campus Link discovery begin working.</p></div>}
+          {sortedListings.length ? <div className="analytics-listings">{sortedListings.slice(0,8).map((item:any,index:number)=><div className="analytics-listing-row" key={`${item.listing_type}-${item.listing_id}`}><span className="analytics-rank">{index+1}</span><div><strong>{item.listing_name}</strong><small>{item.listing_type}</small></div><div><strong>{Number(item.views||0).toLocaleString()}</strong><small>views</small></div><div><strong>{Number(item.contacts||0).toLocaleString()}</strong><small>contacts</small></div></div>)}</div> : <div className="v5e-empty compact"><Sparkles size={24}/><strong>No listing activity yet.</strong><p>Add products and services, then share your storefront and let Kampivo discovery begin working.</p></div>}
         </article>
 
         <aside className="v5e-panel analytics-highlight-card">

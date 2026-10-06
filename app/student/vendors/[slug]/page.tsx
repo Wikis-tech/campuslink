@@ -55,16 +55,16 @@ export default async function VendorProfilePage({ params, searchParams }: { para
   const verifiedContactReviews = phase5g.schemaReady ? (reviews || []).filter((review:any) => review.contact_verified_at).length : 0
   const initial = vendor.business_name?.slice(0,1)?.toUpperCase() || 'V'
   const returnTo = `/student/vendors/${vendor.slug}`
-  const memberSince = vendor.created_at ? new Date(vendor.created_at).toLocaleDateString('en-NG',{month:'short',year:'numeric'}) : 'Campus Link member'
+  const memberSince = vendor.created_at ? new Date(vendor.created_at).toLocaleDateString('en-NG',{month:'short',year:'numeric'}) : 'Kampivo member'
 
   return <main className="cl-student-page">
     <VendorAnalyticsBeacon vendorId={vendor.id} event="profile_view"/>
     <StudentMarketplaceHeader firstName={profile.first_name} schoolName={institution?.name} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell phase5g-storefront">
-      {!phase5g.ready ? <div className="notice error">Some advanced trust, review and reporting features are temporarily unavailable while Campus Link completes a safety-system update. You can still browse this Vendor.</div> : null}
+      {!phase5g.ready ? <div className="notice error">Some advanced trust, review and reporting features are temporarily unavailable while Kampivo completes a safety-system update. You can still browse this Vendor.</div> : null}
       {notices.error ? <div className="notice error">{notices.error}</div> : null}
       {notices.review === 'saved' ? <div className="notice success">Your review has been saved.</div> : null}
-      {notices.reported === '1' ? <div className="notice success">Your report has been submitted privately to Campus Link for review.</div> : null}
+      {notices.reported === '1' ? <div className="notice success">Your report has been submitted privately to Kampivo for review.</div> : null}
 
       <section className="v3-surface phase5g-storefront-hero">
         <div className="phase5g-cover">{vendor.cover_url ? <img src={vendor.cover_url} alt=""/> : null}</div>
@@ -75,7 +75,7 @@ export default async function VendorProfilePage({ params, searchParams }: { para
               <div className="v3-trust-line phase5g-inline-trust"><ShieldCheck size={16}/> Identity verified · Approved for {institution?.name || 'your campus'}</div>
               <h1>{vendor.business_name}</h1>
               <div className="phase5g-meta"><span><Star size={14} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span>{vendor.location_text ? <span><MapPin size={14}/> {vendor.location_text}</span> : null}</div>
-              <p>{vendor.description || 'Verified Campus Link vendor.'}</p>
+              <p>{vendor.description || 'Verified Kampivo vendor.'}</p>
             </div>
             <div className="phase5g-profile-actions"><a className="btn btn-primary" href={`/student/vendors/${vendor.slug}/contact`}><MessageCircle size={17}/> WhatsApp vendor</a><form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="return_to" value={returnTo}/><button className="btn btn-ghost" type="submit"><Bookmark size={17} fill={saved ? 'currentColor' : 'none'}/> {saved ? 'Saved' : 'Save vendor'}</button></form><VendorShareButton slug={vendor.slug} businessName={vendor.business_name}/></div>
           </div>
@@ -85,10 +85,10 @@ export default async function VendorProfilePage({ params, searchParams }: { para
       <section className="v3-surface phase5g-trust-profile" id="trust">
         <div className="phase5g-trust-heading"><div><span><ShieldCheck size={15}/> Campus Trust</span><h2>Why this business is trusted here</h2><p>Campus Trust is explainable evidence, not a score and not something a Vendor can buy.</p></div><span className="phase5g-standing"><CheckCircle2 size={16}/> Good standing</span></div>
         <div className="phase5g-trust-grid">
-          <div><BadgeCheck/><span><strong>Identity verified</strong><small>Campus Link approved the Vendor identity.</small></span></div>
+          <div><BadgeCheck/><span><strong>Identity verified</strong><small>Kampivo approved the Vendor identity.</small></span></div>
           <div><BadgeCheck/><span><strong>Campus approved</strong><small>Approved to appear at {institution?.name || 'this campus'}.</small></span></div>
           <div><ShieldCheck/><span><strong>Account in good standing</strong><small>No active marketplace safety hold.</small></span></div>
-          {phase5g.schemaReady ? <div><MessageCircle/><span><strong>{verifiedContactReviews} verified-contact review{verifiedContactReviews === 1 ? '' : 's'}</strong><small>Backed by a Campus Link contact event.</small></span></div> : <div><MessageCircle/><span><strong>Contact evidence updating</strong><small>Advanced interaction verification is temporarily unavailable.</small></span></div>}
+          {phase5g.schemaReady ? <div><MessageCircle/><span><strong>{verifiedContactReviews} verified-contact review{verifiedContactReviews === 1 ? '' : 's'}</strong><small>Backed by a Kampivo contact event.</small></span></div> : <div><MessageCircle/><span><strong>Contact evidence updating</strong><small>Advanced interaction verification is temporarily unavailable.</small></span></div>}
           <div><CalendarDays/><span><strong>Member since {memberSince}</strong><small>Account history is part of the trust context.</small></span></div>
         </div>
       </section>
@@ -100,8 +100,8 @@ export default async function VendorProfilePage({ params, searchParams }: { para
       {(portfolio || []).length ? <section className="cl-student-section"><div className="cl-student-section-head"><div><h2>Portfolio</h2><p>Proof of previous work, kept separate from products and services.</p></div></div><div className="phase5g-portfolio">{(portfolio || []).map((item:any) => <figure key={item.id} className="v3-surface"><img src={item.image_url} alt={item.title}/><figcaption><strong>{item.title}</strong>{item.description ? <p>{item.description}</p> : null}</figcaption></figure>)}</div></section> : null}
 
       <section className="v3-split cl-student-section">
-        <div className="v3-surface phase5g-reviews-public"><div className="cl-student-section-head"><div><h2>Student reviews</h2><p>Verified-contact means the Student used Campus Link to contact this Vendor before reviewing. It does not mean Campus Link witnessed or processed a purchase.</p></div></div>
-          {(reviews || []).map((review:any) => <article className="phase5g-public-review" key={review.id}><div className="phase5g-review-top"><strong>{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</strong><span>{new Date(review.created_at).toLocaleDateString('en-NG')}</span></div><p>{review.comment || 'Rating only'}</p><div className="phase5g-review-badges">{verifiedReviewers.has(review.student_id) ? <span><BadgeCheck size={14}/> Verified Student</span> : <span>Student</span>}{review.contact_verified_at ? <span><MessageCircle size={14}/> Contacted through Campus Link</span> : null}</div>{review.vendor_response && review.vendor_response_status === 'published' ? <div className="phase5g-vendor-response"><strong>Vendor response</strong><p>{review.vendor_response}</p></div> : null}</article>)}
+        <div className="v3-surface phase5g-reviews-public"><div className="cl-student-section-head"><div><h2>Student reviews</h2><p>Verified-contact means the Student used Kampivo to contact this Vendor before reviewing. It does not mean Kampivo witnessed or processed a purchase.</p></div></div>
+          {(reviews || []).map((review:any) => <article className="phase5g-public-review" key={review.id}><div className="phase5g-review-top"><strong>{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</strong><span>{new Date(review.created_at).toLocaleDateString('en-NG')}</span></div><p>{review.comment || 'Rating only'}</p><div className="phase5g-review-badges">{verifiedReviewers.has(review.student_id) ? <span><BadgeCheck size={14}/> Verified Student</span> : <span>Student</span>}{review.contact_verified_at ? <span><MessageCircle size={14}/> Contacted through Kampivo</span> : null}</div>{review.vendor_response && review.vendor_response_status === 'published' ? <div className="phase5g-vendor-response"><strong>Vendor response</strong><p>{review.vendor_response}</p></div> : null}</article>)}
           {!(reviews || []).length ? <p>No published reviews yet.</p> : null}
           {phase5g.ready && profile.student_verification_status === 'verified' ? <form className="review-form phase5g-review-form" action={submitReview}><input type="hidden" name="vendor_id" value={vendor.id}/><input type="hidden" name="slug" value={vendor.slug}/><strong>Share your experience</strong><small>One review per Vendor. You can edit it later, but repeated rapid edits are rate-limited.</small><select name="rating" required defaultValue=""><option value="" disabled>Choose rating</option><option value="5">5 — Excellent</option><option value="4">4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Poor</option><option value="1">1 — Very poor</option></select><textarea name="comment" maxLength={1000} placeholder="Keep your review factual and helpful."/><button className="btn btn-primary">Submit review</button></form> : <p className="cl-safety-note"><ShieldCheck size={15}/> {phase5g.ready ? 'Complete Student verification before posting public reviews.' : 'Review posting is temporarily unavailable while trust services update.'}</p>}
         </div>

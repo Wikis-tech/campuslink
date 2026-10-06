@@ -62,7 +62,7 @@ export function PwaServiceWorker() {
   return (
     <div className="cl-offline-banner" role="status" aria-live="polite">
       <span className="cl-offline-dot" aria-hidden="true" />
-      You&apos;re offline. Live Campus Link data needs an internet connection.
+      You&apos;re offline. Live Kampivo data needs an internet connection.
     </div>
   )
 }

@@ -14,7 +14,7 @@ export default function OfflinePage() {
         <Brand />
         <div className="cl-offline-icon" aria-hidden="true"><CloudOff /></div>
         <span className="cl-offline-kicker"><ShieldCheck size={15} /> Secure offline mode</span>
-        <h1>Campus Link needs a connection for live account data.</h1>
+        <h1>Kampivo needs a connection for live account data.</h1>
         <p>
           For your privacy, Student, Vendor and Admin pages are not stored for offline viewing.
           Reconnect to continue with marketplace data, reviews, billing, verification and account actions.
@@ -23,7 +23,7 @@ export default function OfflinePage() {
           <Link href="/app" className="btn btn-primary"><RefreshCw size={16} /> Try again</Link>
           <Link href="/login" className="btn btn-outline-primary">Go to sign in</Link>
         </div>
-        <small>No private Campus Link information has been loaded from an offline cache.</small>
+        <small>No private Kampivo information has been loaded from an offline cache.</small>
       </section>
     </main>
   )

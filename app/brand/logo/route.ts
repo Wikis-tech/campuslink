@@ -2,9 +2,13 @@ import { getPlatformBranding, DEFAULT_WEBSITE_LOGO } from '@/lib/platform-brandi
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(request: Request) {
   const branding = await getPlatformBranding()
   const source = branding.website_logo_url || DEFAULT_WEBSITE_LOGO
+
+  if (source.startsWith('/')) {
+    return Response.redirect(new URL(source, request.url), 307)
+  }
 
   try {
     const response = await fetch(source, { cache: 'no-store' })
@@ -16,6 +20,6 @@ export async function GET() {
       },
     })
   } catch {
-    return Response.redirect(new URL('/default-icon.svg', process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng'), 307)
+    return Response.redirect(new URL('/kampivo-logo.svg', request.url), 307)
   }
 }
