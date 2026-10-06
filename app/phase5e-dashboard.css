@@ -6,3 +6,41 @@
 @media(max-width:1000px){.v5e-page,.v5e-vendor-page{grid-template-columns:1fr}.v5e-sidebar{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--v3-line,#e6eaf0);padding:14px 18px;display:flex;flex-direction:row;align-items:center;overflow:auto}.v5e-sidebar nav{display:flex;gap:5px}.v5e-sidebar nav a{white-space:nowrap}.v5e-side-footer{margin-left:auto;display:flex}.v5e-main-grid,.v5e-dashboard-grid{grid-template-columns:1fr}.v5e-summary{grid-template-columns:repeat(2,1fr)}.v5e-summary article:nth-child(2){border-right:0}.v5e-summary article:nth-child(-n+2){border-bottom:1px solid var(--v3-line,#e6eaf0)}}
 @media(max-width:680px){.v5e-content,.v5e-vendor-main{padding:22px 14px 86px}.v5e-topbar,.v5e-vendor-header,.v5e-upgrade{display:grid}.v5e-range{justify-self:start}.v5e-summary{grid-template-columns:1fr 1fr}.v5e-summary article{padding:16px}.v5e-main-grid{gap:14px}.v5e-panel{padding:16px;border-radius:14px}.v5e-table{overflow:auto}.v5e-table-row{min-width:620px}.v5e-chart-stage{height:260px}.v5e-statusbar{grid-template-columns:1fr 1fr}.v5e-statusbar div:nth-child(2){border-right:0}.v5e-statusbar div:nth-child(-n+2){border-bottom:1px solid var(--v3-line,#e6eaf0)}.v5e-kpis{grid-template-columns:1fr 1fr}.v5e-vendor-actions{width:100%}.v5e-vendor-actions a{flex:1;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.v5e-page *,.v5e-vendor-page *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Vendor Business Health responsive polish */
+.v5e-health-copy{min-width:0;flex:1}
+.v5e-health-copy strong{line-height:1.25}
+.v5e-health-copy small{display:block;line-height:1.55;margin-top:4px}
+.v5e-health-improvement{display:grid;gap:5px;margin-top:14px}
+.v5e-health-improvement strong,.v5e-health-improvement small{display:block}
+.v5e-health-improvement strong{font-size:14px;line-height:1.35}
+.v5e-health-improvement small{color:var(--v3-muted,#667085);line-height:1.55}
+.v5e-card-head>div{min-width:0}
+
+@media(max-width:560px){
+  .v5e-card{padding:16px}
+  .v5e-card-head{align-items:flex-start;gap:10px}
+  .v5e-card-head h2{font-size:18px;line-height:1.2}
+  .v5e-card-note{max-width:86px;line-height:1.35;text-align:right;flex:none}
+  .v5e-health-score{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;align-items:center}
+  .v5e-health-ring{width:72px;height:72px}
+  .v5e-health-ring:after{inset:7px}
+  .v5e-health-ring strong{font-size:18px}
+  .v5e-health-copy strong{font-size:15px}
+  .v5e-health-copy small{font-size:12px}
+  .v5e-mini-links a{font-size:13px;padding:12px 0}
+}
+
+@media(max-width:390px){
+  .v5e-card{padding:14px}
+  .v5e-card-head{display:grid;grid-template-columns:minmax(0,1fr) auto}
+  .v5e-card-note{max-width:72px;font-size:10px!important}
+  .v5e-health-score{grid-template-columns:64px minmax(0,1fr);gap:12px}
+  .v5e-health-ring{width:64px;height:64px}
+  .v5e-health-ring:after{inset:6px}
+  .v5e-health-ring strong{font-size:16px}
+  .v5e-health-copy small{font-size:11px}
+  .v5e-health-improvement strong{font-size:13px}
+  .v5e-health-improvement small{font-size:12px}
+}
