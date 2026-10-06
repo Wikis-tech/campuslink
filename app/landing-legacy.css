@@ -10,6 +10,7 @@
   --primary-light: #1e5bb8;
   --accent: #1ea952;
   --accent-dark: #167a3d;
+  --kampivo-orange: #ff7a00;
   --amber: #f59e0b;
   --whatsapp: #25d366;
   --danger: #ef4444;
@@ -70,7 +71,7 @@ h3 { font-size: 1.15rem; }
 .header-inner { display: flex; align-items: center; gap: 16px; height: 100%; }
 .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .logo-text { font-family: var(--font-head); font-size: 1.2rem; font-weight: 400; color: white; transition: color var(--transition); }
-.logo-text strong { font-weight: 800; }
+.logo-text strong { font-weight: 800; color: var(--kampivo-orange); }
 .site-header.scrolled .logo-text { color: var(--primary); }
 .main-nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .nav-link { padding: 8px 12px; font-family: var(--font-head); font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.88); border-radius: 8px; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
@@ -930,7 +931,7 @@ h3 { font-size: 1.15rem; }
 .logo-mark { width:36px;height:36px;flex-shrink:0; }
 .logo-fallback { display:block; }
 .logo-text { font-family:var(--font-head);font-size:1.2rem;font-weight:400;color:white;transition:color 0.3s ease; }
-.logo-text strong { font-weight:900; }
+.logo-text strong { font-weight:900; color: var(--kampivo-orange); }
 .site-header.scrolled .logo-text { color:var(--primary); }
 .site-header.scrolled .logo-fallback rect { fill:var(--primary); }
 
