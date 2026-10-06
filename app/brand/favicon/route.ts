@@ -18,6 +18,6 @@ export async function GET(request: Request) {
       },
     })
   } catch {
-    return Response.redirect(new URL('/default-icon.svg', process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng'), 307)
+    return Response.redirect(new URL('/kampivo-app-icon.svg', request.url), 307)
   }
 }
