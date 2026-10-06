@@ -57,14 +57,14 @@ function reminderDefinition(type: string) {
     ctaUrl: '/onboarding/student',
   }
   if (type === 'student_verification_incomplete') return {
-    subject: 'Complete your CampusLink Student verification',
+    subject: 'Complete your Kampivo Student verification',
     title: 'Complete your Student verification',
     body: 'Your Student account setup is complete, but Kampivo still needs your verification details. Finish verification so your account can receive verified Student privileges.',
     ctaLabel: 'Complete verification',
     ctaUrl: '/onboarding/student',
   }
   if (type === 'vendor_onboarding_incomplete') return {
-    subject: 'Complete your CampusLink Vendor registration',
+    subject: 'Complete your Kampivo Vendor registration',
     title: 'Finish setting up your Vendor account',
     body: 'You started a Kampivo Vendor account, but your business profile is not complete yet. Finish setup so identity review and campus approval can continue.',
     ctaLabel: 'Complete Vendor setup',
