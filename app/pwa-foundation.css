@@ -386,7 +386,7 @@ html[data-pwa-mode="standalone"] select{
   font:800 1.45rem/1 var(--font-sora),sans-serif;
   letter-spacing:-.04em;
 }
-.cl-pwa-launch-copy strong span{color:#1ea952}
+.cl-pwa-launch-copy strong span{color:#ff7a00}
 .cl-pwa-launch-copy small{
   display:block;
   margin-top:8px;
