@@ -121,7 +121,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request).catch(async () => {
         const fallback = await caches.match(OFFLINE_URL)
-        return fallback || new Response('Campus Link is offline.', {
+        return fallback || new Response('Kampivo is offline.', {
           status: 503,
           headers: { 'Content-Type': 'text/plain; charset=utf-8' },
         })
