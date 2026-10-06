@@ -40,7 +40,7 @@ export default async function VendorOnboardingPage({
     <main className="onboarding-shell">
       <section className="onboarding-layout">
         <aside className="onboarding-aside vendor-aside">
-          <Link href="/" className="brand">Campus<span>Link</span></Link>
+          <Link href="/" className="brand">Kampiv<span>o</span></Link>
           <div className="step-kicker">Vendor setup · 1 of 1</div>
           <h1>Set up once. Get discovered where it matters.</h1>
           <p>Create a clear business profile, choose the campus you serve and submit evidence for review.</p>

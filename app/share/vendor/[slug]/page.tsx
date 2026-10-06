@@ -149,7 +149,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
       <header className="cl-share-topbar">
         <Link href="/" className="cl-share-brand">
           <img src="/brand/logo" alt="" width="34" height="34" />
-          <span>Campus<strong>Link</strong></span>
+          <span>Kampiv<strong>o</strong></span>
         </Link>
         <div className="cl-share-top-actions">
           <Link href="/login" className="btn btn-ghost">Sign in</Link>

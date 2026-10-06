@@ -43,7 +43,7 @@ export default async function StudentOnboardingPage({
     <main className="onboarding-shell">
       <section className="onboarding-layout">
         <aside className="onboarding-aside">
-          <Link href="/" className="brand">Campus<span>Link</span></Link>
+          <Link href="/" className="brand">Kampiv<span>o</span></Link>
           <div className="step-kicker">Student verification · optional for browsing</div>
           <h1>Make Kampivo yours.</h1>
           <p>Tell us where you study so we can show you vendors who are actually relevant to your campus.</p>

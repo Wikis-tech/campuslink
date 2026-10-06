@@ -6,9 +6,10 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendCampusLinkEmail } from '@/lib/campuslink-email'
 import { requireAdminContext } from './lib'
+import { presentBrandCopy } from '@/lib/brand-copy'
 
 function fail(message: string): never {
-  redirect('/control-center/admins?error=' + encodeURIComponent(message))
+  redirect('/control-center/admins?error=' + encodeURIComponent(presentBrandCopy(message)))
 }
 
 function success(message: string): never {
