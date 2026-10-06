@@ -137,7 +137,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
       : {}),
     isPartOf: {
       '@type': 'WebSite',
-      name: 'Campus Link',
+      name: 'Kampivo',
       url: BASE_URL,
     },
   }
@@ -163,7 +163,7 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
           <div className="cl-share-profile">
             <div className="cl-share-logo">{vendor.logo_url ? <img src={vendor.logo_url} alt="" /> : initial}</div>
             <div className="cl-share-copy">
-              <span className="cl-share-verified"><ShieldCheck size={15} /> Verified Campus Link vendor</span>
+              <span className="cl-share-verified"><ShieldCheck size={15} /> Verified Kampivo vendor</span>
               <h1>{vendor.business_name}</h1>
               <div className="cl-share-meta">
                 <span><Star size={15} fill="currentColor" /> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0} reviews)</span>
