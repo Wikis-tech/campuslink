@@ -71,7 +71,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 23 }}>
-          <span style={{ fontWeight: 800 }}>campuslink.name.ng</span>
+          <span style={{ fontWeight: 800 }}>Kampivo · Your campus. Trusted.</span>
           <span style={{ color: '#9DB2CC' }}>Trusted campus discovery</span>
         </div>
       </div>
