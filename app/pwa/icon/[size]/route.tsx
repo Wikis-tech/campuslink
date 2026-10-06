@@ -77,7 +77,7 @@ export async function GET(
               bottom: 0,
               width: Math.round(112 * scale),
               height: Math.round(112 * scale),
-              background: '#1EA952',
+              background: '#FF7A00',
               borderRadius: 999,
             }}
           />

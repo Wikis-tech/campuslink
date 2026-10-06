@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdminContext } from '../lib'
 import { sendAnnouncement, sendOperationalReminder } from './actions'
+import { presentBrandCopy } from '@/lib/brand-copy'
 
 const GLOBAL_ANNOUNCERS = new Set(['super_admin','operations_admin','content_admin'])
 const GLOBAL_REMINDERS = new Set(['super_admin','operations_admin'])
@@ -145,7 +146,7 @@ export default async function CommunicationsPage({
       <section className="admin-section">
         <div className="admin-section-head"><div><h2>Recent communications</h2><p>Delivery counts make failed email attempts visible instead of silently pretending everything was sent.</p></div><UsersRound size={20}/></div>
         <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Message</th><th>Audience</th><th>Recipients</th><th>Dashboard</th><th>Email</th><th>When</th></tr></thead><tbody>
-          {(recent || []).map((item)=><tr key={item.id}><td><span className="admin-name">{item.subject}</span><span className="admin-sub">{item.kind}</span></td><td>{item.audience_type.replaceAll('_',' ')}</td><td>{item.recipient_count}</td><td>{item.dashboard_sent_count}</td><td><span className={item.email_failed_count ? 'status-badge status-reviewing' : 'status-badge status-approved'}>{item.email_sent_count} sent{item.email_failed_count ? ` · ${item.email_failed_count} issue${item.email_failed_count === 1 ? '' : 's'}` : ''}</span></td><td>{new Date(item.created_at).toLocaleString()}</td></tr>)}
+          {(recent || []).map((item)=><tr key={item.id}><td><span className="admin-name">{presentBrandCopy(item.subject)}</span><span className="admin-sub">{item.kind}</span></td><td>{item.audience_type.replaceAll('_',' ')}</td><td>{item.recipient_count}</td><td>{item.dashboard_sent_count}</td><td><span className={item.email_failed_count ? 'status-badge status-reviewing' : 'status-badge status-approved'}>{item.email_sent_count} sent{item.email_failed_count ? ` · ${item.email_failed_count} issue${item.email_failed_count === 1 ? '' : 's'}` : ''}</span></td><td>{new Date(item.created_at).toLocaleString()}</td></tr>)}
           {!recent?.length ? <tr><td colSpan={6}><div className="empty-admin">No Admin communications have been sent in your visible scope yet.</div></td></tr> : null}
         </tbody></table></div>
       </section>

@@ -1,4 +1,5 @@
 import 'server-only'
+import { presentBrandCopy } from '@/lib/brand-copy'
 
 type CampusLinkEmail = {
   to: string
@@ -36,11 +37,14 @@ function absoluteUrl(value?: string | null) {
 
 export function renderCampusLinkEmail(input: Omit<CampusLinkEmail, 'to' | 'idempotencyKey'>) {
   const name = escapeHtml(input.recipientName?.trim() || 'there')
-  const title = escapeHtml(input.title)
-  const body = escapeHtml(input.body).replace(/\n/g, '<br/>')
+  const titleText = presentBrandCopy(input.title)
+  const bodyText = presentBrandCopy(input.body)
+  const ctaLabelText = presentBrandCopy(input.ctaLabel)
+  const title = escapeHtml(titleText)
+  const body = escapeHtml(bodyText).replace(/\n/g, '<br/>')
   const ctaUrl = absoluteUrl(input.ctaUrl)
-  const cta = ctaUrl && input.ctaLabel
-    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;"><tr><td bgcolor="#0B3D91" style="background-color:#0B3D91;border-radius:8px;"><a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding-top:13px;padding-right:20px;padding-bottom:13px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;">${escapeHtml(input.ctaLabel)}</a></td></tr></table>`
+  const cta = ctaUrl && ctaLabelText
+    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;"><tr><td bgcolor="#FF7A00" style="background-color:#FF7A00;border-radius:8px;"><a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding-top:13px;padding-right:20px;padding-bottom:13px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;">${escapeHtml(ctaLabelText)}</a></td></tr></table>`
     : ''
 
   const html = `<!DOCTYPE html>
@@ -58,7 +62,7 @@ export function renderCampusLinkEmail(input: Omit<CampusLinkEmail, 'to' | 'idemp
 <tr><td style="padding-top:28px;padding-right:32px;padding-bottom:20px;padding-left:32px;border-bottom:1px solid #edf1f5;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
 <td valign="middle"><img src="https://campuslink.name.ng/brand/logo" width="142" height="36" border="0" alt="Kampivo" style="display:block;width:142px;height:36px;object-fit:contain;"/></td>
-<td align="right" valign="middle"><span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.08em;color:#1EA952;text-transform:uppercase;">Kampivo Alert</span></td>
+<td align="right" valign="middle"><span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.08em;color:#FF7A00;text-transform:uppercase;">Kampivo Alert</span></td>
 </tr></table>
 </td></tr>
 <tr><td style="padding-top:32px;padding-right:32px;padding-bottom:32px;padding-left:32px;">
@@ -80,9 +84,9 @@ ${cta}
   const text = [
     `Hi ${input.recipientName?.trim() || 'there'},`,
     '',
-    input.title,
-    input.body,
-    ctaUrl && input.ctaLabel ? `${input.ctaLabel}: ${ctaUrl}` : '',
+    titleText,
+    bodyText,
+    ctaUrl && ctaLabelText ? `${ctaLabelText}: ${ctaUrl}` : '',
     '',
     'Kampivo · Your campus. Trusted.',
   ].filter(Boolean).join('\n')
@@ -112,10 +116,10 @@ export async function sendCampusLinkEmail(input: CampusLinkEmail): Promise<Campu
           id: templateId,
           variables: {
             RECIPIENT_NAME: input.recipientName?.trim() || 'there',
-            ALERT_SUBJECT: input.subject,
-            ALERT_TITLE: input.title,
-            ALERT_BODY: input.body,
-            CTA_LABEL: input.ctaLabel || 'Open Kampivo',
+            ALERT_SUBJECT: presentBrandCopy(input.subject),
+            ALERT_TITLE: presentBrandCopy(input.title),
+            ALERT_BODY: presentBrandCopy(input.body),
+            CTA_LABEL: presentBrandCopy(input.ctaLabel) || 'Open Kampivo',
             CTA_URL: absoluteUrl(input.ctaUrl) || 'https://campuslink.name.ng',
           },
         },

@@ -3,14 +3,7 @@ import { BellRing, Check, Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { markAllNotificationsRead, markNotificationRead } from '@/app/actions/notifications'
 import styles from './dashboard-notifications.module.css'
-
-function presentBrandCopy(value: string | null | undefined) {
-  if (!value) return ''
-  return value
-    .replaceAll('CampusLink', 'Kampivo')
-    .replaceAll('Campus Link', 'Kampivo')
-    .replaceAll('Campuslink', 'Kampivo')
-}
+import { presentBrandCopy } from '@/lib/brand-copy'
 
 export async function DashboardNotifications() {
   const supabase = await createClient()
