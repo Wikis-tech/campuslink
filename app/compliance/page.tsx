@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { BadgeCheck } from 'lucide-react'
-import '../legal.css'
 
 const supportEmail = 'support@campuslink.name.ng'
 
