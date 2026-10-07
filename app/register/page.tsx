@@ -74,6 +74,15 @@ export default async function RegisterPage({
               <input name="password" type="password" autoComplete="new-password" minLength={8} placeholder="At least 8 characters" required />
             </label>
 
+            <label className="consent-box">
+              <input type="checkbox" name="age_confirmed" value="yes" required />
+              <span>I confirm that I am at least 18 years old.</span>
+            </label>
+            <label className="consent-box">
+              <input type="checkbox" name="terms_accepted" value="yes" required />
+              <span>I agree to the <Link href="/terms" target="_blank">Terms of Use</Link> and acknowledge the <Link href="/privacy" target="_blank">Privacy Policy</Link>.</span>
+            </label>
+
             <button className="btn btn-primary auth-primary-action" type="submit">Create account</button>
           </form>
 

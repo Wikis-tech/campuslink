@@ -9,9 +9,19 @@ export async function register(formData: FormData) {
   const email = String(formData.get('email') || '').trim().toLowerCase().slice(0, 254)
   const password = String(formData.get('password') || '')
   const accountType = String(formData.get('account_type') || 'student') === 'vendor' ? 'vendor' : 'student'
+  const ageConfirmed = String(formData.get('age_confirmed') || '') === 'yes'
+  const termsAccepted = String(formData.get('terms_accepted') || '') === 'yes'
 
   if (!firstName || !lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     redirect('/register?error=Enter%20your%20name%20and%20a%20valid%20email%20address')
+  }
+
+  if (!ageConfirmed) {
+    redirect('/register?error=You%20must%20be%20at%20least%2018%20years%20old%20to%20create%20a%20Kampivo%20account')
+  }
+
+  if (!termsAccepted) {
+    redirect('/register?error=Please%20accept%20the%20Terms%20of%20Use%20and%20acknowledge%20the%20Privacy%20Policy')
   }
 
   if (password.length < 8 || password.length > 128) {

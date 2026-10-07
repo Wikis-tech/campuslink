@@ -313,7 +313,7 @@ export default async function HomePage() {
               </Link>
               <p>Trusted campus discovery for students, vendors and university communities.</p>
               <p>Kampivo helps students discover trusted services, vendors, products and opportunities within their campus community. Transactions remain directly between students and vendors.</p>
-              <a className="cl-public-footer-contact" href="mailto:campuslinkd@gmail.com">Email support</a>
+              <a className="cl-public-footer-contact" href="mailto:support@campuslink.name.ng">Email support</a>
             </div>
 
             <div className="cl-public-footer-col">
@@ -338,6 +338,9 @@ export default async function HomePage() {
               <Link href="/login">Sign In</Link>
               <a href="#pricing">Pricing</a>
               <a href="#trust">Safety Principles</a>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Use</Link>
+              <Link href="/compliance">Trust & Compliance</Link>
             </div>
           </div>
 
@@ -349,6 +352,9 @@ export default async function HomePage() {
               <span>Students browse free</span>
               <span>Trust is not for sale</span>
               <span>Direct vendor contact</span>
+              <Link href="/privacy">Privacy</Link>
+              <Link href="/terms">Terms</Link>
+              <Link href="/compliance">Compliance</Link>
             </div>
           </div>
         </div>
