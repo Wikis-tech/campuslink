@@ -39,7 +39,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AdminMobileNav email={email} role={roleLabel} globalRole={context.globalRole} isGlobalAdmin={context.isGlobalAdmin}/>
       <div className="admin-shell">
         <aside className="admin-sidebar admin-fiverr-sidebar">
-          <Link prefetch={false} href="/control-center" className="admin-brand">Kampiv<span>o</span> Admin</Link>
+          <Link prefetch={false} href="/control-center" className="admin-brand" aria-label="Kampivo Admin home"><img src="/brand/logo" alt="Kampivo" style={{ width: 132, height: 42, objectFit: 'contain', objectPosition: 'left center' }} /><span>Admin</span></Link>
           <div className="admin-sidebar-tools">
             <div className="admin-profile-card"><span className="admin-profile-avatar">{email.slice(0,1).toUpperCase()}</span><div><strong>{email}</strong><small>{roleLabel}</small></div></div>
             <div className="admin-role"><strong>{roleLabel}</strong>{context.isGlobalAdmin ? 'Global control-plane access' : `${context.schoolAssignments.length} school assignment${context.schoolAssignments.length === 1 ? '' : 's'}`}</div>
