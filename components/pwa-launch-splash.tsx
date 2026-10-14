@@ -18,7 +18,7 @@ export function PwaLaunchSplash({ destination }: { destination: string }) {
         <span className="cl-pwa-launch-ring" />
         <span className="cl-pwa-launch-ring cl-pwa-launch-ring-two" />
         <div className="cl-pwa-launch-logo">
-          <img src="/brand/logo" alt="" width="76" height="76" />
+          <img src="/brand/app-icon/192" alt="" width="76" height="76" />
         </div>
       </div>
       <div className="cl-pwa-launch-copy">
