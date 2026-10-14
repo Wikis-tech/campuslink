@@ -54,7 +54,7 @@ export function VendorWorkspaceSidebar(_: { storefrontHref?: string }) {
 
   return <>
     <aside className="v5e-sidebar v5e-sidebar-shared">
-      <Link href="/vendor-v2" className="v3-brand">Kampiv<span>o</span></Link>
+      <Link href="/vendor-v2" className="v3-brand" aria-label="Kampivo vendor home"><img src="/brand/logo" alt="Kampivo" style={{ width: 132, height: 42, objectFit: 'contain', objectPosition: 'left center' }} /></Link>
       <nav aria-label="Vendor workspace">{items.map((item) => renderItem(item))}</nav>
       <div className="v5e-side-footer">
         <ThemeToggle compact/>
