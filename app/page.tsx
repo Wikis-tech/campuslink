@@ -166,7 +166,7 @@ export default async function HomePage() {
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
           <Link href="/" className="logo logo-text-only" aria-label="Kampivo home">
-            <span className="logo-text">Kampiv<strong>o</strong></span>
+            <img src="/brand/logo" alt="Kampivo" style={{ width: 142, height: 44, objectFit: 'contain', objectPosition: 'left center' }} />
           </Link>
 
           <nav className="main-nav" id="mainNav">
@@ -309,7 +309,7 @@ export default async function HomePage() {
           <div className="cl-public-footer-grid">
             <div className="cl-public-footer-brand">
               <Link href="/" className="cl-public-footer-logo cl-public-footer-logo-text-only" aria-label="Kampivo home">
-                <span>Kampiv<strong>o</strong></span>
+                <img src="/brand/logo" alt="Kampivo" style={{ width: 150, height: 46, objectFit: 'contain', objectPosition: 'left center' }} />
               </Link>
               <p>Trusted campus discovery for students, vendors and university communities.</p>
               <p>Kampivo helps students discover trusted services, vendors, products and opportunities within their campus community. Transactions remain directly between students and vendors.</p>
