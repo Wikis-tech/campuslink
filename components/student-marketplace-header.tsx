@@ -59,7 +59,7 @@ export function StudentMarketplaceHeader({
       <header className="cl-student-header">
         <div className="cl-student-header-row">
           <Link href="/student" className="cl-student-brand" aria-label="Kampivo student home">
-            Kampiv<span>o</span>
+            <img src="/brand/logo" alt="Kampivo" style={{ width: 132, height: 40, objectFit: 'contain', objectPosition: 'left center' }} />
           </Link>
 
           <form className="cl-student-global-search" action="/student/discover" method="get">
