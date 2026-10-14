@@ -34,7 +34,7 @@ export function AdminMobileNav({ email, role, globalRole, isGlobalAdmin = false 
   const canSeeReports = isSchoolAdmin || ['super_admin','operations_admin','support_admin','analyst'].includes(globalRole || '')
   return <>
     <header className="admin-mobile-topbar">
-      <Link href="/control-center" className="admin-mobile-brand">Kampiv<span>o</span> Admin</Link>
+      <Link href="/control-center" className="admin-mobile-brand" aria-label="Kampivo Admin home"><img src="/brand/logo" alt="Kampivo" style={{ width: 108, height: 34, objectFit: 'contain', objectPosition: 'left center' }} /><span>Admin</span></Link>
       <div className="admin-mobile-tools">
         <ThemeToggle compact/>
         <details className="admin-mobile-profile">
