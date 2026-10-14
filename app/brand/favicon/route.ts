@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     return new Response(await response.arrayBuffer(), {
       headers: {
         'Content-Type': response.headers.get('content-type') || 'image/png',
-        'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+        'Cache-Control': 'no-store, max-age=0',
       },
     })
   } catch {
