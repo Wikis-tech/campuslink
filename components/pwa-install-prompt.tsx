@@ -1,7 +1,6 @@
 'use client'
 
 import { Download, Share2, X } from 'lucide-react'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -117,7 +116,7 @@ export function PwaInstallPrompt() {
       </button>
 
       <div className="cl-pwa-install-mark" aria-hidden="true">
-        <Image src="/brand/app-icon/192" alt="" width={42} height={42} priority />
+        <img src="/brand/app-icon/192" alt="" width={42} height={42} />
       </div>
 
       <div className="cl-pwa-install-copy">
