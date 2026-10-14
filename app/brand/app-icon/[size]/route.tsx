@@ -34,7 +34,7 @@ export async function GET(
       {
         width: size,
         height: size,
-        headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600' },
+        headers: { 'Cache-Control': 'no-store, max-age=0' },
       },
     )
   }
@@ -79,7 +79,7 @@ export async function GET(
     {
       width: size,
       height: size,
-      headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600' },
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
     },
   )
 }
