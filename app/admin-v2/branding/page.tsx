@@ -38,19 +38,19 @@ export default async function BrandingPage({
         <article className="admin-brand-preview">
           <div className="admin-brand-preview-icon"><ImageIcon /></div>
           <span>Website logo</span>
-          <div className="admin-brand-image-preview logo-preview"><img src="/brand/logo" alt="Current Kampivo website logo" /></div>
+          <div className="admin-brand-image-preview logo-preview"><img src={`/brand/logo?v=${branding?.updated_at ? encodeURIComponent(branding.updated_at) : 'default'}`} alt="Current Kampivo website logo" /></div>
           <small>Used across login, registration and shared Kampivo branding.</small>
         </article>
         <article className="admin-brand-preview">
           <div className="admin-brand-preview-icon"><ShieldCheck /></div>
           <span>Browser favicon</span>
-          <div className="admin-brand-image-preview square-preview"><img src="/brand/favicon" alt="Current Kampivo favicon" /></div>
+          <div className="admin-brand-image-preview square-preview"><img src={`/brand/favicon?v=${branding?.updated_at ? encodeURIComponent(branding.updated_at) : 'default'}`} alt="Current Kampivo favicon" /></div>
           <small>PNG recommended. Shown in browser tabs and bookmarks.</small>
         </article>
         <article className="admin-brand-preview">
           <div className="admin-brand-preview-icon"><MonitorSmartphone /></div>
           <span>PWA app icon</span>
-          <div className="admin-brand-image-preview square-preview"><img src="/brand/app-icon/192" alt="Current Kampivo PWA icon" /></div>
+          <div className="admin-brand-image-preview square-preview"><img src={`/brand/app-icon/192?v=${branding?.updated_at ? encodeURIComponent(branding.updated_at) : 'default'}`} alt="Current Kampivo PWA icon" /></div>
           <small>Upload a square 512×512 PNG for the best Android and iPhone result.</small>
         </article>
       </section>
