@@ -235,7 +235,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
           <div className="cl-student-section-head"><div><h2>{q ? 'Best matching products & services' : 'Recommended products & services'}</h2><p>Exact matches, close spellings and relevant keywords rank ahead of weaker matches. Available Vendors receive a small relevance boost.</p></div><span className="cl-safety-note"><SlidersHorizontal size={14}/> {sort === 'relevance' ? 'Smart relevance' : sort === 'rating' ? 'Top rated' : 'Newest first'}</span></div>
           <div className="cl-gig-grid">{listings.map(({ type, item, vendor }) => {
             const href = type === 'product' ? `/student/products/${item.id}` : `/student/services/${item.id}`
-            const image = type === 'product' ? item.cover_image_url : vendor.cover_url || vendor.logo_url
+            const image = type === 'product' ? (item.cover_image_url ? `/media/product/${item.id}` : null) : vendor.cover_url || vendor.logo_url
             const price = type === 'product'
               ? item.pricing_type === 'contact' ? 'Ask for price' : `${item.pricing_type === 'from' ? 'From ' : ''}₦${Number(item.price_ngn || 0).toLocaleString()}`
               : item.price_from ? `From ₦${Number(item.price_from).toLocaleString()}` : 'Ask for price'
