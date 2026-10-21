@@ -172,3 +172,53 @@ html[data-theme="dark"] .cl-student-page .save-btn{background:#0f1c2b;border-col
   .cl-student-page .cl-vendor-grid-fiverr{grid-template-columns:1fr}.cl-student-page .cl-student-section-head p{display:none}
 }
 @media(max-width:430px){.cl-student-page .search-panel{grid-template-columns:1fr}.cl-student-page .search-panel>*{grid-column:1!important}.cl-student-page .cl-gig-card{min-width:230px}}
+
+
+/* Student home contrast hardening.
+   DynamicGreeting used to live inside a dark hero, so older global greeting rules
+   can still make it white. This page-level rule owns the final colour in both themes. */
+.kv-student-intro .dynamic-greeting{
+  color:var(--kv-ink)!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+.kv-student-intro>div>p{color:var(--kv-muted)!important}
+html[data-theme="light"] .kv-student-intro .dynamic-greeting,
+html:not([data-theme]) .kv-student-intro .dynamic-greeting{color:#172033!important}
+html[data-theme="dark"] .kv-student-intro .dynamic-greeting{color:#f4f7fb!important}
+
+.kv-campus-empty{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:14px;
+  padding:19px 20px;
+  border:1px dashed var(--kv-line);
+  border-radius:16px;
+  background:var(--kv-surface);
+}
+.kv-campus-empty>span{
+  width:42px;height:42px;border-radius:12px;
+  display:grid;place-items:center;
+  background:#eef4ff;color:var(--kv-navy);
+}
+.kv-campus-empty strong{display:block;font-size:13px;color:var(--kv-ink)}
+.kv-campus-empty p{margin:4px 0 0;color:var(--kv-muted);font-size:10px;line-height:1.55}
+.kv-campus-empty-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.kv-campus-empty-actions a{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  min-height:38px;padding:0 12px;border-radius:10px;
+  font-size:10px;font-weight:850;
+}
+.kv-campus-empty-actions a:first-child{background:var(--kv-navy);color:#fff}
+.kv-campus-empty-actions a:last-child{border:1px solid var(--kv-line);background:var(--kv-surface);color:var(--kv-blue)}
+html[data-theme="dark"] .kv-campus-empty{background:#0f1c2b;border-color:#26364a}
+html[data-theme="dark"] .kv-campus-empty>span{background:#14263d;color:#8ab7f7}
+html[data-theme="dark"] .kv-campus-empty strong{color:#f4f7fb}
+html[data-theme="dark"] .kv-campus-empty-actions a:last-child{background:#0f1c2b;border-color:#26364a;color:#8ab7f7}
+
+@media(max-width:760px){
+  .kv-campus-empty{grid-template-columns:auto 1fr;align-items:start}
+  .kv-campus-empty-actions{grid-column:1/-1}
+  .kv-campus-empty-actions a{flex:1}
+}
