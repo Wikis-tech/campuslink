@@ -42,7 +42,7 @@ export default async function StudentProductPage({ params }: { params: Promise<{
     <section className="cl-student-shell">
       <Link href="/student" style={{color:'var(--v3-ink)',textDecoration:'none',fontWeight:800,display:'inline-flex',gap:7,alignItems:'center',marginBottom:18}}><ArrowLeft size={16}/> Back to marketplace</Link>
       <div className="v3-split">
-        <div className="v3-product-image" style={{borderRadius:16,minHeight:430}}>{product.cover_image_url ? <img src={product.cover_image_url} alt={product.name}/> : <Store size={48}/>}</div>
+        <div className="v3-product-image" style={{borderRadius:16,minHeight:430}}>{product.cover_image_url ? <img src={`/media/product/${product.id}`} alt={product.name}/> : <Store size={48}/>}</div>
         <section className="v3-surface" style={{borderRadius:16}}>
           <span className="v3-trust-line" style={{borderTop:0,paddingTop:0}}><ShieldCheck size={16}/> Identity verified + campus approved</span>
           <h1 style={{fontSize:'clamp(32px,5vw,52px)',letterSpacing:'-.045em',margin:'16px 0 6px'}}>{product.name}</h1>
