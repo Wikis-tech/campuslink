@@ -10,7 +10,7 @@ import {
 import styles from './dashboard-notifications.module.css'
 import { presentBrandCopy } from '@/lib/brand-copy'
 
-export async function DashboardNotifications() {
+export async function DashboardNotifications({ compact = false }: { compact?: boolean } = {}) {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
   if (!userData.user) return null
@@ -27,17 +27,17 @@ export async function DashboardNotifications() {
   const readCount = rows.length - unread.length
 
   return (
-    <section className={styles.shell} aria-label="Kampivo notifications">
+    <section className={compact ? `${styles.shell} ${styles.compact}` : styles.shell} aria-label="Kampivo notifications">
       <details className={styles.panel}>
         <summary className={styles.trigger}>
           <span className={styles.bell}>
             <Bell size={19}/>
             {unread.length ? <span className={styles.badge} aria-label={`${unread.length} unread notifications`}>{unread.length > 9 ? '9+' : unread.length}</span> : null}
           </span>
-          <span className={styles.triggerCopy}>
+          {compact ? null : <span className={styles.triggerCopy}>
             <strong>Notifications</strong>
             <small>{unread.length ? `${unread.length} unread` : 'You are all caught up'}</small>
-          </span>
+          </span>}
         </summary>
 
         <div className={styles.popover}>
