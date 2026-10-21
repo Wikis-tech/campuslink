@@ -115,3 +115,60 @@ html[data-theme="dark"] .kv-verification-bar p{color:#d9a06c}
 }
 @media(max-width:430px){.kv-listing-card{min-width:230px}.kv-category-card{min-width:118px}.kv-student-hero-main{padding:20px}.kv-student-hero-search{padding:5px}.kv-student-hero-search button{height:40px}.kv-student-section{margin-top:25px}}
 @media(prefers-reduced-motion:reduce){.kv-category-card,.kv-listing-media img{transition:none!important}}
+
+
+/* Clean Student secondary pages — Discover, Saved, Profile, Safety and storefronts */
+.cl-student-page{background:#f7f8fa}
+.cl-student-page .cl-student-shell{width:min(1180px,calc(100% - 32px));padding:30px 0 110px}
+.cl-student-page .student-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px}
+.cl-student-page .student-head h1{margin:0;font-size:clamp(30px,4vw,42px);line-height:1.06;letter-spacing:-.045em}
+.cl-student-page .student-head p{margin:7px 0 0;max-width:760px;color:#667085;font-size:13px;line-height:1.6}
+.cl-student-page .campus-chip{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid #e7ebf0;border-radius:999px;background:#fff;color:#475467;font-size:11px;font-weight:750;white-space:nowrap}
+.cl-student-page .search-panel{display:grid;grid-template-columns:minmax(240px,1.6fr) repeat(5,minmax(120px,.5fr)) auto;gap:8px;padding:10px;border:1px solid #e7ebf0;border-radius:16px;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,.04)}
+.cl-student-page .search-field{min-height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #e7ebf0;border-radius:11px;background:#f9fafb}
+.cl-student-page .search-field input{width:100%;border:0;outline:0;background:transparent}
+.cl-student-page .search-panel select{min-height:44px;border:1px solid #e7ebf0;border-radius:11px;background:#fff;padding:0 10px;color:#344054}
+.cl-student-page .search-button{min-height:44px;border:0;border-radius:11px;background:#ff7a00;color:#fff;padding:0 16px;font-weight:850;cursor:pointer}
+.cl-student-page .phase5f-open-filter{min-height:44px;border:1px solid #e7ebf0;border-radius:11px;background:#fff;padding:0 11px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:750;color:#475467}
+.cl-student-page .result-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 1px;color:#667085;font-size:11px}
+.cl-student-page .service-tags{gap:7px}.cl-student-page .service-tag{padding:7px 10px;border-radius:999px;background:#fff;border:1px solid #e7ebf0;color:#475467;font-size:10px;font-weight:750}
+.cl-student-page .cl-student-section{margin-top:30px}
+.cl-student-page .cl-student-section-head{margin-bottom:13px}.cl-student-page .cl-student-section-head h2{font-size:19px;letter-spacing:-.03em}.cl-student-page .cl-student-section-head p{font-size:10px;color:#667085}
+.cl-student-page .cl-gig-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.cl-student-page .cl-gig-card{border:1px solid #e7ebf0;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 7px 22px rgba(15,23,42,.03)}
+.cl-student-page .cl-gig-image{border-radius:0;aspect-ratio:4/3;background:#eef1f5}.cl-student-page .cl-gig-copy{padding:12px}.cl-student-page .cl-gig-title{font-size:12px;line-height:1.35}.cl-student-page .cl-gig-price{font-size:9px}.cl-student-page .cl-gig-price strong{font-size:11px}
+.cl-student-page .cl-vendor-grid-fiverr{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.cl-student-page .cl-vendor-tile{border:1px solid #e7ebf0;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 7px 22px rgba(15,23,42,.03)}
+.cl-student-page .cl-vendor-tile-cover{min-height:100px;background:#eef1f5}.cl-student-page .cl-vendor-tile-body{padding:13px}.cl-student-page .cl-vendor-tile-body>p{font-size:10px;line-height:1.5}.cl-student-page .cl-vendor-meta{font-size:9px}
+.cl-student-page .save-btn{border-radius:10px;border:1px solid #e7ebf0;background:#fff;color:#475467;min-height:38px}
+.cl-student-page .save-btn.saved{background:#fff4ea;border-color:#fed7aa;color:#b54708}
+.cl-student-page .empty-state{border:1px dashed #d8dee8;border-radius:16px;background:#fff;padding:30px;color:#667085}
+.cl-student-page .empty-state h2{font-size:18px;color:#172033}
+.cl-student-page .v3-surface{border-color:#e7ebf0;background:#fff;box-shadow:none}
+.cl-student-page .phase5g-safety-hero{border-radius:22px;background:linear-gradient(145deg,#092e6a,#0b3d91);padding:30px;color:#fff}
+.cl-student-page .phase5g-safety-hero h1{color:#fff;font-size:clamp(30px,4vw,42px);letter-spacing:-.045em}
+.cl-student-page .phase5g-safety-hero p{color:#d8e4f5;max-width:760px;font-size:12px;line-height:1.6}
+.cl-student-page .phase5g-safety-grid{gap:12px}.cl-student-page .phase5g-safety-card{border-radius:15px;padding:17px}.cl-student-page .phase5g-safety-card h2{font-size:14px}.cl-student-page .phase5g-safety-card p{font-size:10px;line-height:1.55}
+.cl-student-page .phase5g-safety-warning{border-radius:15px}
+.cl-student-page .phase5g-storefront-hero,.cl-student-page .phase5g-trust-profile{border-radius:18px;overflow:hidden}
+.cl-student-page .phase5g-storefront-hero h1{font-size:clamp(30px,4.4vw,46px)}
+.cl-student-page .phase5g-trust-grid{gap:10px}.cl-student-page .phase5g-trust-grid>div{border-radius:12px}
+.cl-student-page .phase5g-portfolio{gap:12px}.cl-student-page .phase5g-portfolio figure{border-radius:15px;overflow:hidden}
+.cl-student-page .review-form,.cl-student-page .report-form{border-radius:14px}
+
+html[data-theme="dark"] .cl-student-page{background:#08121f;color:#f4f7fb}
+html[data-theme="dark"] .cl-student-page .student-head h1,html[data-theme="dark"] .cl-student-page .empty-state h2{color:#f4f7fb}
+html[data-theme="dark"] .cl-student-page .campus-chip,html[data-theme="dark"] .cl-student-page .search-panel,html[data-theme="dark"] .cl-student-page .search-field,html[data-theme="dark"] .cl-student-page .search-panel select,html[data-theme="dark"] .cl-student-page .phase5f-open-filter,html[data-theme="dark"] .cl-student-page .service-tag,html[data-theme="dark"] .cl-student-page .cl-gig-card,html[data-theme="dark"] .cl-student-page .cl-vendor-tile,html[data-theme="dark"] .cl-student-page .empty-state,html[data-theme="dark"] .cl-student-page .v3-surface{background:#0f1c2b!important;border-color:#26364a!important;color:#f4f7fb!important}
+html[data-theme="dark"] .cl-student-page .cl-gig-image,html[data-theme="dark"] .cl-student-page .cl-vendor-tile-cover{background:#13243a!important}
+html[data-theme="dark"] .cl-student-page .student-head p,html[data-theme="dark"] .cl-student-page .result-meta,html[data-theme="dark"] .cl-student-page .cl-student-section-head p{color:#9aabc0!important}
+html[data-theme="dark"] .cl-student-page .save-btn{background:#0f1c2b;border-color:#26364a;color:#c7d3e2}
+
+@media(max-width:1100px){
+  .cl-student-page .search-panel{grid-template-columns:repeat(3,1fr)}.cl-student-page .search-field{grid-column:span 2}.cl-student-page .cl-gig-grid{grid-template-columns:repeat(3,1fr)}.cl-student-page .cl-vendor-grid-fiverr{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .cl-student-page .cl-student-shell{width:min(100% - 24px,1180px);padding-top:22px;padding-bottom:calc(98px + env(safe-area-inset-bottom))}
+  .cl-student-page .student-head{align-items:flex-start;flex-direction:column;gap:11px}.cl-student-page .student-head h1{font-size:29px}
+  .cl-student-page .search-panel{grid-template-columns:1fr 1fr}.cl-student-page .search-field{grid-column:1/-1}.cl-student-page .search-button{grid-column:1/-1}
+  .cl-student-page .cl-gig-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px}.cl-student-page .cl-gig-card{min-width:245px;scroll-snap-align:start}
+  .cl-student-page .cl-vendor-grid-fiverr{grid-template-columns:1fr}.cl-student-page .cl-student-section-head p{display:none}
+}
+@media(max-width:430px){.cl-student-page .search-panel{grid-template-columns:1fr}.cl-student-page .search-panel>*{grid-column:1!important}.cl-student-page .cl-gig-card{min-width:230px}}
