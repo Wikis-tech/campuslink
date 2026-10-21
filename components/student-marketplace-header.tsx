@@ -2,16 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BadgeCheck, Bookmark, Home, LogOut, Menu, Search, ShieldCheck, UserRound, X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { Bookmark, Home, LogOut, Search, ShieldCheck, UserRound } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
-
-const baseNavItems = [
-  { href: '/student', label: 'Home', icon: Home },
-  { href: '/student/discover', label: 'Discover', icon: Search },
-  { href: '/student/saved', label: 'Saved', icon: Bookmark },
-  { href: '/student/safety', label: 'Safety', icon: ShieldCheck },
-]
 
 export function StudentMarketplaceHeader({
   firstName,
@@ -22,117 +14,71 @@ export function StudentMarketplaceHeader({
   schoolName?: string | null
   verificationStatus?: string | null
 }) {
-  const isVerified = verificationStatus === 'verified'
-  const navItems = isVerified
-    ? baseNavItems
-    : [...baseNavItems, { href: '/onboarding/student', label: 'Verification', icon: BadgeCheck }]
   const pathname = usePathname()
+  const isVerified = verificationStatus === 'verified'
+  const profileHref = isVerified ? '/student/profile' : '/onboarding/student'
   const initial = (firstName || 'S').slice(0, 1).toUpperCase()
-  const [mobileAccountOpen, setMobileAccountOpen] = useState(false)
-  const mobileAccountRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    setMobileAccountOpen(false)
-  }, [pathname])
-
-  useEffect(() => {
-    if (!mobileAccountOpen) return
-
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null
-      if (target && !mobileAccountRef.current?.contains(target)) setMobileAccountOpen(false)
-    }
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileAccountOpen(false)
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [mobileAccountOpen])
+  const mobileNav = [
+    { href: '/student', label: 'Home', icon: Home },
+    { href: '/student/discover', label: 'Discover', icon: Search },
+    { href: '/student/saved', label: 'Saved', icon: Bookmark },
+    { href: profileHref, label: 'Profile', icon: UserRound },
+  ]
 
   return (
     <>
-      <header className="cl-student-header">
+      <header className="cl-student-header cl-student-header-clean">
         <div className="cl-student-header-row">
           <Link href="/student" className="cl-student-brand" aria-label="Kampivo student home">
-            <img src="/brand/logo" alt="Kampivo" style={{ width: 132, height: 40, objectFit: 'contain', objectPosition: 'left center' }} />
+            <img src="/brand/logo" alt="Kampivo" />
           </Link>
 
           <form className="cl-student-global-search" action="/student/discover" method="get">
-            <Search size={18} aria-hidden="true" />
-            <input name="q" aria-label="Search Kampivo" placeholder="What service or product are you looking for?" />
-            <button type="submit">Search</button>
+            <Search size={16} aria-hidden="true" />
+            <input
+              name="q"
+              aria-label="Search Kampivo"
+              placeholder="Search products, services or vendors"
+            />
           </form>
 
           <div className="cl-student-account-tools">
-            <Link href={isVerified ? '/student/profile' : '/onboarding/student'} className="cl-student-campus-pill" title={schoolName || 'Complete your campus profile'}>
-              <ShieldCheck size={15} />
-              <span>{schoolName || 'Set campus'}</span>
-            </Link>
             <ThemeToggle compact />
             <details className="cl-student-account-menu">
               <summary aria-label="Open student account menu">
                 <span className="cl-student-avatar">{initial}</span>
-                <span className="cl-student-account-copy"><strong>{firstName || 'Student'}</strong><small>Student account</small></span>
               </summary>
               <div className="cl-student-account-popover">
-                <Link href={isVerified ? '/student/profile' : '/onboarding/student'}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
-                <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
+                <div className="cl-student-account-summary">
+                  <span className="cl-student-avatar">{initial}</span>
+                  <div>
+                    <strong>{firstName || 'Student'}</strong>
+                    <small>{schoolName || 'Kampivo student'}</small>
+                  </div>
+                </div>
+                <Link href={profileHref}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
+                <Link href="/student/saved"><Bookmark size={16}/> Saved</Link>
                 <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
-                <form action="/auth/signout" method="post"><button type="submit">Sign out</button></form>
+                <form action="/auth/signout" method="post">
+                  <button type="submit"><LogOut size={16}/> Sign out</button>
+                </form>
               </div>
             </details>
           </div>
         </div>
-
-        <nav className="cl-student-subnav" aria-label="Student marketplace navigation">
-          {navItems.map(({ href, label }) => {
-            const active = href === '/student' ? pathname === '/student' : pathname.startsWith(href)
-            return <Link key={href} href={href} className={active ? 'active' : ''}>{label}</Link>
-          })}
-          <span className="cl-student-subnav-note">Verified campus vendors only</span>
-        </nav>
       </header>
 
-      <nav className="cl-student-mobile-nav" aria-label="Student mobile navigation">
-        <div className="cl-student-mobile-scroll">
-          {navItems.map(({ href, label, icon: Icon }) => {
-            const active = href === '/student' ? pathname === '/student' : pathname.startsWith(href)
-            return <Link key={href} href={href} className={active ? 'active' : ''}><Icon size={18}/><span>{label}</span></Link>
-          })}
-        </div>
-        <div className={`cl-student-mobile-more${mobileAccountOpen ? ' open' : ''}`} ref={mobileAccountRef}>
-          <button
-            type="button"
-            className="cl-student-mobile-more-button"
-            data-no-loading="true"
-            aria-label={mobileAccountOpen ? 'Close student account actions' : 'Open student account actions'}
-            aria-expanded={mobileAccountOpen}
-            aria-controls="student-mobile-account-sheet"
-            onClick={() => setMobileAccountOpen((open) => !open)}
-          >
-            {mobileAccountOpen ? <X size={18}/> : <Menu size={18}/>}
-            <span>Account</span>
-          </button>
-          {mobileAccountOpen ? <div className="cl-student-mobile-sheet" id="student-mobile-account-sheet" role="dialog" aria-label="Student account actions">
-            <div className="cl-student-mobile-sheet-head">
-              <span className="cl-student-avatar">{initial}</span>
-              <div><strong>{firstName || 'Student'}</strong><small>{schoolName || 'Kampivo account'}</small></div>
-            </div>
-            <Link href={isVerified ? '/student/profile' : '/onboarding/student'}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
-            <Link href="/student/saved"><Bookmark size={16}/> Saved vendors</Link>
-            <Link href="/student/safety"><ShieldCheck size={16}/> Safety Centre</Link>
-            <div className="cl-student-mobile-appearance">
-              <span>Appearance<small>Light · Dark · System</small></span>
-              <ThemeToggle />
-            </div>
-            <form action="/auth/signout" method="post"><button type="submit"><LogOut size={16}/> Sign out</button></form>
-          </div> : null}
-        </div>
+      <nav className="cl-student-mobile-nav cl-student-mobile-nav-clean" aria-label="Student mobile navigation">
+        {mobileNav.map(({ href, label, icon: Icon }) => {
+          const active = href === '/student' ? pathname === '/student' : pathname.startsWith(href)
+          return (
+            <Link key={href} href={href} className={active ? 'active' : ''}>
+              <Icon size={19}/>
+              <span>{label}</span>
+            </Link>
+          )
+        })}
       </nav>
     </>
   )
