@@ -18,3 +18,9 @@
 .empty{padding:24px 18px;text-align:center;display:grid;place-items:center;gap:5px;color:#667085}.empty strong{color:#172033;font-size:13px}.empty span{font-size:11px}
 @media(max-width:700px){.shell{justify-content:flex-start}.panel{width:100%}.trigger{width:100%;box-sizing:border-box}.popover{left:0;right:auto;width:100%}.head{align-items:flex-start;flex-direction:column}.headActions{justify-content:flex-start}.item{grid-template-columns:28px 1fr}.actions{grid-column:2;justify-content:flex-start}}
 @keyframes notificationIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}.unread{animation:notificationIn .2s ease-out}@media(prefers-reduced-motion:reduce){.unread{animation:none}}
+
+.compact{margin:0;display:block}
+.compact .trigger{min-width:42px;width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:12px;box-shadow:none}
+.compact .bell{width:32px;height:32px;border-radius:10px}
+.compact .popover{top:calc(100% + 10px)}
+@media(max-width:700px){.compact{width:auto}.compact .panel{width:auto}.compact .trigger{width:42px}.compact .popover{position:fixed;left:12px;right:12px;top:74px;width:auto}}
