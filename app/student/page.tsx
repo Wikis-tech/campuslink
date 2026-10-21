@@ -333,11 +333,19 @@ export default async function StudentDashboard() {
               })}
             </div>
           ) : (
-            <div className="kv-empty-state">
-              <Package size={22}/>
-              <strong>Your campus marketplace is still growing.</strong>
-              <p>Approved vendors and listings will appear here as they become available.</p>
-              <Link href="/student/discover">Explore marketplace</Link>
+            <div className="kv-campus-empty">
+              <span><Package size={20}/></span>
+              <div>
+                <strong>No approved listings for {school || 'your campus'} yet.</strong>
+                <p>
+                  “Picked for your campus” only shows active products and services from identity-approved Vendors
+                  that are also approved for your institution. Kampivo does not mix another school’s Vendors into this section.
+                </p>
+              </div>
+              <div className="kv-campus-empty-actions">
+                <Link href="/student/discover">Explore your campus <ChevronRight size={13}/></Link>
+                <Link href="/student/explore-campuses">Explore other campuses</Link>
+              </div>
             </div>
           )}
         </section>
