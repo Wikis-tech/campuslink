@@ -7,15 +7,11 @@ import {
   Eye,
   ImagePlus,
   LayoutGrid,
-  LogOut,
   Package,
   Plus,
   ShieldAlert,
-  ShieldCheck,
-  Star,
   Store,
   TrendingUp,
-  UserRound,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { DynamicGreeting } from '@/components/dynamic-greeting'
