@@ -93,11 +93,30 @@ function hash(value: string) {
   return Math.abs(h >>> 0)
 }
 
+const KAMPIVO_TIME_ZONE = 'Africa/Lagos'
+
 function periodForHour(hour: number): keyof typeof studentGreetings {
   if (hour >= 5 && hour < 12) return 'morning'
   if (hour >= 12 && hour < 17) return 'afternoon'
   if (hour >= 17 && hour < 22) return 'evening'
   return 'night'
+}
+
+function kampivoClockParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: KAMPIVO_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date)
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return {
+    hour: Number(values.hour || 0),
+    dayKey: `${values.year}-${values.month}-${values.day}`,
+  }
 }
 
 function fallbackName(firstName?: string | null, role?: 'student' | 'vendor') {
@@ -109,7 +128,7 @@ export function DynamicGreeting({ firstName, sessionSeed, role = 'student' }: Gr
   const [hour, setHour] = useState<number | null>(null)
 
   useEffect(() => {
-    const update = () => setHour(new Date().getHours())
+    const update = () => setHour(kampivoClockParts().hour)
     update()
     const timer = window.setInterval(update, 60_000)
     return () => window.clearInterval(timer)
@@ -119,7 +138,7 @@ export function DynamicGreeting({ firstName, sessionSeed, role = 'student' }: Gr
     if (hour === null) return `Welcome back, ${name}.`
     const period = periodForHour(hour)
     const bank = role === 'vendor' ? vendorGreetings[period] : studentGreetings[period]
-    const dayKey = new Date().toLocaleDateString('en-CA')
+    const dayKey = kampivoClockParts().dayKey
     const seed = `${sessionSeed || dayKey}:${dayKey}:${period}:${name}:${role}`
     const chosen = bank[hash(seed) % bank.length]
     return chosen.replace('{name}', name)
@@ -156,7 +175,7 @@ export function DynamicCampusContext({ school, vendorCount = 0, sessionSeed }: C
       'Serving your school',
       'Campus around you'
     ]
-    const dayKey = new Date().toLocaleDateString('en-CA')
+    const dayKey = kampivoClockParts().dayKey
     const label = options[hash(`${sessionSeed || dayKey}:${dayKey}:${school}`) % options.length]
     return {
       label,
