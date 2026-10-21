@@ -8,18 +8,14 @@ export function PwaLaunchSplash({ destination }: { destination: string }) {
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const timer = window.setTimeout(() => router.replace(destination), reduced ? 120 : 760)
+    const timer = window.setTimeout(() => router.replace(destination), reduced ? 120 : 620)
     return () => window.clearTimeout(timer)
   }, [destination, router])
 
   return (
     <main className="cl-pwa-launch" aria-label="Opening Kampivo">
-      <div className="cl-pwa-launch-orbit" aria-hidden="true">
-        <span className="cl-pwa-launch-ring" />
-        <span className="cl-pwa-launch-ring cl-pwa-launch-ring-two" />
-        <div className="cl-pwa-launch-logo">
-          <img src="/brand/app-icon/192" alt="" width="76" height="76" />
-        </div>
+      <div className="cl-pwa-launch-logo" aria-hidden="true">
+        <img src="/brand/app-icon/192" alt="" width="76" height="76" />
       </div>
       <div className="cl-pwa-launch-copy">
         <strong>Kampiv<span>o</span></strong>
