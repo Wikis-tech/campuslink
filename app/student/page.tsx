@@ -156,7 +156,7 @@ export default async function StudentDashboard() {
       id: item.id,
       vendorId: item.vendor_id,
       name: item.name,
-      image: item.cover_image_url,
+      image: item.cover_image_url ? `/media/product/${item.id}` : null,
       href: `/student/products/${item.id}`,
       price: item.pricing_type === 'contact'
         ? 'Ask for price'
