@@ -11,7 +11,7 @@ export const metadata = {
 export default function CompliancePage() {
   return (
     <main className="legal-page">
-      <nav className="legal-nav"><div className="legal-nav-inner"><Link className="legal-brand" href="/">Kampiv<strong>o</strong></Link><div className="legal-nav-links"><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/register">Create account</Link></div></div></nav>
+      <nav className="legal-nav"><div className="legal-nav-inner"><Link className="legal-brand" href="/" aria-label="CampusMode home"><img src="/brand/logo" alt="CampusMode" width={130} height={40} style={{ objectFit: "contain", objectPosition: "left center" }} /></Link><div className="legal-nav-links"><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/register">Create account</Link></div></div></nav>
       <header className="legal-hero"><span className="legal-kicker"><BadgeCheck size={14}/> Trust & compliance</span><h1>Trust should be verifiable.</h1><p>This page explains what CampusMode currently does, what is still in progress, and which claims we will only display after the relevant authority or partner has actually granted them.</p><div className="legal-meta"><span>Last reviewed: 7 October 2026</span><span>Private beta</span><span>Nigeria</span></div></header>
       <div className="legal-layout">
         <aside className="legal-toc"><strong>On this page</strong><a href="#status">Current status</a><a href="#privacy">Privacy programme</a><a href="#trust">Marketplace trust</a><a href="#payments">Payments</a><a href="#complaints">Complaints</a><a href="#claims">Badges & claims</a><a href="#contact">Contact</a></aside>
