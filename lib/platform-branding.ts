@@ -12,9 +12,9 @@ export type PlatformBranding = {
 }
 
 export const DEFAULT_WEBSITE_LOGO =
-  '/kampivo-logo.svg'
+  '/brand/campusmode/logo.webp'
 
-export const DEFAULT_FAVICON = '/kampivo-app-icon.svg'
+export const DEFAULT_FAVICON = '/brand/campusmode/favicon.svg'
 
 export const getPlatformBranding = cache(async (): Promise<PlatformBranding> => {
   try {
