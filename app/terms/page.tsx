@@ -4,7 +4,7 @@ import { Scale } from 'lucide-react'
 const supportEmail = 'support@campuslink.name.ng'
 
 export const metadata = {
-  title: 'Terms of Use | CampusMode',
+  title: 'Terms of Use',
   description: 'Terms governing use of CampusMode by students, vendors and administrators.',
 }
 
