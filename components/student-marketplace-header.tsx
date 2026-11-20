@@ -30,15 +30,15 @@ export function StudentMarketplaceHeader({
     <>
       <header className="cl-student-header cl-student-header-clean">
         <div className="cl-student-header-row">
-          <Link href="/student" className="cl-student-brand" aria-label="Kampivo student home">
-            <img src="/brand/logo" alt="Kampivo" />
+          <Link href="/student" className="cl-student-brand" aria-label="CampusMode student home">
+            <img src="/brand/logo" alt="CampusMode" />
           </Link>
 
           <form className="cl-student-global-search" action="/student/discover" method="get">
             <Search size={16} aria-hidden="true" />
             <input
               name="q"
-              aria-label="Search Kampivo"
+              aria-label="Search CampusMode"
               placeholder="Search products, services or vendors"
             />
           </form>
@@ -54,7 +54,7 @@ export function StudentMarketplaceHeader({
                   <span className="cl-student-avatar">{initial}</span>
                   <div>
                     <strong>{firstName || 'Student'}</strong>
-                    <small>{schoolName || 'Kampivo student'}</small>
+                    <small>{schoolName || 'CampusMode student'}</small>
                   </div>
                 </div>
                 <Link href={profileHref}><UserRound size={16}/> {isVerified ? 'Profile' : 'Profile & verification'}</Link>
