@@ -9,8 +9,8 @@ export function VendorShareButton({ slug, businessName }: { slug: string; busine
   const share = async () => {
     const url = new URL(`/share/vendor/${encodeURIComponent(slug)}`, window.location.origin).toString()
     const data = {
-      title: `${businessName} on Kampivo`,
-      text: `Check out ${businessName}, a verified Kampivo vendor.`,
+      title: `${businessName} on CampusMode`,
+      text: `Check out ${businessName}, a verified CampusMode vendor.`,
       url,
     }
 
@@ -30,7 +30,7 @@ export function VendorShareButton({ slug, businessName }: { slug: string; busine
         setCopied(true)
         window.setTimeout(() => setCopied(false), 1800)
       } catch {
-        window.prompt('Copy this Kampivo vendor link:', url)
+        window.prompt('Copy this CampusMode vendor link:', url)
       }
     }
   }
