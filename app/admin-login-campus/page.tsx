@@ -7,9 +7,9 @@ export default async function AdminCampusLoginPage({ searchParams }: { searchPar
   return <main className="admin-login-page">
     <section className="admin-login-card">
       <div className="admin-login-mark"><ShieldCheck size={24}/></div>
-      <span>Kampivo Secure Access</span>
+      <span>CampusMode Secure Access</span>
       <h1>Administrator sign in</h1>
-      <p>Authorized Kampivo administrators only. Password sign-in is followed by authenticator verification before the control plane opens.</p>
+      <p>Authorized CampusMode administrators only. Password sign-in is followed by authenticator verification before the control plane opens.</p>
       {params.reason === 'idle' ? <div className="admin-login-note">Your administrator session ended after 20 minutes of inactivity.</div> : null}
       {params.error ? <div className="admin-login-error">{params.error}</div> : null}
       <form action={adminLogin} className="admin-login-form">
@@ -18,7 +18,7 @@ export default async function AdminCampusLoginPage({ searchParams }: { searchPar
         <button type="submit"><LockKeyhole size={17}/> Continue securely</button>
       </form>
       <small>Admin access is role-scoped, MFA protected, audited and automatically signed out after inactivity.</small>
-      <Link href="/">Back to Kampivo</Link>
+      <Link href="/">Back to CampusMode</Link>
     </section>
   </main>
 }
