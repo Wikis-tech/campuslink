@@ -22,39 +22,43 @@ Use this file during Stages 1-4.
 Runtime replacement of Kampivo assets is intentionally deferred to Stage 2. Domain-dependent identity remains intentionally deferred to Stage 5.
 
 ## Stage 2 - Product UI
-- [ ] landing
-- [ ] public header/footer
-- [ ] login
-- [ ] register
-- [ ] email check/verification screens
-- [ ] Student onboarding
-- [ ] Vendor onboarding
-- [ ] Admin login
-- [ ] Student Overview
-- [ ] Student Discover
-- [ ] Student Saved
-- [ ] Student Profile
-- [ ] Student Safety
-- [ ] Student Product/Service detail
-- [ ] Vendor storefront
-- [ ] Vendor Overview
-- [ ] Vendor Listings
-- [ ] Products
-- [ ] Services
-- [ ] Portfolio
-- [ ] Business Profile
-- [ ] Availability
-- [ ] Reviews
-- [ ] Analytics
-- [ ] Growth
-- [ ] Billing
-- [ ] Admin shell
-- [ ] Admin dashboards
-- [ ] Admin communications
-- [ ] Trust & Safety
-- [ ] notifications
-- [ ] PWA splash/install UI
-- [ ] favicon/app icons
+- [x] landing
+- [x] public header/footer
+- [x] login
+- [x] register
+- [x] email check/verification screens
+- [x] Student onboarding
+- [x] Vendor onboarding
+- [x] Admin login
+- [x] Student Overview
+- [x] Student Discover
+- [x] Student Saved
+- [x] Student Profile
+- [x] Student Safety
+- [x] Student Product/Service detail
+- [x] Vendor storefront
+- [x] Vendor Overview
+- [x] Vendor Listings
+- [x] Products
+- [x] Services
+- [x] Portfolio
+- [x] Business Profile
+- [x] Availability
+- [x] Reviews
+- [x] Analytics
+- [x] Growth
+- [x] Billing
+- [x] Admin shell
+- [x] Admin dashboards
+- [x] Admin communications
+- [x] Trust & Safety
+- [x] notifications
+- [x] PWA splash/install UI
+- [x] favicon/app icons
+
+**Stage 2 implementation status: COMPLETE.**
+
+Automated validation covers production build, public/auth/legal/PWA route responses, brand assets, manifest, and runtime-error monitoring. Authenticated Student/Vendor/Admin visual acceptance remains part of the human testing pass and Stage 4 full regression.
 
 ## Stage 3 - SEO/comms
 - [ ] metadata title
