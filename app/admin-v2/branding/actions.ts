@@ -16,7 +16,7 @@ function fail(message: string): never {
 
 async function requireSuperAdmin() {
   const context = await requireAdminContext()
-  if (context.globalRole !== 'super_admin') fail('Only the Super Admin can change Kampivo branding.')
+  if (context.globalRole !== 'super_admin') fail('Only the Super Admin can change CampusMode branding.')
   return context
 }
 
@@ -118,7 +118,7 @@ export async function updatePlatformBranding(formData: FormData) {
 
   if (error) {
     await admin.storage.from('branding-assets').remove(uploaded.map((item) => item.path))
-    fail(error.message || 'Could not save Kampivo branding.')
+    fail(error.message || 'Could not save CampusMode branding.')
   }
 
   const oldPaths = uploaded
