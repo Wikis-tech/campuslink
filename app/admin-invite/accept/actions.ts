@@ -34,7 +34,7 @@ export async function acceptAdminToken(formData: FormData) {
 
   if (!globalMembership && !(schoolAssignments || []).length) {
     await supabase.auth.signOut({ scope: 'local' })
-    back(type, 'This administrator invitation no longer has active Kampivo access.')
+    back(type, 'This administrator invitation no longer has active CampusMode access.')
   }
 
   redirect('/admin-invite/setup')
