@@ -386,7 +386,7 @@ html[data-pwa-mode="standalone"] select{
   font:800 1.45rem/1 var(--font-sora),sans-serif;
   letter-spacing:-.04em;
 }
-.cl-pwa-launch-copy strong span{color:#ff7a00}
+.cl-pwa-launch-copy strong span{color:#20a953}
 .cl-pwa-launch-copy small{
   display:block;
   margin-top:8px;
@@ -436,7 +436,7 @@ html[data-theme='dark'] .cl-pwa-launch-copy small{color:#9fb0c5}
 }
 
 
-/* Clean Kampivo PWA launch styling aligned with the Student marketplace */
+/* Clean CampusMode PWA launch styling aligned with the Student marketplace */
 .cl-pwa-launch{
   gap:18px;
   background:
@@ -454,7 +454,7 @@ html[data-theme='dark'] .cl-pwa-launch-copy small{color:#9fb0c5}
 .cl-pwa-launch-logo img{width:72px;height:72px}
 .cl-pwa-launch-copy strong{font-size:1.38rem;color:#082d6a}
 .cl-pwa-launch-progress{width:86px;background:#e7ebf0}
-.cl-pwa-launch-progress span{background:#ff7a00}
+.cl-pwa-launch-progress span{background:#20a953}
 html[data-theme='dark'] .cl-pwa-launch{background:#08121f;color:#f4f7fb}
 html[data-theme='dark'] .cl-pwa-launch-logo{background:#0f1c2b;border-color:#26364a}
 html[data-theme='dark'] .cl-pwa-launch-copy strong{color:#f4f7fb}
