@@ -4,7 +4,7 @@ import { BadgeCheck } from 'lucide-react'
 const supportEmail = 'support@campuslink.name.ng'
 
 export const metadata = {
-  title: 'Trust & Compliance | CampusMode',
+  title: 'Trust & Compliance',
   description: 'CampusMode trust, safety, privacy and compliance commitments.',
 }
 
