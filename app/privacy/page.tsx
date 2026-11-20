@@ -4,7 +4,7 @@ import { ShieldCheck } from 'lucide-react'
 const supportEmail = 'support@campuslink.name.ng'
 
 export const metadata = {
-  title: 'Privacy Policy | CampusMode',
+  title: 'Privacy Policy',
   description: 'How CampusMode collects, uses, protects and retains personal data.',
 }
 
