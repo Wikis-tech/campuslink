@@ -27,7 +27,7 @@ export async function DashboardNotifications({ compact = false }: { compact?: bo
   const readCount = rows.length - unread.length
 
   return (
-    <section className={compact ? `${styles.shell} ${styles.compact}` : styles.shell} aria-label="Kampivo notifications">
+    <section className={compact ? `${styles.shell} ${styles.compact}` : styles.shell} aria-label="CampusMode notifications">
       <details className={styles.panel}>
         <summary className={styles.trigger}>
           <span className={styles.bell}>
@@ -43,7 +43,7 @@ export async function DashboardNotifications({ compact = false }: { compact?: bo
         <div className={styles.popover}>
           <div className={styles.head}>
             <div className={styles.title}>
-              <small>Kampivo updates</small>
+              <small>CampusMode updates</small>
               <strong>{unread.length ? `${unread.length} new notification${unread.length === 1 ? '' : 's'}` : 'Recent notifications'}</strong>
             </div>
             <div className={styles.headActions}>
