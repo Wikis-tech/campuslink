@@ -16,7 +16,7 @@ export type CampusLinkEmailResult =
   | { ok: true; id: string | null }
   | { ok: false; reason: 'not_configured' | 'send_failed'; error: string }
 
-const FROM = 'Kampivo Alerts <notifications@campuslink.name.ng>'
+const FROM = 'CampusMode Alerts <notifications@campuslink.name.ng>'
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({
@@ -61,8 +61,8 @@ export function renderCampusLinkEmail(input: Omit<CampusLinkEmail, 'to' | 'idemp
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #e3e8f0;border-radius:12px;">
 <tr><td style="padding-top:28px;padding-right:32px;padding-bottom:20px;padding-left:32px;border-bottom:1px solid #edf1f5;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-<td valign="middle"><img src="https://campuslink.name.ng/brand/logo" width="142" height="36" border="0" alt="Kampivo" style="display:block;width:142px;height:36px;object-fit:contain;"/></td>
-<td align="right" valign="middle"><span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.08em;color:#FF7A00;text-transform:uppercase;">Kampivo Alert</span></td>
+<td valign="middle"><img src="https://campuslink.name.ng/brand/logo" width="142" height="36" border="0" alt="CampusMode" style="display:block;width:142px;height:36px;object-fit:contain;"/></td>
+<td align="right" valign="middle"><span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.08em;color:#FF7A00;text-transform:uppercase;">CampusMode Alert</span></td>
 </tr></table>
 </td></tr>
 <tr><td style="padding-top:32px;padding-right:32px;padding-bottom:32px;padding-left:32px;">
@@ -72,8 +72,8 @@ export function renderCampusLinkEmail(input: Omit<CampusLinkEmail, 'to' | 'idemp
 ${cta}
 </td></tr>
 <tr><td bgcolor="#f8fafc" style="padding-top:20px;padding-right:32px;padding-bottom:22px;padding-left:32px;background-color:#f8fafc;border-top:1px solid #edf1f5;">
-<p style="margin-top:0;margin-right:0;margin-bottom:6px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#667085;">This message was sent by Kampivo to help you complete or manage your account.</p>
-<p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#98a2b3;">Kampivo · Your campus. Trusted.</p>
+<p style="margin-top:0;margin-right:0;margin-bottom:6px;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#667085;">This message was sent by CampusMode to help you complete or manage your account.</p>
+<p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#98a2b3;">CampusMode · Campus life, made easy.</p>
 </td></tr>
 </table>
 </td></tr>
@@ -88,7 +88,7 @@ ${cta}
     bodyText,
     ctaUrl && ctaLabelText ? `${ctaLabelText}: ${ctaUrl}` : '',
     '',
-    'Kampivo · Your campus. Trusted.',
+    'CampusMode · Campus life, made easy.',
   ].filter(Boolean).join('\n')
 
   return { html, text }
@@ -119,7 +119,7 @@ export async function sendCampusLinkEmail(input: CampusLinkEmail): Promise<Campu
             ALERT_SUBJECT: presentBrandCopy(input.subject),
             ALERT_TITLE: presentBrandCopy(input.title),
             ALERT_BODY: presentBrandCopy(input.body),
-            CTA_LABEL: presentBrandCopy(input.ctaLabel) || 'Open Kampivo',
+            CTA_LABEL: presentBrandCopy(input.ctaLabel) || 'Open CampusMode',
             CTA_URL: absoluteUrl(input.ctaUrl) || 'https://campuslink.name.ng',
           },
         },
