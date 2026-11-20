@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: Request) {
   const branding = await getPlatformBranding()
   if (!branding.favicon_url) {
-    return Response.redirect(new URL('/kampivo-app-icon.svg', request.url), 307)
+    return Response.redirect(new URL('/brand/campusmode/favicon.svg', request.url), 307)
   }
 
   try {
@@ -18,6 +18,6 @@ export async function GET(request: Request) {
       },
     })
   } catch {
-    return Response.redirect(new URL('/kampivo-app-icon.svg', request.url), 307)
+    return Response.redirect(new URL('/brand/campusmode/favicon.svg', request.url), 307)
   }
 }
