@@ -82,8 +82,8 @@ export function VendorWorkspaceSidebar(_: { storefrontHref?: string }) {
 
   return <>
     <aside className="v5e-sidebar v5e-sidebar-shared kv-vendor-sidebar">
-      <Link href="/vendor-v2" className="v3-brand kv-vendor-brand" aria-label="Kampivo vendor home">
-        <img src="/brand/logo" alt="Kampivo"/>
+      <Link href="/vendor-v2" className="v3-brand kv-vendor-brand" aria-label="CampusMode vendor home">
+        <img src="/brand/logo" alt="CampusMode"/>
       </Link>
 
       <div className="kv-vendor-nav-group">
