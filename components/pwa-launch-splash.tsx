@@ -13,7 +13,7 @@ export function PwaLaunchSplash({ destination }: { destination: string }) {
   }, [destination, router])
 
   return (
-    <main className="cl-pwa-launch" aria-label="Opening Kampivo">
+    <main className="cl-pwa-launch" aria-label="Opening CampusMode">
       <div className="cl-pwa-launch-logo" aria-hidden="true">
         <img src="/brand/app-icon/192" alt="" width="76" height="76" />
       </div>
