@@ -17,7 +17,7 @@ export async function register(formData: FormData) {
   }
 
   if (!ageConfirmed) {
-    redirect('/register?error=You%20must%20be%20at%20least%2018%20years%20old%20to%20create%20a%20Kampivo%20account')
+    redirect('/register?error=You%20must%20be%20at%20least%2018%20years%20old%20to%20create%20a%20CampusMode%20account')
   }
 
   if (!termsAccepted) {
