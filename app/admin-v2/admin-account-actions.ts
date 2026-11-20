@@ -49,7 +49,7 @@ export async function inviteAdminAccount(formData: FormData) {
   if (scope === 'global' && !GLOBAL_ROLES.has(role)) fail('Choose a valid global administrator role.')
 
   const existing = await findAuthUserByEmail(email)
-  if (existing) fail('A Kampivo account already exists for this email. Use “Assign an existing account” instead.')
+  if (existing) fail('A CampusMode account already exists for this email. Use “Assign an existing account” instead.')
 
   const admin = createAdminClient()
   const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
@@ -87,11 +87,11 @@ export async function inviteAdminAccount(formData: FormData) {
   const emailResult = await sendCampusLinkEmail({
     to: email,
     recipientName: 'Administrator',
-    subject: 'You have been invited to administer Kampivo',
-    title: 'Set up your Kampivo Admin access',
+    subject: 'You have been invited to administer CampusMode',
+    title: 'Set up your CampusMode Admin access',
     body: scope === 'school'
-      ? 'You have been invited to become a School Admin on Kampivo. Use the secure button below to choose your own password. After that, Kampivo will require authenticator MFA before the Admin workspace opens.'
-      : 'You have been invited to the Kampivo administration control plane. Use the secure button below to choose your own password. After that, Kampivo will require authenticator MFA before the Admin workspace opens.',
+      ? 'You have been invited to become a School Admin on CampusMode. Use the secure button below to choose your own password. After that, CampusMode will require authenticator MFA before the Admin workspace opens.'
+      : 'You have been invited to the CampusMode administration control plane. Use the secure button below to choose your own password. After that, CampusMode will require authenticator MFA before the Admin workspace opens.',
     ctaLabel: 'Accept Admin invitation',
     ctaUrl: inviteUrl,
     idempotencyKey: 'campuslink-admin-invite-' + createdUser.id,
@@ -172,7 +172,7 @@ export async function setGlobalAdminAccess(formData: FormData) {
       .select('user_id',{count:'exact',head:true})
       .eq('role','super_admin')
       .eq('is_active',true)
-    if ((count || 0) <= 1) fail('Kampivo must keep at least one active Super Admin.')
+    if ((count || 0) <= 1) fail('CampusMode must keep at least one active Super Admin.')
   }
 
   const { error } = await admin.from('admin_memberships')
@@ -241,9 +241,9 @@ export async function resendAdminSetup(formData: FormData) {
   const emailResult = await sendCampusLinkEmail({
     to: email,
     recipientName: 'Administrator',
-    subject: 'Complete your Kampivo Admin setup',
+    subject: 'Complete your CampusMode Admin setup',
     title: 'Continue your secure Admin setup',
-    body: 'A fresh secure setup link was requested for your Kampivo administrator account. Open the link, confirm the setup, choose your password, and complete authenticator MFA before entering the Admin workspace. If you did not expect this message, contact the Kampivo Super Admin.',
+    body: 'A fresh secure setup link was requested for your CampusMode administrator account. Open the link, confirm the setup, choose your password, and complete authenticator MFA before entering the Admin workspace. If you did not expect this message, contact the CampusMode Super Admin.',
     ctaLabel: 'Continue Admin setup',
     ctaUrl: setupUrl,
     idempotencyKey: 'campuslink-admin-setup-' + userId + '-' + tokenHash.slice(0,16),
