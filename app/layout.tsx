@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: 'CampusMode',
       template: '%s · CampusMode',
     },
-    description: 'Find trusted services and vendors around your campus.',
+    description: 'Campus life, made easy. Find trusted products, services and businesses around your campus.',
     alternates: { canonical: '/' },
     manifest: '/manifest.webmanifest',
     icons: {
@@ -89,7 +89,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#0B3D91',
+  themeColor: '#154597',
 }
 
 const themeScript = `
