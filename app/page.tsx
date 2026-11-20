@@ -144,8 +144,8 @@ export default async function HomePage() {
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Kampivo',
-    alternateName: 'Kampivo',
+    name: 'CampusMode',
+    alternateName: 'CampusMode',
     url: baseUrl,
     description: 'Find trusted services and vendors around your campus.',
     inLanguage: 'en',
@@ -153,7 +153,7 @@ export default async function HomePage() {
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Kampivo',
+    name: 'CampusMode',
     url: baseUrl,
     logo: `${baseUrl}/brand/logo`,
     description: 'The trusted discovery and marketplace platform for campus communities.',
