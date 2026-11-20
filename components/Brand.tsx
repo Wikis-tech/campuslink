@@ -8,10 +8,10 @@ type BrandProps = {
 
 export function Brand({ href = '/', light = false, compact = false }: BrandProps) {
   return (
-    <Link href={href} className={`cl-brand${light ? ' cl-brand-light' : ''}${compact ? ' cl-brand-compact' : ''}`} aria-label="Kampivo home">
+    <Link href={href} className={`cl-brand${light ? ' cl-brand-light' : ''}${compact ? ' cl-brand-compact' : ''}`} aria-label="CampusMode home">
       <img
         src="/brand/logo"
-        alt="Kampivo"
+        alt="CampusMode"
         className="cl-brand-dynamic-logo"
         style={{ display: 'block', width: compact ? 112 : 138, height: compact ? 34 : 42, objectFit: 'contain', objectPosition: 'left center' }}
       />
