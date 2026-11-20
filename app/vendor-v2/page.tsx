@@ -236,7 +236,7 @@ export default async function VendorDashboard() {
       ? {
           icon: <ShieldAlert size={17}/>,
           title: 'Marketplace safety review',
-          copy: 'Public visibility is paused while Kampivo reviews this account.',
+          copy: 'Public visibility is paused while CampusMode reviews this account.',
           href: '/vendor-v2',
         }
       : null,
@@ -291,7 +291,7 @@ export default async function VendorDashboard() {
       <section className="v5e-vendor-main kv-vendor-main">
         <header className="kv-vendor-topbar">
           <div className="kv-vendor-topbar-left">
-            <span className="kv-vendor-mobile-brand"><img src="/brand/logo" alt="Kampivo"/></span>
+            <span className="kv-vendor-mobile-brand"><img src="/brand/logo" alt="CampusMode"/></span>
             <span className="kv-vendor-workspace-pill">Vendor workspace</span>
           </div>
           <div className="kv-vendor-topbar-actions">
