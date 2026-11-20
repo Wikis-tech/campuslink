@@ -110,7 +110,7 @@ export function PwaInstallPrompt() {
   }
 
   return (
-    <aside className="cl-pwa-install" aria-label="Install Kampivo">
+    <aside className="cl-pwa-install" aria-label="Install CampusMode">
       <button className="cl-pwa-install-close" type="button" onClick={dismiss} aria-label="Dismiss install prompt">
         <X size={16} aria-hidden="true" />
       </button>
@@ -120,13 +120,13 @@ export function PwaInstallPrompt() {
       </div>
 
       <div className="cl-pwa-install-copy">
-        <strong>Keep Kampivo close</strong>
+        <strong>Keep CampusMode close</strong>
         {showIosHelp && !installEvent ? (
           <p>
             On iPhone or iPad, tap <Share2 size={14} aria-hidden="true" /> <b>Share</b>, then choose <b>Add to Home Screen</b>.
           </p>
         ) : (
-          <p>Install Kampivo for a cleaner, app-like experience from your home screen.</p>
+          <p>Install CampusMode for a cleaner, app-like experience from your home screen.</p>
         )}
       </div>
 
