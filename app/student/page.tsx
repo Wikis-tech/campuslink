@@ -219,7 +219,7 @@ export default async function StudentDashboard() {
                 </strong>
                 <p>
                   {verificationPending
-                    ? 'You can keep browsing while Kampivo reviews your submission.'
+                    ? 'You can keep browsing while CampusMode reviews your submission.'
                     : verificationRejected
                       ? (verification?.review_note || 'Review the feedback and submit updated evidence when ready.')
                       : 'Browsing stays open. Verification unlocks reviews and stronger trust features.'}
@@ -244,9 +244,9 @@ export default async function StudentDashboard() {
               <input
                 name="q"
                 placeholder="Try “phone repair”, “laundry”, “food”..."
-                aria-label="Search Kampivo marketplace"
+                aria-label="Search CampusMode marketplace"
               />
-              <button type="submit">Search Kampivo</button>
+              <button type="submit">Search CampusMode</button>
             </form>
 
             <div className="kv-search-chips">
@@ -265,7 +265,7 @@ export default async function StudentDashboard() {
               <span><ShieldCheck size={18}/></span>
             </div>
             <div className="kv-trust-list">
-              <div><BadgeCheck size={16}/><span><strong>Identity checked</strong><small>Visible vendors pass Kampivo identity review.</small></span></div>
+              <div><BadgeCheck size={16}/><span><strong>Identity checked</strong><small>Visible vendors pass CampusMode identity review.</small></span></div>
               <div><ShieldCheck size={16}/><span><strong>Campus approved</strong><small>Approval is specific to your institution.</small></span></div>
               <div><Star size={16}/><span><strong>Trust is not for sale</strong><small>Paid plans do not buy verification.</small></span></div>
             </div>
@@ -339,7 +339,7 @@ export default async function StudentDashboard() {
                 <strong>No approved listings for {school || 'your campus'} yet.</strong>
                 <p>
                   “Picked for your campus” only shows active products and services from identity-approved Vendors
-                  that are also approved for your institution. Kampivo does not mix another school’s Vendors into this section.
+                  that are also approved for your institution. CampusMode does not mix another school’s Vendors into this section.
                 </p>
               </div>
               <div className="kv-campus-empty-actions">
