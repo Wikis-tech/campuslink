@@ -20,6 +20,6 @@ export async function GET(request: Request) {
       },
     })
   } catch {
-    return Response.redirect(new URL('/kampivo-logo.svg', request.url), 307)
+    return Response.redirect(new URL('/brand/campusmode/logo.webp', request.url), 307)
   }
 }
