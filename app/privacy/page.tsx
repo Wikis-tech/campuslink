@@ -11,7 +11,7 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <main className="legal-page">
-      <nav className="legal-nav"><div className="legal-nav-inner"><Link className="legal-brand" href="/">Kampiv<strong>o</strong></Link><div className="legal-nav-links"><Link href="/terms">Terms</Link><Link href="/compliance">Compliance</Link><Link href="/register">Create account</Link></div></div></nav>
+      <nav className="legal-nav"><div className="legal-nav-inner"><Link className="legal-brand" href="/" aria-label="CampusMode home"><img src="/brand/logo" alt="CampusMode" width={130} height={40} style={{ objectFit: "contain", objectPosition: "left center" }} /></Link><div className="legal-nav-links"><Link href="/terms">Terms</Link><Link href="/compliance">Compliance</Link><Link href="/register">Create account</Link></div></div></nav>
       <header className="legal-hero">
         <span className="legal-kicker"><ShieldCheck size={14}/> Privacy</span>
         <h1>Privacy Policy</h1>
