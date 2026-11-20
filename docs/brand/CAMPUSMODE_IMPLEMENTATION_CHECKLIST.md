@@ -3,19 +3,23 @@
 Use this file during Stages 1-4.
 
 ## Stage 1 - Foundation
-- [ ] CampusMode spelling locked
-- [ ] Tagline locked
-- [ ] brand book stored safely outside runtime source
-- [ ] production logo master selected
-- [ ] symbol master selected
-- [ ] favicon export prepared
-- [ ] PWA 192 export prepared
-- [ ] PWA 512 export prepared
-- [ ] Apple touch icon prepared
-- [ ] OG/social asset prepared
-- [ ] colour tokens documented
-- [ ] typography documented
-- [ ] legacy name map approved
+- [x] CampusMode spelling locked
+- [x] Tagline locked
+- [x] brand book created and retained outside runtime source
+- [x] production logo master selected by brand owner
+- [x] symbol master selected
+- [x] scalable favicon source prepared
+- [x] scalable PWA 192 source prepared
+- [x] scalable PWA 512 source prepared
+- [x] scalable Apple touch icon source prepared
+- [x] OG/social source template prepared
+- [x] colour tokens documented
+- [x] typography documented
+- [x] legacy name map approved
+
+**Stage 1 status: COMPLETE.**
+
+Runtime replacement of Kampivo assets is intentionally deferred to Stage 2. Domain-dependent identity remains intentionally deferred to Stage 5.
 
 ## Stage 2 - Product UI
 - [ ] landing
