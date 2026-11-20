@@ -56,7 +56,19 @@ Runtime replacement of Kampivo assets is intentionally deferred to Stage 2. Doma
 - [x] PWA splash/install UI
 - [x] favicon/app icons
 
-**Stage 2 implementation status: COMPLETE.**
+**Stage 2 implementation status: COMPLETE (source and public preview corrections verified 20 November 2026; authenticated acceptance outstanding).**
+
+### Post-implementation visual defect corrections — 20 November 2026
+- [x] Replace legacy **Kampivo** wordmark in Terms, Privacy and Compliance navigation with the approved CampusMode logo asset.
+- [x] Verify public preview route responses for landing, legal, Login, Register, Admin Login, email-check, offline and manifest; visible CampusMode present and no Kampivo string in responses.
+- [x] Verify relevant Student and Vendor source-page files plus core Admin source-page files contain no literal Kampivo brand copy.
+- [x] Preserve current support email/sender domain and internal identifiers pending Stage 5.
+- [ ] Log in as real verified Student and visually accept student navigation, discovery, saved, profile and safety across desktop/mobile.
+- [ ] Log in as approved Vendor and visually accept each workspace page including billing states.
+- [ ] Log in as Super Admin and School Admin with MFA and confirm school-scoped admin routes and notifications.
+- [ ] Verify browser cache/PWA installed client reflects new brand after refresh/reinstall.
+
+**Caution:** Public HTTP 200 on gated routes does not demonstrate successful authenticated access; /admin-v2 returned 404 unauthenticated, which is consistent with route concealment but does not establish authorized behaviour. Do not sign off Stage 2 end-to-end acceptance until the unchecked tests pass.
 
 Automated validation covers production build, public/auth/legal/PWA route responses, brand assets, manifest, and runtime-error monitoring. Authenticated Student/Vendor/Admin visual acceptance remains part of the human testing pass and Stage 4 full regression.
 
