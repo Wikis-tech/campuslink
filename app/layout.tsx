@@ -47,10 +47,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: base,
-    applicationName: 'Kampivo',
+    applicationName: 'CampusMode',
     title: {
-      default: 'Kampivo',
-      template: '%s · Kampivo',
+      default: 'CampusMode',
+      template: '%s · CampusMode',
     },
     description: 'Find trusted services and vendors around your campus.',
     alternates: { canonical: '/' },
@@ -62,21 +62,21 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: 'website',
-      siteName: 'Kampivo',
-      title: 'Kampivo — Your campus. Trusted.',
+      siteName: 'CampusMode',
+      title: 'CampusMode — Campus life, made easy.',
       description: 'Discover verified vendors, products, services and opportunities available within your institution.',
       url: '/',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: 'Kampivo — Your campus. Trusted.' }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: 'CampusMode — Campus life, made easy.' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Kampivo — Your campus. Trusted.',
+      title: 'CampusMode — Campus life, made easy.',
       description: 'Discover verified Vendors, Products and Services approved for your university community.',
       images: [ogImage],
     },
     appleWebApp: {
       capable: true,
-      title: 'Kampivo',
+      title: 'CampusMode',
       statusBarStyle: 'black-translucent',
     },
     other: {
