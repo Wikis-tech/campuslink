@@ -39,13 +39,13 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
   if (!vendor) {
     return new ImageResponse(
       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#082D6A', color: 'white', fontSize: 56, fontWeight: 800 }}>
-        Kampivo
+        CampusMode
       </div>,
       { width: 1200, height: 630 }
     )
   }
 
-  const description = (vendor.description || 'Verified Kampivo vendor.').replace(/\s+/g, ' ').trim().slice(0, 150)
+  const description = (vendor.description || 'Verified CampusMode vendor.').replace(/\s+/g, ' ').trim().slice(0, 150)
   const logo = vendor.logo_url || `${BASE_URL}/brand/app-icon/192`
 
   return new ImageResponse(
@@ -56,7 +56,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
           <img src={logo} width="82" height="82" style={{ borderRadius: 22, objectFit: 'cover', background: 'white' }} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: 24, fontWeight: 800, color: '#8BE0A8' }}>VERIFIED CAMPUS LINK VENDOR</span>
+            <span style={{ fontSize: 24, fontWeight: 800, color: '#20A953' }}>CAMPUSMODE APPROVED VENDOR</span>
             <span style={{ marginTop: 6, fontSize: 21, color: '#C9D7EA' }}>{vendor.location_text || 'Campus marketplace'}</span>
           </div>
         </div>
@@ -71,7 +71,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 23 }}>
-          <span style={{ fontWeight: 800 }}>Kampivo · Your campus. Trusted.</span>
+          <span style={{ fontWeight: 800 }}>CampusMode · Campus life, made easy.</span>
           <span style={{ color: '#9DB2CC' }}>Trusted campus discovery</span>
         </div>
       </div>
