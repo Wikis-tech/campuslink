@@ -96,3 +96,10 @@ The prepared hosted Supabase Reset Password email initially used `{{ .Confirmati
 After applying, test: unknown email generic acknowledgement, valid recovery link, wrong/expired token rejection, second/replayed link rejection, new password updates and old password rejected, new password login, session signed out, Admin cannot use Student/Vendor recovery. Also verify that a recovery email generated from a Preview does not unexpectedly send the user to Production.
 
 Stage 4 Preview static GET checks after the redirect fix: `/forgot-password` and `/reset-password` responded 200 with noindex/no-store; `/admin-v2` remained 404; unauthenticated GET requests to Paystack checkout and webhook returned 405. These are security smoke tests only, not verified transactions or password resets.
+
+
+## Release hardening addendum — Paystack configuration and legacy Admin reset
+
+- Vercel project environment variable `PAYSTACK_ALLOW_LIVE` was inspected individually without exposing payment keys. Its configured value is **false** across the target set (Preview and Production), meaning the code's live-key override is not enabled. Secret keys themselves were not accessed or disclosed. Confirm actual `PAYSTACK_SECRET_KEY` uses a TEST key before any sandbox checkout; do not initiate real payments.
+- Code fix `app/reset-password/actions.ts`: besides checking the user profile account_type, the Student/Vendor password-reset action now checks active `admin_memberships` and `institution_admin_assignments` via server-only Admin client; any currently active Admin membership is redirected to the separate Admin recovery flow. This covers Admin accounts that might have a legacy marketplace profile. Commit `1db97d64c52684c0a899c0cb7813dffe795d452d`, awaiting corresponding Vercel preview verification.
+- An implementation-level path-resolution sanity check for `/auth/confirm?next=` accepted legitimate `/dashboard` and `/reset-password` paths and rejected `//external`, backslash-host and absolute external URLs; a real authenticated recovery callback has not been exercised.
