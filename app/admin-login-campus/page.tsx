@@ -1,6 +1,9 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LockKeyhole, ShieldCheck } from 'lucide-react'
 import { adminLogin } from './actions'
+
+export const metadata: Metadata = { title: 'Admin sign in', robots: { index: false, follow: false, noarchive: true } }
 
 export default async function AdminCampusLoginPage({ searchParams }: { searchParams: Promise<{ error?: string; reason?: string }> }) {
   const params = await searchParams
