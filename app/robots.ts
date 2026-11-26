@@ -13,7 +13,6 @@ export default function robots(): MetadataRoute.Robots {
           '/control-center/',
           '/admin-v2/',
           '/admin-invite/',
-          '/admin-login-campus/mfa/',
           '/student/',
           '/vendor-v2/',
           '/dashboard/',
