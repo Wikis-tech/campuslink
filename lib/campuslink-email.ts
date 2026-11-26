@@ -44,7 +44,7 @@ export function renderCampusLinkEmail(input: Omit<CampusLinkEmail, 'to' | 'idemp
   const body = escapeHtml(bodyText).replace(/\n/g, '<br/>')
   const ctaUrl = absoluteUrl(input.ctaUrl)
   const cta = ctaUrl && ctaLabelText
-    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;"><tr><td bgcolor="#FF7A00" style="background-color:#FF7A00;border-radius:8px;"><a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding-top:13px;padding-right:20px;padding-bottom:13px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;">${escapeHtml(ctaLabelText)}</a></td></tr></table>`
+    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;"><tr><td bgcolor="#20A953" style="background-color:#20A953;border-radius:8px;"><a href="${escapeHtml(ctaUrl)}" style="display:inline-block;padding-top:13px;padding-right:20px;padding-bottom:13px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;">${escapeHtml(ctaLabelText)}</a></td></tr></table>`
     : ''
 
   const html = `<!DOCTYPE html>
@@ -101,7 +101,7 @@ export async function sendCampusLinkEmail(input: CampusLinkEmail): Promise<Campu
   }
 
   try {
-    const templateId = process.env.RESEND_ALERT_TEMPLATE_ID || 'kampivo-admin-alert'
+    const templateId = process.env.RESEND_ALERT_TEMPLATE_ID || 'campusmode-admin-alert'
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
