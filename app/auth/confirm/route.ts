@@ -8,7 +8,19 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get('type') as EmailOtpType | null
   const code = searchParams.get('code')
   const requestedNext = searchParams.get('next')
-  const next = requestedNext && requestedNext.startsWith('/') && !requestedNext.startsWith('//') ? requestedNext : '/dashboard'
+  // Treat the return path as untrusted. URL parsing normalizes backslashes and
+  // encoded separators, so a string-prefix check alone can allow redirects
+  // outside this application (for example /\\attacker.example).
+  const fallback = new URL('/dashboard', request.url)
+  let destination = fallback
+  if (requestedNext && requestedNext.startsWith('/') && !requestedNext.startsWith('//') && !requestedNext.includes('\\\\')) {
+    try {
+      const candidate = new URL(requestedNext, request.url)
+      if (candidate.origin === fallback.origin) destination = candidate
+    } catch {
+      destination = fallback
+    }
+  }
   const supabase = await createClient()
 
   let error: Error | null = null
@@ -27,5 +39,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=Confirmation%20link%20is%20invalid%20or%20expired', request.url))
   }
 
-  return NextResponse.redirect(new URL(next, request.url))
+  return NextResponse.redirect(destination)
 }
