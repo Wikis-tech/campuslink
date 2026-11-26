@@ -80,6 +80,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/forgot-password',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
+        source: '/reset-password',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
+          { key: 'Cache-Control', value: 'no-store, private, max-age=0' },
+        ],
+      },
+      {
         source: '/app',
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet' },
