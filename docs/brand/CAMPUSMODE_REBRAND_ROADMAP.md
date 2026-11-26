@@ -2,7 +2,7 @@
 
 Status: ACTIVE PLANNING DOCUMENT
 Current application branch: `campuslink-ui-v3-experiment`
-Current public product name in code: Kampivo
+Current public product name in code: CampusMode (Stages 1–2 implemented; Stage 3 code implemented with provider-managed Auth templates pending acceptance)
 Final approved product name: CampusMode
 Tagline: Campus life, made easy.
 Brand book: CampusMode Brand Book 2026
