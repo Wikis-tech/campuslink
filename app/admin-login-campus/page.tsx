@@ -10,6 +10,7 @@ export default async function AdminCampusLoginPage({ searchParams }: { searchPar
   return <main className="admin-login-page">
     <section className="admin-login-card">
       <div className="admin-login-mark"><ShieldCheck size={24}/></div>
+      <img src="/brand/logo" alt="CampusMode" width={142} height={44} style={{ display: "block", width: 142, height: 44, objectFit: "contain", marginBottom: 12 }} />
       <span>CampusMode Secure Access</span>
       <h1>Administrator sign in</h1>
       <p>Authorized CampusMode administrators only. Password sign-in is followed by authenticator verification before the control plane opens.</p>
