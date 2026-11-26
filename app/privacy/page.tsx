@@ -5,6 +5,7 @@ const supportEmail = 'support@campuslink.name.ng'
 
 export const metadata = {
   title: 'Privacy Policy',
+  alternates: { canonical: '/privacy' },
   description: 'How CampusMode collects, uses, protects and retains personal data.',
 }
 
