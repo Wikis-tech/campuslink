@@ -7,6 +7,15 @@ export const metadata = {
   title: 'Trust & Compliance',
   alternates: { canonical: '/compliance' },
   description: 'CampusMode trust, safety, privacy and compliance commitments.',
+  openGraph: {
+    type: 'website' as const,
+    siteName: 'CampusMode',
+    title: 'Trust & Compliance · CampusMode',
+    description: 'CampusMode trust, safety, privacy and compliance commitments.',
+    url: '/compliance',
+    images: [{ url: '/api/og/site', width: 1200, height: 630, alt: 'CampusMode — Campus life, made easy.' }],
+  },
+  twitter: { card: 'summary_large_image' as const, title: 'Trust & Compliance · CampusMode', description: 'CampusMode trust, safety, privacy and compliance commitments.', images: ['/api/og/site'] },
 }
 
 export default function CompliancePage() {
