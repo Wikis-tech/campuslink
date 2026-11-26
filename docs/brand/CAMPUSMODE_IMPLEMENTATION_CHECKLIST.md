@@ -73,21 +73,23 @@ Runtime replacement of Kampivo assets is intentionally deferred to Stage 2. Doma
 Automated validation covers production build, public/auth/legal/PWA route responses, brand assets, manifest, and runtime-error monitoring. Authenticated Student/Vendor/Admin visual acceptance remains part of the human testing pass and Stage 4 full regression.
 
 ## Stage 3 - SEO/comms
-- [ ] metadata title
-- [ ] metadata description
-- [ ] applicationName
-- [ ] Open Graph
-- [ ] Twitter/X cards
-- [ ] schema.org names
-- [ ] sitemap content
-- [ ] robots content
-- [ ] current-domain canonicals preserved
+- [x] metadata title
+- [x] metadata description
+- [x] applicationName
+- [x] Open Graph
+- [x] Twitter/X cards
+- [x] schema.org names
+- [x] sitemap content
+- [x] robots content
+- [x] current-domain canonicals preserved
 - [ ] verification email copy
-- [ ] Admin alert template
-- [ ] invitation copy
+- [x] Admin alert template
+- [x] invitation copy
 - [ ] password recovery copy
-- [ ] legal pages
-- [ ] support/privacy wording
+- [x] legal pages
+- [x] support/privacy wording
+
+**Stage 3 code status: IMPLEMENTED (26 November 2026).** Supabase-hosted confirmation/recovery provider templates and end-to-end test email delivery still require owner acceptance. The unchecked verification/recovery email rows are deliberate. Full report: [CAMPUSMODE_STAGE3_IMPLEMENTATION_REPORT.md](./CAMPUSMODE_STAGE3_IMPLEMENTATION_REPORT.md).
 
 ## Stage 4 - Regression
 - [ ] source scan for visible Kampivo
