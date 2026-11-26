@@ -53,7 +53,7 @@ Runtime replacement of Kampivo assets is intentionally deferred to Stage 2. Doma
 - [x] Admin communications
 - [x] Trust & Safety
 - [x] notifications
-- [x] PWA splash/install UI
+- [x] PWA splash/install UI (additional legacy launch-splash wordmark corrected 26 November 2026)
 - [x] favicon/app icons
 
 **Stage 2 implementation status: COMPLETE (source and public preview corrections verified 20 November 2026; authenticated acceptance outstanding).**
