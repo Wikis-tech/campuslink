@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function setRecoveredPassword(formData: FormData) {
   const password = String(formData.get('password') || '')
@@ -22,7 +23,14 @@ export async function setRecoveredPassword(formData: FormData) {
   // Dedicated administrator password setup is managed through the separate
   // invitation and MFA process, not the Student/Vendor recovery screen.
   const { data: profile } = await supabase.from('profiles').select('account_type').eq('id', userResult.user.id).maybeSingle()
-  if (profile?.account_type === 'admin') {
+  // The profile type is not enough: an existing Admin may have a legacy
+  // marketplace profile. Check authoritative active memberships as well.
+  const admin = createAdminClient()
+  const [{ data: globalAdmin }, { data: schoolAdmins }] = await Promise.all([
+    admin.from('admin_memberships').select('user_id').eq('user_id', userResult.user.id).eq('is_active', true).maybeSingle(),
+    admin.from('institution_admin_assignments').select('user_id').eq('user_id', userResult.user.id).eq('is_active', true).limit(1),
+  ])
+  if (profile?.account_type === 'admin' || globalAdmin || (schoolAdmins || []).length) {
     redirect('/admin-login-campus?error=Administrators%20must%20use%20the%20secure%20Admin%20setup%20process')
   }
 
