@@ -140,7 +140,25 @@ async function getLandingData() {
   }
 }
 
-export const metadata: Metadata = { alternates: { canonical: '/' } }
+export const metadata: Metadata = {
+  title: 'CampusMode | Trusted Campus Vendors & Student Services',
+  description: 'CampusMode helps students discover verified campus vendors, products and services in Nigeria. Explore businesses and contact vendors directly.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: 'CampusMode',
+    title: 'CampusMode — Campus life, made easy.',
+    description: 'Discover verified campus vendors, products and services in Nigeria. Browse and contact vendors directly with CampusMode.',
+    url: '/',
+    images: [{ url: '/api/og/site', width: 1200, height: 630, alt: 'CampusMode — Campus life, made easy.' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CampusMode — Campus life, made easy.',
+    description: 'Discover verified campus vendors, products and services in Nigeria.',
+    images: ['/api/og/site'],
+  },
+}
 
 export default async function HomePage() {
   const landing = await getLandingData()
@@ -149,9 +167,8 @@ export default async function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'CampusMode',
-    alternateName: 'CampusMode',
     url: baseUrl,
-    description: 'Find trusted services and vendors around your campus.',
+    description: 'Campus life, made easy. Discover approved campus vendors, products and services in Nigeria.',
     inLanguage: 'en',
   }
   const organizationJsonLd = {
