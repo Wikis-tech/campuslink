@@ -13,6 +13,7 @@ Release scope: preview only, no production promotion, no database/schema/domain 
 - Robots and sitemap continue to point to `https://www.campuslink.name.ng` (verified current Vercel canonical target); privacy-sensitive routes are excluded or noindexed.
 - Student, Vendor and Admin private layouts include explicit noindex metadata. Auth Login/Register noindex already existed.
 - Added existing CampusMode logo to Admin login/invitation and global error/not-found surfaces; retained the previous designs.
+- Source-wide component follow-up found and corrected a lingering \`Kampivo\` string on the PWA launch splash, replacing it with the approved CampusMode logo and tagline.
 - Updated fallback Resend template alias to `campusmode-admin-alert`, matching the published, inspected provider template. Kept sender as `CampusMode Alerts <notifications@campuslink.name.ng>`.
 - Updated unused/local fallback email renderer CTA from legacy orange to Mode Green, without changing operational delivery semantics.
 - No renames to IDs, database tables, RLS, routing, idempotency keys, Paystack keys or old domain.
