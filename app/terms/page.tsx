@@ -5,6 +5,7 @@ const supportEmail = 'support@campuslink.name.ng'
 
 export const metadata = {
   title: 'Terms of Use',
+  alternates: { canonical: '/terms' },
   description: 'Terms governing use of CampusMode by students, vendors and administrators.',
 }
 
