@@ -5,6 +5,7 @@ const supportEmail = 'support@campuslink.name.ng'
 
 export const metadata = {
   title: 'Trust & Compliance',
+  alternates: { canonical: '/compliance' },
   description: 'CampusMode trust, safety, privacy and compliance commitments.',
 }
 
