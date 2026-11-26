@@ -40,3 +40,28 @@ Release scope: preview only, no production promotion, no database/schema/domain 
 **Code-level SEO and communications corrections implemented. Provider-managed Supabase Auth templates and live email/lifecycle acceptance remain unverified. Not approved for production launch.**
 
 The first-party branded public pages must remain accurate about incorporation, university affiliations, regulatory registration and student-to-vendor payment handling. Do not claim approvals without proof.
+
+
+## Stage 3 search-index follow-up — 26 November 2026
+
+User-supplied Google Search Console screenshots confirm:
+- Verified accessible Search Console URL-prefix property: `https://www.campuslink.name.ng/`.
+- Existing submitted sitemap: `/sitemap.xml`; submitted 21 September 2026; last read 25 November 2026; status **Success**; **4 discovered pages**.
+- Google Search Console Performance, last three months: **3 clicks**, **220 impressions**, **1.4% CTR**, **average position 6** (values as shown in screenshots).
+- Page indexing report last updated 16 November 2026: **1 indexed**; **10 not indexed**. Non-indexed reason counts: crawled-not-indexed 4; excluded by noindex 2; blocked by robots.txt 1; discovered-not-indexed 3. Some are intentionally private routes, so these counts do **not** automatically imply ten errors.
+- HTTPS report: **1 HTTPS URL**, **0 non-HTTPS URLs**, no critical issues.
+- Google search results at the time still showed cached **Kampivo** title/snippet for the currently indexed canonical URL and an older favicon; searching **CampusMode** did not show the website prominently.
+- Current production checks via Vercel on the same date returned the **CampusMode** title and description, correct `https://www.campuslink.name.ng` canonical, no Kampivo in the homepage HTML, and production commit `f2f51b14d92137...` READY. The observed problem is primarily delayed Google recrawl/reprocessing, not missing CampusMode text on the public homepage.
+- Homepage SEO title and description were improved on branch commit `c11813ee47bf034f4e11d09170edb33ceed7456f` to describe campus vendors and services. This newer change requires preview validation and an approved production release before Google can crawl it.
+
+### Recommended verified-owner Search Console procedure
+
+1. Keep the currently **successful** sitemap submission; don't delete the property, remove the indexed URL or submit preview URLs.
+2. After production deployment of the latest audited SEO metadata, inspect `https://www.campuslink.name.ng/` with URL Inspection; click **Test Live URL** and confirm the HTML/title, canonical, WebSite structured data, robots eligibility and favicon match CampusMode.
+3. Click **Request Indexing** for the homepage, then optionally the three public legal URLs; do not submit hundreds of duplicate requests.
+4. Compare **last crawl** date and the Google-selected canonical with the user-declared canonical. Allow several days/weeks for search title/snippet/favicon/site name to refresh.
+5. Examine individual exclusion URLs in Page indexing before changing noindex/robots rules. Keep Student/Vendor/Admin/auth endpoints non-indexable.
+6. When Search Console reflects the changes, take another dated snapshot: clicks, impressions, CTR, indexation, search queries for `CampusMode` and `Kampivo`, and the current brand search result.
+7. Review Google site-name documentation (WebSite JSON-LD, `og:site_name`, consistent homepage headings/title and external references). Google's selected site name is automatic and cannot be forced.
+
+Reference: https://developers.google.com/search/docs/appearance/site-names and https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl.
