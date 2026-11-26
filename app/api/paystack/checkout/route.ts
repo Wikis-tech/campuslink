@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createPaystackCustomer, initializeSubscriptionTransaction } from '@/lib/paystack'
+import { assertPaystackTestMode, createPaystackCustomer, initializeSubscriptionTransaction } from '@/lib/paystack'
 
 const ALLOWED_PLANS = new Set(['pro-monthly', 'pro-annual'])
 
@@ -20,6 +20,10 @@ export async function POST(request: Request) {
     if (!String(request.headers.get('content-type') || '').toLowerCase().includes('application/json')) {
       return NextResponse.json({ error: 'JSON request required.' }, { status: 415 })
     }
+    // Prevent creating Paystack customer records with an accidental live key
+    // before the guarded checkout initialization is reached.
+    assertPaystackTestMode()
+
     const supabase = await createClient()
     const { data: userResult } = await supabase.auth.getUser()
     const user = userResult.user
