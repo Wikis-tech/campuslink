@@ -1,6 +1,9 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+
+export const metadata: Metadata = { robots: { index: false, follow: false, noarchive: true } }
 
 export default async function VendorWorkspaceLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
