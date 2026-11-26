@@ -18,8 +18,8 @@ export function PwaLaunchSplash({ destination }: { destination: string }) {
         <img src="/brand/app-icon/192" alt="" width="76" height="76" />
       </div>
       <div className="cl-pwa-launch-copy">
-        <strong>Kampiv<span>o</span></strong>
-        <small>Your campus. Trusted.</small>
+        <img src="/brand/logo" alt="CampusMode" width={168} height={48} style={{ display: 'block', width: 168, height: 48, objectFit: 'contain', margin: '0 auto' }} />
+        <small>Campus life, made easy.</small>
       </div>
       <div className="cl-pwa-launch-progress" aria-hidden="true"><span /></div>
     </main>
