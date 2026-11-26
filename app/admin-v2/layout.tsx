@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BarChart3, Building2, CalendarRange, FolderKanban, GraduationCap, LayoutDashboard, LifeBuoy, Mail, MessageSquareText, Palette, ShieldAlert, ShieldCheck, Store, UserCog, ShoppingBag } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -6,6 +7,8 @@ import { AdminSessionGuard } from '@/components/admin-session-guard'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdminContext } from './lib'
 import './admin.css'
+
+export const metadata: Metadata = { robots: { index: false, follow: false, noarchive: true } }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const context = await requireAdminContext()
