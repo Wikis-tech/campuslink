@@ -48,6 +48,7 @@ export default async function LoginPage({
             <button className="btn btn-primary auth-primary-action" type="submit">Sign in</button>
           </form>
 
+          <p className="auth-foot"><Link href="/forgot-password">Forgot password?</Link></p>
           <p className="auth-foot">New to CampusMode? <Link href="/register">Create an account</Link></p>
         </section>
       </div>
