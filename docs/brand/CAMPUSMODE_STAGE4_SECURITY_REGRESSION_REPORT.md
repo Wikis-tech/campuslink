@@ -68,3 +68,18 @@ Added `/forgot-password` and `/reset-password` pages, corresponding server actio
 
 ## Release decision
 **NO-GO for Stage 5.** Targeted automated and unauthenticated checks passed, but real multi-role authenticated tests, adversarial role/RPC/storage tests, password recovery, Paystack TEST lifecycle and cross-device UI acceptance have not yet been performed. No blanket “zero bugs” guarantee can be made.
+
+
+## Additional independent Stage 4 checks — 26 November 2026
+
+- Re-ran Supabase Security Advisor: 26 externally surfaced authenticated SECURITY DEFINER RPC warnings, three INFO server-only RLS tables, and leaked-password protection disabled; Supabase Health Advisor reports no notices.
+- Read-only SQL verification: **41/41 public application tables have RLS enabled**. The three policy-free internal tables have service_role SQL grants but no anon/authenticated SQL grants. Do **not** create ordinary public SELECT policies to dismiss INFO.
+- Storage bucket readback: verification-documents is private, with owner-prefixed policies and institution-scoped School Admin access. Public vendor images and branding assets are separate buckets.
+- Reviewed exact function source: private.has_admin_role and private.has_institution_admin_role require AAL2 MFA and active role/school membership. Inspected admin_assign_global_role_by_email, admin_review_student, admin_review_vendor_campus, admin_set_vendor_marketplace_status, vendor_respond_to_review, student_submit_vendor_review and five self-service RPC functions. These contain role/ownership checks but must be verified using separate authenticated accounts rather than SQL running as the owner.
+- **Code fix:** auth callback previously accepted any return path starting with a single slash. Stage 4 commit `fbd5a6e7c73daff00f11e9847b7ddc4e7e877e60` now resolves the redirect destination using the URL parser and only accepts a matching application origin, with `/dashboard` as fallback. Vercel Preview **READY** for this commit; genuine confirmation/recovery link click-through still pending.
+- Inspected verification document upload code: declared MIME, file magic, 5 MiB limit and owner-prefixed storage paths are enforced. File contents are not proven malware-free merely from magic-byte inspection.
+- Latest Performance Advisor: 4 unindexed foreign keys INFO, 2 auth RLS initplan WARN, 39 unused-index INFO and 41 multiple-permissive-policy WARN findings. These do not justify wholesale policy/index changes; review explain plans before optimization.
+- GET smoke-tested 24 paths on the Stage 4 checkout-guard preview across homepage/auth, Student, Vendor, Admin, PWA and health, all responded as expected at HTTP status level (23 HTTP 200 responses, implementation-only `/admin-v2` HTTP 404). Many 200s on protected routes are login/denied shells, not functional evidence.
+- Current real-user acceptance still needed for the new password recovery UI, School A versus B role isolation, billable TEST plan, idle MFA and browser/PWA checks.
+
+These findings supplement, not replace, the existing NO-GO assessment.
