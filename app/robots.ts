@@ -14,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
           '/admin-v2/',
           '/admin-invite/',
           '/admin-login-campus/mfa/',
-          '/student/'
+          '/student/',
           '/vendor-v2/',
           '/dashboard/',
           '/auth/',
