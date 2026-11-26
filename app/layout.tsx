@@ -53,7 +53,6 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s · CampusMode',
     },
     description: 'Campus life, made easy. Find trusted products, services and businesses around your campus.',
-    alternates: { canonical: '/' },
     manifest: '/manifest.webmanifest',
     icons: {
       icon: [{ url: `/brand/favicon?v=${revision}`, type: 'image/png' }],
