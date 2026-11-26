@@ -65,3 +65,14 @@ User-supplied Google Search Console screenshots confirm:
 7. Review Google site-name documentation (WebSite JSON-LD, `og:site_name`, consistent homepage headings/title and external references). Google's selected site name is automatic and cannot be forced.
 
 Reference: https://developers.google.com/search/docs/appearance/site-names and https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl.
+
+
+## Supabase email and Resend acceptance follow-up - 26 November 2026
+
+User screenshots show the correct Supabase Campus Link project (`ylxddmmlhigfbjbcohwo`): Confirm signup subject and OTP HTML are CampusMode-branded. Both Confirm signup and Invite user previews display a broken remote logo; this is not by itself proof that delivered emails cannot load the image. Invite user subject still reads `You've been invited`; screenshot source contains `{{ .ConfirmationURL }}`. Confirm signup source uses `{{ .Token }}`. Screenshots show 14 Auth users, including some invitations/accounts with no recorded sign-in; do not interpret these alone as delivery failure.
+
+A customer-ready set of 13 hosted Supabase Auth/optional security notification template HTML files was prepared separately, including a README and per-flow subjects. These files are **not applied** to Supabase and must be pasted/saved/tested by the project owner. Avoid changing Go token variables or enabling unsupported flows. Remote image fallback text is included; confirm display in a real mailbox.
+
+Connected Resend review: `campuslink.name.ng` remains **verified**, sending **enabled**; published template alias `campusmode-admin-alert` exists. **Click tracking disabled** on the Resend sending domain to prevent authentication link rewriting; subsequent readback confirmed click tracking **false**, open tracking **false**. This changes future email click analytics but does not disable sending.
+
+**Stage 3 owner acceptance still required:** verify Supabase Custom SMTP display sender and credentials in the Dashboard without revealing secrets, save/update all active Supabase Auth templates, test real registration OTP/resend, invite and account recovery using authorised test recipients, and verify Admin alert delivery. Self-service Student/Vendor password recovery remains a separate app feature gap. Do not declare Stage 3 fully signed off until these tests pass.
