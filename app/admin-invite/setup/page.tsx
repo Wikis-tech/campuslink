@@ -21,6 +21,7 @@ export default async function AdminInviteSetupPage({ searchParams }: { searchPar
   return <main className="admin-login-page">
     <section className="admin-login-card">
       <div className="admin-login-mark"><ShieldCheck size={24}/></div>
+      <img src="/brand/logo" alt="CampusMode" width={142} height={44} style={{ display: "block", width: 142, height: 44, objectFit: "contain", marginBottom: 12 }} />
       <span>CampusMode Admin Invitation</span>
       <h1>Create your administrator password</h1>
       <p>Your Admin role has already been assigned. Choose your own strong password; nobody at CampusMode needs to know it. MFA setup follows immediately after this step.</p>
