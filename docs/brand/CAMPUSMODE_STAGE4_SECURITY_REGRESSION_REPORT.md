@@ -16,6 +16,12 @@ Status: **IN PROGRESS — NOT APPROVED FOR LAUNCH**
 - **Paystack checkout TEST guard moved forward** in `app/api/paystack/checkout/route.ts`. The `assertPaystackTestMode()` check now runs before creating a provider-side customer; previously a live key could create a customer before transaction initialization was blocked. Commit `391e98101d6ee72105745e08bd7324b040955498`.
 - Preview deployment of fix: READY, `https://campuslink-72k7ts1aq-campus-link.vercel.app` (not a production promotion).
 
+## Student/Vendor account recovery implementation
+
+Added `/forgot-password` and `/reset-password` pages, corresponding server actions and a visible Forgot Password link on the Student/Vendor login page. Recovery requests use Supabase `resetPasswordForEmail` with current-site callback. Unknown-address messaging remains generic; password entry requires 12–128 characters and confirmation; the page signs out after a successful password change. Admin profiles are redirected to the separate Admin setup flow. Recovery pages have noindex/no-store headers.
+
+**Requires acceptance:** Auth provider Reset Password email must use the correct recovery link; clicking it must establish a Supabase recovery session in `/auth/confirm` so `/reset-password` can update a password, without leaking account existence. Test on mobile and with the recipient opening the email in another browser. Prefer checking `{{ .TokenHash }}` token-based SSR link construction if the current `{{ .ConfirmationURL }}` flow does not establish the session.
+
 ## Evidence-backed checks
 - Vercel last 7 days: no recorded runtime error clusters; this is not a proof that journeys work.
 - Fresh Supabase Security Advisor: 26 `authenticated_security_definer_function_executable` warnings. The inspected functions commonly check `auth.uid()`, AAL2, admin roles or school-specific membership, but complete role-adversarial tests remain pending. Do not mass-revoke EXECUTE or convert SECURITY DEFINER functions without tracing callers.
@@ -32,7 +38,7 @@ Status: **IN PROGRESS — NOT APPROVED FOR LAUNCH**
 
 ## Security concern to review before final approval
 - The `resolve_current_account_type()` SECURITY DEFINER function reads **user-controlled raw_user_meta_data** to infer `account_type='admin'` for an account with `campuslink_admin_account=true`. It does NOT grant `admin_memberships` or AAL2 and therefore does not by itself establish Admin privilege; nonetheless, user-controlled metadata must not define admin identity. Audit this mapping and consider checking trusted Admin invitation/app metadata or membership before ever writing an Admin profile. Do not change it blindly without onboarding regression tests.
-- Existing Student/Vendor login lacks a demonstrated self-service password recovery flow; password-reset email template alone is insufficient. Implement and test the complete recovery route before Stage 5.
+- Student/Vendor forgot-password and reset-password pages are implemented but **live recovery email/session tests are still outstanding** before Stage 5.
 - Confirm leaked-password protection and exposed password policy in Supabase Auth settings.
 - Confirm support email, privacy/legal claims, email templates and Admin invite flows after owner-side edits.
 
@@ -51,6 +57,14 @@ Status: **IN PROGRESS — NOT APPROVED FOR LAUNCH**
 - Unindexed FK: https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys
 - RLS perf: https://supabase.com/docs/guides/database/database-linter?lint=0003_auth_rls_initplan
 - Supabase RLS: https://supabase.com/docs/guides/database/postgres/row-level-security
+
+## Additional data-state summary (read-only)
+
+- 14 Supabase auth users and 14 profiles; no missing profiles.
+- 4 Student, 6 Vendor, 4 Admin profiles.
+- 2 pending payments, 1 active subscription, 1 approved vendor-campus relationship.
+- 2 active global Admin memberships, 1 active School Admin assignment.
+- These are counts, not full workflow acceptance. Pending payments require inspecting test-state/reconciliation before treating as failures.
 
 ## Release decision
 **NO-GO for Stage 5.** Targeted automated and unauthenticated checks passed, but real multi-role authenticated tests, adversarial role/RPC/storage tests, password recovery, Paystack TEST lifecycle and cross-device UI acceptance have not yet been performed. No blanket “zero bugs” guarantee can be made.
