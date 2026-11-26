@@ -7,6 +7,15 @@ export const metadata = {
   title: 'Privacy Policy',
   alternates: { canonical: '/privacy' },
   description: 'How CampusMode collects, uses, protects and retains personal data.',
+  openGraph: {
+    type: 'website' as const,
+    siteName: 'CampusMode',
+    title: 'Privacy Policy · CampusMode',
+    description: 'How CampusMode collects, uses, protects and retains personal data.',
+    url: '/privacy',
+    images: [{ url: '/api/og/site', width: 1200, height: 630, alt: 'CampusMode — Campus life, made easy.' }],
+  },
+  twitter: { card: 'summary_large_image' as const, title: 'Privacy Policy · CampusMode', description: 'How CampusMode collects, uses, protects and retains personal data.', images: ['/api/og/site'] },
 }
 
 export default function PrivacyPage() {
