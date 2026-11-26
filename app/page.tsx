@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+import { getCanonicalOrigin } from '@/lib/seo-privacy'
 import Link from 'next/link'
 import './landing-legacy.css'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -138,9 +140,11 @@ async function getLandingData() {
   }
 }
 
+export const metadata: Metadata = { alternates: { canonical: '/' } }
+
 export default async function HomePage() {
   const landing = await getLandingData()
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://campuslink.name.ng').replace(/\/$/, '')
+  const baseUrl = getCanonicalOrigin()
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
