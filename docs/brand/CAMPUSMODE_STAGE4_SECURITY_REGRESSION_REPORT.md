@@ -83,3 +83,16 @@ Added `/forgot-password` and `/reset-password` pages, corresponding server actio
 - Current real-user acceptance still needed for the new password recovery UI, School A versus B role isolation, billable TEST plan, idle MFA and browser/PWA checks.
 
 These findings supplement, not replace, the existing NO-GO assessment.
+
+
+## Stage 4 password recovery link compatibility (critical acceptance item)
+
+The prepared hosted Supabase Reset Password email initially used `{{ .ConfirmationURL }}`, but this SSR application expects the token to arrive at `app/auth/confirm/route.ts` as `token_hash` and `type=recovery` before navigating to `/reset-password`. The generic Supabase verification URL can instead redirect with session fragments that a server route cannot read. Therefore a corrected email template was prepared using:
+`https://www.campuslink.name.ng/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=%2Freset-password`
+(escape `&` as `&amp;` inside HTML).
+
+**Owner action:** Update only the hosted Supabase **Reset Password** template, save it and test from a real test Student/Vendor inbox. This template change is not represented by the GitHub code commits; it has to be saved in Supabase.
+
+After applying, test: unknown email generic acknowledgement, valid recovery link, wrong/expired token rejection, second/replayed link rejection, new password updates and old password rejected, new password login, session signed out, Admin cannot use Student/Vendor recovery. Also verify that a recovery email generated from a Preview does not unexpectedly send the user to Production.
+
+Stage 4 Preview static GET checks after the redirect fix: `/forgot-password` and `/reset-password` responded 200 with noindex/no-store; `/admin-v2` remained 404; unauthenticated GET requests to Paystack checkout and webhook returned 405. These are security smoke tests only, not verified transactions or password resets.
