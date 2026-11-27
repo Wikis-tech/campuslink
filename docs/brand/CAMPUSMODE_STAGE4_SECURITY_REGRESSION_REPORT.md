@@ -116,3 +116,20 @@ Stage 4 Preview static GET checks after the redirect fix: `/forgot-password` and
 **Technical debt:** No dependency lockfile was present in the active V3 branch at this audit. Add and commit a generated `package-lock.json` under a clean trusted `npm install` environment and then change CI installation to `npm ci` for reproducible builds. Do not invent lockfile contents or disable `npm audit` to hide advisories.
 
 **Current Supabase readback:** All 41 public tables have RLS enabled. No public security-invoker view exposure issue was found (no public SQL views returned). The Security Advisor still reported 26 privileged RPC warnings, three informational server-controlled RLS tables, and leaked-password protection disabled. These remain under review.
+
+
+## Stage 4 user-reported regression: signed-in Student on cross-campus shared Vendor page (27 Nov 2026)
+
+Reproduced by source inspection of `app/student/explore-campuses/page.tsx` and `app/share/vendor/[slug]/page.tsx`. Cross-campus cards intentionally point to the public SEO route `/share/vendor/[slug]`, which previously hard-coded `Kampivo`, anonymous `Sign in`/`Join CampusMode` buttons and a guest-only CTA regardless of session cookies. The public page itself did **not** sign out the user. The separate protected `/student/vendors/[slug]` and `/student/vendors/[slug]/contact` enforce own-institution vendor approvals; these restrictions must not be bypassed via the public share route.
+
+**Changes made:**
+- The public share page now reads the real Supabase session on the server with `auth.getUser()`, and reads the current profile only for that authenticated user.
+- The share header uses the approved CampusMode logo (removes the last observed Kampivo text), and shows signed-in navigation rather than login/register links when a valid session exists.
+- A signed-in Student whose own institution is approved for this Vendor sees an action to open the full protected Vendor profile. A signed-in Student exploring another school sees clear **read-only cross-campus** messaging and a return link (no misleading request to sign in again).
+- Guest share pages retain indexable public details, but private phone/WhatsApp fields and campus-specific Student actions remain protected by existing authorization rules.
+- The share page styling and security regression script were updated. Checks now require session-aware UI and the original contact-route campus guard.
+- A Vercel preview for the actual user-shown Way5Atelier slug `way5atelier-f28248cc` returned **HTTP 200** with CampusMode branding and the guest-only UI expected for a browser without a session. No legacy Kampivo visible in returned HTML. The full signed-in path still needs a real authenticated test; anonymous HTTP smoke checks cannot validate it.
+
+**Product decision still required:** Cross-campus *contact* is currently disallowed by design. Enabling contact from any approved campus would require an explicit product policy change plus corresponding RLS/RPC/contact evidence/analytics updates. The present patch deliberately does not broaden this permission merely to clear a UI bug.
+
+**Release status:** Stage 4 authenticated regression remains pending; test a Student on the home campus, a Student browsing a different campus, a guest, and a vendor whose campus approval was revoked/suspended.
