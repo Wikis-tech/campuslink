@@ -16,7 +16,7 @@ export default async function AdminVendorDetailPage({ params }: { params: Promis
   const [{ data: campusLinks }, { data: products }, { data: services }, { data: portfolio }, { data: reviews }, { data: reports }] = await Promise.all([
     supabase.from('vendor_institutions').select('institution_id,status,is_primary,review_note,created_at').eq('vendor_id', id),
     supabase.from('vendor_products').select('id,name,is_active,price_ngn,pricing_type,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
-    supabase.from('vendor_services').select('id,name,is_active,price_from,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
+    supabase.from('vendor_services').select('id,name,other_service_details,is_active,price_from,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('vendor_portfolio_items').select('id,title,is_active,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('reviews').select('id,student_id,rating,comment,status,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('complaints').select('id,reporter_id,title,status,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
@@ -60,6 +60,19 @@ export default async function AdminVendorDetailPage({ params }: { params: Promis
     <section className="admin-section"><div className="admin-section-head"><div><h2>Storefront readiness</h2><p>Read-only business completeness. This does not change identity approval, campus approval or safety status.</p></div><strong>{storefrontHealth.score}% · {storefrontHealth.label}</strong></div><div className="admin-section-body">{storefrontHealth.improvements.length ? <div className="admin-note"><strong>{storefrontHealth.improvements.length} improvement{storefrontHealth.improvements.length === 1 ? '' : 's'} remaining.</strong> {storefrontHealth.improvements[0]}</div> : <div className="admin-success"><BadgeCheck size={16}/> Storefront fundamentals are complete.</div>}</div></section>
 
     <section className="admin-section"><div className="admin-section-head"><div><h2>Business & campus access</h2><p>Identity approval and campus approval remain separate controls.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Business</th><th>Contact</th><th>Campus</th><th>Status</th></tr></thead><tbody>{(campusLinks || []).map((link) => <tr key={link.institution_id}><td><span className="admin-name">{vendor.business_name}</span><span className="admin-sub">{vendor.location_text || 'Location not set'}</span></td><td><span className="admin-sub">{vendor.business_email || 'No business email'}</span><span className="admin-sub">{vendor.whatsapp_number || 'No WhatsApp number'}</span></td><td><span className="admin-name"><Building2 size={13}/> {schoolMap.get(link.institution_id) || 'Institution'}</span>{link.is_primary ? <span className="admin-sub">Primary campus</span> : null}</td><td><span className={`status-badge status-${link.status}`}>{link.status}</span>{link.review_note ? <span className="admin-sub">{link.review_note}</span> : null}</td></tr>)}{!campusLinks?.length ? <tr><td colSpan={4}><div className="empty-admin">No campus access records are visible.</div></td></tr> : null}</tbody></table></div></section>
+
+    {(services || []).some((service) => service.other_service_details) ? (
+      <section className="admin-section">
+        <div className="admin-section-head"><div><h2>Other campus services submitted</h2><p>Vendor-entered services that do not fit the existing categories. Review their descriptions before considering a new approved category.</p></div></div>
+        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Service</th><th>Vendor specification</th><th>Visibility</th></tr></thead><tbody>
+          {(services || []).filter((service) => service.other_service_details).map((service) => <tr key={service.id}>
+            <td><span className="admin-name">{service.name}</span></td>
+            <td><span className="admin-sub">{service.other_service_details}</span></td>
+            <td><span className={`status-badge status-${service.is_active ? 'approved' : 'pending'}`}>{service.is_active ? 'Active service' : 'Paused'}</span></td>
+          </tr>)}
+        </tbody></table></div>
+      </section>
+    ) : null}
 
     <section className="admin-grid">
       <article className="admin-stat"><span>Products</span><strong><Package size={24}/> {activeProducts.length}</strong><small>{products?.length || 0} recent records in view.</small></article>
