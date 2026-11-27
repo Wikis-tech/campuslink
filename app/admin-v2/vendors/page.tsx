@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Building2, FileCheck2, Search, ShieldCheck, Store } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { canReviewVendorIdentity, requireAdminContext } from '../lib'
 import { reviewVendorCampus, reviewVendorIdentity } from '../actions'
 import { sendOperationalReminder } from '../communications/actions'
@@ -28,10 +29,11 @@ export default async function VendorsAdminPage({
     .limit(500)
 
   const vendorIds = (vendors || []).map((row) => row.id)
-  const [{ data: campusLinks }, { data: documents }] = vendorIds.length ? await Promise.all([
+  const [{ data: campusLinks }, { data: documents }, { data: customServices }] = vendorIds.length ? await Promise.all([
     supabase.from('vendor_institutions').select('vendor_id,institution_id,status,is_primary,review_note,created_at').in('vendor_id',vendorIds),
     supabase.from('vendor_documents').select('id,vendor_id,document_type,storage_path,status,created_at').in('vendor_id',vendorIds).order('created_at',{ascending:false}),
-  ]) : [{data:[] as any[]},{data:[] as any[]}]
+    createAdminClient().from('vendor_services').select('vendor_id,name,other_service_details').in('vendor_id',vendorIds).not('other_service_details','is',null).limit(500),
+  ]) : [{data:[] as any[]},{data:[] as any[]},{data:[] as any[]}]
 
   const institutionIds = Array.from(new Set((campusLinks || []).map((row) => row.institution_id))) as string[]
   const { data: institutions } = institutionIds.length
@@ -41,6 +43,8 @@ export default async function VendorsAdminPage({
   const schoolMap = new Map((institutions || []).map((school) => [school.id,school.name]))
   const linksByVendor = new Map<string,any[]>()
   for (const link of campusLinks || []) linksByVendor.set(link.vendor_id,[...(linksByVendor.get(link.vendor_id)||[]),link])
+  const customServiceMap = new Map<string,string[]>()
+  for (const service of customServices || []) customServiceMap.set(service.vendor_id,[...(customServiceMap.get(service.vendor_id)||[]),service.other_service_details])
   const docMap = new Map<string,any>()
   for (const doc of documents || []) if (!docMap.has(doc.vendor_id)) docMap.set(doc.vendor_id,doc)
 
@@ -163,7 +167,7 @@ export default async function VendorsAdminPage({
         {filteredVendors.map((vendor) => {
           const links = linksByVendor.get(vendor.id) || []
           return <tr key={vendor.id}>
-            <td><Link className="admin-name admin-link" href={'/control-center/vendors/' + vendor.id}>{vendor.business_name}</Link><span className="admin-sub">{vendor.location_text || 'Location not set'}</span><span className="admin-sub">{vendor.business_email || vendor.whatsapp_number || vendor.slug}</span></td>
+            <td><Link className="admin-name admin-link" href={'/control-center/vendors/' + vendor.id}>{vendor.business_name}</Link><span className="admin-sub">{vendor.location_text || 'Location not set'}</span><span className="admin-sub">{vendor.business_email || vendor.whatsapp_number || vendor.slug}</span>{(customServiceMap.get(vendor.id)||[]).map((other,i)=><span key={i} className="admin-sub"><strong>Other service:</strong> {other}</span>)}</td>
             <td><span className={'status-badge status-' + vendor.verification_status}>{vendor.verification_status.replaceAll('_',' ')}</span><span className="admin-sub">{vendor.onboarding_completed_at ? 'Business setup completed' : 'Setup incomplete'}</span></td>
             <td>{links.length ? links.map((link) => <div key={link.institution_id} style={{marginBottom:6}}><span className="admin-name"><Building2 size={13}/> {schoolMap.get(link.institution_id) || 'School'}</span> <span className={'status-badge status-' + link.status}>{link.status}</span></div>) : <span className="admin-sub">No Campus request yet</span>}</td>
             <td><span className={'status-badge status-' + vendor.marketplace_status}>{vendor.marketplace_status.replaceAll('_',' ')}</span>{isStudentVisible(vendor) ? <span className="admin-sub"><ShieldCheck size={13}/> Student-visible</span> : <span className="admin-sub">Not currently Student-visible</span>}</td>
@@ -183,7 +187,7 @@ export default async function VendorsAdminPage({
           const links = linksByVendor.get(vendor.id) || []
           const doc = docMap.get(vendor.id)
           return <tr key={vendor.id}>
-            <td><Link className="admin-name admin-link" href={'/control-center/vendors/' + vendor.id}>{vendor.business_name}</Link><span className="admin-sub">{vendor.business_email || vendor.whatsapp_number || vendor.slug}</span></td>
+            <td><Link className="admin-name admin-link" href={'/control-center/vendors/' + vendor.id}>{vendor.business_name}</Link><span className="admin-sub">{vendor.business_email || vendor.whatsapp_number || vendor.slug}</span>{(customServiceMap.get(vendor.id)||[]).map((other,i)=><span key={i} className="admin-sub"><strong>Other service:</strong> {other}</span>)}</td>
             <td>{doc ? <><span className="admin-sub"><FileCheck2 size={13}/> {doc.document_type.replaceAll('_',' ')}</span>{signedDocs.get(vendor.id) ? <a className="admin-link admin-sub" href={signedDocs.get(vendor.id)} target="_blank" rel="noreferrer">Open private evidence</a> : <span className="admin-sub">Identity evidence restricted to global verification staff</span>}</> : <span className="admin-sub">No evidence visible</span>}</td>
             <td>{links.filter((link) => link.status === 'pending').map((link) => <div key={link.institution_id}><span className="admin-name">{schoolMap.get(link.institution_id) || 'School'}</span><span className="admin-sub">Campus approval waiting</span></div>)}</td>
             <td><div className="admin-form" style={{minWidth:260}}>
