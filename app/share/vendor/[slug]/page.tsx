@@ -31,9 +31,10 @@ async function getShareVendor(slug: string) {
 
   const { data: links } = await admin
     .from('vendor_institutions')
-    .select('institution_id')
+    .select('institution_id,institutions!inner(is_active)')
     .eq('vendor_id', vendor.id)
     .eq('status', 'approved')
+    .eq('institutions.is_active', true)
 
   if (!links?.length) return null
 
@@ -49,14 +50,14 @@ async function getShareVendor(slug: string) {
       .eq('vendor_id', vendor.id)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
-      .limit(4),
+      .limit(24),
     admin
       .from('vendor_services')
       .select('id,name,price_from')
       .eq('vendor_id', vendor.id)
       .eq('is_active', true)
       .order('name')
-      .limit(5),
+      .limit(24),
     admin
       .from('vendor_portfolio_items')
       .select('id,title,description,image_url')
