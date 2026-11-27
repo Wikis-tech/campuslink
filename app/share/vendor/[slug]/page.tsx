@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { BadgeCheck, MessageCircle, Package, ShieldCheck, Star, Wrench } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { getCanonicalOrigin, sanitizePublicSeoText } from '@/lib/seo-privacy'
 
 const BASE_URL = getCanonicalOrigin()
@@ -110,6 +111,23 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
   if (!result) notFound()
 
   const { vendor, institutions, products, services } = result
+  // Share URLs must work for guests and search engines, while signed-in users
+  // see their real session state. Do not expose protected contact information.
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from('profiles')
+        .select('account_type,institution_id,onboarding_completed_at,student_verification_status')
+        .eq('id', user.id)
+        .maybeSingle()
+    : { data: null }
+
+  const isStudent = profile?.account_type === 'student'
+  const isOnboardedStudent = isStudent && Boolean(profile?.institution_id && profile?.onboarding_completed_at)
+  const approvedOnOwnCampus = isOnboardedStudent &&
+    institutions.some((institution) => institution.id === profile?.institution_id)
+  const vendorPath = `/student/vendors/${encodeURIComponent(vendor.slug)}`
+  const studentReturnPath = '/student/explore-campuses'
   const initial = vendor.business_name?.slice(0, 1)?.toUpperCase() || 'V'
   const campusNames = institutions.map((item) => item.name).join(', ')
   const canonicalUrl = `${BASE_URL}/share/vendor/${encodeURIComponent(vendor.slug)}`
@@ -147,13 +165,23 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
     <main className="cl-share-vendor-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <header className="cl-share-topbar">
-        <Link href="/" className="cl-share-brand">
-          <img src="/brand/logo" alt="" width="34" height="34" />
-          <span>Kampiv<strong>o</strong></span>
+        <Link href="/" className="cl-share-brand" aria-label="CampusMode home">
+          <img src="/brand/logo" alt="CampusMode" width="140" height="44" className="cl-share-wordmark" />
         </Link>
         <div className="cl-share-top-actions">
-          <Link href="/login" className="btn btn-ghost">Sign in</Link>
-          <Link href="/register" className="btn btn-primary">Join CampusMode</Link>
+          {user ? (
+            <>
+              <span className="cl-share-session-label">Signed in</span>
+              <Link href={isStudent ? studentReturnPath : '/dashboard'} className="btn btn-ghost">
+                {isStudent ? 'Back to campuses' : 'Dashboard'}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href={`/login?next=${encodeURIComponent(vendorPath)}`} className="btn btn-ghost">Sign in</Link>
+              <Link href="/register" className="btn btn-primary">Join CampusMode</Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -177,12 +205,41 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
         <section className="cl-share-intro v3-surface">
           <div>
             <span className="cl-share-eyebrow">Shared from CampusMode</span>
-            <h2>Want to contact this vendor?</h2>
-            <p>Sign in as a Student to view the full trusted profile, current campus availability, reviews and direct contact options.</p>
+            {approvedOnOwnCampus ? (
+              <>
+                <h2>View this vendor in your campus</h2>
+                <p>Your Student account is signed in and this vendor is approved for your institution. Open the full CampusMode profile for contact options, reviews and safety reporting.</p>
+              </>
+            ) : isOnboardedStudent ? (
+              <>
+                <h2>Browsing another campus</h2>
+                <p>You are still signed in. This is a public, read-only storefront for a vendor approved at another institution. Contact, saves, reviews and reports remain restricted to vendors approved for your own campus.</p>
+              </>
+            ) : user ? (
+              <>
+                <h2>Public vendor storefront</h2>
+                <p>You are signed in. Direct contact through CampusMode requires a completed Student profile and a vendor approved for your own campus.</p>
+              </>
+            ) : (
+              <>
+                <h2>Want to contact this vendor?</h2>
+                <p>Sign in as a Student to see availability for your institution. Direct contact is available only where the vendor has your campus's approval.</p>
+              </>
+            )}
           </div>
-          <Link href={`/login?next=/student/vendors/${encodeURIComponent(vendor.slug)}`} className="btn btn-primary">
-            <MessageCircle size={17} /> Sign in to view vendor
-          </Link>
+          {approvedOnOwnCampus ? (
+            <Link href={vendorPath} className="btn btn-primary">
+              <MessageCircle size={17} /> Open full vendor profile
+            </Link>
+          ) : isStudent ? (
+            <Link href={studentReturnPath} className="btn btn-primary">Back to other campuses</Link>
+          ) : user ? (
+            <Link href="/dashboard" className="btn btn-primary">Return to dashboard</Link>
+          ) : (
+            <Link href={`/login?next=${encodeURIComponent(vendorPath)}`} className="btn btn-primary">
+              <MessageCircle size={17} /> Sign in to check campus access
+            </Link>
+          )}
         </section>
 
         {products.length ? (
