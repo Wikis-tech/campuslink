@@ -3,6 +3,7 @@ import { CheckCircle2, CirclePlus, Eye, EyeOff, ShieldCheck, Trash2 } from 'luci
 import { createClient } from '@/lib/supabase/server'
 import { VendorWorkspaceSidebar } from '@/components/vendor-workspace-sidebar'
 import { addVendorService, deleteVendorService, toggleVendorService } from './actions'
+import { VendorCategoryPicker } from '@/components/vendor-category-picker'
 
 function formatNaira(value: number | string | null | undefined) {
   if (value === null || value === undefined || value === '') return 'Price on request'
@@ -20,8 +21,8 @@ export default async function VendorServicesPage({ searchParams }: { searchParam
 
   const [{ data: vendor }, { data: services }, { data: categories }, { data: entitlementRows }] = await Promise.all([
     supabase.from('vendor_profiles').select('business_name,verification_status,slug').eq('id', userId).maybeSingle(),
-    supabase.from('vendor_services').select('id,name,description,price_from,is_active,category_id,created_at').eq('vendor_id', userId).order('created_at', { ascending: false }),
-    supabase.from('categories').select('id,name').eq('is_active', true).order('name'),
+    supabase.from('vendor_services').select('id,name,description,other_service_details,price_from,is_active,category_id,created_at').eq('vendor_id', userId).order('created_at', { ascending: false }),
+    supabase.from('categories').select('id,name,slug').eq('is_active', true).order('name'),
     supabase.rpc('get_my_vendor_entitlements'),
   ])
   if (!vendor) redirect('/onboarding/vendor')
@@ -50,11 +51,11 @@ export default async function VendorServicesPage({ searchParams }: { searchParam
       <section className="phase5b-workspace">
         <div className="phase5b-list-column">
           <div className="phase5b-section-heading"><div><span>Your offer</span><h2>{services?.length || 0} service{services?.length === 1 ? '' : 's'} saved</h2></div></div>
-          {(services || []).length ? <div className="phase5b-service-list">{(services || []).map((service) => <article key={service.id} className={`phase5b-service-row ${service.is_active ? '' : 'paused'}`}><div className="phase5b-service-main"><div className="phase5b-service-state">{service.is_active ? <Eye size={16}/> : <EyeOff size={16}/>}</div><div><div className="phase5b-service-title"><strong>{service.name}</strong><span>{categoryMap.get(service.category_id) || 'Service'}</span></div>{service.description ? <p>{service.description}</p> : null}<small>{formatNaira(service.price_from)} · {service.is_active ? 'Visible when your profile is discoverable' : 'Paused'}</small></div></div><div className="phase5b-service-actions"><form action={toggleVendorService}><input type="hidden" name="service_id" value={service.id}/><input type="hidden" name="next_active" value={service.is_active ? 'false' : 'true'}/><button type="submit" className="phase5b-action-button">{service.is_active ? <><EyeOff size={15}/> Pause</> : <><Eye size={15}/> Activate</>}</button></form><form action={deleteVendorService}><input type="hidden" name="service_id" value={service.id}/><button type="submit" className="phase5b-action-button danger"><Trash2 size={15}/> Remove</button></form></div></article>)}</div> : <div className="phase5b-empty"><CirclePlus/><div><strong>Add the services students should know you for.</strong><span>Start with a clear service name and a realistic starting price if you have one.</span></div></div>}
+          {(services || []).length ? <div className="phase5b-service-list">{(services || []).map((service) => <article key={service.id} className={`phase5b-service-row ${service.is_active ? '' : 'paused'}`}><div className="phase5b-service-main"><div className="phase5b-service-state">{service.is_active ? <Eye size={16}/> : <EyeOff size={16}/>}</div><div><div className="phase5b-service-title"><strong>{service.name}</strong><span>{categoryMap.get(service.category_id) || 'Service'}</span></div>{service.description ? <p>{service.description}</p> : null}{service.other_service_details ? <p><strong>Other service:</strong> {service.other_service_details}</p> : null}<small>{formatNaira(service.price_from)} · {service.is_active ? 'Visible when your profile is discoverable' : 'Paused'}</small></div></div><div className="phase5b-service-actions"><form action={toggleVendorService}><input type="hidden" name="service_id" value={service.id}/><input type="hidden" name="next_active" value={service.is_active ? 'false' : 'true'}/><button type="submit" className="phase5b-action-button">{service.is_active ? <><EyeOff size={15}/> Pause</> : <><Eye size={15}/> Activate</>}</button></form><form action={deleteVendorService}><input type="hidden" name="service_id" value={service.id}/><button type="submit" className="phase5b-action-button danger"><Trash2 size={15}/> Remove</button></form></div></article>)}</div> : <div className="phase5b-empty"><CirclePlus/><div><strong>Add the services students should know you for.</strong><span>Start with a clear service name and a realistic starting price if you have one.</span></div></div>}
         </div>
         <form action={addVendorService} className="phase5b-editor vendor-editor-card">
           <div className="phase5b-editor-head"><CirclePlus size={20}/><div><span>Add service</span><strong>{remaining > 0 ? `${remaining} active slot${remaining === 1 ? '' : 's'} available` : 'Active limit reached'}</strong></div></div>
-          <label><span>Category</span><select name="category_id" required defaultValue=""><option value="" disabled>Choose category</option>{(categories || []).map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}</select></label>
+          <div className="vendor-other-service-field"><label htmlFor="vendor_workspace_category_id"><span>Category</span></label><VendorCategoryPicker id="vendor_workspace_category_id" categories={categories || []} variant="workspace" /></div>
           <label><span>Service name</span><input name="name" required maxLength={120} placeholder="e.g. Laptop screen replacement"/></label>
           <label><span>Short description</span><textarea name="description" maxLength={500} placeholder="Tell students exactly what this service covers."/></label>
           <label><span>Starting price (optional)</span><div className="phase5b-price-input"><b>₦</b><input name="price_from" inputMode="decimal" placeholder="5000"/></div></label>
