@@ -79,7 +79,7 @@ requireAll('next.config.ts',
 requireAll('app/share/vendor/[slug]/page.tsx',
   ["supabase.auth.getUser()", "account_type,institution_id,onboarding_completed_at,student_verification_status",
    "institutions.some((institution) => institution.id === profile?.institution_id)",
-   "Browsing another campus", "Signed in", "Back to other campuses"],
+   "Contact a vendor from another campus", "Signed in", "WhatsApp this vendor"],
   'shared vendor cards must preserve Student session awareness and campus scope')
 {
   const source = read('app/share/vendor/[slug]/page.tsx')
@@ -88,11 +88,23 @@ requireAll('app/share/vendor/[slug]/page.tsx',
   }
 }
 requireAll('app/student/explore-campuses/page.tsx',
-  ["href={`/share/vendor/", "Read-only cross-campus view"],
+  ["href={`/share/vendor/", "Cross-campus discovery & contact"],
   'cross-campus listing must continue linking to public read-only share pages')
 requireAll('app/student/vendors/[slug]/contact/route.ts',
   [".eq('institution_id',profile.institution_id)", ".eq('status','approved')", "student_record_contact_event"],
   'protected contact must require campus approval and record contact evidence')
+
+// Explicitly keep cross-campus contact server-only and restricted to verified
+// Students + actively approved Vendors. Never serve the phone in public HTML.
+requireAll('app/share/vendor/[slug]/contact/route.ts',
+  ["supabase.auth.getUser()", "student_verification_status !== 'verified'",
+   "vendor_institutions", ".eq('status', 'approved')", "institutions.is_active",
+   "contact_events", "vendor_analytics_events", "https://wa.me/", "private, no-store"],
+  'cross-campus WhatsApp contact must require Student verification and vendor approval')
+requireAll('app/share/vendor/[slug]/page.tsx',
+  ["from('vendor_portfolio_items')", ".eq('is_active', true)", "Projects &amp; Portfolio",
+   "whatsappPath", "canContact"],
+  'public vendor page must present approved portfolio and verified-Student contact only')
 
 if (failures.length) {
   console.error('Phase 7F release gate failed:')
