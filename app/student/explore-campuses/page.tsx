@@ -82,11 +82,11 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
     <StudentMarketplaceHeader firstName={profile.first_name} schoolName={ownSchool?.name || null} verificationStatus={profile.student_verification_status}/>
     <section className="cl-student-shell">
       <div className="student-head">
-        <div><div className="cl-safety-note"><Globe2 size={14}/> Cross-campus discovery</div><h1>Explore other CampusMode schools.</h1><p>Your own campus remains the default marketplace. This view lets you browse public storefront information from Vendors approved at other schools without changing your campus membership.</p></div>
-        <span className="campus-chip"><ShieldCheck size={16}/> Read-only cross-campus view</span>
+        <div><div className="cl-safety-note"><Globe2 size={14}/> Cross-campus discovery</div><h1>Explore other CampusMode schools.</h1><p>Your own campus remains the default marketplace. This view lets verified Students explore approved Vendors at other schools, view their products and portfolio projects, and contact them through WhatsApp without changing campus membership.</p></div>
+        <span className="campus-chip"><ShieldCheck size={16}/> Cross-campus discovery & contact</span>
       </div>
 
-      <div className="notice success">Campus approval still means approval for the Vendor's listed school, not yours. Contact, save, review and report actions remain governed by your own campus relationship.</div>
+      <div className="notice success">Campus approval applies to the Vendor's listed school, not yours. Verified Students may contact approved Vendors across schools on WhatsApp; saving, reviewing and reporting through the Student workspace remain governed by your own campus relationship.</div>
 
       <form className="search-panel" method="get">
         <label className="search-field"><Search size={18}/><input name="q" defaultValue={params.q || ''} placeholder="Search Vendor names or descriptions..."/></label>
@@ -107,7 +107,7 @@ export default async function ExploreCampusesPage({ searchParams }: { searchPara
                 <p>{vendor.description || 'Verified CampusMode vendor.'}</p>
                 <div className="phase5f-area-tags">{campuses.slice(0,3).map((school) => <span key={school.id}><Building2 size={11}/>{school.name}</span>)}</div>
                 {vendor.location_text ? <div className="cl-safety-note"><MapPin size={12}/>{vendor.location_text}</div> : null}
-                <div className="cl-vendor-meta"><span><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span><span className="verified">View public storefront</span></div>
+                <div className="cl-vendor-meta"><span><Star size={13} fill="currentColor"/> {Number(vendor.average_rating || 0).toFixed(1)} ({vendor.review_count || 0})</span><span className="verified">View products, projects &amp; contact</span></div>
               </div>
             </Link>
           </article>
