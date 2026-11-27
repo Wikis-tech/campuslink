@@ -42,7 +42,7 @@ async function getShareVendor(slug: string) {
     ? await admin.from('institutions').select('id,name').in('id', institutionIds)
     : { data: [] as Array<{ id: string; name: string }> }
 
-  const [{ data: products }, { data: services }] = await Promise.all([
+  const [{ data: products }, { data: services }, { data: portfolio }] = await Promise.all([
     admin
       .from('vendor_products')
       .select('id,name,price_ngn,pricing_type,cover_image_url')
@@ -57,9 +57,17 @@ async function getShareVendor(slug: string) {
       .eq('is_active', true)
       .order('name')
       .limit(5),
+    admin
+      .from('vendor_portfolio_items')
+      .select('id,title,description,image_url')
+      .eq('vendor_id', vendor.id)
+      .eq('is_active', true)
+      .order('sort_order')
+      .order('created_at', { ascending: false })
+      .limit(18),
   ])
 
-  return { vendor, institutions: institutions || [], products: products || [], services: services || [] }
+  return { vendor, institutions: institutions || [], products: products || [], services: services || [], portfolio: portfolio || [] }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -105,12 +113,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function SharedVendorPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function SharedVendorPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ contact?: string }> }) {
   const { slug } = await params
+  const { contact } = await searchParams
   const result = await getShareVendor(slug)
   if (!result) notFound()
 
-  const { vendor, institutions, products, services } = result
+  const { vendor, institutions, products, services, portfolio } = result
   // Share URLs must work for guests and search engines, while signed-in users
   // see their real session state. Do not expose protected contact information.
   const supabase = await createClient()
@@ -124,6 +133,8 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
 
   const isStudent = profile?.account_type === 'student'
   const isOnboardedStudent = isStudent && Boolean(profile?.institution_id && profile?.onboarding_completed_at)
+  const canContact = isOnboardedStudent && profile?.student_verification_status === 'verified'
+  const whatsappPath = `/share/vendor/${encodeURIComponent(vendor.slug)}/contact`
   const approvedOnOwnCampus = isOnboardedStudent &&
     institutions.some((institution) => institution.id === profile?.institution_id)
   const vendorPath = `/student/vendors/${encodeURIComponent(vendor.slug)}`
@@ -186,6 +197,9 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
       </header>
 
       <section className="cl-share-shell">
+        {contact === 'verification_required' ? <p className="cl-share-access-note">Complete Student verification to contact vendors through CampusMode.</p> : null}
+        {contact === 'unavailable' ? <p className="cl-share-access-note">This vendor or selected item is currently unavailable for contact.</p> : null}
+        {contact === 'missing' ? <p className="cl-share-access-note">This vendor has not added a valid WhatsApp number yet.</p> : null}
         <article className="v3-surface cl-share-hero">
           <div className="cl-share-cover">{vendor.cover_url ? <img src={vendor.cover_url} alt="" /> : null}</div>
           <div className="cl-share-profile">
@@ -207,39 +221,49 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
             <span className="cl-share-eyebrow">Shared from CampusMode</span>
             {approvedOnOwnCampus ? (
               <>
-                <h2>View this vendor in your campus</h2>
-                <p>Your Student account is signed in and this vendor is approved for your institution. Open the full CampusMode profile for contact options, reviews and safety reporting.</p>
+                <h2>Discover this vendor's products and projects</h2>
+                <p>This vendor is approved for your institution. As a verified Student you can contact them on WhatsApp, or open the full CampusMode profile for reviews and safety actions.</p>
+              </>
+            ) : canContact ? (
+              <>
+                <h2>Contact a vendor from another campus</h2>
+                <p>You are signed in and can WhatsApp this identity-approved, campus-approved vendor about products or services. Your school membership stays unchanged. Saves, reviews and reports remain tied to your own campus.</p>
               </>
             ) : isOnboardedStudent ? (
               <>
-                <h2>Browsing another campus</h2>
-                <p>You are still signed in. This is a public, read-only storefront for a vendor approved at another institution. Contact, saves, reviews and reports remain restricted to vendors approved for your own campus.</p>
+                <h2>Browse vendors across campuses</h2>
+                <p>You are signed in. Complete Student verification to unlock WhatsApp contact with approved vendors from other universities.</p>
               </>
             ) : user ? (
               <>
                 <h2>Public vendor storefront</h2>
-                <p>You are signed in. Direct contact through CampusMode requires a completed Student profile and a vendor approved for your own campus.</p>
+                <p>You are signed in. Complete Student onboarding and verification to contact businesses across CampusMode campuses.</p>
               </>
             ) : (
               <>
                 <h2>Want to contact this vendor?</h2>
-                <p>Sign in as a Student to see availability for your institution. Direct contact is available only where the vendor has your campus's approval.</p>
+                <p>Sign in as a verified Student to contact vendors approved at CampusMode universities. Your own campus remains your default marketplace.</p>
               </>
             )}
           </div>
-          {approvedOnOwnCampus ? (
-            <Link href={vendorPath} className="btn btn-primary">
-              <MessageCircle size={17} /> Open full vendor profile
-            </Link>
-          ) : isStudent ? (
-            <Link href={studentReturnPath} className="btn btn-primary">Back to other campuses</Link>
-          ) : user ? (
-            <Link href="/dashboard" className="btn btn-primary">Return to dashboard</Link>
-          ) : (
-            <Link href={`/login?next=${encodeURIComponent(vendorPath)}`} className="btn btn-primary">
-              <MessageCircle size={17} /> Sign in to check campus access
-            </Link>
-          )}
+          <div className="cl-share-contact-actions">
+            {canContact ? (
+              <a href={whatsappPath} className="btn btn-primary" rel="nofollow">
+                <MessageCircle size={17} /> WhatsApp this vendor
+              </a>
+            ) : null}
+            {approvedOnOwnCampus ? (
+              <Link href={vendorPath} className="btn btn-ghost">Full campus profile</Link>
+            ) : isStudent ? (
+              <Link href={studentReturnPath} className="btn btn-ghost">Back to other campuses</Link>
+            ) : user ? (
+              <Link href="/dashboard" className="btn btn-ghost">Return to dashboard</Link>
+            ) : (
+              <Link href={`/login?next=${encodeURIComponent(vendorPath)}`} className="btn btn-primary">
+                <MessageCircle size={17} /> Sign in to contact
+              </Link>
+            )}
+          </div>
         </section>
 
         {products.length ? (
@@ -249,7 +273,10 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
               {products.map((product) => (
                 <div className="v3-surface cl-share-item" key={product.id}>
                   <strong>{sanitizePublicSeoText(product.name, 80) || 'Product'}</strong>
-                  <span>{product.pricing_type === 'contact' ? 'Ask for price' : `${product.pricing_type === 'from' ? 'From ' : ''}₦${Number(product.price_ngn || 0).toLocaleString()}`}</span>
+                  <div className="cl-share-item-end">
+                    <span>{product.pricing_type === 'contact' ? 'Ask for price' : `${product.pricing_type === 'from' ? 'From ' : ''}₦${Number(product.price_ngn || 0).toLocaleString()}`}</span>
+                    {canContact ? <a href={`${whatsappPath}?product=${product.id}`} rel="nofollow">Ask on WhatsApp</a> : null}
+                  </div>
                 </div>
               ))}
             </div>
@@ -263,8 +290,28 @@ export default async function SharedVendorPage({ params }: { params: Promise<{ s
               {services.map((service) => (
                 <div className="v3-surface cl-share-item" key={service.id}>
                   <strong>{sanitizePublicSeoText(service.name, 80) || 'Service'}</strong>
-                  <span>{service.price_from ? `From ₦${Number(service.price_from).toLocaleString()}` : 'Ask vendor'}</span>
+                  <div className="cl-share-item-end">
+                    <span>{service.price_from ? `From ₦${Number(service.price_from).toLocaleString()}` : 'Ask vendor'}</span>
+                    {canContact ? <a href={`${whatsappPath}?service=${service.id}`} rel="nofollow">Ask on WhatsApp</a> : null}
+                  </div>
                 </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {portfolio.length ? (
+          <section className="cl-share-section">
+            <div className="cl-share-section-head"><ShieldCheck size={18} /><div><h2>Projects &amp; Portfolio</h2><p>Examples of this vendor's published work.</p></div></div>
+            <div className="cl-share-portfolio-grid">
+              {portfolio.map((project) => (
+                <article className="v3-surface cl-share-project" key={project.id}>
+                  {project.image_url ? <img src={project.image_url} alt={project.title} loading="lazy" /> : null}
+                  <div className="cl-share-project-copy">
+                    <h3>{sanitizePublicSeoText(project.title, 100) || 'Portfolio project'}</h3>
+                    {project.description ? <p>{sanitizePublicSeoText(project.description, 300)}</p> : null}
+                  </div>
+                </article>
               ))}
             </div>
           </section>
