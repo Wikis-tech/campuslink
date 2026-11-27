@@ -141,8 +141,8 @@ async function getLandingData() {
 }
 
 export const metadata: Metadata = {
-  title: 'CampusMode | Trusted Campus Vendors & Student Services',
-  description: 'CampusMode helps students discover verified campus vendors, products and services in Nigeria. Explore businesses and contact vendors directly.',
+  title: 'CampusMode (Campus Mode) | Trusted Campus Vendors & Services',
+  description: 'CampusMode (Campus Mode) helps students in Nigeria discover verified campus vendors, products and services. Find businesses and contact vendors directly.',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
@@ -167,6 +167,7 @@ export default async function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'CampusMode',
+    alternateName: 'Campus Mode',
     url: baseUrl,
     description: 'Campus life, made easy. Discover approved campus vendors, products and services in Nigeria.',
     inLanguage: 'en',
@@ -177,6 +178,7 @@ export default async function HomePage() {
     name: 'CampusMode',
     url: baseUrl,
     logo: `${baseUrl}/brand/logo`,
+    alternateName: 'Campus Mode',
     description: 'The trusted discovery and marketplace platform for campus communities.',
   }
   const jsonLd = JSON.stringify([websiteJsonLd, organizationJsonLd]).replace(/</g, '\\u003c')
@@ -187,7 +189,7 @@ export default async function HomePage() {
       <header className="site-header scrolled" id="siteHeader">
         <div className="header-inner container">
           <Link href="/" className="logo logo-text-only" aria-label="CampusMode home">
-            <img src="/brand/logo" alt="CampusMode" style={{ width: 142, height: 44, objectFit: 'contain', objectPosition: 'left center' }} />
+            <img src="/brand/logo" alt="CampusMode" className="campusmode-nav-logo" style={{ width: 142, height: 44, objectFit: 'contain', objectPosition: 'left center' }} />
           </Link>
 
           <nav className="main-nav" id="mainNav">
@@ -333,7 +335,7 @@ export default async function HomePage() {
                 <img src="/brand/logo" alt="CampusMode" style={{ width: 150, height: 46, objectFit: 'contain', objectPosition: 'left center' }} />
               </Link>
               <p>Trusted campus discovery for students, vendors and university communities.</p>
-              <p>CampusMode helps students discover trusted services, vendors, products and opportunities within their campus community. Transactions remain directly between students and vendors.</p>
+              <p>CampusMode (also searched as Campus Mode) helps students discover trusted services, vendors and products within their campus community. Transactions remain directly between students and vendors.</p>
               <a className="cl-public-footer-contact" href="mailto:support@campuslink.name.ng">Email support</a>
             </div>
 
