@@ -37,6 +37,43 @@ requireText('app/admin-v2/lib.ts', "currentLevel !== 'aal2'", 'Admin control pla
 requireText('app/share/vendor/[slug]/page.tsx', "eq('status', 'approved')", 'public Vendor SEO must require campus approval')
 requireText('app/share/vendor/[slug]/page.tsx', "robots: {", 'public Vendor SEO must explicitly define crawler policy')
 
+
+/*
+ * Stage 4 security regression invariants.
+ * These checks fail on accidental guard removal; they do not replace
+ * authorised multi-account browser, RPC, or Paystack sandbox tests.
+ */
+requireAll('app/auth/confirm/route.ts',
+  ["candidate.origin === fallback.origin", "verifyOtp({ type, token_hash: tokenHash })"],
+  'confirmation must validate token and restrict redirects to the current origin')
+requireAll('app/reset-password/actions.ts',
+  ["supabase.auth.getUser()", "admin_memberships", "institution_admin_assignments", "supabase.auth.signOut()"],
+  'self-service password recovery must verify identity and exclude active Admin memberships')
+requireAll('app/forgot-password/actions.ts',
+  ["resetPasswordForEmail(", "redirect('/forgot-password?sent=1')"],
+  'recovery requests must use Supabase and retain generic response semantics')
+requireAll('app/api/paystack/checkout/route.ts',
+  ["assertPaystackTestMode()", "createPaystackCustomer(", "ALLOWED_PLANS", "Sign in to continue."],
+  'checkout must enforce TEST mode, recognised plans and a signed-in user')
+{
+  const source = read('app/api/paystack/checkout/route.ts')
+  if (source.indexOf('assertPaystackTestMode()') >= source.indexOf('createPaystackCustomer({')) {
+    failures.push('app/api/paystack/checkout/route.ts: TEST guard must execute before external customer creation')
+  }
+}
+requireAll('app/api/paystack/webhook/route.ts',
+  ["verifyPaystackWebhookSignature(rawBody, signature)", "paystackEventFingerprint(rawBody)", "reconcileSuccessfulPaystackPayment(reference)"],
+  'webhook must validate signature, replay fingerprint and provider reconciliation')
+requireAll('app/onboarding/student/actions.ts',
+  ["assertSafeVerificationUpload(document)", ".from('verification-documents')", "storagePath = \`\${userId}/student/"],
+  'verification uploads must retain magic-byte validation and owner-prefixed private file paths')
+requireAll('app/admin-v2/lib.ts',
+  ["supabase.auth.getUser()", "currentLevel !== 'aal2'", "admin_memberships", "institution_admin_assignments"],
+  'Admin must be authenticated with AAL2 and an active privileged assignment')
+requireAll('next.config.ts',
+  ["source: '/forgot-password'", "source: '/reset-password'", "source: '/control-center", "no-store, private"],
+  'recovery and private Admin surfaces must remain non-cacheable and protected')
+
 if (failures.length) {
   console.error('Phase 7F release gate failed:')
   for (const failure of failures) console.error(' - ' + failure)
