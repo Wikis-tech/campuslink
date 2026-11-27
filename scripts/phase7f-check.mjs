@@ -106,6 +106,24 @@ requireAll('app/share/vendor/[slug]/page.tsx',
    "whatsappPath", "canContact"],
   'public vendor page must present approved portfolio and verified-Student contact only')
 
+// New categories must be suggestions, not automatic taxonomy mutations.
+// Keep server validation and Vendor service ownership checks intact.
+requireAll('components/vendor-category-picker.tsx',
+  ["other-campus-services", "name=\"other_service_details\"", "required", "maxLength={120}"],
+  'Other campus services requires a bounded vendor-entered specification')
+requireAll('app/onboarding/vendor/actions.ts',
+  ["category.slug === 'other-campus-services'", "other_service_details: isOtherCategory ? otherServiceDetails : null"],
+  'Vendor onboarding must validate and store custom service details only for Other')
+requireAll('app/vendor-v2/services/actions.ts',
+  ["category.slug === 'other-campus-services'", "other_service_details: isOtherCategory ? otherServiceDetails : null"],
+  'Vendor workspace must enforce the same custom service validation')
+requireAll('app/admin-v2/vendors/page.tsx',
+  ["other_service_details", "customServiceMap", "Other service:"],
+  'Admins must see vendor custom-service descriptions before approving a business')
+requireAll('supabase/migrations/202611270001_vendor_other_service_details.sql',
+  ["add column if not exists other_service_details", "vendor_services_other_service_details_length"],
+  'Other category details must remain bounded in the database')
+
 if (failures.length) {
   console.error('Phase 7F release gate failed:')
   for (const failure of failures) console.error(' - ' + failure)
