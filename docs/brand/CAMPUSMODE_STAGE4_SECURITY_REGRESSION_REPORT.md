@@ -103,3 +103,16 @@ Stage 4 Preview static GET checks after the redirect fix: `/forgot-password` and
 - Vercel project environment variable `PAYSTACK_ALLOW_LIVE` was inspected individually without exposing payment keys. Its configured value is **false** across the target set (Preview and Production), meaning the code's live-key override is not enabled. Secret keys themselves were not accessed or disclosed. Confirm actual `PAYSTACK_SECRET_KEY` uses a TEST key before any sandbox checkout; do not initiate real payments.
 - Code fix `app/reset-password/actions.ts`: besides checking the user profile account_type, the Student/Vendor password-reset action now checks active `admin_memberships` and `institution_admin_assignments` via server-only Admin client; any currently active Admin membership is redirected to the separate Admin recovery flow. This covers Admin accounts that might have a legacy marketplace profile. Commit `1db97d64c52684c0a899c0cb7813dffe795d452d`, awaiting corresponding Vercel preview verification.
 - An implementation-level path-resolution sanity check for `/auth/confirm?next=` accepted legitimate `/dashboard` and `/reset-password` paths and rejected `//external`, backslash-host and absolute external URLs; a real authenticated recovery callback has not been exercised.
+
+
+## Stage 4 continuation — critical Next.js dependency audit repaired (27 November 2026)
+
+**Verified defect:** GitHub Actions run [46009195536](https://github.com/Wikis-tech/campuslink/actions/runs/46009195536) failed its `npm audit --audit-level=high --omit=dev` check. The audited `next@16.3.3` dependency matched a critical advisory range (including GHSA-vcvr-r3jv-pc5j); audit recommended `next@16.4.6`. Typecheck and the Stage 4 source regression invariants were already passing.
+
+**Fix:** Pinned `next` to **16.4.6** in `package.json` (commit `144b2f5a1c328d2d8b07421efd9a495ceb5f4387`), preserving the other dependencies and application functionality.
+
+**Verification:** GitHub Actions run [46009462243](https://github.com/Wikis-tech/campuslink/actions/runs/46009462243) **SUCCESS**, including dependency installation, `check:phase7f`, `tsc --noEmit`, production `npm audit`, and `next build`. Latest matching Vercel preview status should be checked before marking deployment accepted. Do not interpret successful source/build checks as privileged multi-role authenticated E2E clearance.
+
+**Technical debt:** No dependency lockfile was present in the active V3 branch at this audit. Add and commit a generated `package-lock.json` under a clean trusted `npm install` environment and then change CI installation to `npm ci` for reproducible builds. Do not invent lockfile contents or disable `npm audit` to hide advisories.
+
+**Current Supabase readback:** All 41 public tables have RLS enabled. No public security-invoker view exposure issue was found (no public SQL views returned). The Security Advisor still reported 26 privileged RPC warnings, three informational server-controlled RLS tables, and leaked-password protection disabled. These remain under review.
