@@ -77,7 +77,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!result) return { title: 'Vendor not available · CampusMode', robots: { index: false, follow: false } }
 
   const { vendor } = result
-  const title = `${vendor.business_name} · CampusMode`
+  const title = vendor.business_name
+  const brandedTitle = `${vendor.business_name} · CampusMode`
   const description = cleanDescription(vendor.description)
   const url = `${BASE_URL}/share/vendor/${encodeURIComponent(vendor.slug)}`
   const image = `${BASE_URL}/api/og/vendor/${encodeURIComponent(vendor.slug)}`
@@ -89,14 +90,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       type: 'website',
       siteName: 'CampusMode',
-      title,
+      title: brandedTitle,
       description,
       url,
       images: [{ url: image, width: 1200, height: 630, alt: `${vendor.business_name} on CampusMode` }],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: brandedTitle,
       description,
       images: [image],
     },
