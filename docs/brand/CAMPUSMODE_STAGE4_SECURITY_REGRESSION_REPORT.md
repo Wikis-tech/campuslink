@@ -133,3 +133,35 @@ Reproduced by source inspection of `app/student/explore-campuses/page.tsx` and `
 **Product decision still required:** Cross-campus *contact* is currently disallowed by design. Enabling contact from any approved campus would require an explicit product policy change plus corresponding RLS/RPC/contact evidence/analytics updates. The present patch deliberately does not broaden this permission merely to clear a UI bug.
 
 **Release status:** Stage 4 authenticated regression remains pending; test a Student on the home campus, a Student browsing a different campus, a guest, and a vendor whose campus approval was revoked/suspended.
+
+
+## Cross-campus Vendor contact and portfolio implementation — 27 November 2026
+
+User requested that a verified CampusMode Student browsing vendors approved at **other universities** be able to contact those vendors via WhatsApp and view their portfolio/projects. This is an explicit, limited product-policy change from the former *read-only* other-campus feature.
+
+### Implemented on V3 branch
+- New server-only `GET /share/vendor/[slug]/contact` handler requires a valid Supabase session, ordinary Student role with onboarding completed and `student_verification_status='verified'`; active global/School Admins are rejected.
+- At the moment of contact, the handler rechecks vendor identity approval, active/safely restored marketplace status, at least one approved *active* institution, valid WhatsApp number and optional product/service ownership and active status. The phone is never rendered into public HTML; only authorized requests redirect to `https://wa.me/` with a CampusMode introductory message.
+- The handler records a cross-campus contact event tied to the Student's institution and a Vendor analytics `whatsapp_click` record tagged `metadata.cross_campus=true`, with a short deduplication window. Existing own-campus RPCs and school affiliation records are unchanged.
+- The public shared Vendor page lists active portfolio projects (title, image and sanitized description) plus more products/services, adds verified-Student contact buttons and per-product/service WhatsApp actions.
+- The Search Other Campuses page now describes the new contact experience. **Saves/reviews/reports remain campus-specific** in the existing Student marketplace and are not newly authorized cross-campus.
+- Fixed the prior duplicate `CampusMode` suffix in shared Vendor document titles. The original vendor page retains its public canonical and social metadata.
+
+### RLS defect found and repaired
+Prior `vendor_portfolio_public_read` policy contained `vi.vendor_id = vi.vendor_id` (always true), allowing a public portfolio row to satisfy the unrelated existence of *another* approved vendor institution. Applied the targeted migration `restrict_public_portfolio_to_approved_active_vendor` to tie `vi.vendor_id = vendor_portfolio_items.vendor_id` and additionally require an identity-approved, safe-status Vendor with approval at an active institution. SQL readback confirmed the corrected expression; Way5Atelier still has two active portfolio projects. Existing owner RLS policies were not removed.
+
+### Verification
+- Latest commit `f10faa020d217f51d8832e4c258d60bfc0590b7c`; Vercel preview **READY**. Latest GitHub Actions [46024165863](https://github.com/Wikis-tech/campuslink/actions/runs/46024165863) **SUCCESS**, including release invariants, typecheck, dependency audit and production build.
+- Read-only HTTP preview GET: actual Way5Atelier `/share/vendor/way5atelier-f28248cc` 200, shows portfolio/projects and products, CampusMode branding, correct title. Guest response contains no WhatsApp phone or direct contact action; unauthenticated contact endpoint leads to sign-in, not an external WhatsApp destination.
+- Supabase Security Advisor re-run shows its existing warnings (26 privileged RPC warnings and leaked-password protection disabled), plus three known service-only RLS informational notices. No claim that a code/build test clears the rest of Stage 4.
+
+### Mandatory signed-in acceptance before release approval
+1. Sign into **the preview host** as a verified Student (sessions are not shared with `www.campuslink.name.ng`).
+2. Navigate Student > Explore Other Campuses > Way5Atelier; confirm **WhatsApp this vendor** is visible, starts WhatsApp with the right number and a CampusMode message.
+3. Try **Ask on WhatsApp** for a named product and service; check the item-specific message. Confirm portfolio images, projects and descriptions display on mobile and desktop.
+4. Use an unverified Student, a guest, a Vendor user and an Admin account to confirm no number or external redirect is accessible via direct guessed `/share/vendor/[slug]/contact` requests.
+5. Temporarily simulate vendor suspension/campus approval removal in a controlled test fixture (do not change important real Vendor accounts); contact must be denied. Try unrelated product UUIDs; contact must be denied.
+6. Confirm contact and analytics events are recorded once under the Student's originating institution, and no change to their campus membership, vendor campus approval or saved/review/report permissions occurs.
+7. Repeat in the approved production release after promotion; do not treat preview tests as production sign-off.
+
+**Stage 4 remains in progress** until these authenticated tests and the broader Student/Vendor/Admin security and Paystack TEST suites pass.
