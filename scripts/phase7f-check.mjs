@@ -74,6 +74,26 @@ requireAll('next.config.ts',
   ["source: '/forgot-password'", "source: '/reset-password'", "source: '/control-center", "no-store, private"],
   'recovery and private Admin surfaces must remain non-cacheable and protected')
 
+// Shared vendor URLs are public SEO pages; their UI must still reflect the
+// current authenticated session and must not bypass campus-specific contact.
+requireAll('app/share/vendor/[slug]/page.tsx',
+  ["supabase.auth.getUser()", "account_type,institution_id,onboarding_completed_at,student_verification_status",
+   "institutions.some((institution) => institution.id === profile?.institution_id)",
+   "Browsing another campus", "Signed in", "Back to other campuses"],
+  'shared vendor cards must preserve Student session awareness and campus scope')
+{
+  const source = read('app/share/vendor/[slug]/page.tsx')
+  if (source.includes('Kampiv<strong>o</strong>')) {
+    failures.push('app/share/vendor/[slug]/page.tsx: legacy Kampivo branding must not return')
+  }
+}
+requireAll('app/student/explore-campuses/page.tsx',
+  ["href={`/share/vendor/", "Read-only cross-campus view"],
+  'cross-campus listing must continue linking to public read-only share pages')
+requireAll('app/student/vendors/[slug]/contact/route.ts',
+  [".eq('institution_id',profile.institution_id)", ".eq('status','approved')", "student_record_contact_event"],
+  'protected contact must require campus approval and record contact evidence')
+
 if (failures.length) {
   console.error('Phase 7F release gate failed:')
   for (const failure of failures) console.error(' - ' + failure)
