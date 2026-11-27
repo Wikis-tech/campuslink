@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AlertTriangle, BadgeCheck, Building2, MessageSquareText, Package, ShieldCheck, Store, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdminContext } from '../../lib'
 import { calculateVendorStorefrontHealth } from '@/lib/vendor-storefront-health'
 
@@ -16,7 +17,9 @@ export default async function AdminVendorDetailPage({ params }: { params: Promis
   const [{ data: campusLinks }, { data: products }, { data: services }, { data: portfolio }, { data: reviews }, { data: reports }] = await Promise.all([
     supabase.from('vendor_institutions').select('institution_id,status,is_primary,review_note,created_at').eq('vendor_id', id),
     supabase.from('vendor_products').select('id,name,is_active,price_ngn,pricing_type,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
-    supabase.from('vendor_services').select('id,name,other_service_details,is_active,price_from,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
+    // The Vendor profile above was scoped by Admin RLS; retrieve its submitted services
+    // server-side so School/Verification Admins can review pending category suggestions.
+    createAdminClient().from('vendor_services').select('id,name,other_service_details,is_active,price_from,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('vendor_portfolio_items').select('id,title,is_active,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('reviews').select('id,student_id,rating,comment,status,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('complaints').select('id,reporter_id,title,status,created_at').eq('vendor_id', id).order('created_at', { ascending: false }).limit(30),
