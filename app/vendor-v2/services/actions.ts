@@ -32,6 +32,7 @@ export async function addVendorService(formData: FormData) {
   const categoryId = clean(formData.get('category_id'), 80)
   const name = clean(formData.get('name'), 120)
   const description = clean(formData.get('description'), 500)
+  const otherServiceDetails = clean(formData.get('other_service_details'), 120)
   const priceRaw = clean(formData.get('price_from'), 30)
 
   if (!categoryId || !name) {
@@ -44,12 +45,16 @@ export async function addVendorService(formData: FormData) {
   }
 
   const [{ data: category }, activeCountResult, limit] = await Promise.all([
-    supabase.from('categories').select('id').eq('id', categoryId).eq('is_active', true).maybeSingle(),
+    supabase.from('categories').select('id,slug').eq('id', categoryId).eq('is_active', true).maybeSingle(),
     supabase.from('vendor_services').select('id', { count: 'exact', head: true }).eq('vendor_id', userId).eq('is_active', true),
     getServiceLimit(supabase),
   ])
 
   if (!category) redirect('/vendor-v2/services?error=Choose%20a%20valid%20service%20category')
+  const isOtherCategory = category.slug === 'other-campus-services'
+  if (isOtherCategory && otherServiceDetails.length < 3) {
+    redirect('/vendor-v2/services?error=Specify%20the%20other%20campus%20service%20you%20offer')
+  }
   if ((activeCountResult.count || 0) >= limit) {
     redirect(`/vendor-v2/services?limit=${limit}`)
   }
@@ -59,6 +64,7 @@ export async function addVendorService(formData: FormData) {
     category_id: categoryId,
     name,
     description: description || null,
+    other_service_details: isOtherCategory ? otherServiceDetails : null,
     price_from: price,
     is_active: true,
   })
