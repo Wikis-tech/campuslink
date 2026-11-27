@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { BadgeCheck, Building2, BriefcaseBusiness, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { completeVendorOnboarding } from './actions'
+import { VendorCategoryPicker } from '@/components/vendor-category-picker'
 
 export default async function VendorOnboardingPage({
   searchParams,
@@ -33,14 +34,14 @@ export default async function VendorOnboardingPage({
 
   const [{ data: institutions }, { data: categories }] = await Promise.all([
     supabase.from('institutions').select('id,name,city,state').eq('is_active', true).order('name'),
-    supabase.from('categories').select('id,name').eq('is_active', true).order('name'),
+    supabase.from('categories').select('id,name,slug').eq('is_active', true).order('name'),
   ])
 
   return (
     <main className="onboarding-shell">
       <section className="onboarding-layout">
         <aside className="onboarding-aside vendor-aside">
-          <Link href="/" className="brand">Kampiv<span>o</span></Link>
+          <Link href="/" className="brand" aria-label="CampusMode home"><img src="/brand/logo" alt="CampusMode" width={142} height={44} style={{ width: 142, height: 44, objectFit: 'contain', objectPosition: 'left center' }}/></Link>
           <div className="step-kicker">Vendor setup · 1 of 1</div>
           <h1>Set up once. Get discovered where it matters.</h1>
           <p>Create a clear business profile, choose the campus you serve and submit evidence for review.</p>
@@ -117,10 +118,7 @@ export default async function VendorOnboardingPage({
               </div>
               <div className="field-block">
                 <label htmlFor="category_id">Main category</label>
-                <select id="category_id" name="category_id" required defaultValue="">
-                  <option value="" disabled>Select category</option>
-                  {(categories || []).map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
-                </select>
+                <VendorCategoryPicker categories={categories || []} variant="onboarding" />
               </div>
             </div>
 
