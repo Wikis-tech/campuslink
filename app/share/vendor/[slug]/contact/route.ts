@@ -98,11 +98,16 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
     if (error) console.error('CampusMode cross-campus contact evidence unavailable', { code: error.code })
   }
 
-  const { data: recentAnalytics } = await admin.from('vendor_analytics_events')
+  let recentAnalyticsQuery = admin.from('vendor_analytics_events')
     .select('id').eq('actor_id', user.id).eq('vendor_id', vendor.id)
-    .eq('event_type', 'whatsapp_click')
-    .eq('product_id', productId || null).eq('service_id', serviceId || null)
-    .gte('occurred_at', recentTime).limit(1)
+    .eq('event_type', 'whatsapp_click').gte('occurred_at', recentTime)
+  recentAnalyticsQuery = productId
+    ? recentAnalyticsQuery.eq('product_id', productId)
+    : recentAnalyticsQuery.is('product_id', null)
+  recentAnalyticsQuery = serviceId
+    ? recentAnalyticsQuery.eq('service_id', serviceId)
+    : recentAnalyticsQuery.is('service_id', null)
+  const { data: recentAnalytics } = await recentAnalyticsQuery.limit(1)
   if (!recentAnalytics?.length) {
     const { error } = await admin.from('vendor_analytics_events').insert({
       vendor_id: vendor.id, actor_id: user.id,
