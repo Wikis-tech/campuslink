@@ -24,6 +24,9 @@
   font-weight:700;
 }
 .cl-share-brand img{width:36px;height:36px;object-fit:contain}
+.cl-share-brand .cl-share-wordmark{width:140px;height:44px;object-fit:contain;object-position:left center}
+.cl-share-session-label{font-size:.78rem;font-weight:700;color:#167a3d;white-space:nowrap}
+html[data-theme='dark'] .cl-share-session-label{color:#73d9a5}
 .cl-share-brand strong{font-weight:900;color:#0b3d91}
 .cl-share-top-actions{display:flex;gap:8px;align-items:center}
 .cl-share-shell{
