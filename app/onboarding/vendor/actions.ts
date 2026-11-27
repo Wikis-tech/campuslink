@@ -54,6 +54,7 @@ export async function completeVendorOnboarding(formData: FormData) {
   const categoryId = clean(formData.get('category_id'), 80)
   const serviceName = clean(formData.get('service_name'), 120)
   const serviceDescription = clean(formData.get('service_description'), 500)
+  const otherServiceDetails = clean(formData.get('other_service_details'), 120)
   const priceFromRaw = clean(formData.get('price_from'), 30)
   const documentType = clean(formData.get('document_type'), 50)
   const verificationDocument = formData.get('verification_document')
@@ -80,11 +81,16 @@ export async function completeVendorOnboarding(formData: FormData) {
 
   const [{ data: institution }, { data: category }] = await Promise.all([
     supabase.from('institutions').select('id').eq('id', institutionId).eq('is_active', true).maybeSingle(),
-    supabase.from('categories').select('id').eq('id', categoryId).eq('is_active', true).maybeSingle(),
+    supabase.from('categories').select('id,slug').eq('id', categoryId).eq('is_active', true).maybeSingle(),
   ])
 
   if (!institution || !category) {
     redirect('/onboarding/vendor?error=Select%20a%20valid%20school%20and%20service%20category#vendor-onboarding-feedback')
+  }
+
+  const isOtherCategory = category.slug === 'other-campus-services'
+  if (isOtherCategory && (otherServiceDetails.length < 3 || otherServiceDetails.length > 120)) {
+    redirect('/onboarding/vendor?error=Please%20specify%20the%20other%20campus%20service%20you%20offer#vendor-onboarding-feedback')
   }
 
   if (!(verificationDocument instanceof File) || verificationDocument.size === 0) {
@@ -177,6 +183,7 @@ export async function completeVendorOnboarding(formData: FormData) {
       category_id: categoryId,
       name: serviceName,
       description: serviceDescription || null,
+      other_service_details: isOtherCategory ? otherServiceDetails : null,
       price_from: priceFrom,
       is_active: true,
     })
